@@ -1,9 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/row/DenseGeneralTest.h
-//  \brief Header file for the Row dense general test
+//  \file blazetest/mathtest/pageslice/DenseGeneralTest.h
+//  \brief Header file for the PageSlice dense general test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -32,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_ROW_DENSEGENERALTEST_H_
-#define _BLAZETEST_MATHTEST_ROW_DENSEGENERALTEST_H_
+#ifndef _BLAZETEST_MATHTEST_PAGESLICE_DENSEGENERALTEST_H_
+#define _BLAZETEST_MATHTEST_PAGESLICE_DENSEGENERALTEST_H_
 
 
 //*************************************************************************************************
@@ -43,20 +44,19 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <blaze/math/constraints/DenseMatrix.h>
-#include <blaze/math/constraints/DenseVector.h>
-#include <blaze/math/constraints/RowVector.h>
-#include <blaze/math/DynamicMatrix.h>
-#include <blaze/math/Row.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
+#include <blaze_tensor/math/DynamicTensor.h>
+#include <blaze_tensor/math/PageSlice.h>
+#include <blaze_tensor/math/constraints/DenseTensor.h>
+#include <blaze_tensor/math/constraints/PageSliceMatrix.h>
+#include <blaze_tensor/math/typetraits/IsPageSliceMatrix.h>
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace row {
+namespace pageslice {
 
 //=================================================================================================
 //
@@ -65,9 +65,9 @@ namespace row {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the dense general Row specialization.
+/*!\brief Auxiliary class for all tests of the dense general PageSlice specialization.
 //
-// This class represents a test suite for the blaze::Row class template specialization for
+// This class represents a test suite for the blaze::PageSlice class template specialization for
 // dense general matrices. It performs a series of both compile time as well as runtime tests.
 */
 class DenseGeneralTest
@@ -94,27 +94,34 @@ class DenseGeneralTest
    void testAddAssign();
    void testSubAssign();
    void testMultAssign();
-   void testDivAssign();
-   void testCrossAssign();
+   void testSchurAssign();
    void testScaling();
-   void testSubscript();
+   void testFunctionCall();
+   void testAt();
    void testIterator();
    void testNonZeros();
    void testReset();
    void testClear();
    void testIsDefault();
    void testIsSame();
-   void testSubvector();
-   void testElements();
+   void testSubmatrix();
+   void testRow();
+   void testRows();
+   void testColumn();
+   void testColumns();
+   void testBand();
 
    template< typename Type >
-   void checkSize( const Type& row, size_t expectedSize ) const;
+   void checkSize( const Type& pageslice, size_t expectedSize ) const;
 
    template< typename Type >
-   void checkRows( const Type& matrix, size_t expectedRows ) const;
+   void checkRows( const Type& tensor, size_t expectedRows ) const;
 
    template< typename Type >
-   void checkColumns( const Type& matrix, size_t expectedColumns ) const;
+   void checkColumns( const Type& tensor, size_t expectedColumns ) const;
+
+   template< typename Type >
+   void checkPages( const Type& tensor, size_t expectedPages ) const;
 
    template< typename Type >
    void checkCapacity( const Type& object, size_t minCapacity ) const;
@@ -123,7 +130,7 @@ class DenseGeneralTest
    void checkNonZeros( const Type& object, size_t expectedNonZeros ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& tensor, size_t index, size_t expectedNonZeros ) const;
    //@}
    //**********************************************************************************************
 
@@ -135,46 +142,23 @@ class DenseGeneralTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using MT  = blaze::DynamicMatrix<int,blaze::rowMajor>;  //!< Row-major dynamic matrix type.
-   using OMT = MT::OppositeType;                           //!< Column-major dynamic matrix type.
-   using RT  = blaze::Row<MT>;                             //!< Dense row type for row-major matrices.
-   using ORT = blaze::Row<OMT>;                            //!< Dense row type for column-major matrices.
+   using MT  = blaze::DynamicTensor<int>;    //!< Dynamic tensor type.
+   using RT  = blaze::PageSlice<MT>;         //!< Dense pageslice type for tensors.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT  mat_;   //!< Row-major dynamic matrix.
-               /*!< The \f$ 5 \times 4 \f$ matrix is initialized as
-                    \f[\left(\begin{array}{*{4}{c}}
-                     0 &  0 &  0 &  0 \\
-                     0 &  1 &  0 &  0 \\
-                    -2 &  0 & -3 &  0 \\
-                     0 &  4 &  5 & -6 \\
-                     7 & -8 &  9 & 10 \\
-                    \end{array}\right)\f]. */
-   OMT tmat_;  //!< Column-major dynamic matrix.
-               /*!< The \f$ 5 \times 4 \f$ matrix is initialized as
-                    \f[\left(\begin{array}{*{4}{c}}
-                     0 &  0 &  0 &  0 \\
-                     0 &  1 &  0 &  0 \\
-                    -2 &  0 & -3 &  0 \\
-                     0 &  4 &  5 & -6 \\
-                     7 & -8 &  9 & 10 \\
-                    \end{array}\right)\f]. */
-
+   MT  mat_;   //!< dynamic tensor.
    std::string test_;  //!< Label of the currently performed test.
    //@}
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE( ORT );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE  ( ORT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE    ( MT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( RT  );
+   BLAZE_CONSTRAINT_MUST_BE_PAGESLICE_MATRIX_TYPE( RT  );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -190,25 +174,25 @@ class DenseGeneralTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the size of the given dense row.
+/*!\brief Checking the size of the given dense pageslice.
 //
-// \param row The dense row to be checked.
-// \param expectedSize The expected size of the dense row.
+// \param pageslice The dense pageslice to be checked.
+// \param expectedSize The expected size of the dense pageslice.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the size of the given dense row. In case the actual size does not
+// This function checks the size of the given dense pageslice. In case the actual size does not
 // correspond to the given expected size, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense row
-void DenseGeneralTest::checkSize( const Type& row, size_t expectedSize ) const
+template< typename Type >  // Type of the dense pageslice
+void DenseGeneralTest::checkSize( const Type& pageslice, size_t expectedSize ) const
 {
-   if( size( row ) != expectedSize ) {
+   if( size( pageslice ) != expectedSize ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid size detected\n"
           << " Details:\n"
-          << "   Size         : " << size( row ) << "\n"
+          << "   Size         : " << size( pageslice ) << "\n"
           << "   Expected size: " << expectedSize << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -217,26 +201,26 @@ void DenseGeneralTest::checkSize( const Type& row, size_t expectedSize ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of rows of the given dynamic matrix.
+/*!\brief Checking the number of pageslices of the given dynamic tensor.
 //
-// \param matrix The dynamic matrix to be checked.
-// \param expectedRows The expected number of rows of the dynamic matrix.
+// \param tensor The dynamic tensor to be checked.
+// \param expectedPageSlices The expected number of rows of the dynamic tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of rows of the given dynamic matrix. In case the actual number
-// of rows does not correspond to the given expected number of rows, a \a std::runtime_error
+// This function checks the number of rows of the given dynamic tensor. In case the actual number
+// of pageslices does not correspond to the given expected number of pageslices, a \a std::runtime_error
 // exception is thrown.
 */
-template< typename Type >  // Type of the dynamic matrix
-void DenseGeneralTest::checkRows( const Type& matrix, size_t expectedRows ) const
+template< typename Type >  // Type of the dynamic tensor
+void DenseGeneralTest::checkRows( const Type& tensor, size_t expectedRows ) const
 {
-   if( rows( matrix ) != expectedRows ) {
+   if( rows( tensor ) != expectedRows ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of rows detected\n"
           << " Details:\n"
-          << "   Number of rows         : " << rows( matrix ) << "\n"
+          << "   Number of rows         : " << rows( tensor ) << "\n"
           << "   Expected number of rows: " << expectedRows << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -245,26 +229,26 @@ void DenseGeneralTest::checkRows( const Type& matrix, size_t expectedRows ) cons
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of columns of the given dynamic matrix.
+/*!\brief Checking the number of columns of the given dynamic tensor.
 //
-// \param matrix The dynamic matrix to be checked.
-// \param expectedColumns The expected number of columns of the dynamic matrix.
+// \param tensor The dynamic tensor to be checked.
+// \param expectedColumns The expected number of columns of the dynamic tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of columns of the given dynamic matrix. In case the
+// This function checks the number of columns of the given dynamic tensor. In case the
 // actual number of columns does not correspond to the given expected number of columns,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dynamic matrix
-void DenseGeneralTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
+template< typename Type >  // Type of the dynamic tensor
+void DenseGeneralTest::checkColumns( const Type& tensor, size_t expectedColumns ) const
 {
-   if( columns( matrix ) != expectedColumns ) {
+   if( columns( tensor ) != expectedColumns ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of columns detected\n"
           << " Details:\n"
-          << "   Number of columns         : " << columns( matrix ) << "\n"
+          << "   Number of columns         : " << columns( tensor ) << "\n"
           << "   Expected number of columns: " << expectedColumns << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -273,18 +257,46 @@ void DenseGeneralTest::checkColumns( const Type& matrix, size_t expectedColumns 
 
 
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given dense row or dynamic matrix.
+/*!\brief Checking the number of pages of the given dynamic tensor.
 //
-// \param object The dense row or dynamic matrix to be checked.
+// \param tensor The dynamic tensor to be checked.
+// \param expectedPages The expected number of columns of the dynamic tensor.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the number of pages of the given dynamic tensor. In case the
+// actual number of pages does not correspond to the given expected number of pages,
+// a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >  // Type of the dynamic tensor
+void DenseGeneralTest::checkPages( const Type& tensor, size_t expectedPages ) const
+{
+   if( pages( tensor ) != expectedPages ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid number of pages detected\n"
+          << " Details:\n"
+          << "   Number of pages         : " << pages( tensor ) << "\n"
+          << "   Expected number of pages: " << expectedPages << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the capacity of the given dense pageslice or dynamic tensor.
+//
+// \param object The dense pageslice or dynamic tensor to be checked.
 // \param minCapacity The expected minimum capacity.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the capacity of the given dense row or dynamic matrix. In case the actual
+// This function checks the capacity of the given dense pageslice or dynamic tensor. In case the actual
 // capacity is smaller than the given expected minimum capacity, a \a std::runtime_error exception
 // is thrown.
 */
-template< typename Type >  // Type of the dense row or dynamic matrix
+template< typename Type >  // Type of the dense pageslice or dynamic tensor
 void DenseGeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
 {
    if( capacity( object ) < minCapacity ) {
@@ -301,18 +313,18 @@ void DenseGeneralTest::checkCapacity( const Type& object, size_t minCapacity ) c
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given dense row or dynamic matrix.
+/*!\brief Checking the number of non-zero elements of the given dense pageslice or dynamic tensor.
 //
-// \param object The dense row or dynamic matrix to be checked.
+// \param object The dense pageslice or dynamic tensor to be checked.
 // \param expectedNonZeros The expected number of non-zero elements.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements of the given dense row. In case the
+// This function checks the number of non-zero elements of the given dense pageslice. In case the
 // actual number of non-zero elements does not correspond to the given expected number, a
 // \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense row or dynamic matrix
+template< typename Type >  // Type of the dense pageslice or dynamic tensor
 void DenseGeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
 {
    if( nonZeros( object ) != expectedNonZeros ) {
@@ -339,40 +351,40 @@ void DenseGeneralTest::checkNonZeros( const Type& object, size_t expectedNonZero
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements in a specific row/column of the given dynamic matrix.
+/*!\brief Checking the number of non-zero elements in a specific pageslice/column of the given dynamic tensor.
 //
-// \param matrix The dynamic matrix to be checked.
-// \param index The row/column to be checked.
-// \param expectedNonZeros The expected number of non-zero elements in the specified row/column.
+// \param tensor The dynamic tensor to be checked.
+// \param index The pageslice/column to be checked.
+// \param expectedNonZeros The expected number of non-zero elements in the specified pageslice/column.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements in the specified row/column of the
-// given dynamic matrix. In case the actual number of non-zero elements does not correspond
+// This function checks the number of non-zero elements in the specified pageslice/column of the
+// given dynamic tensor. In case the actual number of non-zero elements does not correspond
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dynamic matrix
-void DenseGeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the dynamic tensor
+void DenseGeneralTest::checkNonZeros( const Type& tensor, size_t index, size_t expectedNonZeros ) const
 {
-   if( nonZeros( matrix, index ) != expectedNonZeros ) {
+   if( nonZeros( tensor, index ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements in "
-          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << ( blaze::IsPageSliceMajorMatrix<Type>::value ? "pageslice " : "column " ) << index << "\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << nonZeros( matrix, index ) << "\n"
+          << "   Number of non-zeros         : " << nonZeros( tensor, index ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( capacity( matrix, index ) < nonZeros( matrix, index ) ) {
+   if( capacity( tensor, index ) < nonZeros( tensor, index ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected in "
-          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
+          << ( blaze::IsPageSliceMajorMatrix<Type>::value ? "pageslice " : "column " ) << index << "\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << nonZeros( matrix, index ) << "\n"
-          << "   Capacity           : " << capacity( matrix, index ) << "\n";
+          << "   Number of non-zeros: " << nonZeros( tensor, index ) << "\n"
+          << "   Capacity           : " << capacity( tensor, index ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -388,7 +400,7 @@ void DenseGeneralTest::checkNonZeros( const Type& matrix, size_t index, size_t e
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the dense general Row specialization.
+/*!\brief Testing the functionality of the dense general PageSlice specialization.
 //
 // \return void
 */
@@ -409,14 +421,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the Row dense general test.
+/*!\brief Macro for the execution of the PageSlice dense general test.
 */
-#define RUN_ROW_DENSEGENERAL_TEST \
-   blazetest::mathtest::row::runTest()
+#define RUN_PAGESLICE_DENSEGENERAL_TEST \
+   blazetest::mathtest::pageslice::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace row
+} // namespace pageslice
 
 } // namespace mathtest
 

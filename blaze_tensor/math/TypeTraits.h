@@ -44,8 +44,16 @@
 #include <blaze/math/Typetraits.h>
 
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
-#include <blaze_tensor/math/typetraits/IsPage.h>
+#include <blaze_tensor/math/typetraits/IsNumericTensor.h>
+#include <blaze_tensor/math/typetraits/IsPageSlice.h>
 #include <blaze_tensor/math/typetraits/IsSubtensor.h>
+#include <blaze_tensor/math/typetraits/IsTensMapExpr.h>
+#include <blaze_tensor/math/typetraits/IsTensScalarDivExpr.h>
+#include <blaze_tensor/math/typetraits/IsTensScalarMultExpr.h>
+#include <blaze_tensor/math/typetraits/IsTensTensAddExpr.h>
+#include <blaze_tensor/math/typetraits/IsTensTensMapExpr.h>
+#include <blaze_tensor/math/typetraits/IsTensTensMultExpr.h>
+#include <blaze_tensor/math/typetraits/IsTensTensSubExpr.h>
 #include <blaze_tensor/math/typetraits/IsTensor.h>
 
 #endif

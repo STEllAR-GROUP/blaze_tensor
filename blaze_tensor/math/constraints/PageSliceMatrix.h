@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/SMP.h
-//  \brief Header file for the shared memory parallelization
+//  \file blaze_tensor/math/constraints/PageSliceMatrix.h
+//  \brief Constraint on the transpose flag of matrix types
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,16 +33,56 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_SMP_H_
-#define _BLAZE_TENSOR_MATH_SMP_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_PAGESLICEMATRIX_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_PAGESLICEMATRIX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/SMP.h>
+#include <blaze_tensor/math/typetraits/IsPageSliceMatrix.h>
 
-#include <blaze_tensor/math/smp/DenseTensor.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  MUST_BE_PAGESLICE_MATRIX_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a row dense or sparse matrix type (i.e. a matrix type
+// whose transposition flag is set to blaze::rowMajor) a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_PAGESLICE_MATRIX_TYPE(T) \
+   static_assert( ::blaze::IsPageSliceMatrix_v<T>, "Non-row-major matrix type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_PAGESLICE_MATRIX_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a row dense or sparse matrix type (i.e. a matrix type
+// whose transposition flag is set to blaze::rowMajor) a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_PAGESLICE_MATRIX_TYPE(T) \
+   static_assert( !::blaze::IsPageSliceMatrix_v<T>, "PageSlice matrix type detected" )
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

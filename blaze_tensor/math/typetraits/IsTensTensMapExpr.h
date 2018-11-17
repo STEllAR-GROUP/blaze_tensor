@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/typetraits/IsTensTensAddExpr.h
-//  \brief Header file for the IsTensTensAddExpr type trait class
+//  \file blaze_tensor/math/typetraits/IsTensTensMapExpr.h
+//  \brief Header file for the IsTensTensMapExpr type trait class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSTENSADDEXPR_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSTENSADDEXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSTENSMAPEXPR_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSTENSMAPEXPR_H_
 
 
 //*************************************************************************************************
@@ -45,8 +45,7 @@
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
 
-#include <blaze_tensor/math/expressions/TensTensAddExpr.h>
-
+#include <blaze_tensor/math/expressions/TensTensMapExpr.h>
 
 namespace blaze {
 
@@ -58,19 +57,19 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsTensTensAddExpr type trait.
+/*!\brief Auxiliary helper struct for the IsTensTensMapExpr type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsTensTensAddExprHelper
+struct IsTensTensMapExprHelper
 {
  private:
    //**********************************************************************************************
    template< typename MT >
-   static TrueType test( const TensTensAddExpr<MT>& );
+   static TrueType test( const TensTensMapExpr<MT>& );
 
    template< typename MT >
-   static TrueType test( const volatile TensTensAddExpr<MT>& );
+   static TrueType test( const volatile TensTensMapExpr<MT>& );
 
    static FalseType test( ... );
    //**********************************************************************************************
@@ -85,39 +84,39 @@ struct IsTensTensAddExprHelper
 
 
 //*************************************************************************************************
-/*!\brief Compile time check whether the given type is a tensor/tensor addition expression template.
+/*!\brief Compile time check whether the given type is a binary tensor map expression template.
 // \ingroup math_type_traits
 //
-// This type trait class tests whether or not the given type \a Type is a tensor/tensor addition
-// expression template. In order to qualify as a valid tensor addition expression template, the
-// given type has to derive publicly from the TensTensAddExpr base class. In case the given type
-// is a valid tensor addition expression template, the \a value member constant is set to \a true,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
-// \a FalseType.
+// This type trait class tests whether or not the given type \a Type is a binary tensor map
+// expression template. In order to qualify as a valid binary tensor map expression template,
+// the given type has to derive publicly from the TensTensMapExpr base class. In case the given
+// type is a valid binary tensor map expression template, the \a value member constant is set
+// to \a true, the nested type definition \a Type is \a TrueType, and the class derives from
+// \a TrueType. Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class
+// derives from \a FalseType.
 */
 template< typename T >
-struct IsTensTensAddExpr
-   : public IsTensTensAddExprHelper<T>::Type
+struct IsTensTensMapExpr
+   : public IsTensTensMapExprHelper<T>::Type
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the IsTensTensAddExpr type trait.
+/*!\brief Auxiliary variable template for the IsTensTensMapExpr type trait.
 // \ingroup type_traits
 //
-// The IsTensTensAddExpr_v variable template provides a convenient shortcut to access the nested
-// \a value of the IsTensTensAddExpr class template. For instance, given the type \a T the
+// The IsTensTensMapExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsTensTensMapExpr class template. For instance, given the type \a T the
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = blaze::IsTensTensAddExpr<T>::value;
-   constexpr bool value2 = blaze::IsTensTensAddExpr_v<T>;
+   constexpr bool value1 = blaze::IsTensTensMapExpr<T>::value;
+   constexpr bool value2 = blaze::IsTensTensMapExpr_v<T>;
    \endcode
 */
 template< typename T >
-constexpr bool IsTensTensAddExpr_v = IsTensTensAddExpr<T>::value;
+constexpr bool IsTensTensMapExpr_v = IsTensTensMapExpr<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

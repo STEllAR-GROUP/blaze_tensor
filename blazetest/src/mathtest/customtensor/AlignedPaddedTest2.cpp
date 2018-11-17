@@ -1961,7 +1961,7 @@ void AlignedPaddedTest::testReset()
              << " Error: Reset operation failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n(( 0 0 0 )\n( 0 0 0 ))\(( 0 0 0 )\n( 0 0 0 ))\nn";
+             << "   Expected result:\n(( 0 0 0 )\n( 0 0 0 ))\n(( 0 0 0 )\n( 0 0 0 ))\n";
          throw std::runtime_error( oss.str() );
       }
    }

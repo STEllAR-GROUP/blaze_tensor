@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/SMP.h
-//  \brief Header file for the shared memory parallelization
+//  \file blaze_tensor/math/constraints/TensMapExpr.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,16 +33,56 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_SMP_H_
-#define _BLAZE_TENSOR_MATH_SMP_H_
+#ifndef _BLAZE_TENSOR_TENSH_CONSTRAINTS_TENSMAPEXPR_H_
+#define _BLAZE_TENSOR_TENSH_CONSTRAINTS_TENSMAPEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/SMP.h>
+#include <blaze_tensor/math/typetraits/IsTensMapExpr.h>
 
-#include <blaze_tensor/math/smp/DenseTensor.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  MUST_BE_TENSMAPEXPR_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a unary tensor map expression (i.e. a type derived
+// from the TensMapExpr base class), a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_TENSMAPEXPR_TYPE(T) \
+   static_assert( ::blaze::IsTensMapExpr_v<T>, "Non-unary tensor map expression type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_TENSMAPEXPR_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a unary tensor map expression (i.e. a type derived from
+// the TensMapExpr base class), a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_TENSMAPEXPR_TYPE(T) \
+   static_assert( !::blaze::IsTensMapExpr_v<T>, "Unary tensor map expression type detected" )
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

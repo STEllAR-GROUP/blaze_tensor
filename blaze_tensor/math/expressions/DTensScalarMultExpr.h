@@ -997,7 +997,7 @@ inline decltype(auto) operator-( const DTensScalarMultExpr<MT,ST>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DTensScalarMultExpr<MT,ST,TF>;
+   using ReturnType = const DTensScalarMultExpr<MT,ST>;
    return ReturnType( dm.leftOperand(), -dm.rightOperand() );
 }
 /*! \endcond */

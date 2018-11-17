@@ -41,7 +41,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Expressions/Forward.h>
+#include <blaze/math/expressions/Forward.h>
 
 namespace blaze {
 
@@ -57,6 +57,9 @@ template<typename, typename> class DTensDTensMultExpr;
 template<typename, typename> class DTensDTensSubExpr;
 template<typename, typename> class DTensScalarMultExpr;
 template<typename, typename> class DTensScalarDivExpr;
+template<typename, typename> class DTensMapExpr;
+template<typename, typename, typename> class DTensDTensMapExpr;
+
 
 
 template< typename TT1, typename TT2 >

@@ -110,11 +110,11 @@ struct Tensor
 // In case the current number of columns of \a lhs and the current number of rows of \a rhs
 // don't match, a \a std::invalid_argument is thrown.
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-inline MT1& operator*=( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+inline TT1& operator*=( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
-   ResultType_t<MT1> tmp( (~lhs) * (~rhs) );
+   ResultType_t<TT1> tmp( (~lhs) * (~rhs) );
    (~lhs) = std::move( tmp );
    return (~lhs);
 }
@@ -136,15 +136,114 @@ inline MT1& operator*=( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
 // In case the current number of columns of \a lhs and the current number of rows of \a rhs
 // don't match, a \a std::invalid_argument is thrown.
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-inline MT1& operator*=( Tensor<MT1>&& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+inline TT1& operator*=( Tensor<TT1>&& lhs, const Tensor<TT2>& rhs )
 {
    return (~lhs) *= (~rhs);
 }
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by setting a single element of a tensor.
+// \ingroup tensor
+//
+// \param mat The target tensor.
+// \param i The row index of the element to be set.
+// \param j The column index of the element to be set.
+// \param k The page index of the element to be set.
+// \param value The value to be set to the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the tensor
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool trySet( const Tensor<MT>& mat, size_t i, size_t j, size_t k, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
+
+   UNUSED_PARAMETER( mat, i, j, k, value );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by adding to a single element of a tensor.
+// \ingroup tensor
+//
+// \param mat The target tensor.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param k The page index of the element to be modified.
+// \param value The value to be added to the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the tensor
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool tryAdd( const Tensor<MT>& mat, size_t i, size_t j, size_t k, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
+
+   UNUSED_PARAMETER( mat, i, j, k, value );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by subtracting from a single element of a tensor.
+// \ingroup tensor
+//
+// \param mat The target tensor.
+// \param i The row index of the element to be modified.
+// \param j The column index of the element to be modified.
+// \param k The page index of the element to be modified.
+// \param value The value to be subtracted from the element.
+// \return \a true in case the operation would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT    // Type of the tensor
+        , typename ET >  // Type of the element
+BLAZE_ALWAYS_INLINE bool trySub( const Tensor<MT>& mat, size_t i, size_t j, size_t k, const ET& value )
+{
+   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
+
+   UNUSED_PARAMETER( mat, i, j, k, value );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
 
 
 //*************************************************************************************************
@@ -302,6 +401,42 @@ BLAZE_ALWAYS_INLINE bool
 // \param rhs The right-hand side tensor to be assigned.
 // \param row The row index of the first element to be modified.
 // \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool tryAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                    size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the assignment of a tensor to a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side tensor to be assigned.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
 // \param page The page index of the first element to be modified.
 // \return \a true in case the assignment would be successful, \a false if not.
 //
@@ -317,12 +452,452 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Tensor<TT1>& lhs, const Tensor<TT2>& r
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( page <= (~tens).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
 
    UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a matrix to a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side matrix to be added.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                       size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a matrix to the band of a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side matrix to be added.
+// \param band The index of the band the right-hand side matrix is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                       ptrdiff_t band, size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, band, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the addition assignment of a tensor to a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side tensor to be added.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<TT1>& lhs, const Tensor<TT2>& rhs,
+                                       size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a matrix to a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side matrix to be subtracted.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                       size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a matrix to the band of
+//        a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side matrix to be subtracted.
+// \param band The index of the band the right-hand side matrix is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                       ptrdiff_t band, size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, band, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the subtraction assignment of a tensor to a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side tensor to be subtracted.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<TT1>& lhs, const Tensor<TT2>& rhs,
+                                       size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a matrix to a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side matrix to be multiplied.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                        size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the multiplication assignment of a matrix to the band
+//        of a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side matrix to be multiplied.
+// \param band The index of the band the right-hand side matrix is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                        ptrdiff_t band, size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, band, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the Schur product assignment of a tensor to a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side tensor for the Schur product.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<TT1>& lhs, const Tensor<TT2>& rhs,
+                                         size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the Schur multiplication assignment of a matrix to a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side matrix to be Schur-multiplied.
+// \param band The index of the band the right-hand side matrix is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                        size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the division assignment of a matrix to a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side matrix divisor.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                       size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Predict invariant violations by the division assignment of a matrix to the band of
+//        a tensor.
+// \ingroup tensor
+//
+// \param lhs The target left-hand side tensor.
+// \param rhs The right-hand side matrix divisor.
+// \param band The index of the band the right-hand side matrix is assigned to.
+// \param row The row index of the first element to be modified.
+// \param column The column index of the first element to be modified.
+// \return \a true in case the assignment would be successful, \a false if not.
+//
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT  // Type of the left-hand side tensor
+        , typename VT > // Type of the right-hand side matrix
+BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+                                       ptrdiff_t band, size_t row, size_t column, size_t page )
+{
+   BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (~lhs).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~lhs).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= (~lhs).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
+
+   UNUSED_PARAMETER( lhs, rhs, band, row, column, page );
 
    return true;
 }
@@ -402,8 +977,8 @@ BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Tensor<MT>& tensor ) noexcept;
 template< typename MT >
 BLAZE_ALWAYS_INLINE bool isSquare( const Tensor<MT>& tensor ) noexcept;
 
-template< typename MT1, typename MT2 >
-BLAZE_ALWAYS_INLINE bool isSame( const Tensor<MT1>& a, const Tensor<MT2>& b ) noexcept;
+template< typename TT1, typename TT2 >
+BLAZE_ALWAYS_INLINE bool isSame( const Tensor<TT1>& a, const Tensor<TT2>& b ) noexcept;
 //@}
 //*************************************************************************************************
 
@@ -1029,11 +1604,11 @@ BLAZE_ALWAYS_INLINE bool isSquare( const Tensor<MT>& tensor ) noexcept
    isSame( sub1, sub3 );  // returns false since sub1 and sub3 refer to different parts of mat1
    \endcode
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE bool isSame( const Tensor<MT1>& a, const Tensor<MT2>& b ) noexcept
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE bool isSame( const Tensor<TT1>& a, const Tensor<TT2>& b ) noexcept
 {
-   return ( IsSame_v<MT1,MT2> &&
+   return ( IsSame_v<TT1,TT2> &&
             reinterpret_cast<const void*>( &a ) == reinterpret_cast<const void*>( &b ) );
 }
 //*************************************************************************************************
@@ -1049,9 +1624,9 @@ BLAZE_ALWAYS_INLINE bool isSame( const Tensor<MT1>& a, const Tensor<MT2>& b ) no
 // \param rhs The right-hand side tensor to be assigned.
 // \return void
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE void assign_backend( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE void assign_backend( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1076,9 +1651,9 @@ BLAZE_ALWAYS_INLINE void assign_backend( Tensor<MT1>& lhs, const Tensor<MT2>& rh
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE void assign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE void assign( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1102,9 +1677,9 @@ BLAZE_ALWAYS_INLINE void assign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
 // \param rhs The right-hand side tensor to be added.
 // \return void
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE void addAssign_backend( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE void addAssign_backend( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1129,9 +1704,9 @@ BLAZE_ALWAYS_INLINE void addAssign_backend( Tensor<MT1>& lhs, const Tensor<MT2>&
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE void addAssign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE void addAssign( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1155,9 +1730,9 @@ BLAZE_ALWAYS_INLINE void addAssign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
 // \param rhs The right-hand side tensor to be subtracted.
 // \return void
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE void subAssign_backend( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE void subAssign_backend( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1182,9 +1757,9 @@ BLAZE_ALWAYS_INLINE void subAssign_backend( Tensor<MT1>& lhs, const Tensor<MT2>&
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE void subAssign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE void subAssign( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1208,9 +1783,9 @@ BLAZE_ALWAYS_INLINE void subAssign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
 // \param rhs The right-hand side tensor for the Schur product.
 // \return void
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE void schurAssign_backend( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE void schurAssign_backend( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1235,9 +1810,9 @@ BLAZE_ALWAYS_INLINE void schurAssign_backend( Tensor<MT1>& lhs, const Tensor<MT2
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE void schurAssign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE void schurAssign( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1266,9 +1841,9 @@ BLAZE_ALWAYS_INLINE void schurAssign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT1  // Type of the left-hand side tensor
-        , typename MT2 > // Type of the right-hand side tensor
-BLAZE_ALWAYS_INLINE void multAssign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+template< typename TT1  // Type of the left-hand side tensor
+        , typename TT2 > // Type of the right-hand side tensor
+BLAZE_ALWAYS_INLINE void multAssign( Tensor<TT1>& lhs, const Tensor<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 

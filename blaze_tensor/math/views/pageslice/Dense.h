@@ -68,7 +68,7 @@ namespace blaze {
 */
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
-class PageSlice<MT,CRAs...>
+class PageSlice
    : public View< DenseMatrix< PageSlice<MT,CRAs...>, false > >
    , private PageSliceData<CRAs...>
 {
@@ -86,6 +86,7 @@ class PageSlice<MT,CRAs...>
    using BaseType      = DenseMatrix<This,false>;      //!< Base type of this PageSlice instance.
    using ViewedType    = MT;                           //!< The type viewed by this PageSlice instance.
    using ResultType    = PageSliceTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the pageslice elements.
    using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the pageslice elements.
@@ -166,8 +167,6 @@ class PageSlice<MT,CRAs...>
    template< typename VT > inline PageSlice& operator= ( const Matrix<VT,false>& rhs );
    template< typename VT > inline PageSlice& operator+=( const Matrix<VT,false>& rhs );
    template< typename VT > inline PageSlice& operator-=( const Matrix<VT,false>& rhs );
-   template< typename VT > inline PageSlice& operator*=( const Matrix<VT,false>& rhs );
-   template< typename VT > inline PageSlice& operator/=( const DenseMatrix<VT,false>&  rhs );
    template< typename VT > inline PageSlice& operator%=( const Matrix<VT,false>& rhs );
    //@}
    //**********************************************************************************************
@@ -175,7 +174,7 @@ class PageSlice<MT,CRAs...>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::pageslice;
+   using DataType::page;
 
    inline MT&       operand() noexcept;
    inline const MT& operand() const noexcept;
@@ -232,21 +231,11 @@ class PageSlice<MT,CRAs...>
    //**********************************************************************************************
    //! Helper variable template for the explicit application of the SFINAE principle.
    template< typename VT >
-   static constexpr bool VectorizedMultAssign_v =
+   static constexpr bool VectorizedSchurAssign_v =
       ( useOptimizedKernels &&
         simdEnabled && VT::simdEnabled &&
         IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
         HasSIMDMult_v< ElementType, ElementType_t<VT> > );
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT >
-   static constexpr bool VectorizedDivAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-        HasSIMDDiv_v< ElementType, ElementType_t<VT> > );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
@@ -301,16 +290,10 @@ class PageSlice<MT,CRAs...>
    inline auto subAssign( const DenseMatrix<VT,false>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<VT> >;
 
    template< typename VT >
-   inline auto multAssign( const DenseMatrix<VT,false>& rhs ) -> DisableIf_t< VectorizedMultAssign_v<VT> >;
+   inline auto schurAssign( const DenseMatrix<VT,false>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<VT> >;
 
    template< typename VT >
-   inline auto multAssign( const DenseMatrix<VT,false>& rhs ) -> EnableIf_t< VectorizedMultAssign_v<VT> >;
-
-   template< typename VT >
-   inline auto divAssign( const DenseMatrix<VT,false>& rhs ) -> DisableIf_t< VectorizedDivAssign_v<VT> >;
-
-   template< typename VT >
-   inline auto divAssign( const DenseMatrix<VT,false>& rhs ) -> EnableIf_t< VectorizedDivAssign_v<VT> >;
+   inline auto schurAssign( const DenseMatrix<VT,false>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<VT> >;
    //@}
    //**********************************************************************************************
 
@@ -323,7 +306,7 @@ class PageSlice<MT,CRAs...>
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, bool DF22, size_t... CRAs2 > friend class PageSlice;
+   template< typename MT2, size_t... CRAs2 > friend class PageSlice;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -356,7 +339,7 @@ class PageSlice<MT,CRAs...>
 // \exception std::invalid_argument Invalid pageslice access index.
 //
 // By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
-// specified (i.e. if the specified index is greater than the number of pageslices of the given tensor)
+// specified (i.e. if the specified index is greater than the number of pages of the given tensor)
 // a \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
 // optional \a blaze::unchecked argument.
 */
@@ -368,12 +351,12 @@ inline PageSlice<MT,CRAs...>::PageSlice( MT& tensor, RRAs... args )
    , tensor_ ( tensor  )  // The tensor containing the pageslice
 {
    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-      if( tensor_.pageslices() <= pageslice() ) {
+      if( tensor_.pages() <= page() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid pageslice access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( pageslice() < tensor_.pageslices(), "Invalid pageslice access index" );
+      BLAZE_USER_ASSERT( page() < tensor_.pages(), "Invalid pageslice access index" );
    }
 }
 /*! \endcond */
@@ -405,7 +388,7 @@ inline typename PageSlice<MT,CRAs...>::Reference
 {
    BLAZE_USER_ASSERT( i < rows(),    "Invalid row access index" );
    BLAZE_USER_ASSERT( j < columns(), "Invalid columns access index" );
-   return tensor_(i, j, pageslice());
+   return tensor_(i, j, page());
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -426,7 +409,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::ConstReference
    PageSlice<MT,CRAs...>::operator()( size_t i, size_t j ) const
 {
-   return const_cast<const MT&>( tensor_ )(i, j, pageslice());
+   return const_cast<const MT&>( tensor_ )(i, j, page());
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -502,7 +485,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::Pointer
    PageSlice<MT,CRAs...>::data() noexcept
 {
-   return tensor_.data( 0, pageslice() );
+   return tensor_.data( 0, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -522,7 +505,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::ConstPointer
    PageSlice<MT,CRAs...>::data() const noexcept
 {
-   return tensor_.data( 0, pageslice() );
+   return tensor_.data( 0, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -542,7 +525,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::Iterator
    PageSlice<MT,CRAs...>::begin( size_t i )
 {
-   return tensor_.begin( i, pageslice() );
+   return tensor_.begin( i, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -562,7 +545,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::ConstIterator
    PageSlice<MT,CRAs...>::begin( size_t i ) const
 {
-   return tensor_.cbegin( i, pageslice() );
+   return tensor_.cbegin( i, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -582,7 +565,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::ConstIterator
    PageSlice<MT,CRAs...>::cbegin( size_t i ) const
 {
-   return tensor_.cbegin( i, pageslice() );
+   return tensor_.cbegin( i, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -602,7 +585,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::Iterator
    PageSlice<MT,CRAs...>::end( size_t i )
 {
-   return tensor_.end( i, pageslice() );
+   return tensor_.end( i, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -622,7 +605,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::ConstIterator
    PageSlice<MT,CRAs...>::end( size_t i ) const
 {
-   return tensor_.cend( i, pageslice() );
+   return tensor_.cend( i, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -642,7 +625,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::ConstIterator
    PageSlice<MT,CRAs...>::cend( size_t i ) const
 {
-   return tensor_.cend( i, pageslice() );
+   return tensor_.cend( i, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -680,7 +663,7 @@ inline PageSlice<MT,CRAs...>&
       {
          if (!IsRestricted_v<MT> || trySet(*this, i, j, rhs))
          {
-            left(i, j, pageslice()) = rhs;
+            left(i, j, page()) = rhs;
          }
       }
    }
@@ -716,7 +699,7 @@ inline PageSlice<MT,CRAs...>&
 
    if( IsRestricted_v<MT> ) {
       const InitializerMatrix<ElementType> tmp( list );
-      if( !tryAssign( tensor_, tmp, 0UL, 0UL, pageslice() ) ) {
+      if( !tryAssign( tensor_, tmp, 0UL, 0UL, page() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
       }
    }
@@ -726,7 +709,7 @@ inline PageSlice<MT,CRAs...>&
    size_t i( 0UL );
 
    for( const auto& rowList : list ) {
-      std::fill( std::copy( rowList.begin(), rowList.end(), left.begin( i, 0UL ) ), left.end( i, 0UL ), ElementType() );
+      std::fill( std::copy( rowList.begin(), rowList.end(), left.begin( i ) ), left.end( i ), ElementType() );
       ++i;
    }
 
@@ -759,11 +742,11 @@ inline PageSlice<MT,CRAs...>&
 {
    if( &rhs == this ) return *this;
 
-   if( rows() != rhs.columns() || columns() != rhs.columns() ) {
+   if( rows() != rhs.rows() || columns() != rhs.columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "PageSlice sizes do not match" );
    }
 
-   if( !tryAssign( tensor_, rhs, 0UL, 0UL, pageslice() ) ) {
+   if( !tryAssign( tensor_, rhs, 0UL, 0UL, page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -815,7 +798,7 @@ inline PageSlice<MT,CRAs...>&
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
-   if( !tryAssign( tensor_, right, 0UL, 0UL, pageslice() ) ) {
+   if( !tryAssign( tensor_, right, 0UL, 0UL, page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -848,7 +831,7 @@ inline PageSlice<MT,CRAs...>&
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted tensor.
 //
-// In case the current sizes of the two matrixs don't match, a \a std::invalid_argument exception
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also, if the underlying tensor \a MT is a lower or upper triangular tensor and the
 // assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
 // exception is thrown.
@@ -869,7 +852,7 @@ inline PageSlice<MT,CRAs...>&
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
-   if( !tryAddAssign( tensor_, right, pageslice(), 0UL ) ) {
+   if( !tryAddAssign( tensor_, right, 0UL, 0UL, page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -900,7 +883,7 @@ inline PageSlice<MT,CRAs...>&
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted tensor.
 //
-// In case the current sizes of the two matrixs don't match, a \a std::invalid_argument exception
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
 // is thrown. Also, if the underlying tensor \a MT is a lower or upper triangular tensor and the
 // assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
 // exception is thrown.
@@ -921,7 +904,7 @@ inline PageSlice<MT,CRAs...>&
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
-   if( !trySubAssign( tensor_, right, pageslice(), 0UL ) ) {
+   if( !trySubAssign( tensor_, right, 0UL, 0UL, page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -945,108 +928,7 @@ inline PageSlice<MT,CRAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Multiplication assignment operator for the multiplication of a matrix
-//        (\f$ \vec{a}*=\vec{b} \f$).
-//
-// \param rhs The right-hand side matrix to be multiplied with the dense pageslice.
-// \return Reference to the assigned pageslice.
-// \exception std::invalid_argument Vector sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted tensor.
-//
-// In case the current sizes of the two matrixs don't match, a \a std::invalid_argument exception
-// is thrown.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side matrix
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator*=( const Matrix<VT,false>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
-
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
-
-   if( !tryMultAssign( tensor_, right, pageslice(), 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   if( IsReference_v<Right> && right.canAlias( &tensor_ ) ) {
-      const ResultType_t<VT> tmp( right );
-      smpMultAssign( left, tmp );
-   }
-   else {
-      smpMultAssign( left, right );
-   }
-
-   BLAZE_INTERNAL_ASSERT( isIntact( tensor_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Division assignment operator for the division of a dense matrix (\f$ \vec{a}/=\vec{b} \f$).
-//
-// \param rhs The right-hand side dense matrix divisor.
-// \return Reference to the assigned pageslice.
-// \exception std::invalid_argument Vector sizes do not match.
-// \exception std::invalid_argument Invalid assignment to restricted tensor.
-//
-// In case the current sizes of the two matrixs don't match, a \a std::invalid_argument exception
-// is thrown.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator/=( const DenseMatrix<VT,false>& rhs )
-{
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
-
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
-   }
-
-   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
-
-   if( !tryDivAssign( tensor_, right, pageslice(), 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
-   }
-
-   decltype(auto) left( derestrict( *this ) );
-
-   if( IsReference_v<Right> && right.canAlias( &tensor_ ) ) {
-      const ResultType_t<VT> tmp( right );
-      smpDivAssign( left, tmp );
-   }
-   else {
-      smpDivAssign( left, right );
-   }
-
-   BLAZE_INTERNAL_ASSERT( isIntact( tensor_ ), "Invariant violation detected" );
-
-   return *this;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Cross product assignment operator for the multiplication of a matrix
+/*!\brief Schur product assignment operator for the multiplication of a matrix
 //        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side matrix for the cross product.
@@ -1054,7 +936,7 @@ inline PageSlice<MT,CRAs...>&
 // \exception std::invalid_argument Invalid matrix size for cross product.
 // \exception std::invalid_argument Invalid assignment to restricted tensor.
 //
-// In case the current size of any of the two matrixs is not equal to 3, a \a std::invalid_argument
+// In case the current size of any of the two matrices is not equal to 3, a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename MT       // Type of the dense tensor
@@ -1065,28 +947,29 @@ inline PageSlice<MT,CRAs...>&
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( ResultType_t<VT> );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
-   using CrossType = CrossTrait_t< ResultType, ResultType_t<VT> >;
+   using SchurType = SchurTrait_t< ResultType, ResultType_t<VT> >;
 
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( CrossType );
-   BLAZE_CONSTRAINT_MUST_BE_ROW_VECTOR_TYPE    ( CrossType );
-   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
-
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid matrix size for cross product" );
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   const CrossType right( *this % (~rhs) );
-
-   if( !tryAssign( tensor_, right, pageslice(), 0UL ) ) {
+   if( !trySchurAssign( tensor_, (~rhs), 0UL, 0UL, page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   assign( left, right );
+   if( IsReference_v<MT> && (~rhs).canAlias( &tensor_ ) ) {
+      const SchurType tmp( *this % (~rhs) );
+      smpSchurAssign( left, tmp );
+   }
+   else {
+      smpSchurAssign( left, ~rhs );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact( tensor_ ), "Invariant violation detected" );
 
@@ -1197,7 +1080,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 inline size_t PageSlice<MT,CRAs...>::capacity() const noexcept
 {
-   return tensor_.capacity( pageslice() );
+   return tensor_.capacity( 0UL, page() ) * tensor_.rows();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1216,7 +1099,11 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 inline size_t PageSlice<MT,CRAs...>::nonZeros() const
 {
-   return tensor_.nonZeros( pageslice() );
+   size_t count ( 0 );
+   for ( size_t i = 0; i < rows(); ++i ) {
+      count += tensor_.nonZeros( i, page() );
+   }
+   return count;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1232,7 +1119,9 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 inline void PageSlice<MT,CRAs...>::reset()
 {
-   tensor_.reset( pageslice() );
+   for ( size_t i = 0; i < rows(); ++i ) {
+      tensor_.reset( i, page() );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1265,23 +1154,11 @@ template< typename Other >  // Data type of the scalar value
 inline PageSlice<MT,CRAs...>&
    PageSlice<MT,CRAs...>::scale( const Other& scalar )
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( MT );
-
-   const size_t jbegin( ( IsUpper_v<MT> )
-                        ?( ( IsStrictlyUpper_v<MT> )
-                           ?( pageslice()+1UL )
-                           :( pageslice() ) )
-                        :( 0UL ) );
-   const size_t jend  ( ( IsLower_v<MT> )
-                        ?( ( IsStrictlyLower_v<MT> )
-                           ?( pageslice() )
-                           :( pageslice()+1UL ) )
-                        :( size() ) );
-
-   for( size_t j=jbegin; j<jend; ++j ) {
-      tensor_(pageslice(),j) *= scalar;
+   for ( size_t i = 0; i < rows(); ++i ) {
+      for ( size_t j = 0; j < columns(); ++j ) {
+         tensor_(i, j, page()) *= scalar;
+      }
    }
-
    return *this;
 }
 /*! \endcond */
@@ -1336,7 +1213,7 @@ template< typename MT2       // Data type of the foreign dense pageslice
 inline bool
    PageSlice<MT,CRAs...>::canAlias( const PageSlice<MT2,CRAs2...>* alias ) const noexcept
 {
-   return tensor_.isAliased( &alias->tensor_ ) && ( pageslice() == alias->pageslice() );
+   return tensor_.isAliased( &alias->tensor_ ) && ( page() == alias->page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1382,7 +1259,7 @@ template< typename MT2       // Data type of the foreign dense pageslice
 inline bool
    PageSlice<MT,CRAs...>::isAliased( const PageSlice<MT2,CRAs2...>* alias ) const noexcept
 {
-   return tensor_.isAliased( &alias->tensor_ ) && ( pageslice() == alias->pageslice() );
+   return tensor_.isAliased( &alias->tensor_ ) && ( page() == alias->page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1447,7 +1324,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
    PageSlice<MT,CRAs...>::load( size_t i, size_t j ) const noexcept
 {
-   return tensor_.load( i, j, pageslice() );
+   return tensor_.load( i, j, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1471,7 +1348,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
    PageSlice<MT,CRAs...>::loada( size_t i, size_t j ) const noexcept
 {
-   return tensor_.loada( i, j, pageslice() );
+   return tensor_.loada( i, j, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1495,7 +1372,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
    PageSlice<MT,CRAs...>::loadu( size_t i, size_t j ) const noexcept
 {
-   return tensor_.loadu( i, j, pageslice() );
+   return tensor_.loadu( i, j, page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1520,7 +1397,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    PageSlice<MT,CRAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   tensor_.store( i, j, pageslice(), value );
+   tensor_.store( i, j, page(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1545,7 +1422,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    PageSlice<MT,CRAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   tensor_.storea( i, j, pageslice(), value );
+   tensor_.storea( i, j, page(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1570,7 +1447,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    PageSlice<MT,CRAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   tensor_.storeu( i, j, pageslice(), value );
+   tensor_.storeu( i, j, page(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1595,7 +1472,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    PageSlice<MT,CRAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   tensor_.stream( i, j, pageslice(), value );
+   tensor_.stream( i, j, page(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1619,15 +1496,18 @@ template< typename VT >     // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid matrix sizes" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
-   for( size_t j=0UL; j<jpos; j+=2UL ) {
-      tensor_(pageslice(),j    ) = (~rhs)[j    ];
-      tensor_(pageslice(),j+1UL) = (~rhs)[j+1UL];
+   for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
+      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
+         tensor_(i,j,page()) = (~rhs)(i,j);
+         tensor_(i,j+1UL,page()) = (~rhs)(i,j+1UL);
+      }
+      if( jpos < (~rhs).columns() )
+         tensor_(i,jpos,page()) = (~rhs)(i,jpos);
    }
-   if( jpos < (~rhs).size() )
-      tensor_(pageslice(),jpos) = (~rhs)[jpos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1653,41 +1533,44 @@ inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
-   const size_t columns( size() );
+   const size_t cols( columns() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   for (size_t i = 0; i < (~rhs).rows(); ++i) {
+      const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
-   size_t j( 0UL );
-   Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+      size_t j( 0UL );
+      Iterator left( begin(i) );
+      ConstIterator_t<VT> right( (~rhs).begin(i) );
 
-   if( useStreaming && columns > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &tensor_ ) )
-   {
-      for( ; j<jpos; j+=SIMDSIZE ) {
-         left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      if( useStreaming && cols > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &tensor_ ) )
+      {
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         }
+         for( ; remainder && j<cols; ++j ) {
+            *left = *right; ++left; ++right;
+         }
       }
-      for( ; remainder && j<columns; ++j ) {
-         *left = *right; ++left; ++right;
-      }
-   }
-   else
-   {
-      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      }
-      for( ; j<jpos; j+=SIMDSIZE ) {
-         left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      }
-      for( ; remainder && j<columns; ++j ) {
-         *left = *right; ++left; ++right;
+      else
+      {
+         for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         }
+         for( ; j<jpos; j+=SIMDSIZE ) {
+            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         }
+         for( ; remainder && j<cols; ++j ) {
+            *left = *right; ++left; ++right;
+         }
       }
    }
 }
@@ -1713,15 +1596,18 @@ template< typename VT >     // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
-   for( size_t j=0UL; j<jpos; j+=2UL ) {
-      tensor_(pageslice(),j    ) += (~rhs)[j    ];
-      tensor_(pageslice(),j+1UL) += (~rhs)[j+1UL];
+   for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
+      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
+         tensor_(i,j,page()    ) += (~rhs)(i,j);
+         tensor_(i,j+1UL,page()) += (~rhs)(i,j+1UL);
+      }
+      if( jpos < (~rhs).columns() )
+         tensor_(i,jpos,page()) += (~rhs)(i,jpos);
    }
-   if( jpos < (~rhs).size() )
-      tensor_(pageslice(),jpos) += (~rhs)[jpos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1747,30 +1633,33 @@ inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
-   const size_t columns( size() );
+   const size_t cols( columns() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   for (size_t i = 0; i < (~rhs).rows(); ++i) {
+      const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
-   size_t j( 0UL );
-   Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+      size_t j( 0UL );
+      Iterator left( begin(i) );
+      ConstIterator_t<VT> right( (~rhs).begin(i) );
 
-   for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-   }
-   for( ; j<jpos; j+=SIMDSIZE ) {
-      left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-   }
-   for( ; remainder && j<columns; ++j ) {
-      *left += *right; ++left; ++right;
+      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; remainder && j<cols; ++j ) {
+         *left += *right; ++left; ++right;
+      }
    }
 }
 /*! \endcond */
@@ -1795,15 +1684,18 @@ template< typename VT >     // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
-   for( size_t j=0UL; j<jpos; j+=2UL ) {
-      tensor_(pageslice(),j    ) -= (~rhs)[j    ];
-      tensor_(pageslice(),j+1UL) -= (~rhs)[j+1UL];
+   for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
+      const size_t jpos( (~rhs).columns() & size_t(-2) );
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
+         tensor_(i,j,page()    ) -= (~rhs)(i,j);
+         tensor_(i,j+1UL,page()) -= (~rhs)(i,j+1UL);
+      }
+      if( jpos < (~rhs).columns() )
+         tensor_(i,jpos,page()) -= (~rhs)(i,jpos);
    }
-   if( jpos < (~rhs).size() )
-      tensor_(pageslice(),jpos) -= (~rhs)[jpos];
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1829,30 +1721,33 @@ inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
 
-   const size_t columns( size() );
+   const size_t cols( columns() );
 
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   for (size_t i = 0; i < (~rhs).rows(); ++i) {
+      const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
-   size_t j( 0UL );
-   Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+      size_t j( 0UL );
+      Iterator left( begin(i) );
+      ConstIterator_t<VT> right( (~rhs).begin(i) );
 
-   for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-   }
-   for( ; j<jpos; j+=SIMDSIZE ) {
-      left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-   }
-   for( ; remainder && j<columns; ++j ) {
-      *left -= *right; ++left; ++right;
+      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; remainder && j<cols; ++j ) {
+         *left -= *right; ++left; ++right;
+      }
    }
 }
 /*! \endcond */
@@ -1861,9 +1756,9 @@ inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the multiplication assignment of a dense matrix.
+/*!\brief Default implementation of the Schur product assignment of a row-major dense matrix.
 //
-// \param rhs The right-hand side dense matrix to be multiplied.
+// \param rhs The right-hand side dense matrix for the Schur product.
 // \return void
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -1871,70 +1766,26 @@ inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::multAssign( const DenseMatrix<VT,false>& rhs )
-   -> DisableIf_t< VectorizedMultAssign_v<VT> >
+template< typename MT       // Type of the tensor
+        , size_t... CSAs >  // Compile time pageslice arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+   -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos( (~rhs).size() & size_t(-2) );
-   for( size_t j=0UL; j<jpos; j+=2UL ) {
-      tensor_(pageslice(),j    ) *= (~rhs)[j    ];
-      tensor_(pageslice(),j+1UL) *= (~rhs)[j+1UL];
-   }
-   if( jpos < (~rhs).size() )
-      tensor_(pageslice(),jpos) *= (~rhs)[jpos];
-}
-/*! \endcond */
-//*************************************************************************************************
+   const size_t jpos( columns() & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
 
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief SIMD optimized implementation of the multiplication assignment of a dense matrix.
-//
-// \param rhs The right-hand side dense matrix to be multiplied.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::multAssign( const DenseMatrix<VT,false>& rhs )
-   -> EnableIf_t< VectorizedMultAssign_v<VT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
-
-   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
-
-   const size_t columns( size() );
-
-   const size_t jpos( ( remainder )?( columns & size_t(-SIMDSIZE) ):( columns ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
-
-   size_t j( 0UL );
-   Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
-
-   for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-   }
-   for( ; j<jpos; j+=SIMDSIZE ) {
-      left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-   }
-   for( ; remainder && j<columns; ++j ) {
-      *left *= *right; ++left; ++right;
+   for( size_t i=0UL; i<rows(); ++i ) {
+      for( size_t j=0UL; j<jpos; j+=2UL ) {
+         tensor_(i,j,page()    ) *= (~rhs)(i,j    );
+         tensor_(i,j+1UL,page()) *= (~rhs)(i,j+1UL);
+      }
+      if( jpos < columns() ) {
+         tensor_(i,jpos,page()) *= (~rhs)(i,jpos);
+      }
    }
 }
 /*! \endcond */
@@ -1943,9 +1794,9 @@ inline auto PageSlice<MT,CRAs...>::multAssign( const DenseMatrix<VT,false>& rhs 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Default implementation of the division assignment of a dense matrix.
+/*!\brief SIMD optimized implementation of the Schur product assignment of a row-major dense matrix.
 //
-// \param rhs The right-hand side dense matrix divisor.
+// \param rhs The right-hand side dense matrix for the Schur product.
 // \return void
 //
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -1953,68 +1804,42 @@ inline auto PageSlice<MT,CRAs...>::multAssign( const DenseMatrix<VT,false>& rhs 
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::divAssign( const DenseMatrix<VT,false>& rhs )
-   -> DisableIf_t< VectorizedDivAssign_v<VT> >
-{
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
-
-   const size_t jpos( (~rhs).size() & size_t(-2) );
-   for( size_t j=0UL; j<jpos; j+=2UL ) {
-      tensor_(pageslice(),j    ) /= (~rhs)[j    ];
-      tensor_(pageslice(),j+1UL) /= (~rhs)[j+1UL];
-   }
-   if( jpos < (~rhs).size() )
-      tensor_(pageslice(),jpos) /= (~rhs)[jpos];
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief SIMD optimized implementation of the division assignment of a dense matrix.
-//
-// \param rhs The right-hand side dense matrix divisor.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::divAssign( const DenseMatrix<VT,false>& rhs )
-   -> EnableIf_t< VectorizedDivAssign_v<VT> >
+template< typename MT       // Type of the tensor
+        , size_t... CSAs >  // Compile time pageslice arguments
+template< typename MT2 >    // Type of the right-hand side dense matrix
+inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+   -> EnableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   const size_t columns( size() );
+   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<MT2> );
 
-   const size_t jpos( columns & size_t(-SIMDSIZE) );
-   BLAZE_INTERNAL_ASSERT( ( columns - ( columns % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+   const size_t cols( columns() );
 
-   size_t j( 0UL );
-   Iterator left( begin() );
-   ConstIterator_t<VT> right( (~rhs).begin() );
+   for( size_t i=0UL; i<rows(); ++i )
+   {
+      const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
+      BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
-   for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-   }
-   for( ; j<jpos; j+=SIMDSIZE ) {
-      left.store( left.load() / right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-   }
-   for( ; j<columns; ++j ) {
-      *left /= *right; ++left; ++right;
+      size_t j( 0UL );
+      Iterator left( begin(i) );
+      ConstIterator_t<MT2> right( (~rhs).begin(i) );
+
+      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; j<jpos; j+=SIMDSIZE ) {
+         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
+      }
+      for( ; remainder && j<cols; ++j ) {
+         *left *= *right; ++left; ++right;
+      }
    }
 }
 /*! \endcond */

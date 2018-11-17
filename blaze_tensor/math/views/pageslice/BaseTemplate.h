@@ -60,10 +60,8 @@ namespace blaze {
 // \ingroup pageslice
 */
 template< typename MT                       // Type of the tensor
-        , bool DF = IsDenseTensor_v<MT>     // Density flag
         , size_t... CRAs >                  // Compile time pageslice arguments
-class PageSlice
-{};
+class PageSlice;
 /*! \endcond */
 //*************************************************************************************************
 
@@ -87,7 +85,6 @@ class PageSlice
 template< typename MT       // Type of the tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 using PageSlice_ = PageSlice< MT
-                , IsDenseTensor_v<MT>
                 , CRAs... >;
 /*! \endcond */
 //*************************************************************************************************

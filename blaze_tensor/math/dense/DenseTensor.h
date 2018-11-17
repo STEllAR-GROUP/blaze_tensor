@@ -61,7 +61,14 @@
 #include <blaze/util/typetraits/IsBuiltin.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 
-#include <blaze_tensor/math/Tensor.h>
+#include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
+#include <blaze_tensor/math/expressions/DTensDTensMapExpr.h>
+#include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
+#include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
+#include <blaze_tensor/math/expressions/DTensEvalExpr.h>
+#include <blaze_tensor/math/expressions/DTensMapExpr.h>
+#include <blaze_tensor/math/expressions/DTensScalarDivExpr.h>
+#include <blaze_tensor/math/expressions/DTensScalarMultExpr.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 
 namespace blaze {

@@ -47,6 +47,7 @@
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 // #include <blaze_tensor/math/traits/SubtensorTrait.h>
+#include <blaze_tensor/math/traits/PageSliceTrait.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
 #include <blaze_tensor/math/typetraits/IsTensor.h>
@@ -3260,19 +3261,22 @@ struct LowType< DynamicTensor<T1>, DynamicTensor<T2> >
 
 //=================================================================================================
 //
-//  ROWSTRAIT SPECIALIZATIONS
+//  PAGESLICETRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t M >
-struct RowsTraitEval2< MT, M
-                     , EnableIf_t< IsDenseTensor_v<MT> &&
-                                   ( M == 0UL || Size_v<MT,1UL> == DefaultSize_v ) &&
-                                   ( M == 0UL || MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
+template <typename MT, size_t M>
+struct PageSliceTraitEval2<
+   MT, M,
+   EnableIf_t< IsDenseTensor_v<MT> &&
+               ( M == 0UL || Size_v< MT,1UL > == DefaultSize_v ||
+                             Size_v< MT,2UL > == DefaultSize_v ) &&
+               ( M == 0UL || MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
+                             MaxSize_v< MT,2UL > == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicTensor< ElementType_t<MT> >;
+   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3288,14 +3292,14 @@ struct RowsTraitEval2< MT, M
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t N >
-struct ColumnsTraitEval2< MT, N
-                        , EnableIf_t< IsDenseTensor_v<MT> &&
-                                      ( N == 0UL || Size_v<MT,0UL> == DefaultSize_v ) &&
-                                      ( N == 0UL || MaxSize_v<MT,0UL> == DefaultMaxSize_v ) > >
-{
-   using Type = DynamicTensor< ElementType_t<MT> >;
-};
+// template< typename MT, size_t N >
+// struct ColumnsTraitEval2< MT, N
+//                         , EnableIf_t< IsDenseTensor_v<MT> &&
+//                                       ( N == 0UL || Size_v<MT,0UL> == DefaultSize_v ) &&
+//                                       ( N == 0UL || MaxSize_v<MT,0UL> == DefaultMaxSize_v ) > >
+// {
+//    using Type = DynamicMatrix< ElementType_t<MT> >;
+// };
 /*! \endcond */
 //*************************************************************************************************
 

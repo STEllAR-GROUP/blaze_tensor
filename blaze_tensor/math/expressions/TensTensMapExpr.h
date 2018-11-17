@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/SMP.h
-//  \brief Header file for the shared memory parallelization
+//  \file blaze/math/expressions/TensTensMapExpr.h
+//  \brief Header file for the TensTensMapExpr base class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,16 +33,42 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_SMP_H_
-#define _BLAZE_TENSOR_MATH_SMP_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSTENSMAPEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSTENSMAPEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/SMP.h>
+#include <blaze/math/expressions/BinaryMapExpr.h>
 
-#include <blaze_tensor/math/smp/DenseTensor.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Base class for all binary tensor map expression templates.
+// \ingroup math
+//
+// The TensTensMapExpr class serves as a tag for all expression templates that implement a binary
+// tensor map operation. All classes, that represent a binary tensor map operation and that are
+// used within the expression template environment of the Blaze library have to derive publicly
+// from this class in order to qualify as binary tensor map expression template. Only in case a
+// class is derived publicly from the TensTensMapExpr base class, the IsTensTensMapExpr type trait
+// recognizes the class as valid binary tensor map expression template.
+*/
+template< typename MT >  // Tensor base type of the expression
+struct TensTensMapExpr
+   : public BinaryMapExpr<MT>
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

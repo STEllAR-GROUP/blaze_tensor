@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/typetraits/IsTensTensAddExpr.h
-//  \brief Header file for the IsTensTensAddExpr type trait class
+//  \file blaze_tensor/math/typetraits/IsNumericTensor.h
+//  \brief Header file for the IsNumericTensor type trait
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,20 +33,19 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSTENSADDEXPR_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSTENSADDEXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISNUMERICTENSOR_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISNUMERICTENSOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <utility>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/math/typetraits/UnderlyingElement.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/typetraits/IsNumeric.h>
 
-#include <blaze_tensor/math/expressions/TensTensAddExpr.h>
-
+#include <blaze_tensor/math/typetraits/IsTensor.h>
 
 namespace blaze {
 
@@ -57,67 +56,54 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsTensTensAddExpr type trait.
-// \ingroup math_type_traits
-*/
-template< typename T >
-struct IsTensTensAddExprHelper
-{
- private:
-   //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const TensTensAddExpr<MT>& );
-
-   template< typename MT >
-   static TrueType test( const volatile TensTensAddExpr<MT>& );
-
-   static FalseType test( ... );
-   //**********************************************************************************************
-
- public:
-   //**********************************************************************************************
-   using Type = decltype( test( std::declval<T&>() ) );
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Compile time check whether the given type is a tensor/tensor addition expression template.
+/*!\brief Compile time check for numeric matrix types.
 // \ingroup math_type_traits
 //
-// This type trait class tests whether or not the given type \a Type is a tensor/tensor addition
-// expression template. In order to qualify as a valid tensor addition expression template, the
-// given type has to derive publicly from the TensTensAddExpr base class. In case the given type
-// is a valid tensor addition expression template, the \a value member constant is set to \a true,
-// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
-// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
-// \a FalseType.
+// This type trait tests whether or not the given template parameter is a numeric matrix type,
+// i.e. a matrix with numeric element type. In case the type is a numeric matrix type, the
+// \a value member constant is set to \a true, the nested type definition \a Type is \a TrueType,
+// and the class derives from \a TrueType. Otherwise \a yes is set to \a false, \a Type is
+// \a FalseType, and the class derives from \a FalseType.
+
+   \code
+   using Type1 = DynamicTensor<int>;
+   using Type2 = CompressedTensor< complex<double> >;
+   using Type3 = LowerTensor< DynamicTensor<float> >;
+
+   using Type4 = double;
+   using Type5 = DynamicVector<int>;
+   using Type6 = DynamicTensor< DynamicVector<int> >;
+
+   blaze::IsNumericTensor< Type1 >::value  // Evaluates to 1
+   blaze::IsNumericTensor< Type2 >::Type   // Results in TrueType
+   blaze::IsNumericTensor< Type3 >         // Is derived from TrueType
+   blaze::IsNumericTensor< Type4 >::value  // Evaluates to 0
+   blaze::IsNumericTensor< Type5 >::Type   // Results in FalseType
+   blaze::IsNumericTensor< Type6 >         // Is derived from FalseType
+   \endcode
 */
 template< typename T >
-struct IsTensTensAddExpr
-   : public IsTensTensAddExprHelper<T>::Type
+struct IsNumericTensor
+   : public BoolConstant< IsTensor_v<T> && IsNumeric_v< UnderlyingElement_t<T> > >
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the IsTensTensAddExpr type trait.
+/*!\brief Auxiliary variable template for the IsNumericTensor type trait.
 // \ingroup type_traits
 //
-// The IsTensTensAddExpr_v variable template provides a convenient shortcut to access the nested
-// \a value of the IsTensTensAddExpr class template. For instance, given the type \a T the
+// The IsNumericTensor_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsNumericTensor class template. For instance, given the type \a T the
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = blaze::IsTensTensAddExpr<T>::value;
-   constexpr bool value2 = blaze::IsTensTensAddExpr_v<T>;
+   constexpr bool value1 = blaze::IsNumericTensor<T>::value;
+   constexpr bool value2 = blaze::IsNumericTensor_v<T>;
    \endcode
 */
 template< typename T >
-constexpr bool IsTensTensAddExpr_v = IsTensTensAddExpr<T>::value;
+constexpr bool IsNumericTensor_v = IsNumericTensor<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

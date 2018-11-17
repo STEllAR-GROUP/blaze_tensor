@@ -114,7 +114,7 @@ struct PageSliceData<>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline size_t pageslice() const noexcept;
+   inline size_t page() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -153,7 +153,7 @@ inline PageSliceData<>::PageSliceData( size_t index, RRAs... args )
 //
 // \return The index of the pageslice.
 */
-inline size_t PageSliceData<>::pageslice() const noexcept
+inline size_t PageSliceData<>::page() const noexcept
 {
    return pageslice_;
 }
@@ -208,7 +208,7 @@ struct PageSliceData<Index>
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   static inline constexpr size_t pageslice() noexcept;
+   static inline constexpr size_t page() noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -239,7 +239,7 @@ inline PageSliceData<Index>::PageSliceData( RRAs... args )
 // \return The index of the pageslice.
 */
 template< size_t Index >  // Compile time pageslice index
-inline constexpr size_t PageSliceData<Index>::pageslice() noexcept
+inline constexpr size_t PageSliceData<Index>::page() noexcept
 {
    return Index;
 }

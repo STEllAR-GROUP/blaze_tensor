@@ -78,24 +78,6 @@ namespace blaze {
 //
 // template< AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename TT, typename... RSAs >
 // decltype(auto) submatrix( Tensor<TT>&&, size_t, size_t, size_t, size_t, RSAs... );
-
-// template< size_t I, typename TT, typename... RRAs >
-// decltype(auto) row( Tensor<TT>&, RRAs... );
-//
-// template< size_t I, typename TT, typename... RRAs >
-// decltype(auto) row( const Tensor<TT>&, RRAs... );
-//
-// template< size_t I, typename TT, typename... RRAs >
-// decltype(auto) row( Tensor<TT>&&, RRAs... );
-//
-// template< typename TT, typename... RRAs >
-// decltype(auto) row( Tensor<TT>&, size_t, RRAs... );
-//
-// template< typename TT, typename... RRAs >
-// decltype(auto) row( const Tensor<TT>&, size_t, RRAs... );
-//
-// template< typename TT, typename... RRAs >
-// decltype(auto) row( Tensor<TT>&&, size_t, RRAs... );
 //
 // template< size_t I, size_t... Is, typename TT, typename... RRAs >
 // decltype(auto) rows( Tensor<TT>&, RRAs... );
@@ -151,23 +133,23 @@ namespace blaze {
 // template< typename TT, typename T, typename... RCAs >
 // decltype(auto) columns( Tensor<TT>&&, const T*, size_t, RCAs... );
 
-template< size_t I, typename TT, typename... RCAs >
-decltype(auto) page( Tensor<TT>&, RCAs... );
+template< size_t I, typename TT, typename... RRAs >
+decltype(auto) pageslice( Tensor<TT>&, RRAs... );
 
-template< size_t I, typename TT, typename... RCAs >
-decltype(auto) page( const Tensor<TT>&, RCAs... );
+template< size_t I, typename TT, typename... RRAs >
+decltype(auto) pageslice( const Tensor<TT>&, RRAs... );
 
-template< size_t I, typename TT, typename... RCAs >
-decltype(auto) page( Tensor<TT>&&, RCAs... );
+template< size_t I, typename TT, typename... RRAs >
+decltype(auto) pageslice( Tensor<TT>&&, RRAs... );
 
-template< typename TT, typename... RCAs >
-decltype(auto) page( Tensor<TT>&, size_t, RCAs... );
+template< typename TT, typename... RRAs >
+decltype(auto) pageslice( Tensor<TT>&, size_t, RRAs... );
 
-template< typename TT, typename... RCAs >
-decltype(auto) page( const Tensor<TT>&, size_t, RCAs... );
+template< typename TT, typename... RRAs >
+decltype(auto) pageslice( const Tensor<TT>&, size_t, RRAs... );
 
-template< typename TT, typename... RCAs >
-decltype(auto) page( Tensor<TT>&&, size_t, RCAs... );
+template< typename TT, typename... RRAs >
+decltype(auto) pageslice( Tensor<TT>&&, size_t, RRAs... );
 
 // template< size_t I, size_t... Is, typename TT, typename... RCAs >
 // decltype(auto) pages( Tensor<TT>&, RCAs... );

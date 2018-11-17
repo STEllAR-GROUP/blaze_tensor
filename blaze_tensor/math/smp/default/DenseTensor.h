@@ -201,6 +201,46 @@ inline EnableIf_t< IsDenseTensor_v<TT1> >
 //*************************************************************************************************
 
 
+//=================================================================================================
+//
+//  MULTIPLICATION ASSIGNMENT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Default implementation of the HPX-based SMP multiplication assignment to a dense matrix.
+// \ingroup smp
+//
+// \param lhs The target left-hand side dense matrix.
+// \param rhs The right-hand side matrix to be multiplied.
+// \return void
+//
+// This function implements the default HPX-based SMP multiplication assignment to a dense
+// matrix.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in erroneous results and/or in compilation errors. Instead of using this function use the
+// assignment operator.
+*/
+template< typename MT1  // Type of the left-hand side dense matrix
+        , typename MT2 > // Type of the right-hand side matrix
+inline EnableIf_t< IsDenseTensor_v<MT1> >
+   smpMultAssign( Tensor<MT1>& lhs, const Tensor<MT2>& rhs )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages" );
+
+   multAssign( ~lhs, ~rhs );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
 
 
 //=================================================================================================

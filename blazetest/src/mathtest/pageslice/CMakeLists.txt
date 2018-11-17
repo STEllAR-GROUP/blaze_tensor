@@ -30,11 +30,10 @@
 #
 # =================================================================================================
 
-set(category PageSlice
-)
+set(category PageSlice)
 
 set(tests
-#    DenseGeneralTest
+    DenseGeneralTest
     IncludeTest
 )
 

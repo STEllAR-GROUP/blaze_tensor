@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/SMP.h
-//  \brief Header file for the shared memory parallelization
+//  \file blaze_tensor/math/expressions/TensMapExpr.h
+//  \brief Header file for the TensMapExpr base class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,16 +33,42 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_SMP_H_
-#define _BLAZE_TENSOR_MATH_SMP_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSMAPEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSMAPEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/SMP.h>
+#include <blaze/math/expressions/UnaryMapExpr.h>
 
-#include <blaze_tensor/math/smp/DenseTensor.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Base class for all unary tensor map expression templates.
+// \ingroup math
+//
+// The TensMapExpr class serves as a tag for all expression templates that represent a unary map
+// operation on a tensor. All classes, that represent a unary tensor map operation and that are
+// used within the expression template environment of the Blaze library have to derive publicly
+// from this class in order to qualify as unary tensor map expression template. Only in case a
+// class is derived publicly from the TensMapExpr base class, the IsTensMapExpr type trait
+// recognizes the class as valid unary tensor map expression template.
+*/
+template< typename MT >  // Tensor base type of the expression
+struct TensMapExpr
+   : public UnaryMapExpr<MT>
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

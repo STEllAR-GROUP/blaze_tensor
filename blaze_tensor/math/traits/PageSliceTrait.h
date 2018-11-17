@@ -111,7 +111,7 @@ auto evalPageSliceTrait( const volatile T& )
 //
 // Per default, PageSliceTrait supports all tensor types of the Blaze library (including views and
 // adaptors). For all other data types it is possible to specialize the PageSliceTrait template. The
-// following example shows the according specialization for the DynamicMatrix class template:
+// following example shows the according specialization for the DynamicTensor class template:
 
    \code
    template< typename T1, size_t... CRAs >

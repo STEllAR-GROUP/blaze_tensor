@@ -125,7 +125,6 @@ class DTensDTensMultExpr
    template< typename T1, typename T2, typename T3 >
    static constexpr bool UseBlasKernel_v =
       ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_MATRIX_MULTIPLICATION &&
-        !SYM && !HERM && !LOW && !UPP &&
         IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
         IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
         IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&

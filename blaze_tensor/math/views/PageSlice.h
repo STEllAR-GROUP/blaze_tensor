@@ -42,12 +42,21 @@
 //*************************************************************************************************
 
 #include <blaze/math/views/Row.h>
+#include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/SchurExpr.h>
 
-#include <blaze_tensor/math/expressions/DTensEvalExpr.h>
+#include <blaze_tensor/math/expressions/TensEvalExpr.h>
+#include <blaze_tensor/math/expressions/TensMapExpr.h>
+#include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
+#include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
+#include <blaze_tensor/math/expressions/TensTensAddExpr.h>
+#include <blaze_tensor/math/expressions/TensTensMapExpr.h>
+#include <blaze_tensor/math/expressions/TensTensMultExpr.h>
+#include <blaze_tensor/math/expressions/TensTensSubExpr.h>
 #include <blaze_tensor/math/expressions/Tensor.h>
+#include <blaze_tensor/math/views/Forward.h>
 #include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/pageslice/Dense.h>
-
 
 namespace blaze {
 
@@ -78,17 +87,17 @@ namespace blaze {
 
    // Creating a view on the 4th pageslice of the sparse tensor S
    auto pageslice4 = pageslice<4UL>( S );
-   \endcode
+   \page()
 
 // By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
 // specified (i.e. if the specified index is greater than or equal to the total number of the pageslices
-// in the given tensor) a \a std::invalid_argument exception is thpageslicen. The checks can be skipped
+// in the given tensor) a \a std::invalid_argument exception is thrown. The checks can be skipped
 // by providing the optional \a blaze::unchecked argument.
 
    \code
    auto pageslice3 = pageslice<3UL>( D, unchecked );
    auto pageslice4 = pageslice<4UL>( S, unchecked );
-   \endcode
+   \page()
 */
 template< size_t I            // PageSlice index
         , typename MT         // Type of the tensor
@@ -125,17 +134,17 @@ inline decltype(auto) pageslice( Tensor<MT>& tensor, RRAs... args )
 
    // Creating a view on the 4th pageslice of the sparse tensor S
    auto pageslice4 = pageslice<4UL>( S );
-   \endcode
+   \page()
 
 // By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
 // specified (i.e. if the specified index is greater than or equal to the total number of the pageslices
-// in the given tensor) a \a std::invalid_argument exception is thpageslicen. The checks can be skipped
+// in the given tensor) a \a std::invalid_argument exception is thrown. The checks can be skipped
 // by providing the optional \a blaze::unchecked argument.
 
    \code
    auto pageslice3 = pageslice<3UL>( D, unchecked );
    auto pageslice4 = pageslice<4UL>( S, unchecked );
-   \endcode
+   \page()
 */
 template< size_t I            // PageSlice index
         , typename MT         // Type of the tensor
@@ -162,7 +171,7 @@ inline decltype(auto) pageslice( const Tensor<MT>& tensor, RRAs... args )
 // This function returns an expression representing the specified pageslice of the given temporary
 // tensor. In case the pageslice is not properly specified (i.e. if the specified index is greater
 // than or equal to the total number of the pageslices in the given tensor) a \a std::invalid_argument
-// exception is thpageslicen.
+// exception is thrown.
 */
 template< size_t I            // PageSlice index
         , typename MT         // Type of the tensor
@@ -199,17 +208,17 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, RRAs... args )
 
    // Creating a view on the 4th pageslice of the sparse tensor S
    auto pageslice4 = pageslice( S, 4UL );
-   \endcode
+   \page()
 
 // By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
 // specified (i.e. if the specified index is greater than or equal to the total number of the pageslices
-// in the given tensor) a \a std::invalid_argument exception is thpageslicen. The checks can be skipped
+// in the given tensor) a \a std::invalid_argument exception is thrown. The checks can be skipped
 // by providing the optional \a blaze::unchecked argument.
 
    \code
    auto pageslice3 = pageslice( D, 3UL, unchecked );
    auto pageslice4 = pageslice( S, 4UL, unchecked );
-   \endcode
+   \page()
 */
 template< typename MT         // Type of the tensor
         , typename... RRAs >  // Optional pageslice arguments
@@ -245,17 +254,17 @@ inline decltype(auto) pageslice( Tensor<MT>& tensor, size_t index, RRAs... args 
 
    // Creating a view on the 4th pageslice of the sparse tensor S
    auto pageslice4 = pageslice( S, 4UL );
-   \endcode
+   \page()
 
 // By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
 // specified (i.e. if the specified index is greater than or equal to the total number of the pageslices
-// in the given tensor) a \a std::invalid_argument exception is thpageslicen. The checks can be skipped
+// in the given tensor) a \a std::invalid_argument exception is thrown. The checks can be skipped
 // by providing the optional \a blaze::unchecked argument.
 
    \code
    auto pageslice3 = pageslice( D, 3UL, unchecked );
    auto pageslice4 = pageslice( S, 4UL, unchecked );
-   \endcode
+   \page()
 */
 template< typename MT         // Type of the tensor
         , typename... RRAs >  // Optional pageslice arguments
@@ -282,7 +291,7 @@ inline decltype(auto) pageslice( const Tensor<MT>& tensor, size_t index, RRAs...
 // This function returns an expression representing the specified pageslice of the given temporary
 // tensor. In case the pageslice is not properly specified (i.e. if the specified index is greater
 // than or equal to the total number of the pageslices in the given tensor) a \a std::invalid_argument
-// exception is thpageslicen.
+// exception is thrown.
 */
 template< typename MT         // Type of the tensor
         , typename... RRAs >  // Optional pageslice arguments
@@ -316,16 +325,16 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 // This function returns an expression representing the specified pageslice of the given tensor/tensor
 // addition.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatMatAddExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) +
-//           pageslice<CRAs...>( (~tensor).rightOperand(), args... );
-// }
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const TensTensAddExpr<MT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) +
+          pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -342,16 +351,16 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 // This function returns an expression representing the specified pageslice of the given tensor/tensor
 // subtraction.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatMatSubExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) -
-//           pageslice<CRAs...>( (~tensor).rightOperand(), args... );
-// }
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const TensTensSubExpr<MT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) -
+          pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -367,16 +376,16 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 //
 // This function returns an expression representing the specified pageslice of the given Schur product.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const SchurExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) *
-//           pageslice<CRAs...>( (~tensor).rightOperand(), args... );
-// }
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const SchurExpr<MT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) *
+          pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -393,15 +402,15 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 // This function returns an expression representing the specified pageslice of the given tensor/tensor
 // multiplication.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatMatMultExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
-// }
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -429,7 +438,7 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
 //       if( (~tensor).pageslices() <= I ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid pageslice access index" );
+//          BLAZE_THPAGESLICE_INVALID_ARGUMENT( "Invalid pageslice access index" );
 //       }
 //    }
 //
@@ -462,7 +471,7 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
 //       if( (~tensor).pageslices() <= index ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid pageslice access index" );
+//          BLAZE_THPAGESLICE_INVALID_ARGUMENT( "Invalid pageslice access index" );
 //       }
 //    }
 //
@@ -484,15 +493,15 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 // This function returns an expression representing the specified pageslice of the given tensor/scalar
 // multiplication.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatScalarMultExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
-// }
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const TensScalarMultExpr<MT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -509,15 +518,15 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 // This function returns an expression representing the specified pageslice of the given tensor/scalar
 // division.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatScalarDivExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) / (~tensor).rightOperand();
-// }
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const TensScalarDivExpr<MT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) / (~tensor).rightOperand();
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -534,15 +543,15 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 // This function returns an expression representing the specified pageslice of the given unary tensor
 // map operation.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatMapExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return map( pageslice<CRAs...>( (~tensor).operand(), args... ), (~tensor).operation() );
-// }
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const TensMapExpr<MT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( pageslice<CRAs...>( (~tensor).operand(), args... ), (~tensor).operation() );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -559,17 +568,17 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 // This function returns an expression representing the specified pageslice of the given binary tensor
 // map operation.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatMatMapExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return map( pageslice<CRAs...>( (~tensor).leftOperand(), args... ),
-//                pageslice<CRAs...>( (~tensor).rightOperand(), args... ),
-//                (~tensor).operation() );
-// }
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const TensTensMapExpr<MT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return map( pageslice<CRAs...>( (~tensor).leftOperand(), args... ),
+               pageslice<CRAs...>( (~tensor).rightOperand(), args... ),
+               (~tensor).operation() );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -678,7 +687,7 @@ inline decltype(auto) pageslice( const DeclExpr<MT>& tensor, RRAs... args )
 
 //=================================================================================================
 //
-//  ROW OPERATORS
+//  PAGESLICE OPERATORS
 //
 //=================================================================================================
 
@@ -783,25 +792,25 @@ inline void clear( PageSlice<MT,CRAs...>&& pageslice )
    blaze::DynamicTensor<int> A;
    // ... Resizing and initialization
    if( isDefault( pageslice( A, 0UL ) ) ) { ... }
-   \endcode
+   \page()
 
 // Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
 // semantics (blaze::relaxed):
 
    \code
    if( isDefault<relaxed>( pageslice( A, 0UL ) ) ) { ... }
-   \endcode
+   \page()
 */
 template< bool RF           // Relaxation flag
         , typename MT       // Type of the tensor
-                   // Symmetry flag
         , size_t... CRAs >  // Compile time pageslice arguments
 inline bool isDefault( const PageSlice<MT,CRAs...>& pageslice )
 {
    using blaze::isDefault;
 
-   for( size_t i=0UL; i<pageslice.size(); ++i )
-      if( !isDefault<RF>( pageslice[i] ) ) return false;
+   for( size_t i=0UL; i<pageslice.rows(); ++i )
+      for( size_t j=0UL; j<pageslice.columns(); ++j )
+         if( !isDefault<RF>( pageslice(i, j) ) ) return false;
    return true;
 }
 /*! \endcond */
@@ -824,15 +833,13 @@ inline bool isDefault( const PageSlice<MT,CRAs...>& pageslice )
    blaze::DynamicTensor<int> A;
    // ... Resizing and initialization
    if( isIntact( pageslice( A, 0UL ) ) ) { ... }
-   \endcode
+   \page()
 */
 template< typename MT       // Type of the tensor
-                   // Density flag
-                   // Symmetry flag
         , size_t... CRAs >  // Compile time pageslice arguments
 inline bool isIntact( const PageSlice<MT,CRAs...>& pageslice ) noexcept
 {
-   return ( pageslice.pageslice() < pageslice.operand().pageslices() &&
+   return ( pageslice.page() < pageslice.operand().pageslices() &&
             isIntact( pageslice.operand() ) );
 }
 /*! \endcond */
@@ -859,7 +866,7 @@ template< typename MT1       // Type of the tensor of the left-hand side pagesli
 inline bool isSame( const PageSlice<MT1,CRAs1...>& a,
                     const PageSlice<MT2,CRAs2...>& b ) noexcept
 {
-   return ( isSame( a.operand(), b.operand() ) && ( a.pageslice() == b.pageslice() ) );
+   return ( isSame( a.operand(), b.operand() ) && ( a.page() == b.page() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -889,7 +896,7 @@ inline bool trySet( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
    BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
 
-   return trySet( pageslice.operand(), i, j, pageslice.pageslice(), value );
+   return trySet( pageslice.operand(), i, j, pageslice.page(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -919,7 +926,7 @@ inline bool tryAdd( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
    BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
 
-   return tryAdd( pageslice.operand(), i, j, pageslice.pageslice(), value );
+   return tryAdd( pageslice.operand(), i, j, pageslice.page(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -949,7 +956,7 @@ inline bool trySub( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
    BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
 
-   return trySub( pageslice.operand(), i, j, pageslice.pageslice(), value );
+   return trySub( pageslice.operand(), i, j, pageslice.page(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -979,7 +986,7 @@ inline bool tryMult( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j,
    BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
 
-   return tryMult( pageslice.operand(), i, j, pageslice.pageslice(), value );
+   return tryMult( pageslice.operand(), i, j, pageslice.page(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1012,7 +1019,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( col <= (~pageslice).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( col + cols <= (~pageslice).columns(), "Invalid columns range size" );
 
-   return tryMult( pageslice.operand(), row, col, pageslice.pageslice(), rows, cols, 1UL, value );
+   return tryMult( pageslice.operand(), row, col, pageslice.page(), rows, cols, 1UL, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1041,7 +1048,7 @@ inline bool tryDiv( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
    BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
 
-   return tryDiv( pageslice.operand(), i, j, pageslice.pageslice(), value );
+   return tryDiv( pageslice.operand(), i, j, pageslice.page(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1074,7 +1081,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( col <= (~pageslice).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( col + cols <= (~pageslice).columns(), "Invalid columns range size" );
 
-   return tryDiv( pageslice.operand(), row, col, pageslice.pageslice(), rows, cols, 1UL, value );
+   return tryDiv( pageslice.operand(), row, col, pageslice.page(), rows, cols, 1UL, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1106,7 +1113,7 @@ inline bool tryAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAssign( lhs.operand(), ~rhs, i, j, lhs.pageslice() );
+   return tryAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1138,7 +1145,7 @@ inline bool tryAddAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, i, j, lhs.pageslice() );
+   return tryAddAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1170,7 +1177,7 @@ inline bool trySubAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, i, j, lhs.pageslice() );
+   return trySubAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1202,7 +1209,7 @@ inline bool tryMultAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, i, j, lhs.pageslice() );
+   return tryMultAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1234,7 +1241,7 @@ inline bool tryDivAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, i, j, lhs.pageslice() );
+   return tryDivAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1317,7 +1324,7 @@ template< typename MT  // Type of the tensor
          >    // Symmetry flag
 inline decltype(auto) derestrict( PageSlice<MT>& r )
 {
-   return pageslice( derestrict( r.operand() ), r.pageslice(), unchecked );
+   return pageslice( derestrict( r.operand() ), r.page(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1344,7 +1351,7 @@ template< typename MT  // Type of the tensor
          >    // Symmetry flag
 inline decltype(auto) derestrict( PageSlice<MT>&& r )
 {
-   return pageslice( derestrict( r.operand() ), r.pageslice(), unchecked );
+   return pageslice( derestrict( r.operand() ), r.page(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
