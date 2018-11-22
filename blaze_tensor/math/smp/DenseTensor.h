@@ -44,14 +44,14 @@
 #include <blaze/math/SMP.h>
 #include <blaze/system/SMP.h>
 
-// #if BLAZE_HPX_PARALLEL_MODE
-// #include <blaze_tensor/math/smp/hpx/DenseTensor.h>
-// #elif BLAZE_CPP_THREADS_PARALLEL_MODE || BLAZE_BOOST_THREADS_PARALLEL_MODE
-// #include <blaze_tensor/math/smp/threads/DenseTensor.h>
-// #elif BLAZE_OPENMP_PARALLEL_MODE
-// #include <blaze_tensor/math/smp/openmp/DenseTensor.h>
-// #else
+#if BLAZE_HPX_PARALLEL_MODE
+#include <blaze_tensor/math/smp/hpx/DenseTensor.h>
+#elif BLAZE_CPP_THREADS_PARALLEL_MODE || BLAZE_BOOST_THREADS_PARALLEL_MODE
+#include <blaze_tensor/math/smp/threads/DenseTensor.h>
+#elif BLAZE_OPENMP_PARALLEL_MODE
+#include <blaze_tensor/math/smp/openmp/DenseTensor.h>
+#else
 #include <blaze_tensor/math/smp/default/DenseTensor.h>
-// #endif
+#endif
 
 #endif
