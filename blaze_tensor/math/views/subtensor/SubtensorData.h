@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/views/submatrix/SubmatrixData.h
-//  \brief Header file for the implementation of the SubmatrixData class template
+//  \file blaze_tensor/math/views/subtensor/SubtensorData.h
+//  \brief Header file for the implementation of the SubtensorData class template
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_MATH_VIEWS_SUBMATRIX_SUBMATRIXDATA_H_
-#define _BLAZE_MATH_VIEWS_SUBMATRIX_SUBMATRIXDATA_H_
+#ifndef _BLAZE_TENSOR_MATH_VIEWS_SUBTENSOR_SUBTENSORDATA_H_
+#define _BLAZE_TENSOR_MATH_VIEWS_SUBTENSOR_SUBTENSORDATA_H_
 
 
 //*************************************************************************************************
@@ -54,15 +54,15 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class template for the data members of the Submatrix class.
-// \ingroup submatrix
+/*!\brief Auxiliary class template for the data members of the Subtensor class.
+// \ingroup subtensor
 //
-// The auxiliary SubmatrixData class template represents an abstraction of the data members of
-// the Submatrix class template. The necessary set of data members is selected depending on the
-// number of compile time submatrix arguments.
+// The auxiliary SubtensorData class template represents an abstraction of the data members of
+// the Subtensor class template. The necessary set of data members is selected depending on the
+// number of compile time subtensor arguments.
 */
-template< size_t... CSAs >  // Compile time submatrix arguments
-struct SubmatrixData
+template< size_t... CSAs >  // Compile time subtensor arguments
+struct SubtensorData
 {};
 //*************************************************************************************************
 
@@ -77,38 +77,38 @@ struct SubmatrixData
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SubmatrixData class template for zero compile time submatrix
+/*!\brief Specialization of the SubtensorData class template for zero compile time subtensor
 //        arguments.
-// \ingroup submatrix
+// \ingroup subtensor
 //
-// This specialization of SubmatrixData adapts the class template to the requirements of zero
-// compile time submatrix arguments.
+// This specialization of SubtensorData adapts the class template to the requirements of zero
+// compile time subtensor arguments.
 */
 template<>
-struct SubmatrixData<>
+struct SubtensorData<>
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args );
+   explicit inline SubtensorData( size_t rindex, size_t cindex, size_t pindex, size_t m, size_t n, size_t o, RSAs... args );
 
-   SubmatrixData( const SubmatrixData& ) = default;
+   SubtensorData( const SubtensorData& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~SubmatrixData() = default;
+   ~SubtensorData() = default;
    //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   SubmatrixData& operator=( const SubmatrixData& ) = delete;
+   SubtensorData& operator=( const SubtensorData& ) = delete;
    //@}
    //**********************************************************************************************
 
@@ -117,8 +117,10 @@ struct SubmatrixData<>
    //@{
    inline size_t row    () const noexcept;
    inline size_t column () const noexcept;
+   inline size_t page   () const noexcept;
    inline size_t rows   () const noexcept;
    inline size_t columns() const noexcept;
+   inline size_t pages  () const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -126,10 +128,12 @@ struct SubmatrixData<>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   const size_t row_;     //!< The first row of the submatrix.
-   const size_t column_;  //!< The first column of the submatrix.
-   const size_t m_;       //!< The number of rows of the submatrix.
-   const size_t n_;       //!< The number of columns of the submatrix.
+   const size_t row_;     //!< The first row of the subtensor.
+   const size_t column_;  //!< The first column of the subtensor.
+   const size_t page_;    //!< The first page of the subtensor.
+   const size_t m_;       //!< The number of rows of the subtensor.
+   const size_t n_;       //!< The number of columns of the subtensor.
+   const size_t o_;       //!< The number of pages of the subtensor.
    //@}
    //**********************************************************************************************
 };
@@ -139,20 +143,22 @@ struct SubmatrixData<>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for SubmatrixData.
+/*!\brief The constructor for SubtensorData.
 //
-// \param rindex The index of the first row of the submatrix in the given matrix.
-// \param cindex The index of the first column of the submatrix in the given matrix.
-// \param m The number of rows of the submatrix.
-// \param n The number of columns of the submatrix.
-// \param args The optional submatrix arguments.
+// \param rindex The index of the first row of the subtensor in the given tensor.
+// \param cindex The index of the first column of the subtensor in the given tensor.
+// \param m The number of rows of the subtensor.
+// \param n The number of columns of the subtensor.
+// \param args The optional subtensor arguments.
 */
-template< typename... RSAs >  // Optional submatrix arguments
-inline SubmatrixData<>::SubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n, RSAs... args )
-   : row_   ( rindex )  // The first row of the submatrix
-   , column_( cindex )  // The first column of the submatrix
-   , m_     ( m      )  // The number of rows of the submatrix
-   , n_     ( n      )  // The number of columns of the submatrix
+template< typename... RSAs >  // Optional subtensor arguments
+inline SubtensorData<>::SubtensorData( size_t rindex, size_t cindex, size_t pindex, size_t m, size_t n, size_t o, RSAs... args )
+   : row_   ( rindex )  // The first row of the subtensor
+   , column_( cindex )  // The first column of the subtensor
+   , page_  ( pindex )  // The first page of the subtensor
+   , m_     ( m      )  // The number of rows of the subtensor
+   , n_     ( n      )  // The number of columns of the subtensor
+   , o_     ( o      )  // The number of columns of the subtensor
 {
    UNUSED_PARAMETER( args... );
 }
@@ -162,11 +168,11 @@ inline SubmatrixData<>::SubmatrixData( size_t rindex, size_t cindex, size_t m, s
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the index of the first row of the submatrix in the underlying matrix.
+/*!\brief Returns the index of the first row of the subtensor in the underlying tensor.
 //
 // \return The index of the first row.
 */
-inline size_t SubmatrixData<>::row() const noexcept
+inline size_t SubtensorData<>::row() const noexcept
 {
    return row_;
 }
@@ -176,11 +182,11 @@ inline size_t SubmatrixData<>::row() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the index of the first column of the submatrix in the underlying matrix.
+/*!\brief Returns the index of the first column of the subtensor in the underlying tensor.
 //
 // \return The index of the first column.
 */
-inline size_t SubmatrixData<>::column() const noexcept
+inline size_t SubtensorData<>::column() const noexcept
 {
    return column_;
 }
@@ -190,11 +196,25 @@ inline size_t SubmatrixData<>::column() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the number of rows of the submatrix.
+/*!\brief Returns the index of the first page of the subtensor in the underlying tensor.
 //
-// \return The number of rows of the submatrix.
+// \return The index of the first page.
 */
-inline size_t SubmatrixData<>::rows() const noexcept
+inline size_t SubtensorData<>::page() const noexcept
+{
+   return page_;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of rows of the subtensor.
+//
+// \return The number of rows of the subtensor.
+*/
+inline size_t SubtensorData<>::rows() const noexcept
 {
    return m_;
 }
@@ -204,17 +224,30 @@ inline size_t SubmatrixData<>::rows() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the number of columns of the submatrix.
+/*!\brief Returns the number of columns of the subtensor.
 //
-// \return The number of columns of the submatrix.
+// \return The number of columns of the subtensor.
 */
-inline size_t SubmatrixData<>::columns() const noexcept
+inline size_t SubtensorData<>::columns() const noexcept
 {
    return n_;
 }
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of pages of the subtensor.
+//
+// \return The number of pages of the subtensor.
+*/
+inline size_t SubtensorData<>::pages() const noexcept
+{
+   return o_;
+}
+/*! \endcond */
+//*************************************************************************************************
 
 
 
@@ -226,41 +259,43 @@ inline size_t SubmatrixData<>::columns() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the SubmatrixData class template for four compile time submatrix
+/*!\brief Specialization of the SubtensorData class template for four compile time subtensor
 //        arguments.
-// \ingroup submatrix
+// \ingroup subtensor
 //
-// This specialization of SubmatrixData adapts the class template to the requirements of two
+// This specialization of SubtensorData adapts the class template to the requirements of two
 // compile time arguments.
 */
 template< size_t I    // Index of the first row
         , size_t J    // Index of the first column
+        , size_t K    // Index of the first page
         , size_t M    // Number of rows
-        , size_t N >  // Number of columns
-struct SubmatrixData<I,J,M,N>
+        , size_t N    // Number of columns
+        , size_t O >  // Number of pages
+struct SubtensorData<I,J,K,M,N,O>
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline SubmatrixData( RSAs... args );
+   explicit inline SubtensorData( RSAs... args );
 
-   SubmatrixData( const SubmatrixData& ) = default;
+   SubtensorData( const SubtensorData& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~SubmatrixData() = default;
+   ~SubtensorData() = default;
    //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   SubmatrixData& operator=( const SubmatrixData& ) = delete;
+   SubtensorData& operator=( const SubtensorData& ) = delete;
    //@}
    //**********************************************************************************************
 
@@ -269,8 +304,10 @@ struct SubmatrixData<I,J,M,N>
    //@{
    static inline constexpr size_t row    () noexcept;
    static inline constexpr size_t column () noexcept;
+   static inline constexpr size_t page   () noexcept;
    static inline constexpr size_t rows   () noexcept;
    static inline constexpr size_t columns() noexcept;
+   static inline constexpr size_t pages  () noexcept;
    //@}
    //**********************************************************************************************
 };
@@ -280,16 +317,18 @@ struct SubmatrixData<I,J,M,N>
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief The constructor for SubmatrixData.
+/*!\brief The constructor for SubtensorData.
 //
-// \param args The optional submatrix arguments.
+// \param args The optional subtensor arguments.
 */
 template< size_t I            // Index of the first row
         , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
         , size_t M            // Number of rows
-        , size_t N >          // Number of columns
-template< typename... RSAs >  // Optional submatrix arguments
-inline SubmatrixData<I,J,M,N>::SubmatrixData( RSAs... args )
+        , size_t N            // Number of columns
+        , size_t O >          // Number of pages
+template< typename... RSAs >  // Optional subtensor arguments
+inline SubtensorData<I,J,K,M,N,O>::SubtensorData( RSAs... args )
 {
    UNUSED_PARAMETER( args... );
 }
@@ -299,15 +338,17 @@ inline SubmatrixData<I,J,M,N>::SubmatrixData( RSAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the index of the first row of the submatrix in the underlying matrix.
+/*!\brief Returns the index of the first row of the subtensor in the underlying tensor.
 //
 // \return The index of the first row.
 */
-template< size_t I    // Index of the first row
-        , size_t J    // Index of the first column
-        , size_t M    // Number of rows
-        , size_t N >  // Number of columns
-inline constexpr size_t SubmatrixData<I,J,M,N>::row() noexcept
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , size_t O >          // Number of pages
+inline constexpr size_t SubtensorData<I,J,K,M,N,O>::row() noexcept
 {
    return I;
 }
@@ -317,15 +358,17 @@ inline constexpr size_t SubmatrixData<I,J,M,N>::row() noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the index of the first column of the submatrix in the underlying matrix.
+/*!\brief Returns the index of the first column of the subtensor in the underlying tensor.
 //
 // \return The index of the first column.
 */
-template< size_t I    // Index of the first row
-        , size_t J    // Index of the first column
-        , size_t M    // Number of rows
-        , size_t N >  // Number of columns
-inline constexpr size_t SubmatrixData<I,J,M,N>::column() noexcept
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , size_t O >          // Number of pages
+inline constexpr size_t SubtensorData<I,J,K,M,N,O>::column() noexcept
 {
    return J;
 }
@@ -335,15 +378,37 @@ inline constexpr size_t SubmatrixData<I,J,M,N>::column() noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the number of rows of the submatrix.
+/*!\brief Returns the index of the first page of the subtensor in the underlying tensor.
 //
-// \return The number of rows of the submatrix.
+// \return The index of the first page.
 */
-template< size_t I    // Index of the first row
-        , size_t J    // Index of the first column
-        , size_t M    // Number of rows
-        , size_t N >  // Number of columns
-inline constexpr size_t SubmatrixData<I,J,M,N>::rows() noexcept
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , size_t O >          // Number of pages
+inline constexpr size_t SubtensorData<I,J,K,M,N,O>::page() noexcept
+{
+   return K;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of rows of the subtensor.
+//
+// \return The number of rows of the subtensor.
+*/
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , size_t O >          // Number of pages
+inline constexpr size_t SubtensorData<I,J,K,M,N,O>::rows() noexcept
 {
    return M;
 }
@@ -353,17 +418,39 @@ inline constexpr size_t SubmatrixData<I,J,M,N>::rows() noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the number of columns of the submatrix.
+/*!\brief Returns the number of columns of the subtensor.
 //
-// \return The number of columns of the submatrix.
+// \return The number of columns of the subtensor.
 */
-template< size_t I    // Index of the first row
-        , size_t J    // Index of the first column
-        , size_t M    // Number of rows
-        , size_t N >  // Number of columns
-inline constexpr size_t SubmatrixData<I,J,M,N>::columns() noexcept
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , size_t O >          // Number of pages
+inline constexpr size_t SubtensorData<I,J,K,M,N,O>::columns() noexcept
 {
    return N;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Returns the number of pages of the subtensor.
+//
+// \return The number of columns of the subtensor.
+*/
+template< size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , size_t O >          // Number of pages
+inline constexpr size_t SubtensorData<I,J,K,M,N,O>::pages() noexcept
+{
+   return O;
 }
 /*! \endcond */
 //*************************************************************************************************

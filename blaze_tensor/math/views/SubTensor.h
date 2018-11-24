@@ -41,7 +41,21 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/views/Submatrix.h>
+
+#include <blaze_tensor/math/Aliases.h>
+#include <blaze_tensor/math/expressions/Forward.h>
+#include <blaze_tensor/math/expressions/TensEvalExpr.h>
+#include <blaze_tensor/math/expressions/TensMapExpr.h>
+#include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
+#include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
+#include <blaze_tensor/math/expressions/TensTensAddExpr.h>
+#include <blaze_tensor/math/expressions/TensTensMapExpr.h>
+#include <blaze_tensor/math/expressions/TensTensMultExpr.h>
+#include <blaze_tensor/math/expressions/TensTensSubExpr.h>
+#include <blaze_tensor/math/views/subtensor/DenseAligned.h>
+#include <blaze_tensor/math/views/subtensor/DenseUnaligned.h>
 
 
 namespace blaze {
@@ -118,7 +132,7 @@ inline decltype(auto) subtensor( Tensor<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned,I,J,M,N>( ~tensor, args... );
+   return subtensor<unaligned,I,J,K,M,N,O>( ~tensor, args... );
 }
 //*************************************************************************************************
 
@@ -178,16 +192,17 @@ inline decltype(auto) subtensor( Tensor<TT>& tensor, RSAs... args )
 */
 template< size_t I            // Index of the first row
         , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
         , size_t M            // Number of rows
         , size_t N            // Number of columns
+        , size_t O            // Number of pages
         , typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto) subtensor( const Tensor<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned,I,J,M,N>( ~tensor, args... );
+   return subtensor<unaligned,I,J,K,M,N,O>( ~tensor, args... );
 }
 //*************************************************************************************************
 
@@ -209,16 +224,17 @@ inline decltype(auto) subtensor( const Tensor<TT>& tensor, RSAs... args )
 */
 template< size_t I            // Index of the first row
         , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
         , size_t M            // Number of rows
         , size_t N            // Number of columns
+        , size_t O            // Number of pages
         , typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto) subtensor( Tensor<TT>&& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned,I,J,M,N>( ~tensor, args... );
+   return subtensor<unaligned,I,J,K,M,N,O>( ~tensor, args... );
 }
 //*************************************************************************************************
 
@@ -292,16 +308,17 @@ inline decltype(auto) subtensor( Tensor<TT>&& tensor, RSAs... args )
 template< AlignmentFlag AF    // Alignment flag
         , size_t I            // Index of the first row
         , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
         , size_t M            // Number of rows
         , size_t N            // Number of columns
+        , size_t O            // Number of pages
         , typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto) subtensor( Tensor<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = Subtensor_<TT,AF,I,J,M,N>;
+   using ReturnType = Subtensor_<TT,AF,I,J,K,M,N,O>;
    return ReturnType( ~tensor, args... );
 }
 //*************************************************************************************************
@@ -384,7 +401,7 @@ inline decltype(auto) subtensor( const Tensor<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const Subtensor_<const TT,AF,I,J,M,N>;
+   using ReturnType = const Subtensor_<const TT,AF,I,J,K,M,N,O>;
    return ReturnType( ~tensor, args... );
 }
 //*************************************************************************************************
@@ -414,13 +431,12 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t N            // Number of columns
         , size_t O            // Number of pages
         , typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto) subtensor( Tensor<TT>&& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = Subtensor_<TT,AF,I,J,M,N>;
+   using ReturnType = Subtensor_<TT,AF,I,J,K,M,N,O>;
    return ReturnType( ~tensor, args... );
 }
 //*************************************************************************************************
@@ -485,14 +501,13 @@ inline decltype(auto) subtensor( Tensor<TT>&& tensor, RSAs... args )
 // subject to additional checks to guarantee proper alignment.
 */
 template< typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto)
-   subtensor( Tensor<TT>& tensor, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+   subtensor( Tensor<TT>& tensor, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned>( ~tensor, row, column, m, n, args... );
+   return subtensor<unaligned>( ~tensor, row, column, page, m, n, o, args... );
 }
 //*************************************************************************************************
 
@@ -555,14 +570,13 @@ inline decltype(auto)
 // subject to additional checks to guarantee proper alignment.
 */
 template< typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto)
-   subtensor( const Tensor<TT>& tensor, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+   subtensor( const Tensor<TT>& tensor, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned>( ~tensor, row, column, m, n, args... );
+   return subtensor<unaligned>( ~tensor, row, column, page, m, n, o, args... );
 }
 //*************************************************************************************************
 
@@ -587,14 +601,13 @@ inline decltype(auto)
 // \a std::invalid_argument exception is thrown.
 */
 template< typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto)
-   subtensor( Tensor<TT>&& tensor, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+   subtensor( Tensor<TT>&& tensor, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned>( ~tensor, row, column, m, n, args... );
+   return subtensor<unaligned>( ~tensor, row, column, page, m, n, o, args... );
 }
 //*************************************************************************************************
 
@@ -671,15 +684,14 @@ inline decltype(auto)
 */
 template< AlignmentFlag AF    // Alignment flag
         , typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto)
-   subtensor( Tensor<TT>& tensor, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+   subtensor( Tensor<TT>& tensor, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subtensor_<TT,AF>;
-   return ReturnType( ~tensor, row, column, m, n, args... );
+   return ReturnType( ~tensor, row, column, page, m, n, o, args... );
 }
 //*************************************************************************************************
 
@@ -754,15 +766,14 @@ inline decltype(auto)
 */
 template< AlignmentFlag AF    // Alignment flag
         , typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto)
-   subtensor( const Tensor<TT>& tensor, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+   subtensor( const Tensor<TT>& tensor, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Subtensor_<const TT,AF>;
-   return ReturnType( ~tensor, row, column, m, n, args... );
+   return ReturnType( ~tensor, row, column, page, m, n, o, args... );
 }
 //*************************************************************************************************
 
@@ -789,15 +800,14 @@ inline decltype(auto)
 */
 template< AlignmentFlag AF    // Alignment flag
         , typename TT         // Type of the dense tensor
-        , bool SO             // Storage order
         , typename... RSAs >  // Option subtensor arguments
 inline decltype(auto)
-   subtensor( Tensor<TT>&& tensor, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+   subtensor( Tensor<TT>&& tensor, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subtensor_<TT,AF>;
-   return ReturnType( ~tensor, row, column, m, n, args... );
+   return ReturnType( ~tensor, row, column, page, m, n, o, args... );
 }
 //*************************************************************************************************
 
@@ -826,7 +836,7 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename TT         // Tensor base type of the expression
         , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto) subtensor( const MatMatAddExpr<TT>& tensor, RSAs... args )
+inline decltype(auto) subtensor( const TensTensAddExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -853,7 +863,7 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename TT         // Tensor base type of the expression
         , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto) subtensor( const MatMatSubExpr<TT>& tensor, RSAs... args )
+inline decltype(auto) subtensor( const TensTensSubExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -903,48 +913,30 @@ inline decltype(auto) subtensor( const SchurExpr<TT>& tensor, RSAs... args )
 // This function returns an expression representing the specified subtensor of the given
 // tensor/tensor multiplication.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subtensor arguments
-        , typename TT         // Tensor base type of the expression
-        , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto) subtensor( const MatMatMultExpr<TT>& tensor, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using TT1 = RemoveReference_t< LeftOperand_t< TensorType_t<TT> > >;
-   using TT2 = RemoveReference_t< RightOperand_t< TensorType_t<TT> > >;
-
-   const SubtensorData<CSAs...> sd( args... );
-
-   BLAZE_DECLTYPE_AUTO( left , (~tensor).leftOperand()  );
-   BLAZE_DECLTYPE_AUTO( right, (~tensor).rightOperand() );
-
-   const size_t begin( max( ( IsUpper_v<TT1> )
-                            ?( ( !AF && IsStrictlyUpper_v<TT1> )
-                               ?( sd.row() + 1UL )
-                               :( sd.row() ) )
-                            :( 0UL )
-                          , ( IsLower_v<TT2> )
-                            ?( ( !AF && IsStrictlyLower_v<TT2> )
-                               ?( sd.column() + 1UL )
-                               :( sd.column() ) )
-                            :( 0UL ) ) );
-   const size_t end( min( ( IsLower_v<TT1> )
-                          ?( ( IsStrictlyLower_v<TT1> && sd.rows() > 0UL )
-                             ?( sd.row() + sd.rows() - 1UL )
-                             :( sd.row() + sd.rows() ) )
-                          :( left.columns() )
-                        , ( IsUpper_v<TT2> )
-                          ?( ( IsStrictlyUpper_v<TT2> && sd.columns() > 0UL )
-                             ?( sd.column() + sd.columns() - 1UL )
-                             :( sd.column() + sd.columns() ) )
-                          :( left.columns() ) ) );
-
-   const size_t diff( ( begin < end )?( end - begin ):( 0UL ) );
-
-   return subtensor<AF>( left, sd.row(), begin, sd.rows(), diff ) *
-          subtensor<AF>( right, begin, sd.column(), diff, sd.columns() );
-}
+// template< AlignmentFlag AF    // Alignment flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename TT         // Tensor base type of the expression
+//         , typename... RSAs >  // Runtime subtensor arguments
+// inline decltype(auto) subtensor( const TensTensMultExpr<TT>& tensor, RSAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    using TT1 = RemoveReference_t< LeftOperand_t< TensorType_t<TT> > >;
+//    using TT2 = RemoveReference_t< RightOperand_t< TensorType_t<TT> > >;
+//
+//    const SubtensorData<CSAs...> sd( args... );
+//
+//    BLAZE_DECLTYPE_AUTO( left , (~tensor).leftOperand()  );
+//    BLAZE_DECLTYPE_AUTO( right, (~tensor).rightOperand() );
+//
+//    const size_t begin( 0UL );
+//    const size_t end( left.columns() );
+//
+//    const size_t diff( ( begin < end )?( end - begin ):( 0UL ) );
+//
+//    return subtensor<AF>( left, sd.row(), begin, sd.page(), sd.rows(), diff, sd.pages() ) *
+//           subtensor<AF>( right, begin, sd.column(), sd.page(), diff, sd.columns(), sd.pages() );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -960,20 +952,20 @@ inline decltype(auto) subtensor( const MatMatMultExpr<TT>& tensor, RSAs... args 
 // This function returns an expression representing the specified subtensor of the given
 // outer product.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename TT         // Tensor base type of the expression
-        , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto) subtensor( const VecTVecMultExpr<TT>& tensor, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subvector<AF,I,M>( (~tensor).leftOperand(), args... ) *
-          subvector<AF,J,N>( (~tensor).rightOperand(), args... );
-}
+// template< AlignmentFlag AF    // Alignment flag
+//         , size_t I            // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename TT         // Tensor base type of the expression
+//         , typename... RSAs >  // Runtime subtensor arguments
+// inline decltype(auto) subtensor( const VecTVecMultExpr<TT>& tensor, RSAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subvector<AF,I,M>( (~tensor).leftOperand(), args... ) *
+//           subvector<AF,J,N>( (~tensor).rightOperand(), args... );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -993,17 +985,17 @@ inline decltype(auto) subtensor( const VecTVecMultExpr<TT>& tensor, RSAs... args
 // This function returns an expression representing the specified subtensor of the given
 // outer product.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , typename TT         // Tensor base type of the expression
-        , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto)
-   subtensor( const VecTVecMultExpr<TT>& tensor, size_t row, size_t column, size_t m, size_t n, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subvector<AF>( (~tensor).leftOperand(), row, m, args... ) *
-          subvector<AF>( (~tensor).rightOperand(), column, n, args... );
-}
+// template< AlignmentFlag AF    // Alignment flag
+//         , typename TT         // Tensor base type of the expression
+//         , typename... RSAs >  // Runtime subtensor arguments
+// inline decltype(auto)
+//    subtensor( const VecTVecMultExpr<TT>& tensor, size_t row, size_t column, size_t m, size_t n, RSAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subvector<AF>( (~tensor).leftOperand(), row, m, args... ) *
+//           subvector<AF>( (~tensor).rightOperand(), column, n, args... );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1024,7 +1016,7 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename TT         // Tensor base type of the expression
         , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto) subtensor( const MatScalarMultExpr<TT>& tensor, RSAs... args )
+inline decltype(auto) subtensor( const TensScalarMultExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1050,7 +1042,7 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename TT         // Tensor base type of the expression
         , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto) subtensor( const MatScalarDivExpr<TT>& tensor, RSAs... args )
+inline decltype(auto) subtensor( const TensScalarDivExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1076,7 +1068,7 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename TT         // Tensor base type of the expression
         , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto) subtensor( const MatMapExpr<TT>& tensor, RSAs... args )
+inline decltype(auto) subtensor( const TensMapExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1102,7 +1094,7 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename TT         // Tensor base type of the expression
         , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto) subtensor( const MatMatMapExpr<TT>& tensor, RSAs... args )
+inline decltype(auto) subtensor( const TensTensMapExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1130,7 +1122,7 @@ template< AlignmentFlag AF    // Alignment flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename TT         // Tensor base type of the expression
         , typename... RSAs >  // Runtime subtensor arguments
-inline decltype(auto) subtensor( const MatEvalExpr<TT>& tensor, RSAs... args )
+inline decltype(auto) subtensor( const TensEvalExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1207,15 +1199,17 @@ inline decltype(auto) subtensor( const DeclExpr<TT>& tensor, RSAs... args )
 template< AlignmentFlag AF    // Alignment flag
         , size_t I            // Index of the first row
         , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
         , size_t M            // Number of rows
         , size_t N            // Number of columns
+        , size_t O            // Number of pages
         , typename TT         // Tensor base type of the expression
         , typename... RSAs >  // Optional subtensor arguments
 inline decltype(auto) subtensor( const MatTransExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( subtensor<AF,J,I,N,M>( (~tensor).operand(), args... ) );
+   return trans( subtensor<AF,I,J,K,M,N,O>( (~tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1237,16 +1231,16 @@ inline decltype(auto) subtensor( const MatTransExpr<TT>& tensor, RSAs... args )
 // This function returns an expression representing the specified subtensor of the given tensor
 // transpose operation.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , typename TT         // Tensor base type of the expression
-        , typename... RSAs >  // Optional subtensor arguments
-inline decltype(auto)
-   subtensor( const MatTransExpr<TT>& tensor, size_t row, size_t column, size_t m, size_t n, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( subtensor<AF>( (~tensor).operand(), column, row, n, m, args... ) );
-}
+// template< AlignmentFlag AF    // Alignment flag
+//         , typename TT         // Tensor base type of the expression
+//         , typename... RSAs >  // Optional subtensor arguments
+// inline decltype(auto)
+//    subtensor( const TensTransExpr<TT>& tensor, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, RSAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return trans( subtensor<AF>( (~tensor).operand(), column, row, page, n, m, o, args... ) );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1265,25 +1259,28 @@ inline decltype(auto)
 template< AlignmentFlag AF1   // Required alignment flag
         , size_t I1           // Required index of the first row
         , size_t J1           // Required index of the first column
+        , size_t K1           // Required index of the first page
         , size_t M1           // Required number of rows
         , size_t N1           // Required number of columns
+        , size_t O1           // Required number of pages
         , typename TT         // Type of the sparse subtensor
         , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
         , size_t I2           // Present index of the first row
         , size_t J2           // Present index of the first column
+        , size_t K2           // Present index of the first page
         , size_t M2           // Present number of rows
         , size_t N2           // Present number of columns
+        , size_t O2           // Present number of pages
         , typename... RSAs >  // Optional subtensor arguments
-inline decltype(auto) subtensor( Subtensor<TT,AF2,SO,DF,I2,J2,M2,N2>& sm, RSAs... args )
+inline decltype(auto) subtensor( Subtensor<TT,AF2,I2,J2,K2,M2,N2,O2>& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_STATIC_ASSERT_MSG( I1 + M1 <= M2, "Invalid subtensor specification" );
    BLAZE_STATIC_ASSERT_MSG( J1 + N1 <= N2, "Invalid subtensor specification" );
+   BLAZE_STATIC_ASSERT_MSG( K1 + O1 <= K2, "Invalid subtensor specification" );
 
-   return subtensor<AF1,I1+I2,J1+J2,M1,N1>( sm.operand(), args... );
+   return subtensor<AF1,I1+I2,J1+J2,K1+K2,M1,N1,O1>( sm.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1304,25 +1301,28 @@ inline decltype(auto) subtensor( Subtensor<TT,AF2,SO,DF,I2,J2,M2,N2>& sm, RSAs..
 template< AlignmentFlag AF1   // Required alignment flag
         , size_t I1           // Required index of the first row
         , size_t J1           // Required index of the first column
+        , size_t K1           // Required index of the first page
         , size_t M1           // Required number of rows
         , size_t N1           // Required number of columns
+        , size_t O1           // Required number of pages
         , typename TT         // Type of the sparse subtensor
         , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
         , size_t I2           // Present index of the first row
         , size_t J2           // Present index of the first column
+        , size_t K2           // Present index of the first page
         , size_t M2           // Present number of rows
         , size_t N2           // Present number of columns
+        , size_t O2           // Present number of pages
         , typename... RSAs >  // Optional subtensor arguments
-inline decltype(auto) subtensor( const Subtensor<TT,AF2,SO,DF,I2,J2,M2,N2>& sm, RSAs... args )
+inline decltype(auto) subtensor( const Subtensor<TT,AF2,I2,J2,K2,M2,N2,O2>& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_STATIC_ASSERT_MSG( I1 + M1 <= M2, "Invalid subtensor specification" );
    BLAZE_STATIC_ASSERT_MSG( J1 + N1 <= N2, "Invalid subtensor specification" );
+   BLAZE_STATIC_ASSERT_MSG( K1 + O1 <= K2, "Invalid subtensor specification" );
 
-   return subtensor<AF1,I1+I2,J1+J2,M1,N1>( sm.operand(), args... );
+   return subtensor<AF1,I1+I2,J1+J2,K1+K2,M1,N1,O1>( sm.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1343,25 +1343,28 @@ inline decltype(auto) subtensor( const Subtensor<TT,AF2,SO,DF,I2,J2,M2,N2>& sm, 
 template< AlignmentFlag AF1   // Required alignment flag
         , size_t I1           // Required index of the first row
         , size_t J1           // Required index of the first column
+        , size_t K1           // Required index of the first page
         , size_t M1           // Required number of rows
         , size_t N1           // Required number of columns
+        , size_t O1           // Required number of pages
         , typename TT         // Type of the sparse subtensor
         , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
         , size_t I2           // Present index of the first row
         , size_t J2           // Present index of the first column
+        , size_t K2           // Present index of the first page
         , size_t M2           // Present number of rows
         , size_t N2           // Present number of columns
+        , size_t O2           // Present number of pages
         , typename... RSAs >  // Optional subtensor arguments
-inline decltype(auto) subtensor( Subtensor<TT,AF2,SO,DF,I2,J2,M2,N2>&& sm, RSAs... args )
+inline decltype(auto) subtensor( Subtensor<TT,AF2,I2,J2,K2,M2,N2,O2>&& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_STATIC_ASSERT_MSG( I1 + M1 <= M2, "Invalid subtensor specification" );
    BLAZE_STATIC_ASSERT_MSG( J1 + N1 <= N2, "Invalid subtensor specification" );
+   BLAZE_STATIC_ASSERT_MSG( K1 + O1 <= K2, "Invalid subtensor specification" );
 
-   return subtensor<AF1,I1+I2,J1+J2,M1,N1>( sm.operand(), args... );
+   return subtensor<AF1,I1+I2,J1+J2,K1+K2,M1,N1,O1>( sm.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1382,30 +1385,31 @@ inline decltype(auto) subtensor( Subtensor<TT,AF2,SO,DF,I2,J2,M2,N2>&& sm, RSAs.
 template< AlignmentFlag AF1   // Required alignment flag
         , size_t I            // Index of the first row
         , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
         , size_t M            // Number of rows
         , size_t N            // Number of columns
+        , size_t O            // Number of pages
         , typename TT         // Type of the sparse subtensor
         , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
         , typename... RSAs >  // Optional subtensor arguments
-inline decltype(auto) subtensor( Subtensor<TT,AF2,SO,DF>& sm, RSAs... args )
+inline decltype(auto) subtensor( Subtensor<TT,AF2>& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
+      if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) || ( K + O > sm.pages() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtensor specification" );
       }
    }
    else {
       BLAZE_USER_ASSERT( I + M <= sm.rows()   , "Invalid subtensor specification" );
       BLAZE_USER_ASSERT( J + N <= sm.columns(), "Invalid subtensor specification" );
+      BLAZE_USER_ASSERT( K + O <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
+   return subtensor<AF1>( sm.operand(), sm.row() + I, sm.column() + J, sm.pages() + K, M, N, O, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1427,30 +1431,31 @@ inline decltype(auto) subtensor( Subtensor<TT,AF2,SO,DF>& sm, RSAs... args )
 template< AlignmentFlag AF1   // Required alignment flag
         , size_t I            // Index of the first row
         , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
         , size_t M            // Number of rows
         , size_t N            // Number of columns
+        , size_t O            // Number of pages
         , typename TT         // Type of the sparse subtensor
         , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
         , typename... RSAs >  // Optional subtensor arguments
-inline decltype(auto) subtensor( const Subtensor<TT,AF2,SO,DF>& sm, RSAs... args )
+inline decltype(auto) subtensor( const Subtensor<TT,AF2>& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
+      if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) || ( K + O > sm.pages() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtensor specification" );
       }
    }
    else {
       BLAZE_USER_ASSERT( I + M <= sm.rows()   , "Invalid subtensor specification" );
       BLAZE_USER_ASSERT( J + N <= sm.columns(), "Invalid subtensor specification" );
+      BLAZE_USER_ASSERT( K + O <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
+   return subtensor<AF1>( sm.operand(), sm.row() + I, sm.column() + J, sm.pages() + K, M, N, O, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1472,30 +1477,31 @@ inline decltype(auto) subtensor( const Subtensor<TT,AF2,SO,DF>& sm, RSAs... args
 template< AlignmentFlag AF1   // Required alignment flag
         , size_t I            // Index of the first row
         , size_t J            // Index of the first column
+        , size_t K            // Index of the first page
         , size_t M            // Number of rows
         , size_t N            // Number of columns
+        , size_t O            // Number of pages
         , typename TT         // Type of the sparse subtensor
         , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
         , typename... RSAs >  // Optional subtensor arguments
-inline decltype(auto) subtensor( Subtensor<TT,AF2,SO,DF>&& sm, RSAs... args )
+inline decltype(auto) subtensor( Subtensor<TT,AF2>&& sm, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) ) {
+      if( ( I + M > sm.rows() ) || ( J + N > sm.columns() ) || ( K + O > sm.pages() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtensor specification" );
       }
    }
    else {
       BLAZE_USER_ASSERT( I + M <= sm.rows()   , "Invalid subtensor specification" );
       BLAZE_USER_ASSERT( J + N <= sm.columns(), "Invalid subtensor specification" );
+      BLAZE_USER_ASSERT( K + O <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.row() + I, sm.column() + J, M, N, args... );
+   return subtensor<AF1>( sm.operand(), sm.row() + I, sm.column() + J, sm.pages() + K, M, N, O, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1520,29 +1526,28 @@ inline decltype(auto) subtensor( Subtensor<TT,AF2,SO,DF>&& sm, RSAs... args )
 template< AlignmentFlag AF1   // Required alignment flag
         , typename TT         // Type of the sparse subtensor
         , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename... RSAs >  // Optional subtensor arguments
 inline decltype(auto)
-   subtensor( Subtensor<TT,AF2,SO,DF,CSAs...>& sm, size_t row, size_t column,
-              size_t m, size_t n, RSAs... args )
+   subtensor( Subtensor<TT,AF2,CSAs...>& sm, size_t row, size_t column, size_t page,
+              size_t m, size_t n, size_t o, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
+      if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) || ( page + o > sm.pages() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtensor specification" );
       }
    }
    else {
       BLAZE_USER_ASSERT( row    + m <= sm.rows()   , "Invalid subtensor specification" );
       BLAZE_USER_ASSERT( column + n <= sm.columns(), "Invalid subtensor specification" );
+      BLAZE_USER_ASSERT( page   + o <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
+   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, sm.pages() + page, m, n, o, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1568,29 +1573,28 @@ inline decltype(auto)
 template< AlignmentFlag AF1   // Required alignment flag
         , typename TT         // Type of the sparse subtensor
         , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename... RSAs >  // Optional subtensor arguments
 inline decltype(auto)
-   subtensor( const Subtensor<TT,AF2,SO,DF,CSAs...>& sm, size_t row, size_t column,
-              size_t m, size_t n, RSAs... args )
+   subtensor( const Subtensor<TT,AF2,CSAs...>& sm, size_t row, size_t column, size_t page,
+              size_t m, size_t n, size_t o, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
+      if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) || ( page + o > sm.pages() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtensor specification" );
       }
    }
    else {
       BLAZE_USER_ASSERT( row    + m <= sm.rows()   , "Invalid subtensor specification" );
       BLAZE_USER_ASSERT( column + n <= sm.columns(), "Invalid subtensor specification" );
+      BLAZE_USER_ASSERT( page   + o <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
+   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, sm.pages() + page, m, n, o, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1616,29 +1620,28 @@ inline decltype(auto)
 template< AlignmentFlag AF1   // Required alignment flag
         , typename TT         // Type of the sparse subtensor
         , AlignmentFlag AF2   // Present alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
         , size_t... CSAs      // Compile time subtensor arguments
         , typename... RSAs >  // Optional subtensor arguments
 inline decltype(auto)
-   subtensor( Subtensor<TT,AF2,SO,DF,CSAs...>&& sm, size_t row, size_t column,
-              size_t m, size_t n, RSAs... args )
+   subtensor( Subtensor<TT,AF2,CSAs...>&& sm, size_t row, size_t column, size_t page,
+              size_t m, size_t n, size_t o, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) ) {
+      if( ( row + m > sm.rows() ) || ( column + n > sm.columns() ) || ( page + o > sm.pages() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtensor specification" );
       }
    }
    else {
       BLAZE_USER_ASSERT( row    + m <= sm.rows()   , "Invalid subtensor specification" );
       BLAZE_USER_ASSERT( column + n <= sm.columns(), "Invalid subtensor specification" );
+      BLAZE_USER_ASSERT( page   + o <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, m, n, args... );
+   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, sm.page() + page, m, n, o, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1664,34 +1667,34 @@ inline decltype(auto)
 // This function returns an expression representing the specified subvector of the given
 // tensor/vector multiplication.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename VT         // Vector base type of the expression
-        , typename... RSAs >  // Runtime subvector arguments
-inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using TT = RemoveReference_t< LeftOperand_t< VectorType_t<VT> > >;
-
-   const SubvectorData<CSAs...> sd( args... );
-
-   BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
-   BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
-
-   const size_t column( ( IsUpper_v<TT> )
-                        ?( ( !AF && IsStrictlyUpper_v<TT> )?( sd.offset() + 1UL ):( sd.offset() ) )
-                        :( 0UL ) );
-   const size_t n( ( IsLower_v<TT> )
-                   ?( ( IsUpper_v<TT> )?( sd.size() )
-                                       :( ( IsStrictlyLower_v<TT> && sd.size() > 0UL )
-                                          ?( sd.offset() + sd.size() - 1UL )
-                                          :( sd.offset() + sd.size() ) ) )
-                   :( ( IsUpper_v<TT> )?( left.columns() - column )
-                                       :( left.columns() ) ) );
-
-   return subtensor<AF>( left, sd.offset(), column, sd.size(), n ) * subvector<AF>( right, column, n );
-}
+// template< AlignmentFlag AF    // Alignment flag
+//         , size_t... CSAs      // Compile time subvector arguments
+//         , typename VT         // Vector base type of the expression
+//         , typename... RSAs >  // Runtime subvector arguments
+// inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    using TT = RemoveReference_t< LeftOperand_t< VectorType_t<VT> > >;
+//
+//    const SubvectorData<CSAs...> sd( args... );
+//
+//    BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
+//    BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
+//
+//    const size_t column( ( IsUpper_v<TT> )
+//                         ?( ( !AF && IsStrictlyUpper_v<TT> )?( sd.offset() + 1UL ):( sd.offset() ) )
+//                         :( 0UL ) );
+//    const size_t n( ( IsLower_v<TT> )
+//                    ?( ( IsUpper_v<TT> )?( sd.size() )
+//                                        :( ( IsStrictlyLower_v<TT> && sd.size() > 0UL )
+//                                           ?( sd.offset() + sd.size() - 1UL )
+//                                           :( sd.offset() + sd.size() ) ) )
+//                    :( ( IsUpper_v<TT> )?( left.columns() - column )
+//                                        :( left.columns() ) ) );
+//
+//    return subtensor<AF>( left, sd.offset(), column, sd.size(), n ) * subvector<AF>( right, column, n );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1708,34 +1711,34 @@ inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args 
 // This function returns an expression representing the specified subvector of the given
 // vector/tensor multiplication.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename VT         // Vector base type of the expression
-        , typename... RSAs >  // Runtime subvector arguments
-inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   using TT = RemoveReference_t< RightOperand_t< VectorType_t<VT> > >;
-
-   const SubvectorData<CSAs...> sd( args... );
-
-   BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
-   BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
-
-   const size_t row( ( IsLower_v<TT> )
-                     ?( ( !AF && IsStrictlyLower_v<TT> )?( sd.offset() + 1UL ):( sd.offset() ) )
-                     :( 0UL ) );
-   const size_t m( ( IsUpper_v<TT> )
-                   ?( ( IsLower_v<TT> )?( sd.size() )
-                                       :( ( IsStrictlyUpper_v<TT> && sd.size() > 0UL )
-                                          ?( sd.offset() + sd.size() - 1UL )
-                                          :( sd.offset() + sd.size() ) ) )
-                   :( ( IsLower_v<TT> )?( right.rows() - row )
-                                       :( right.rows() ) ) );
-
-   return subvector<AF>( left, row, m ) * subtensor<AF>( right, row, sd.offset(), m, sd.size() );
-}
+// template< AlignmentFlag AF    // Alignment flag
+//         , size_t... CSAs      // Compile time subvector arguments
+//         , typename VT         // Vector base type of the expression
+//         , typename... RSAs >  // Runtime subvector arguments
+// inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    using TT = RemoveReference_t< RightOperand_t< VectorType_t<VT> > >;
+//
+//    const SubvectorData<CSAs...> sd( args... );
+//
+//    BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
+//    BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
+//
+//    const size_t row( ( IsLower_v<TT> )
+//                      ?( ( !AF && IsStrictlyLower_v<TT> )?( sd.offset() + 1UL ):( sd.offset() ) )
+//                      :( 0UL ) );
+//    const size_t m( ( IsUpper_v<TT> )
+//                    ?( ( IsLower_v<TT> )?( sd.size() )
+//                                        :( ( IsStrictlyUpper_v<TT> && sd.size() > 0UL )
+//                                           ?( sd.offset() + sd.size() - 1UL )
+//                                           :( sd.offset() + sd.size() ) ) )
+//                    :( ( IsLower_v<TT> )?( right.rows() - row )
+//                                        :( right.rows() ) ) );
+//
+//    return subvector<AF>( left, row, m ) * subtensor<AF>( right, row, sd.offset(), m, sd.size() );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1752,20 +1755,20 @@ inline decltype(auto) subvector( const TVecMatMultExpr<VT>& vector, RSAs... args
 // This function returns an expression representing the specified subvector of the given
 // column-wise tensor reduction operation.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename VT         // Vector base type of the expression
-        , typename... RSAs >  // Runtime subvector arguments
-inline decltype(auto) subvector( const MatReduceExpr<VT,columnwise>& vector, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const SubvectorData<CSAs...> sd( args... );
-   const size_t M( (~vector).operand().rows() );
-
-   decltype(auto) sm( subtensor<AF>( (~vector).operand(), 0UL, sd.offset(), M, sd.size() ) );
-   return reduce<columnwise>( sm, (~vector).operation() );
-}
+// template< AlignmentFlag AF    // Alignment flag
+//         , size_t... CSAs      // Compile time subvector arguments
+//         , typename VT         // Vector base type of the expression
+//         , typename... RSAs >  // Runtime subvector arguments
+// inline decltype(auto) subvector( const MatReduceExpr<VT,columnwise>& vector, RSAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    const SubvectorData<CSAs...> sd( args... );
+//    const size_t M( (~vector).operand().rows() );
+//
+//    decltype(auto) sm( subtensor<AF>( (~vector).operand(), 0UL, sd.offset(), M, sd.size() ) );
+//    return reduce<columnwise>( sm, (~vector).operation() );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1782,20 +1785,20 @@ inline decltype(auto) subvector( const MatReduceExpr<VT,columnwise>& vector, RSA
 // This function returns an expression representing the specified subvector of the given row-wise
 // tensor reduction operation.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , size_t... CSAs      // Compile time subvector arguments
-        , typename VT         // Vector base type of the expression
-        , typename... RSAs >  // Runtime subvector arguments
-inline decltype(auto) subvector( const MatReduceExpr<VT,rowwise>& vector, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const SubvectorData<CSAs...> sd( args... );
-   const size_t N( (~vector).operand().columns() );
-
-   decltype(auto) sm( subtensor<AF>( (~vector).operand(), sd.offset(), 0UL, sd.size(), N ) );
-   return reduce<rowwise>( sm, (~vector).operation() );
-}
+// template< AlignmentFlag AF    // Alignment flag
+//         , size_t... CSAs      // Compile time subvector arguments
+//         , typename VT         // Vector base type of the expression
+//         , typename... RSAs >  // Runtime subvector arguments
+// inline decltype(auto) subvector( const MatReduceExpr<VT,rowwise>& vector, RSAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    const SubvectorData<CSAs...> sd( args... );
+//    const size_t N( (~vector).operand().columns() );
+//
+//    decltype(auto) sm( subtensor<AF>( (~vector).operand(), sd.offset(), 0UL, sd.size(), N ) );
+//    return reduce<rowwise>( sm, (~vector).operation() );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1819,24 +1822,26 @@ inline decltype(auto) subvector( const MatReduceExpr<VT,rowwise>& vector, RSAs..
 //
 // This function returns an expression representing the specified row of the given subtensor.
 */
-template< size_t I1           // Row index
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
-
-   return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
-}
+// template< size_t I1           // Row index
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t K            // Index of the first page
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , size_t O            // Number of pages
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) row( Subtensor<TT,AF,I2,J,K,M,N,O>& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
+//
+//    return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1853,24 +1858,24 @@ inline decltype(auto) row( Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
 // This function returns an expression representing the specified row of the given constant
 // subtensor.
 */
-template< size_t I1           // Row index
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( const Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
-
-   return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
-}
+// template< size_t I1           // Row index
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) row( const Subtensor<TT,AF,I2,J,M,N>& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
+//
+//    return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1887,24 +1892,24 @@ inline decltype(auto) row( const Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RRAs... ar
 // This function returns an expression representing the specified row of the given temporary
 // subtensor.
 */
-template< size_t I1           // Row index
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( Subtensor<TT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
-
-   return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
-}
+// template< size_t I1           // Row index
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) row( Subtensor<TT,AF,I2,J,M,N>&& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
+//
+//    return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1922,32 +1927,32 @@ inline decltype(auto) row( Subtensor<TT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
 //
 // This function returns an expression representing the specified row of the given subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( Subtensor<TT,AF,SO,DF,I,J,M,N>& sm, size_t index, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( index >= M ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
-   }
-
-   return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I            // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) row( Subtensor<TT,AF,I,J,K,M,N,O>& sm, size_t index, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( index >= M ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
+//    }
+//
+//    return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1966,32 +1971,32 @@ inline decltype(auto) row( Subtensor<TT,AF,SO,DF,I,J,M,N>& sm, size_t index, RRA
 // This function returns an expression representing the specified row of the given constant
 // subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( const Subtensor<TT,AF,SO,DF,I,J,M,N>& sm, size_t index, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( index >= M ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
-   }
-
-   return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I            // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) row( const Subtensor<TT,AF,I,J,K,M,N,O>& sm, size_t index, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( index >= M ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
+//    }
+//
+//    return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2010,32 +2015,32 @@ inline decltype(auto) row( const Subtensor<TT,AF,SO,DF,I,J,M,N>& sm, size_t inde
 // This function returns an expression representing the specified row of the given temporary
 // subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) row( Subtensor<TT,AF,SO,DF,I,J,M,N>&& sm, size_t index, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( index >= M ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
-   }
-
-   return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I            // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) row( Subtensor<TT,AF,I,J,K,M,N,O>&& sm, size_t index, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( index >= M ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
+//    }
+//
+//    return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2052,33 +2057,33 @@ inline decltype(auto) row( Subtensor<TT,AF,SO,DF,I,J,M,N>&& sm, size_t index, RR
 //
 // This function returns an expression representing the specified row of the given subtensor.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Subtensor<TT,AF,SO,DF>& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const RowData<CRAs...> rd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( rd.row() >= sm.rows() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
-   }
-
-   const size_t index( rd.row() + sm.row() );
-
-   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
-}
+// template< size_t... CRAs      // Compile time row arguments
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RRAs >  // Runtime row arguments
+// inline decltype(auto) row( Subtensor<TT,AF>& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    const RowData<CRAs...> rd( args... );
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( rd.row() >= sm.rows() ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
+//    }
+//
+//    const size_t index( rd.row() + sm.row() );
+//
+//    return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2096,33 +2101,33 @@ inline decltype(auto) row( Subtensor<TT,AF,SO,DF>& sm, RRAs... args )
 // This function returns an expression representing the specified row of the given constant
 // subtensor.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( const Subtensor<TT,AF,SO,DF>& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const RowData<CRAs...> rd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( rd.row() >= sm.rows() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
-   }
-
-   const size_t index( rd.row() + sm.row() );
-
-   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
-}
+// template< size_t... CRAs      // Compile time row arguments
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RRAs >  // Runtime row arguments
+// inline decltype(auto) row( const Subtensor<TT,AF>& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    const RowData<CRAs...> rd( args... );
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( rd.row() >= sm.rows() ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
+//    }
+//
+//    const size_t index( rd.row() + sm.row() );
+//
+//    return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2140,33 +2145,33 @@ inline decltype(auto) row( const Subtensor<TT,AF,SO,DF>& sm, RRAs... args )
 // This function returns an expression representing the specified row of the given temporary
 // subtensor.
 */
-template< size_t... CRAs      // Compile time row arguments
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RRAs >  // Runtime row arguments
-inline decltype(auto) row( Subtensor<TT,AF,SO,DF>&& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const RowData<CRAs...> rd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( rd.row() >= sm.rows() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
-   }
-
-   const size_t index( rd.row() + sm.row() );
-
-   return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
-}
+// template< size_t... CRAs      // Compile time row arguments
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RRAs >  // Runtime row arguments
+// inline decltype(auto) row( Subtensor<TT,AF>&& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    const RowData<CRAs...> rd( args... );
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( rd.row() >= sm.rows() ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
+//    }
+//
+//    const size_t index( rd.row() + sm.row() );
+//
+//    return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2190,24 +2195,24 @@ inline decltype(auto) row( Subtensor<TT,AF,SO,DF>&& sm, RRAs... args )
 //
 // This function returns an expression representing the specified rows of the given subtensor.
 */
-template< size_t I1           // First row index
-        , size_t... Is        // Remaining row indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) rows( Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subtensor<0UL,J,sizeof...(Is)+1UL,N>(
-      rows( sm.operand(), make_shifted_index_subsequence<I2,M,I1,Is...>(), args... ), unchecked );
-}
+// template< size_t I1           // First row index
+//         , size_t... Is        // Remaining row indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) rows( Subtensor<TT,AF,I2,J,M,N>& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subtensor<0UL,J,sizeof...(Is)+1UL,N>(
+//       rows( sm.operand(), make_shifted_index_subsequence<I2,M,I1,Is...>(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2224,24 +2229,24 @@ inline decltype(auto) rows( Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
 // This function returns an expression representing the specified rows of the given constant
 // subtensor.
 */
-template< size_t I1           // First row index
-        , size_t... Is        // Remaining row indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) rows( const Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subtensor<0UL,J,sizeof...(Is)+1UL,N>(
-      rows( sm.operand(), make_shifted_index_subsequence<I2,M,I1,Is...>(), args... ), unchecked );
-}
+// template< size_t I1           // First row index
+//         , size_t... Is        // Remaining row indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) rows( const Subtensor<TT,AF,I2,J,M,N>& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subtensor<0UL,J,sizeof...(Is)+1UL,N>(
+//       rows( sm.operand(), make_shifted_index_subsequence<I2,M,I1,Is...>(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2258,24 +2263,24 @@ inline decltype(auto) rows( const Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RRAs... a
 // This function returns an expression representing the specified rows of the given temporary
 // subtensor.
 */
-template< size_t I1           // First row index
-        , size_t... Is        // Remaining row indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) rows( Subtensor<TT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subtensor<0UL,J,sizeof...(Is)+1UL,N>(
-      rows( sm.operand(), make_shifted_index_subsequence<I2,M,I1,Is...>(), args... ), unchecked );
-}
+// template< size_t I1           // First row index
+//         , size_t... Is        // Remaining row indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) rows( Subtensor<TT,AF,I2,J,M,N>&& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subtensor<0UL,J,sizeof...(Is)+1UL,N>(
+//       rows( sm.operand(), make_shifted_index_subsequence<I2,M,I1,Is...>(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2292,31 +2297,31 @@ inline decltype(auto) rows( Subtensor<TT,AF,SO,DF,I2,J,M,N>&& sm, RRAs... args )
 //
 // This function returns an expression representing the specified rows of the given subtensor.
 */
-template< size_t I1           // First row index
-        , size_t... Is        // Remaining row indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) rows( Subtensor<TT,AF,SO,DF>& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I1, Is... };
-      for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( sm.rows() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-         }
-      }
-   }
-
-   return subtensor( rows( sm.operand(), { I1+sm.row(), Is+sm.row()... }, args... ),
-                     0UL, sm.column(), sizeof...(Is)+1UL, sm.columns(), unchecked );
-}
+// template< size_t I1           // First row index
+//         , size_t... Is        // Remaining row indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) rows( Subtensor<TT,AF>& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       static constexpr size_t indices[] = { I1, Is... };
+//       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
+//          if( sm.rows() <= indices[i] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+//          }
+//       }
+//    }
+//
+//    return subtensor( rows( sm.operand(), { I1+sm.row(), Is+sm.row()... }, args... ),
+//                      0UL, sm.column(), sizeof...(Is)+1UL, sm.columns(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2334,31 +2339,31 @@ inline decltype(auto) rows( Subtensor<TT,AF,SO,DF>& sm, RRAs... args )
 // This function returns an expression representing the specified rows of the given constant
 // subtensor.
 */
-template< size_t I1           // First row index
-        , size_t... Is        // Remaining row indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) rows( const Subtensor<TT,AF,SO,DF>& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I1, Is... };
-      for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( sm.rows() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-         }
-      }
-   }
-
-   return subtensor( rows( sm.operand(), { I1+sm.row(), Is+sm.row()... }, args... ),
-                     0UL, sm.column(), sizeof...(Is)+1UL, sm.columns(), unchecked );
-}
+// template< size_t I1           // First row index
+//         , size_t... Is        // Remaining row indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) rows( const Subtensor<TT,AF>& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       static constexpr size_t indices[] = { I1, Is... };
+//       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
+//          if( sm.rows() <= indices[i] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+//          }
+//       }
+//    }
+//
+//    return subtensor( rows( sm.operand(), { I1+sm.row(), Is+sm.row()... }, args... ),
+//                      0UL, sm.column(), sizeof...(Is)+1UL, sm.columns(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2376,31 +2381,31 @@ inline decltype(auto) rows( const Subtensor<TT,AF,SO,DF>& sm, RRAs... args )
 // This function returns an expression representing the specified rows of the given temporary
 // subtensor.
 */
-template< size_t I1           // First row index
-        , size_t... Is        // Remaining row indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto) rows( Subtensor<TT,AF,SO,DF>&& sm, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I1, Is... };
-      for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( sm.rows() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-         }
-      }
-   }
-
-   return subtensor( rows( sm.operand(), { I1+sm.row(), Is+sm.row()... }, args... ),
-                     0UL, sm.column(), sizeof...(Is)+1UL, sm.columns(), unchecked );
-}
+// template< size_t I1           // First row index
+//         , size_t... Is        // Remaining row indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto) rows( Subtensor<TT,AF>&& sm, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       static constexpr size_t indices[] = { I1, Is... };
+//       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
+//          if( sm.rows() <= indices[i] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+//          }
+//       }
+//    }
+//
+//    return subtensor( rows( sm.operand(), { I1+sm.row(), Is+sm.row()... }, args... ),
+//                      0UL, sm.column(), sizeof...(Is)+1UL, sm.columns(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2419,35 +2424,35 @@ inline decltype(auto) rows( Subtensor<TT,AF,SO,DF>&& sm, RRAs... args )
 //
 // This function returns an expression representing the specified rows of the given subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time subtensor arguments
-        , typename T          // Type of the row indices
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto)
-   rows( Subtensor<TT,AF,SO,DF,CSAs...>& sm, const T* indices, size_t n, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [row=sm.row()]( size_t& index ){ index += row; } );
-
-   return subtensor( rows( sm.operand(), newIndices.data(), n, args... ),
-                     0UL, sm.column(), n, sm.columns(), unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename T          // Type of the row indices
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto)
+//    rows( Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       for( size_t i=0UL; i<n; ++i ) {
+//          if( sm.rows() <= indices[i] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
+//          }
+//       }
+//    }
+//
+//    SmallArray<size_t,128UL> newIndices( indices, indices+n );
+//    std::for_each( newIndices.begin(), newIndices.end(),
+//                   [row=sm.row()]( size_t& index ){ index += row; } );
+//
+//    return subtensor( rows( sm.operand(), newIndices.data(), n, args... ),
+//                      0UL, sm.column(), n, sm.columns(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2467,35 +2472,35 @@ inline decltype(auto)
 // This function returns an expression representing the specified rows of the given constant
 // subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time subtensor arguments
-        , typename T          // Type of the row indices
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto)
-   rows( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, const T* indices, size_t n, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [row=sm.row()]( size_t& index ){ index += row; } );
-
-   return subtensor( rows( sm.operand(), newIndices.data(), n, args... ),
-                     0UL, sm.column(), n, sm.columns(), unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename T          // Type of the row indices
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto)
+//    rows( const Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       for( size_t i=0UL; i<n; ++i ) {
+//          if( sm.rows() <= indices[i] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
+//          }
+//       }
+//    }
+//
+//    SmallArray<size_t,128UL> newIndices( indices, indices+n );
+//    std::for_each( newIndices.begin(), newIndices.end(),
+//                   [row=sm.row()]( size_t& index ){ index += row; } );
+//
+//    return subtensor( rows( sm.operand(), newIndices.data(), n, args... ),
+//                      0UL, sm.column(), n, sm.columns(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2515,35 +2520,35 @@ inline decltype(auto)
 // This function returns an expression representing the specified rows of the given temporary
 // subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time subtensor arguments
-        , typename T          // Type of the row indices
-        , typename... RRAs >  // Optional row arguments
-inline decltype(auto)
-   rows( Subtensor<TT,AF,SO,DF,CSAs...>&& sm, const T* indices, size_t n, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= indices[i] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [row=sm.row()]( size_t& index ){ index += row; } );
-
-   return subtensor( rows( sm.operand(), newIndices.data(), n, args... ),
-                     0UL, sm.column(), n, sm.columns(), unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename T          // Type of the row indices
+//         , typename... RRAs >  // Optional row arguments
+// inline decltype(auto)
+//    rows( Subtensor<TT,AF,CSAs...>&& sm, const T* indices, size_t n, RRAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       for( size_t i=0UL; i<n; ++i ) {
+//          if( sm.rows() <= indices[i] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
+//          }
+//       }
+//    }
+//
+//    SmallArray<size_t,128UL> newIndices( indices, indices+n );
+//    std::for_each( newIndices.begin(), newIndices.end(),
+//                   [row=sm.row()]( size_t& index ){ index += row; } );
+//
+//    return subtensor( rows( sm.operand(), newIndices.data(), n, args... ),
+//                      0UL, sm.column(), n, sm.columns(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2567,24 +2572,24 @@ inline decltype(auto)
 //
 // This function returns an expression representing the specified column of the given subtensor.
 */
-template< size_t I1           // Column index
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
-
-   return subvector<I2,M>( column<I1+J>( sm.operand(), args... ), unchecked );
-}
+// template< size_t I1           // Column index
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) column( Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
+//
+//    return subvector<I2,M>( column<I1+J>( sm.operand(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2601,24 +2606,24 @@ inline decltype(auto) column( Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args 
 // This function returns an expression representing the specified column of the given constant
 // subtensor.
 */
-template< size_t I1           // Column index
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( const Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
-
-   return subvector<I2,M>( column<I1+J>( sm.operand(), args... ), unchecked );
-}
+// template< size_t I1           // Column index
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) column( const Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
+//
+//    return subvector<I2,M>( column<I1+J>( sm.operand(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2635,24 +2640,24 @@ inline decltype(auto) column( const Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RCAs...
 // This function returns an expression representing the specified column of the given temporary
 // subtensor.
 */
-template< size_t I1           // Column index
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Subtensor<TT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
-
-   return subvector<I2,M>( column<I1+J>( sm.operand(), args... ), unchecked );
-}
+// template< size_t I1           // Column index
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) column( Subtensor<TT,AF,I2,J,M,N>&& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
+//
+//    return subvector<I2,M>( column<I1+J>( sm.operand(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2670,32 +2675,32 @@ inline decltype(auto) column( Subtensor<TT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... args
 //
 // This function returns an expression representing the specified column of the given subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Subtensor<TT,AF,SO,DF,I,J,M,N>& sm, size_t index, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( index >= N ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
-   }
-
-   return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I            // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) column( Subtensor<TT,AF,I,J,K,M,N,O>& sm, size_t index, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( index >= N ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
+//    }
+//
+//    return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2714,32 +2719,32 @@ inline decltype(auto) column( Subtensor<TT,AF,SO,DF,I,J,M,N>& sm, size_t index, 
 // This function returns an expression representing the specified column of the given constant
 // subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( const Subtensor<TT,AF,SO,DF,I,J,M,N>& sm, size_t index, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( index >= N ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
-   }
-
-   return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I            // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) column( const Subtensor<TT,AF,I,J,K,M,N,O>& sm, size_t index, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( index >= N ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
+//    }
+//
+//    return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2758,32 +2763,32 @@ inline decltype(auto) column( const Subtensor<TT,AF,SO,DF,I,J,M,N>& sm, size_t i
 // This function returns an expression representing the specified column of the given temporary
 // subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) column( Subtensor<TT,AF,SO,DF,I,J,M,N>&& sm, size_t index, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( index >= N ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
-   }
-
-   return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I            // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) column( Subtensor<TT,AF,I,J,K,M,N,O>&& sm, size_t index, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( index >= N ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
+//    }
+//
+//    return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2800,33 +2805,33 @@ inline decltype(auto) column( Subtensor<TT,AF,SO,DF,I,J,M,N>&& sm, size_t index,
 //
 // This function returns an expression representing the specified column of the given subtensor.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RCAs >  // Runtime column arguments
-inline decltype(auto) column( Subtensor<TT,AF,SO,DF>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const ColumnData<CCAs...> cd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( cd.column() >= sm.columns() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
-   }
-
-   const size_t index( cd.column() + sm.column() );
-
-   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
-}
+// template< size_t... CCAs      // Compile time column arguments
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RCAs >  // Runtime column arguments
+// inline decltype(auto) column( Subtensor<TT,AF>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    const ColumnData<CCAs...> cd( args... );
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( cd.column() >= sm.columns() ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
+//    }
+//
+//    const size_t index( cd.column() + sm.column() );
+//
+//    return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2844,33 +2849,33 @@ inline decltype(auto) column( Subtensor<TT,AF,SO,DF>& sm, RCAs... args )
 // This function returns an expression representing the specified column of the given constant
 // subtensor.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RCAs >  // Runtime column arguments
-inline decltype(auto) column( const Subtensor<TT,AF,SO,DF>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const ColumnData<CCAs...> cd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( cd.column() >= sm.columns() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
-   }
-
-   const size_t index( cd.column() + sm.column() );
-
-   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
-}
+// template< size_t... CCAs      // Compile time column arguments
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RCAs >  // Runtime column arguments
+// inline decltype(auto) column( const Subtensor<TT,AF>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    const ColumnData<CCAs...> cd( args... );
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( cd.column() >= sm.columns() ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
+//    }
+//
+//    const size_t index( cd.column() + sm.column() );
+//
+//    return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2888,33 +2893,33 @@ inline decltype(auto) column( const Subtensor<TT,AF,SO,DF>& sm, RCAs... args )
 // This function returns an expression representing the specified column of the given temporary
 // subtensor.
 */
-template< size_t... CCAs      // Compile time column arguments
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RCAs >  // Runtime column arguments
-inline decltype(auto) column( Subtensor<TT,AF,SO,DF>&& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   const ColumnData<CCAs...> cd( args... );
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      if( ( cd.column() >= sm.columns() ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-      }
-   }
-   else {
-      BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
-   }
-
-   const size_t index( cd.column() + sm.column() );
-
-   return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
-}
+// template< size_t... CCAs      // Compile time column arguments
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RCAs >  // Runtime column arguments
+// inline decltype(auto) column( Subtensor<TT,AF>&& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    const ColumnData<CCAs...> cd( args... );
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       if( ( cd.column() >= sm.columns() ) ) {
+//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//       }
+//    }
+//    else {
+//       BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
+//    }
+//
+//    const size_t index( cd.column() + sm.column() );
+//
+//    return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2938,24 +2943,24 @@ inline decltype(auto) column( Subtensor<TT,AF,SO,DF>&& sm, RCAs... args )
 //
 // This function returns an expression representing the specified columns of the given subtensor.
 */
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subtensor<I2,0UL,M,sizeof...(Is)+1UL>(
-      columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
-}
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) columns( Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subtensor<I2,0UL,M,sizeof...(Is)+1UL>(
+//       columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2972,24 +2977,24 @@ inline decltype(auto) columns( Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args
 // This function returns an expression representing the specified columns of the given constant
 // subtensor.
 */
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( const Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subtensor<I2,0UL,M,sizeof...(Is)+1UL>(
-      columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
-}
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) columns( const Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subtensor<I2,0UL,M,sizeof...(Is)+1UL>(
+//       columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3006,24 +3011,24 @@ inline decltype(auto) columns( const Subtensor<TT,AF,SO,DF,I2,J,M,N>& sm, RCAs..
 // This function returns an expression representing the specified columns of the given temporary
 // subtensor.
 */
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t I2           // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Subtensor<TT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return subtensor<I2,0UL,M,sizeof...(Is)+1UL>(
-      columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
-}
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) columns( Subtensor<TT,AF,I2,J,M,N>&& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subtensor<I2,0UL,M,sizeof...(Is)+1UL>(
+//       columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3040,31 +3045,31 @@ inline decltype(auto) columns( Subtensor<TT,AF,SO,DF,I2,J,M,N>&& sm, RCAs... arg
 //
 // This function returns an expression representing the specified columns of the given subtensor.
 */
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Subtensor<TT,AF,SO,DF>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I1, Is... };
-      for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
-         if( sm.columns() <= indices[j] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-         }
-      }
-   }
-
-   return subtensor( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
-                     sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
-}
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) columns( Subtensor<TT,AF>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       static constexpr size_t indices[] = { I1, Is... };
+//       for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//          }
+//       }
+//    }
+//
+//    return subtensor( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
+//                      sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3082,31 +3087,31 @@ inline decltype(auto) columns( Subtensor<TT,AF,SO,DF>& sm, RCAs... args )
 // This function returns an expression representing the specified columns of the given constant
 // subtensor.
 */
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( const Subtensor<TT,AF,SO,DF>& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I1, Is... };
-      for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
-         if( sm.columns() <= indices[j] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-         }
-      }
-   }
-
-   return subtensor( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
-                     sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
-}
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) columns( const Subtensor<TT,AF>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       static constexpr size_t indices[] = { I1, Is... };
+//       for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//          }
+//       }
+//    }
+//
+//    return subtensor( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
+//                      sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3124,31 +3129,31 @@ inline decltype(auto) columns( const Subtensor<TT,AF,SO,DF>& sm, RCAs... args )
 // This function returns an expression representing the specified columns of the given temporary
 // subtensor.
 */
-template< size_t I1           // First column index
-        , size_t... Is        // Remaining column indices
-        , typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto) columns( Subtensor<TT,AF,SO,DF>&& sm, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      static constexpr size_t indices[] = { I1, Is... };
-      for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
-         if( sm.columns() <= indices[j] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-         }
-      }
-   }
-
-   return subtensor( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
-                     sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
-}
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) columns( Subtensor<TT,AF>&& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       static constexpr size_t indices[] = { I1, Is... };
+//       for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//          }
+//       }
+//    }
+//
+//    return subtensor( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
+//                      sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3167,35 +3172,35 @@ inline decltype(auto) columns( Subtensor<TT,AF,SO,DF>&& sm, RCAs... args )
 //
 // This function returns an expression representing the specified columns of the given subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time subtensor arguments
-        , typename T          // Type of the column indices
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto)
-   columns( Subtensor<TT,AF,SO,DF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= indices[j] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [column=sm.column()]( size_t& index ){ index += column; } );
-
-   return subtensor( columns( sm.operand(), newIndices.data(), n, args... ),
-                     sm.row(), 0UL, sm.rows(), n, unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename T          // Type of the column indices
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto)
+//    columns( Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       for( size_t j=0UL; j<n; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
+//          }
+//       }
+//    }
+//
+//    SmallArray<size_t,128UL> newIndices( indices, indices+n );
+//    std::for_each( newIndices.begin(), newIndices.end(),
+//                   [column=sm.column()]( size_t& index ){ index += column; } );
+//
+//    return subtensor( columns( sm.operand(), newIndices.data(), n, args... ),
+//                      sm.row(), 0UL, sm.rows(), n, unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3215,35 +3220,35 @@ inline decltype(auto)
 // This function returns an expression representing the specified columns of the given constant
 // subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time subtensor arguments
-        , typename T          // Type of the column indices
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto)
-   columns( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= indices[j] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [column=sm.column()]( size_t& index ){ index += column; } );
-
-   return subtensor( columns( sm.operand(), newIndices.data(), n, args... ),
-                     sm.row(), 0UL, sm.rows(), n, unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename T          // Type of the column indices
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto)
+//    columns( const Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       for( size_t j=0UL; j<n; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
+//          }
+//       }
+//    }
+//
+//    SmallArray<size_t,128UL> newIndices( indices, indices+n );
+//    std::for_each( newIndices.begin(), newIndices.end(),
+//                   [column=sm.column()]( size_t& index ){ index += column; } );
+//
+//    return subtensor( columns( sm.operand(), newIndices.data(), n, args... ),
+//                      sm.row(), 0UL, sm.rows(), n, unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3263,35 +3268,35 @@ inline decltype(auto)
 // This function returns an expression representing the specified columns of the given temporary
 // subtensor.
 */
-template< typename TT         // Type of the sparse subtensor
-        , AlignmentFlag AF    // Alignment flag
-        , bool SO             // Storage order
-        , bool DF             // Density flag
-        , size_t... CSAs      // Compile time subtensor arguments
-        , typename T          // Type of the column indices
-        , typename... RCAs >  // Optional column arguments
-inline decltype(auto)
-   columns( Subtensor<TT,AF,SO,DF,CSAs...>&& sm, const T* indices, size_t n, RCAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-
-   if( isChecked ) {
-      for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= indices[j] ) {
-            BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
-         }
-      }
-   }
-
-   SmallArray<size_t,128UL> newIndices( indices, indices+n );
-   std::for_each( newIndices.begin(), newIndices.end(),
-                  [column=sm.column()]( size_t& index ){ index += column; } );
-
-   return subtensor( columns( sm.operand(), newIndices.data(), n, args... ),
-                     sm.row(), 0UL, sm.rows(), n, unchecked );
-}
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename T          // Type of the column indices
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto)
+//    columns( Subtensor<TT,AF,CSAs...>&& sm, const T* indices, size_t n, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       for( size_t j=0UL; j<n; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
+//          }
+//       }
+//    }
+//
+//    SmallArray<size_t,128UL> newIndices( indices, indices+n );
+//    std::for_each( newIndices.begin(), newIndices.end(),
+//                   [column=sm.column()]( size_t& index ){ index += column; } );
+//
+//    return subtensor( columns( sm.operand(), newIndices.data(), n, args... ),
+//                      sm.row(), 0UL, sm.rows(), n, unchecked );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -3314,10 +3319,8 @@ inline decltype(auto)
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline void reset( Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline void reset( Subtensor<TT,AF,CSAs...>& sm )
 {
    sm.reset();
 }
@@ -3335,10 +3338,8 @@ inline void reset( Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline void reset( Subtensor<TT,AF,SO,DF,CSAs...>&& sm )
+inline void reset( Subtensor<TT,AF,CSAs...>&& sm )
 {
    sm.reset();
 }
@@ -3362,12 +3363,10 @@ inline void reset( Subtensor<TT,AF,SO,DF,CSAs...>&& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline void reset( Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i )
+inline void reset( Subtensor<TT,AF,CSAs...>& sm, size_t i, size_t k )
 {
-   sm.reset( i );
+   sm.reset( i, k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3385,10 +3384,8 @@ inline void reset( Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline void clear( Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline void clear( Subtensor<TT,AF,CSAs...>& sm )
 {
    sm.reset();
 }
@@ -3408,10 +3405,8 @@ inline void clear( Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline void clear( Subtensor<TT,AF,SO,DF,CSAs...>&& sm )
+inline void clear( Subtensor<TT,AF,CSAs...>&& sm )
 {
    sm.reset();
 }
@@ -3448,72 +3443,16 @@ inline void clear( Subtensor<TT,AF,SO,DF,CSAs...>&& sm )
 template< bool RF           // Relaxation flag
         , typename TT       // Type of the dense tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isDefault( const Subtensor<TT,AF,SO,true,CSAs...>& sm )
+inline bool isDefault( const Subtensor<TT,AF,CSAs...>& sm )
 {
    using blaze::isDefault;
 
-   if( SO == rowMajor ) {
+   for( size_t k=0UL; k<(~sm).pages(); ++k )
       for( size_t i=0UL; i<(~sm).rows(); ++i )
          for( size_t j=0UL; j<(~sm).columns(); ++j )
-            if( !isDefault<RF>( (~sm)(i,j) ) )
+            if( !isDefault<RF>( (~sm)(i,j,k) ) )
                return false;
-   }
-   else {
-      for( size_t j=0UL; j<(~sm).columns(); ++j )
-         for( size_t i=0UL; i<(~sm).rows(); ++i )
-            if( !isDefault<RF>( (~sm)(i,j) ) )
-               return false;
-   }
-
-   return true;
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given sparse subtensor is in default state.
-// \ingroup subtensor
-//
-// \param sm The sparse subtensor to be tested for its default state.
-// \return \a true in case the given sparse subtensor is component-wise zero, \a false otherwise.
-//
-// This function checks whether the sparse subtensor is in default state. For instance, in case
-// the subtensor is instantiated for a built-in integral or floating point data type, the function
-// returns \a true in case all subtensor elements are 0 and \a false in case any subtensor element
-// is not 0. The following example demonstrates the use of the \a isDefault function:
-
-   \code
-   blaze::CompressedTensor<double,rowMajor> A;
-   // ... Resizing and initialization
-   if( isDefault( subtensor( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
-   \endcode
-
-// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
-// semantics (blaze::relaxed):
-
-   \code
-   if( isDefault<relaxed>( subtensor( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
-   \endcode
-*/
-template< bool RF           // Relaxation flag
-        , typename TT       // Type of the sparse tensor
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isDefault( const Subtensor<TT,AF,SO,false,CSAs...>& sm )
-{
-   using blaze::isDefault;
-
-   const size_t iend( ( SO == rowMajor)?( sm.rows() ):( sm.columns() ) );
-
-   for( size_t i=0UL; i<iend; ++i ) {
-      for( auto element=sm.cbegin(i); element!=sm.cend(i); ++element )
-         if( !isDefault<RF>( element->value() ) ) return false;
-   }
 
    return true;
 }
@@ -3542,13 +3481,12 @@ inline bool isDefault( const Subtensor<TT,AF,SO,false,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isIntact( const Subtensor<TT,AF,SO,DF,CSAs...>& sm ) noexcept
+inline bool isIntact( const Subtensor<TT,AF,CSAs...>& sm ) noexcept
 {
    return ( sm.row() + sm.rows() <= sm.operand().rows() &&
             sm.column() + sm.columns() <= sm.operand().columns() &&
+            sm.page() + sm.pages() <= sm.operand().pages() &&
             isIntact( sm.operand() ) );
 }
 /*! \endcond */
@@ -3581,13 +3519,11 @@ template< typename TT       // Type of the tensor
         , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isSymmetric( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline bool isSymmetric( const Subtensor<TT,AF,CSAs...>& sm )
 {
-   using BaseType = BaseType_t< Subtensor<TT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Subtensor<TT,AF,CSAs...> >;
 
-   if( IsSymmetric_v<TT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isSymmetric( static_cast<const BaseType&>( sm ) );
+   return isSymmetric( static_cast<const BaseType&>( sm ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3616,16 +3552,12 @@ inline bool isSymmetric( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isHermitian( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline bool isHermitian( const Subtensor<TT,AF,CSAs...>& sm )
 {
-   using BaseType = BaseType_t< Subtensor<TT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Subtensor<TT,AF,CSAs...> >;
 
-   if( IsHermitian_v<TT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isHermitian( static_cast<const BaseType&>( sm ) );
+   return isHermitian( static_cast<const BaseType&>( sm ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3650,7 +3582,7 @@ inline bool isHermitian( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
                         l_{N,0} & l_{N,1} & l_{N,2} & \cdots & l_{N,N} \\
                         \end{array}\right).\f]
 
-// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially lower triangular.
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ tensors are considered as trivially lower triangular.
 // The following code example demonstrates the use of the function:
 
    \code
@@ -3664,16 +3596,12 @@ inline bool isHermitian( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isLower( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline bool isLower( const Subtensor<TT,AF,CSAs...>& sm )
 {
-   using BaseType = BaseType_t< Subtensor<TT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Subtensor<TT,AF,CSAs...> >;
 
-   if( IsLower_v<TT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isLower( static_cast<const BaseType&>( sm ) );
+   return isLower( static_cast<const BaseType&>( sm ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3711,16 +3639,12 @@ inline bool isLower( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isUniLower( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline bool isUniLower( const Subtensor<TT,AF,CSAs...>& sm )
 {
-   using BaseType = BaseType_t< Subtensor<TT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Subtensor<TT,AF,CSAs...> >;
 
-   if( IsUniLower_v<TT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isUniLower( static_cast<const BaseType&>( sm ) );
+   return isUniLower( static_cast<const BaseType&>( sm ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3758,16 +3682,12 @@ inline bool isUniLower( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isStrictlyLower( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline bool isStrictlyLower( const Subtensor<TT,AF,CSAs...>& sm )
 {
-   using BaseType = BaseType_t< Subtensor<TT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Subtensor<TT,AF,CSAs...> >;
 
-   if( IsStrictlyLower_v<TT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isStrictlyLower( static_cast<const BaseType&>( sm ) );
+   return isStrictlyLower( static_cast<const BaseType&>( sm ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3792,7 +3712,7 @@ inline bool isStrictlyLower( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
                         0       & 0       & 0       & \cdots & u_{N,N} \\
                         \end{array}\right).\f]
 
-// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ matrices are considered as trivially upper triangular.
+// \f$ 0 \times 0 \f$ or \f$ 1 \times 1 \f$ tensors are considered as trivially upper triangular.
 // The following code example demonstrates the use of the function:
 
    \code
@@ -3806,16 +3726,12 @@ inline bool isStrictlyLower( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isUpper( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline bool isUpper( const Subtensor<TT,AF,CSAs...>& sm )
 {
-   using BaseType = BaseType_t< Subtensor<TT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Subtensor<TT,AF,CSAs...> >;
 
-   if( IsUpper_v<TT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isUpper( static_cast<const BaseType&>( sm ) );
+   return isUpper( static_cast<const BaseType&>( sm ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3853,16 +3769,12 @@ inline bool isUpper( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isUniUpper( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline bool isUniUpper( const Subtensor<TT,AF,CSAs...>& sm )
 {
-   using BaseType = BaseType_t< Subtensor<TT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Subtensor<TT,AF,CSAs...> >;
 
-   if( IsUniUpper_v<TT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isUniUpper( static_cast<const BaseType&>( sm ) );
+   return isUniUpper( static_cast<const BaseType&>( sm ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3900,16 +3812,12 @@ inline bool isUniUpper( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isStrictlyUpper( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
+inline bool isStrictlyUpper( const Subtensor<TT,AF,CSAs...>& sm )
 {
-   using BaseType = BaseType_t< Subtensor<TT,AF,SO,DF,CSAs...> >;
+   using BaseType = BaseType_t< Subtensor<TT,AF,CSAs...> >;
 
-   if( IsStrictlyUpper_v<TT> && sm.row() == sm.column() && sm.rows() == sm.columns() )
-      return true;
-   else return isStrictlyUpper( static_cast<const BaseType&>( sm ) );
+   return isStrictlyUpper( static_cast<const BaseType&>( sm ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3930,14 +3838,13 @@ inline bool isStrictlyUpper( const Subtensor<TT,AF,SO,DF,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isSame( const Subtensor<TT,AF,SO,DF,CSAs...>& a, const Tensor<TT>& b ) noexcept
+inline bool isSame( const Subtensor<TT,AF,CSAs...>& a, const Tensor<TT>& b ) noexcept
 {
    return ( isSame( a.operand(), ~b ) &&
             ( a.rows() == (~b).rows() ) &&
-            ( a.columns() == (~b).columns() ) );
+            ( a.columns() == (~b).columns() ) &&
+            ( a.pages() == (~b).pages() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3957,15 +3864,14 @@ inline bool isSame( const Subtensor<TT,AF,SO,DF,CSAs...>& a, const Tensor<TT>& b
 // \a true, otherwise it returns \a false.
 */
 template< typename TT       // Type of the tensor
-        , bool SO           // Storage order
         , AlignmentFlag AF  // Alignment flag
-        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time subtensor arguments
-inline bool isSame( const Tensor<TT>& a, const Subtensor<TT,AF,SO,DF,CSAs...>& b ) noexcept
+inline bool isSame( const Tensor<TT>& a, const Subtensor<TT,AF,CSAs...>& b ) noexcept
 {
    return ( isSame( ~a, b.operand() ) &&
             ( (~a).rows() == b.rows() ) &&
-            ( (~a).columns() == b.columns() ) );
+            ( (~a).columns() == b.columns() ) &&
+            ( (~a).pages() == (~b).pages() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3986,20 +3892,17 @@ inline bool isSame( const Tensor<TT>& a, const Subtensor<TT,AF,SO,DF,CSAs...>& b
 */
 template< typename TT1       // Type of the tensor of the left-hand side subtensor
         , AlignmentFlag AF1  // Alignment flag of the left-hand side subtensor
-        , bool SO1           // Storage order of the left-hand side subtensor
-        , bool DF1           // Density flag of the left-hand side subtensor
         , size_t... CSAs1    // Compile time subtensor arguments of the left-hand side subtensor
         , typename TT2       // Type of the tensor of the right-hand side subtensor
         , AlignmentFlag AF2  // Alignment flag of the right-hand side subtensor
-        , bool SO2           // Storage order of the right-hand side subtensor
-        , bool DF2           // Density flag of the right-hand side subtensor
         , size_t... CSAs2 >  // Compile time subtensor arguments of the right-hand side subtensor
-inline bool isSame( const Subtensor<TT1,AF1,SO1,DF1,CSAs1...>& a,
-                    const Subtensor<TT2,AF2,SO2,DF2,CSAs2...>& b ) noexcept
+inline bool isSame( const Subtensor<TT1,AF1,CSAs1...>& a,
+                    const Subtensor<TT2,AF2,CSAs2...>& b ) noexcept
 {
    return ( isSame( a.operand(), b.operand() ) &&
             ( a.row() == b.row() ) && ( a.column() == b.column() ) &&
-            ( a.rows() == b.rows() ) && ( a.columns() == b.columns() ) );
+            ( a.rows() == b.rows() ) && ( a.columns() == b.columns() ) &&
+            ( a.page() == b.page() ) && ( a.pages() == b.pages() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4034,9 +3937,9 @@ inline bool isSame( const Subtensor<TT1,AF1,SO1,DF1,CSAs1...>& a,
 // In all failure cases either a compilation error is created if the failure can be predicted at
 // compile time or an exception is thrown.
 //
-// \note The tensor inversion can only be used for dense matrices with \c float, \c double,
+// \note The tensor inversion can only be used for dense tensors with \c float, \c double,
 // \c complex<float> or \c complex<double> element type. The attempt to call the function with
-// matrices of any other element type results in a compile time error!
+// tensors of any other element type results in a compile time error!
 //
 // \note This function can only be used if a fitting LAPACK library is available and linked to
 // the executable. Otherwise a linker error will be created.
@@ -4047,12 +3950,11 @@ inline bool isSame( const Subtensor<TT1,AF1,SO1,DF1,CSAs1...>& a,
 template< InversionFlag IF  // Inversion algorithm
         , typename TT       // Type of the dense tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
         , size_t... CSAs >  // Compile time subtensor arguments
-inline auto invert( Subtensor<TT,AF,SO,true,CSAs...>& sm )
+inline auto invert( Subtensor<TT,AF,CSAs...>& sm )
    -> DisableIf_t< HasMutableDataAccess_v<TT> >
 {
-   using RT = ResultType_t< Subtensor<TT,AF,SO,true,CSAs...> >;
+   using RT = ResultType_t< Subtensor<TT,AF,CSAs...> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( RT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( RT );
@@ -4083,16 +3985,15 @@ inline auto invert( Subtensor<TT,AF,SO,true,CSAs...>& sm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename ET >     // Type of the element
-inline bool trySet( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
+inline bool trySet( const Subtensor<TT,AF,CSAs...>& sm, size_t i, size_t j, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < sm.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( k < sm.pages(), "Invalid column access index" );
 
-   return trySet( sm.operand(), sm.row()+i, sm.column()+j, value );
+   return trySet( sm.operand(), sm.row()+i, sm.column()+j, sm.page()+k, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4116,16 +4017,15 @@ inline bool trySet( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename ET >     // Type of the element
-inline bool tryAdd( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
+inline bool tryAdd( const Subtensor<TT,AF,CSAs...>& sm, size_t i, size_t j, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < sm.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( k < sm.pages(), "Invalid column access index" );
 
-   return tryAdd( sm.operand(), sm.row()+i, sm.column()+j, value );
+   return tryAdd( sm.operand(), sm.row()+i, sm.column()+j, sm.pages()+k, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4149,16 +4049,15 @@ inline bool tryAdd( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename ET >     // Type of the element
-inline bool trySub( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
+inline bool trySub( const Subtensor<TT,AF,CSAs...>& sm, size_t i, size_t j, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < sm.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( k < sm.pages(), "Invalid column access index" );
 
-   return trySub( sm.operand(), sm.row()+i, sm.column()+j, value );
+   return trySub( sm.operand(), sm.row()+i, sm.column()+j, sm.pages()+k, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4182,16 +4081,15 @@ inline bool trySub( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename ET >     // Type of the element
-inline bool tryMult( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
+inline bool tryMult( const Subtensor<TT,AF,CSAs...>& sm, size_t i, size_t j, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < sm.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( k < sm.pages(), "Invalid column access index" );
 
-   return tryMult( sm.operand(), sm.row()+i, sm.column()+j, value );
+   return tryMult( sm.operand(), sm.row()+i, sm.column()+j, sm.pages()+k, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4217,21 +4115,21 @@ inline bool tryMult( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t 
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename ET >     // Type of the element
 BLAZE_ALWAYS_INLINE bool
-   tryMult( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
+   tryMult( const Subtensor<TT,AF,CSAs...>& sm, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, const ET& value )
 {
    UNUSED_PARAMETER( column );
 
    BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~sm).pages(), "Invalid page access index" );
    BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + o <= (~sm).pages(), "Invalid number of pages" );
 
-   return tryMult( sm.operand(), sm.row()+row, sm.column(), m, n, value );
+   return tryMult( sm.operand(), sm.row()+row, sm.column(), sm.page(), m, n, o, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4255,16 +4153,15 @@ BLAZE_ALWAYS_INLINE bool
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename ET >     // Type of the element
-inline bool tryDiv( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j, const ET& value )
+inline bool tryDiv( const Subtensor<TT,AF,CSAs...>& sm, size_t i, size_t j, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < sm.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < sm.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( k < sm.pages(), "Invalid column access index" );
 
-   return tryDiv( sm.operand(), sm.row()+i, sm.column()+j, value );
+   return tryDiv( sm.operand(), sm.row()+i, sm.column()+j, sm.pages()+k, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4290,21 +4187,21 @@ inline bool tryDiv( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t i, size_t j
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename ET >     // Type of the element
 BLAZE_ALWAYS_INLINE bool
-   tryDiv( const Subtensor<TT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column, size_t m, size_t n, const ET& value )
+   tryDiv( const Subtensor<TT,AF,CSAs...>& sm, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, const ET& value )
 {
    UNUSED_PARAMETER( column );
 
    BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (~sm).pages(), "Invalid page access index" );
    BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + o <= (~sm).pages(), "Invalid number of pages" );
 
-   return tryDiv( sm.operand(), sm.row()+row, sm.column(), m, n, value );
+   return tryDiv( sm.operand(), sm.row()+row, sm.column(), sm.page(), m, n, o, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4312,11 +4209,11 @@ BLAZE_ALWAYS_INLINE bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a vector to a subtensor.
+/*!\brief Predict invariant violations by the assignment of a matrix to a subtensor.
 // \ingroup subtensor
 //
 // \param lhs The target left-hand side subtensor.
-// \param rhs The right-hand side vector to be assigned.
+// \param rhs The right-hand side matrix to be assigned.
 // \param row The row index of the first element to be modified.
 // \param column The column index of the first element to be modified.
 // \return \a true in case the assignment would be successful, \a false if not.
@@ -4328,20 +4225,18 @@ BLAZE_ALWAYS_INLINE bool
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
-                       const Vector<VT,TF>& rhs, size_t row, size_t column )
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryAssign( const Subtensor<TT,AF,CSAs...>& lhs,
+                       const Matrix<VT,false>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4349,12 +4244,12 @@ inline bool tryAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a vector to the band of a subtensor.
+/*!\brief Predict invariant violations by the assignment of a matrix to the band (pageslices) of a subtensor.
 // \ingroup subtensor
 //
 // \param lhs The target left-hand side subtensor.
 // \param rhs The right-hand side vector to be assigned.
-// \param band The index of the band the right-hand side vector is assigned to.
+// \param band The index of the band the right-hand side matrix is assigned to.
 // \param row The row index of the first element to be modified.
 // \param column The column index of the first element to be modified.
 // \return \a true in case the assignment would be successful, \a false if not.
@@ -4366,21 +4261,19 @@ inline bool tryAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
-                       const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryAssign( const Subtensor<TT,AF,CSAs...>& lhs,
+                       const Matrix<VT,false>& rhs, ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    return tryAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
-                     lhs.row() + row, lhs.column() + column );
+                     lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4404,20 +4297,19 @@ inline bool tryAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 */
 template< typename TT1      // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO1          // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename TT2      // Type of the right-hand side tensor
-        , bool SO2 >        // Storage order of the right-hand side tensor
-inline bool tryAssign( const Subtensor<TT1,AF,SO1,DF,CSAs...>& lhs,
-                       const Tensor<TT2,SO2>& rhs, size_t row, size_t column )
+        , typename TT2 >     // Type of the right-hand side tensor
+inline bool tryAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
+                       const Tensor<TT2>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= lhs.pages(), "Invalid number of pages" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4441,20 +4333,18 @@ inline bool tryAssign( const Subtensor<TT1,AF,SO1,DF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryAddAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
-                          const Vector<VT,TF>& rhs, size_t row, size_t column )
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryAddAssign( const Subtensor<TT,AF,CSAs...>& lhs,
+                          const Matrix<VT,false>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4480,21 +4370,19 @@ inline bool tryAddAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryAddAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
-                          const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryAddAssign( const Subtensor<TT,AF,CSAs...>& lhs,
+                          const Matrix<VT,false>& rhs, ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
    return tryAddAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
-                        lhs.row() + row, lhs.column() + column );
+                        lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4518,20 +4406,19 @@ inline bool tryAddAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 */
 template< typename TT1      // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO1          // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename TT2      // Type of the right-hand side tensor
-        , bool SO2 >        // Storage order of the right-hand side tensor
-inline bool tryAddAssign( const Subtensor<TT1,AF,SO1,DF,CSAs...>& lhs,
-                          const Tensor<TT2,SO2>& rhs, size_t row, size_t column )
+        , typename TT2 >     // Type of the right-hand side tensor
+inline bool tryAddAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
+                          const Tensor<TT2>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= lhs.pages(), "Invalid number of pages" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4560,7 +4447,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time subtensor arguments
         , typename VT       // Type of the right-hand side vector
         , bool TF >         // Transpose flag of the right-hand side vector
-inline bool trySubAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
+inline bool trySubAssign( const Subtensor<TT,AF,CSAs...>& lhs,
                           const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
@@ -4599,7 +4486,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time subtensor arguments
         , typename VT       // Type of the right-hand side vector
         , bool TF >         // Transpose flag of the right-hand side vector
-inline bool trySubAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
+inline bool trySubAssign( const Subtensor<TT,AF,CSAs...>& lhs,
                           const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
@@ -4632,13 +4519,11 @@ inline bool trySubAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 */
 template< typename TT1      // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO1          // Storage order
         , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename TT2      // Type of the right-hand side tensor
-        , bool SO2 >        // Storage order of the right-hand side tensor
-inline bool trySubAssign( const Subtensor<TT1,AF,SO1,DF,CSAs...>& lhs,
-                          const Tensor<TT2,SO2>& rhs, size_t row, size_t column )
+        , typename TT2 >     // Type of the right-hand side tensor
+inline bool trySubAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
+                          const Tensor<TT2>& rhs, size_t row, size_t column )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -4669,12 +4554,10 @@ inline bool trySubAssign( const Subtensor<TT1,AF,SO1,DF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename VT       // Type of the right-hand side vector
         , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryMultAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
+inline bool tryMultAssign( const Subtensor<TT,AF,CSAs...>& lhs,
                            const Vector<VT,TF>& rhs, size_t row, size_t column )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
@@ -4708,12 +4591,10 @@ inline bool tryMultAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename VT       // Type of the right-hand side vector
         , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryMultAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
+inline bool tryMultAssign( const Subtensor<TT,AF,CSAs...>& lhs,
                            const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
@@ -4746,13 +4627,10 @@ inline bool tryMultAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 */
 template< typename TT1      // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO1          // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename TT2      // Type of the right-hand side tensor
-        , bool SO2 >        // Storage order of the right-hand side tensor
-inline bool trySchurAssign( const Subtensor<TT1,AF,SO1,DF,CSAs...>& lhs,
-                            const Tensor<TT2,SO2>& rhs, size_t row, size_t column )
+        , typename TT2 >     // Type of the right-hand side tensor
+inline bool trySchurAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
+                            const Tensor<TT2>& rhs, size_t row, size_t column )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -4783,20 +4661,17 @@ inline bool trySchurAssign( const Subtensor<TT1,AF,SO1,DF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryDivAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
-                          const Vector<VT,TF>& rhs, size_t row, size_t column )
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryDivAssign( const Subtensor<TT,AF,CSAs...>& lhs,
+                          const Matrix<VT,false>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryDivAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4822,13 +4697,10 @@ inline bool tryDivAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
-        , typename VT       // Type of the right-hand side vector
-        , bool TF >         // Transpose flag of the right-hand side vector
-inline bool tryDivAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
-                          const Vector<VT,TF>& rhs, ptrdiff_t band, size_t row, size_t column )
+        , typename VT >      // Type of the right-hand side vector
+inline bool tryDivAssign( const Subtensor<TT,AF,CSAs...>& lhs,
+                          const Matrix<VT,false>& rhs, ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -4836,7 +4708,7 @@ inline bool tryDivAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
    return tryDivAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
-                        lhs.row() + row, lhs.column() + column );
+                        lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4859,15 +4731,15 @@ inline bool tryDivAssign( const Subtensor<TT,AF,SO,DF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t I          // Index of the first row
         , size_t J          // Index of the first column
+        , size_t K          // Index of the first page
         , size_t M          // Number of rows
-        , size_t N >        // Number of columns
-inline decltype(auto) derestrict( Subtensor<TT,AF,SO,DF,I,J,M,N>& dm )
+        , size_t N          // Number of columns
+        , size_t O >        // Number of pages
+inline decltype(auto) derestrict( Subtensor<TT,AF,I,J,K,M,N,O>& dm )
 {
-   return subtensor<AF,I,J,M,N>( derestrict( dm.operand() ), unchecked );
+   return subtensor<AF,I,J,K,M,N,O>( derestrict( dm.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4890,15 +4762,15 @@ inline decltype(auto) derestrict( Subtensor<TT,AF,SO,DF,I,J,M,N>& dm )
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF           // Density flag
         , size_t I          // Index of the first row
         , size_t J          // Index of the first column
+        , size_t K          // Index of the first page
         , size_t M          // Number of rows
-        , size_t N >        // Number of columns
-inline decltype(auto) derestrict( Subtensor<TT,AF,SO,DF,I,J,M,N>&& dm )
+        , size_t N          // Number of columns
+        , size_t O >        // Number of pages
+inline decltype(auto) derestrict( Subtensor<TT,AF,I,J,K,M,N,O>&& dm )
 {
-   return subtensor<AF,I,J,M,N>( derestrict( dm.operand() ), unchecked );
+   return subtensor<AF,I,J,K,M,N,O>( derestrict( dm.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4920,12 +4792,10 @@ inline decltype(auto) derestrict( Subtensor<TT,AF,SO,DF,I,J,M,N>&& dm )
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
 template< typename TT       // Type of the tensor
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF >         // Density flag
-inline decltype(auto) derestrict( Subtensor<TT,AF,SO,DF>& dm )
+        , AlignmentFlag AF > // Alignment flag
+inline decltype(auto) derestrict( Subtensor<TT,AF>& dm )
 {
-   return subtensor<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns(), unchecked );
+   return subtensor<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.page(), dm.rows(), dm.columns(), dm.pages(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4947,12 +4817,10 @@ inline decltype(auto) derestrict( Subtensor<TT,AF,SO,DF>& dm )
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
 template< typename TT       // Type of the tensor
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , bool DF >         // Density flag
-inline decltype(auto) derestrict( Subtensor<TT,AF,SO,DF>&& dm )
+        , AlignmentFlag AF > // Alignment flag
+inline decltype(auto) derestrict( Subtensor<TT,AF>&& dm )
 {
-   return subtensor<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.rows(), dm.columns(), unchecked );
+   return subtensor<AF>( derestrict( dm.operand() ), dm.row(), dm.column(), dm.page(), dm.rows(), dm.columns(), dm.pages(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4968,14 +4836,19 @@ inline decltype(auto) derestrict( Subtensor<TT,AF,SO,DF>&& dm )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct Size< Subtensor<TT,AF,SO,DF,I,J,M,N>, 0UL >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct Size< Subtensor<TT,AF,I,J,K,M,N,O>, 0UL >
    : public PtrdiffT<M>
 {};
 
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct Size< Subtensor<TT,AF,SO,DF,I,J,M,N>, 1UL >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct Size< Subtensor<TT,AF,I,J,K,M,N,O>, 1UL >
    : public PtrdiffT<N>
+{};
+
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct Size< Subtensor<TT,AF,I,J,K,M,N,O>, 2UL >
+   : public PtrdiffT<O>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4991,14 +4864,19 @@ struct Size< Subtensor<TT,AF,SO,DF,I,J,M,N>, 1UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct MaxSize< Subtensor<TT,AF,SO,DF,I,J,M,N>, 0UL >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct MaxSize< Subtensor<TT,AF,I,J,K,M,N,O>, 0UL >
    : public PtrdiffT<M>
 {};
 
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct MaxSize< Subtensor<TT,AF,SO,DF,I,J,M,N>, 1UL >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct MaxSize< Subtensor<TT,AF,I,J,K,M,N,O>, 1UL >
    : public PtrdiffT<N>
+{};
+
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct MaxSize< Subtensor<TT,AF,I,J,K,M,N,O>, 2UL >
+   : public PtrdiffT<O>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5014,8 +4892,8 @@ struct MaxSize< Subtensor<TT,AF,SO,DF,I,J,M,N>, 1UL >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs >
-struct IsRestricted< Subtensor<TT,AF,SO,DF,CSAs...> >
+template< typename TT, AlignmentFlag AF, size_t... CSAs >
+struct IsRestricted< Subtensor<TT,AF,CSAs...> >
    : public IsRestricted<TT>
 {};
 /*! \endcond */
@@ -5032,8 +4910,8 @@ struct IsRestricted< Subtensor<TT,AF,SO,DF,CSAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, size_t... CSAs >
-struct HasConstDataAccess< Subtensor<TT,AF,SO,true,CSAs...> >
+template< typename TT, AlignmentFlag AF, size_t... CSAs >
+struct HasConstDataAccess< Subtensor<TT,AF,CSAs...> >
    : public HasConstDataAccess<TT>
 {};
 /*! \endcond */
@@ -5050,8 +4928,8 @@ struct HasConstDataAccess< Subtensor<TT,AF,SO,true,CSAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, size_t... CSAs >
-struct HasMutableDataAccess< Subtensor<TT,AF,SO,true,CSAs...> >
+template< typename TT, AlignmentFlag AF, size_t... CSAs >
+struct HasMutableDataAccess< Subtensor<TT,AF,CSAs...> >
    : public HasMutableDataAccess<TT>
 {};
 /*! \endcond */
@@ -5068,8 +4946,8 @@ struct HasMutableDataAccess< Subtensor<TT,AF,SO,true,CSAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, bool SO, size_t... CSAs >
-struct IsAligned< Subtensor<TT,aligned,SO,true,CSAs...> >
+template< typename TT, size_t... CSAs >
+struct IsAligned< Subtensor<TT,aligned,CSAs...> >
    : public TrueType
 {};
 /*! \endcond */
@@ -5086,8 +4964,8 @@ struct IsAligned< Subtensor<TT,aligned,SO,true,CSAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, size_t... CSAs >
-struct IsContiguous< Subtensor<TT,AF,SO,true,CSAs...> >
+template< typename TT, AlignmentFlag AF, size_t... CSAs >
+struct IsContiguous< Subtensor<TT,AF,CSAs...> >
    : public IsContiguous<TT>
 {};
 /*! \endcond */
@@ -5104,8 +4982,8 @@ struct IsContiguous< Subtensor<TT,AF,SO,true,CSAs...> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct IsSymmetric< Subtensor<TT,AF,SO,DF,I,J,M,N> >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct IsSymmetric< Subtensor<TT,AF,I,J,K,M,N,O> >
    : public BoolConstant< ( IsSymmetric_v<TT> && I == J && M == N ) >
 {};
 /*! \endcond */
@@ -5122,8 +5000,8 @@ struct IsSymmetric< Subtensor<TT,AF,SO,DF,I,J,M,N> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct IsHermitian< Subtensor<TT,AF,SO,DF,I,J,M,N> >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct IsHermitian< Subtensor<TT,AF,I,J,K,M,N,O> >
    : public BoolConstant< ( IsHermitian_v<TT> && I == J && M == N ) >
 {};
 /*! \endcond */
@@ -5140,8 +5018,8 @@ struct IsHermitian< Subtensor<TT,AF,SO,DF,I,J,M,N> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct IsLower< Subtensor<TT,AF,SO,DF,I,J,M,N> >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct IsLower< Subtensor<TT,AF,I,J,K,M,N,O> >
    : public BoolConstant< ( IsLower_v<TT> && I == J && M == N ) ||
                           ( IsStrictlyLower_v<TT> && I == J+1UL && M == N ) >
 {};
@@ -5159,8 +5037,8 @@ struct IsLower< Subtensor<TT,AF,SO,DF,I,J,M,N> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct IsUniLower< Subtensor<TT,AF,SO,DF,I,J,M,N> >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct IsUniLower< Subtensor<TT,AF,I,J,K,M,N,O> >
    : public BoolConstant< ( IsUniLower_v<TT> && I == J && M == N ) >
 {};
 /*! \endcond */
@@ -5177,8 +5055,8 @@ struct IsUniLower< Subtensor<TT,AF,SO,DF,I,J,M,N> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct IsStrictlyLower< Subtensor<TT,AF,SO,DF,I,J,M,N> >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct IsStrictlyLower< Subtensor<TT,AF,I,J,K,M,N,O> >
    : public BoolConstant< ( IsLower_v<TT> && I < J && M == N ) ||
                           ( IsStrictlyLower_v<TT> && I == J && M == N ) >
 {};
@@ -5196,8 +5074,8 @@ struct IsStrictlyLower< Subtensor<TT,AF,SO,DF,I,J,M,N> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct IsUpper< Subtensor<TT,AF,SO,DF,I,J,M,N> >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct IsUpper< Subtensor<TT,AF,I,J,K,M,N,O> >
    : public BoolConstant< ( IsUpper_v<TT> && I == J && M == N ) ||
                           ( IsStrictlyUpper_v<TT> && I+1UL == J && M == N ) >
 {};
@@ -5215,8 +5093,8 @@ struct IsUpper< Subtensor<TT,AF,SO,DF,I,J,M,N> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct IsUniUpper< Subtensor<TT,AF,SO,DF,I,J,M,N> >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct IsUniUpper< Subtensor<TT,AF,I,J,K,M,N,O> >
    : public BoolConstant< ( IsUniUpper_v<TT> && I == J && M == N ) >
 {};
 /*! \endcond */
@@ -5233,8 +5111,8 @@ struct IsUniUpper< Subtensor<TT,AF,SO,DF,I,J,M,N> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename TT, AlignmentFlag AF, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N >
-struct IsStrictlyUpper< Subtensor<TT,AF,SO,DF,I,J,M,N> >
+template< typename TT, AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O >
+struct IsStrictlyUpper< Subtensor<TT,AF,I,J,K,M,N,O> >
    : public BoolConstant< ( IsUpper_v<TT> && I > J && M == N ) ||
                           ( IsStrictlyUpper_v<TT> && I == J && M == N ) >
 {};

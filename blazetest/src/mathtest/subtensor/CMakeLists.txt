@@ -30,15 +30,17 @@
 #
 # =================================================================================================
 
-set(subdirs
-   customtensor
-   densetensor
-   dynamictensor
-   pageslice
-   subtensor
+set(category Subtensor)
+
+set(tests
+    DenseAlignedTest1
+#    DenseAlignedTest2
+    IncludeTest
 )
 
-foreach(dir ${subdirs})
-   add_subdirectory(${dir})
+foreach(test ${tests})
+   add_executable(${category}${test} ${test}.cpp)
+   target_link_libraries(${category}${test} BlazeTensor)
+   set_target_properties(${category}${test} PROPERTIES FOLDER "Tests/${category}")
+   add_test(NAME ${category}${test} COMMAND ${category}${test})
 endforeach()
-

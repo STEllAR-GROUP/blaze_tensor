@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/pageslice/DenseGeneralTest.h
-//  \brief Header file for the PageSlice dense general test
+//  \file blazetest/mathtest/subtensor/DenseAlignedTest.h
+//  \brief Header file for the Subtensor dense aligned test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_PAGESLICE_DENSEGENERALTEST_H_
-#define _BLAZETEST_MATHTEST_PAGESLICE_DENSEGENERALTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SUBTENSOR_DENSEALIGNEDTEST_H_
+#define _BLAZETEST_MATHTEST_SUBTENSOR_DENSEALIGNEDTEST_H_
 
 
 //*************************************************************************************************
@@ -44,19 +44,18 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+
 #include <blazetest/system/Types.h>
 
-#include <blaze_tensor/math/DynamicTensor.h>
-#include <blaze_tensor/math/PageSlice.h>
 #include <blaze_tensor/math/constraints/DenseTensor.h>
-#include <blaze_tensor/math/constraints/PageSliceMatrix.h>
-#include <blaze_tensor/math/typetraits/IsPageSliceMatrix.h>
+#include <blaze_tensor/math/DynamicTensor.h>
+#include <blaze_tensor/math/Subtensor.h>
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace pageslice {
+namespace subtensor {
 
 //=================================================================================================
 //
@@ -65,18 +64,18 @@ namespace pageslice {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the dense general PageSlice specialization.
+/*!\brief Auxiliary class for all tests of the dense aligned Subtensor specialization.
 //
-// This class represents a test suite for the blaze::PageSlice class template specialization for
-// dense general matrices. It performs a series of both compile time as well as runtime tests.
+// This class represents a test suite for the blaze::Subtensor class template specialization for
+// dense aligned submatrices. It performs a series of both compile time as well as runtime tests.
 */
-class DenseGeneralTest
+class DenseAlignedTest
 {
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit DenseGeneralTest();
+   explicit DenseAlignedTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -93,26 +92,24 @@ class DenseGeneralTest
    void testAssignment();
    void testAddAssign();
    void testSubAssign();
-   void testMultAssign();
    void testSchurAssign();
+   void testMultAssign();
    void testScaling();
    void testFunctionCall();
-   void testAt();
    void testIterator();
    void testNonZeros();
    void testReset();
    void testClear();
+   void testTranspose();
+   void testCTranspose();
    void testIsDefault();
    void testIsSame();
-   void testSubmatrix();
+   void testSubtensor();
    void testRow();
    void testRows();
    void testColumn();
    void testColumns();
    void testBand();
-
-   template< typename Type >
-   void checkSize( const Type& pageslice, size_t expectedSize ) const;
 
    template< typename Type >
    void checkRows( const Type& tensor, size_t expectedRows ) const;
@@ -124,10 +121,7 @@ class DenseGeneralTest
    void checkPages( const Type& tensor, size_t expectedPages ) const;
 
    template< typename Type >
-   void checkCapacity( const Type& object, size_t minCapacity ) const;
-
-   template< typename Type >
-   void checkNonZeros( const Type& object, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& tensor, size_t expectedNonZeros ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& tensor, size_t i, size_t k, size_t expectedNonZeros ) const;
@@ -142,23 +136,28 @@ class DenseGeneralTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using MT  = blaze::DynamicTensor<int>;    //!< Dynamic tensor type.
-   using RT  = blaze::PageSlice<MT>;         //!< Dense pageslice type for tensors.
+   using MT    = blaze::DynamicTensor<int>;                  //!< Row-major dynamic tensor type
+   using ASMT  = blaze::Subtensor<MT,blaze::aligned>;        //!< Aligned dense subtensor type for row-major matrices.
+   using USMT  = blaze::Subtensor<MT,blaze::unaligned>;      //!< Unaligned dense subtensor type for row-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   MT  mat_;   //!< dynamic tensor.
+   MT  mat1_;   //!< First row-major dynamic tensor.
+                /*!< The \f$ 64 \times 64 \f$ row-major dense tensor is randomly initialized. */
+   MT  mat2_;   //!< Second row-major dynamic tensor.
+                /*!< The \f$ 64 \times 64 \f$ row-major dense tensor is randomly initialized. */
+
    std::string test_;  //!< Label of the currently performed test.
    //@}
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE    ( MT  );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_PAGESLICE_MATRIX_TYPE( RT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( MT    );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ASMT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( USMT  );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -174,46 +173,19 @@ class DenseGeneralTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the size of the given dense pageslice.
+/*!\brief Checking the number of rows of the given dense tensor.
 //
-// \param pageslice The dense pageslice to be checked.
-// \param expectedSize The expected size of the dense pageslice.
+// \param tensor The dense tensor to be checked.
+// \param expectedRows The expected number of rows of the dense tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the size of the given dense pageslice. In case the actual size does not
-// correspond to the given expected size, a \a std::runtime_error exception is thrown.
+// This function checks the number of rows of the given dense tensor. In case the
+// actual number of rows does not correspond to the given expected number of rows, a
+// \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense pageslice
-void DenseGeneralTest::checkSize( const Type& pageslice, size_t expectedSize ) const
-{
-   if( size( pageslice ) != expectedSize ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Invalid size detected\n"
-          << " Details:\n"
-          << "   Size         : " << size( pageslice ) << "\n"
-          << "   Expected size: " << expectedSize << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking the number of pageslices of the given dynamic tensor.
-//
-// \param tensor The dynamic tensor to be checked.
-// \param expectedPageSlices The expected number of rows of the dynamic tensor.
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function checks the number of rows of the given dynamic tensor. In case the actual number
-// of pageslices does not correspond to the given expected number of pageslices, a \a std::runtime_error
-// exception is thrown.
-*/
-template< typename Type >  // Type of the dynamic tensor
-void DenseGeneralTest::checkRows( const Type& tensor, size_t expectedRows ) const
+template< typename Type >  // Type of the dense tensor
+void DenseAlignedTest::checkRows( const Type& tensor, size_t expectedRows ) const
 {
    if( rows( tensor ) != expectedRows ) {
       std::ostringstream oss;
@@ -229,19 +201,19 @@ void DenseGeneralTest::checkRows( const Type& tensor, size_t expectedRows ) cons
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of columns of the given dynamic tensor.
+/*!\brief Checking the number of columns of the given dense tensor.
 //
-// \param tensor The dynamic tensor to be checked.
-// \param expectedColumns The expected number of columns of the dynamic tensor.
+// \param tensor The dense tensor to be checked.
+// \param expectedColumns The expected number of columns of the dense tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of columns of the given dynamic tensor. In case the
+// This function checks the number of columns of the given dense tensor. In case the
 // actual number of columns does not correspond to the given expected number of columns,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dynamic tensor
-void DenseGeneralTest::checkColumns( const Type& tensor, size_t expectedColumns ) const
+template< typename Type >  // Type of the dense tensor
+void DenseAlignedTest::checkColumns( const Type& tensor, size_t expectedColumns ) const
 {
    if( columns( tensor ) != expectedColumns ) {
       std::ostringstream oss;
@@ -257,27 +229,27 @@ void DenseGeneralTest::checkColumns( const Type& tensor, size_t expectedColumns 
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of pages of the given dynamic tensor.
+/*!\brief Checking the number of pages of the given dense tensor.
 //
-// \param tensor The dynamic tensor to be checked.
-// \param expectedPages The expected number of columns of the dynamic tensor.
+// \param tensor The dense tensor to be checked.
+// \param expectedPages The expected number of pages of the dense tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of pages of the given dynamic tensor. In case the
+// This function checks the number of pages of the given dense tensor. In case the
 // actual number of pages does not correspond to the given expected number of pages,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dynamic tensor
-void DenseGeneralTest::checkPages( const Type& tensor, size_t expectedPages ) const
+template< typename Type >  // Type of the dense tensor
+void DenseAlignedTest::checkPages( const Type& tensor, size_t expectedPages ) const
 {
    if( pages( tensor ) != expectedPages ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of pages detected\n"
           << " Details:\n"
-          << "   Number of pages         : " << pages( tensor ) << "\n"
-          << "   Expected number of pages: " << expectedPages << "\n";
+          << "   Number of columns         : " << pages( tensor ) << "\n"
+          << "   Expected number of columns: " << expectedPages << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -285,65 +257,37 @@ void DenseGeneralTest::checkPages( const Type& tensor, size_t expectedPages ) co
 
 
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given dense pageslice or dynamic tensor.
+/*!\brief Checking the number of non-zero elements of the given dense tensor.
 //
-// \param object The dense pageslice or dynamic tensor to be checked.
-// \param minCapacity The expected minimum capacity.
+// \param tensor The dense tensor to be checked.
+// \param expectedNonZeros The expected number of non-zero elements of the dense tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the capacity of the given dense pageslice or dynamic tensor. In case the actual
-// capacity is smaller than the given expected minimum capacity, a \a std::runtime_error exception
-// is thrown.
+// This function checks the number of non-zero elements of the given dense tensor. In
+// case the actual number of non-zero elements does not correspond to the given expected
+// number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense pageslice or dynamic tensor
-void DenseGeneralTest::checkCapacity( const Type& object, size_t minCapacity ) const
+template< typename Type >  // Type of the dense tensor
+void DenseAlignedTest::checkNonZeros( const Type& tensor, size_t expectedNonZeros ) const
 {
-   if( capacity( object ) < minCapacity ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Invalid capacity detected\n"
-          << " Details:\n"
-          << "   Capacity                 : " << capacity( object ) << "\n"
-          << "   Expected minimum capacity: " << minCapacity << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given dense pageslice or dynamic tensor.
-//
-// \param object The dense pageslice or dynamic tensor to be checked.
-// \param expectedNonZeros The expected number of non-zero elements.
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function checks the number of non-zero elements of the given dense pageslice. In case the
-// actual number of non-zero elements does not correspond to the given expected number, a
-// \a std::runtime_error exception is thrown.
-*/
-template< typename Type >  // Type of the dense pageslice or dynamic tensor
-void DenseGeneralTest::checkNonZeros( const Type& object, size_t expectedNonZeros ) const
-{
-   if( nonZeros( object ) != expectedNonZeros ) {
+   if( nonZeros( tensor ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << nonZeros( object ) << "\n"
+          << "   Number of non-zeros         : " << nonZeros( tensor ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( capacity( object ) < nonZeros( object ) ) {
+   if( capacity( tensor ) < nonZeros( tensor ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << nonZeros( object ) << "\n"
-          << "   Capacity           : " << capacity( object ) << "\n";
+          << "   Number of non-zeros: " << nonZeros( tensor ) << "\n"
+          << "   Capacity           : " << capacity( tensor ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -351,20 +295,20 @@ void DenseGeneralTest::checkNonZeros( const Type& object, size_t expectedNonZero
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements in a specific pageslice/column of the given dynamic tensor.
+/*!\brief Checking the number of non-zero elements in a specific row/column of the given dense tensor.
 //
-// \param tensor The dynamic tensor to be checked.
-// \param index The pageslice/column to be checked.
-// \param expectedNonZeros The expected number of non-zero elements in the specified pageslice/column.
+// \param tensor The dense tensor to be checked.
+// \param index The row/column to be checked.
+// \param expectedNonZeros The expected number of non-zero elements in the specified row/column.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of non-zero elements in the specified pageslice/column of the
-// given dynamic tensor. In case the actual number of non-zero elements does not correspond
+// This function checks the number of non-zero elements in the specified row/column of the
+// given dense tensor. In case the actual number of non-zero elements does not correspond
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dynamic tensor
-void DenseGeneralTest::checkNonZeros( const Type& tensor, size_t i, size_t k, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the dense tensor
+void DenseAlignedTest::checkNonZeros( const Type& tensor, size_t i, size_t k, size_t expectedNonZeros ) const
 {
    if( nonZeros( tensor, i, k ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -398,13 +342,13 @@ void DenseGeneralTest::checkNonZeros( const Type& tensor, size_t i, size_t k, si
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the dense general PageSlice specialization.
+/*!\brief Testing the functionality of the dense aligned Subtensor specialization.
 //
 // \return void
 */
 void runTest()
 {
-   DenseGeneralTest();
+   DenseAlignedTest();
 }
 //*************************************************************************************************
 
@@ -419,14 +363,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the PageSlice dense general test.
+/*!\brief Macro for the execution of the Subtensor dense aligned test.
 */
-#define RUN_PAGESLICE_DENSEGENERAL_TEST \
-   blazetest::mathtest::pageslice::runTest()
+#define RUN_SUBTENSOR_DENSEALIGNED_TEST \
+   blazetest::mathtest::subtensor::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace pageslice
+} // namespace subtensor
 
 } // namespace mathtest
 

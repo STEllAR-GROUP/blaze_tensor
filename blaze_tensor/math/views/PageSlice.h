@@ -620,15 +620,15 @@ inline decltype(auto) pageslice( const TensEvalExpr<MT>& tensor, RRAs... args )
 // This function returns an expression representing the specified pageslice of the given tensor
 // serialization operation.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatSerialExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return serial( pageslice<CRAs...>( (~tensor).operand(), args... ) );
-// }
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const MatSerialExpr<MT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return serial( pageslice<CRAs...>( (~tensor).operand(), args... ) );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1369,6 +1369,11 @@ inline decltype(auto) derestrict( PageSlice<MT>&& r )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
 struct Size< PageSlice<MT,CRAs...>, 0UL >
+   : public Size<MT,0UL>
+{};
+
+template< typename MT, size_t... CRAs >
+struct Size< PageSlice<MT,CRAs...>, 1UL >
    : public Size<MT,1UL>
 {};
 /*! \endcond */

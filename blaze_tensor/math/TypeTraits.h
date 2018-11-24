@@ -50,6 +50,7 @@
 #include <blaze_tensor/math/typetraits/IsTensMapExpr.h>
 #include <blaze_tensor/math/typetraits/IsTensScalarDivExpr.h>
 #include <blaze_tensor/math/typetraits/IsTensScalarMultExpr.h>
+#include <blaze_tensor/math/typetraits/IsTensSerialExpr.h>
 #include <blaze_tensor/math/typetraits/IsTensTensAddExpr.h>
 #include <blaze_tensor/math/typetraits/IsTensTensMapExpr.h>
 #include <blaze_tensor/math/typetraits/IsTensTensMultExpr.h>

@@ -46,7 +46,7 @@
 #include <blaze_tensor/math/Tensor.h>
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
-// #include <blaze_tensor/math/traits/SubtensorTrait.h>
+#include <blaze_tensor/math/traits/SubtensorTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
@@ -3271,9 +3271,11 @@ template <typename MT, size_t M>
 struct PageSliceTraitEval2<
    MT, M,
    EnableIf_t< IsDenseTensor_v<MT> &&
-               ( M == 0UL || Size_v< MT,1UL > == DefaultSize_v ||
+               ( M == 0UL || Size_v< MT,0UL > == DefaultSize_v ||
+                             Size_v< MT,1UL > == DefaultSize_v ||
                              Size_v< MT,2UL > == DefaultSize_v ) &&
-               ( M == 0UL || MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
+               ( M == 0UL || MaxSize_v< MT,0UL > == DefaultMaxSize_v ||
+                             MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
                              MaxSize_v< MT,2UL > == DefaultMaxSize_v ) > >
 {
    using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
@@ -3281,6 +3283,31 @@ struct PageSliceTraitEval2<
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  SUBTENSORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SubtensorTraitEval2< MT, inf, inf, inf, inf, inf, inf,
+   EnableIf_t< IsDenseTensor_v<MT> &&
+               ( Size_v< MT,0UL > == DefaultSize_v ||
+                 Size_v< MT,1UL > == DefaultSize_v ||
+                 Size_v< MT,2UL > == DefaultSize_v ) &&
+               ( MaxSize_v< MT,0UL > == DefaultMaxSize_v ||
+                 MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
+                 MaxSize_v< MT,2UL > == DefaultMaxSize_v ) > >
+{
+   using Type = DynamicTensor< RemoveConst_t< ElementType_t<MT> > >;
+};
+/*! \endcond */
+//*************************************************************************************************
 
 
 

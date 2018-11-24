@@ -43,6 +43,7 @@
 
 #include <blaze/Math.h>
 
+#include <blaze_tensor/math/Aliases.h>
 #include <blaze_tensor/math/Constraints.h>
 #include <blaze_tensor/math/CustomTensor.h>
 #include <blaze_tensor/math/DynamicTensor.h>

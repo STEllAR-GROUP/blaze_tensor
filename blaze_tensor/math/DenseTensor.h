@@ -48,9 +48,12 @@
 #include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
+#include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
+#include <blaze_tensor/math/expressions/DTensMapExpr.h>
 #include <blaze_tensor/math/expressions/DTensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/DTensScalarMultExpr.h>
+#include <blaze_tensor/math/expressions/DTensSerialExpr.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/smp/DenseTensor.h>
 

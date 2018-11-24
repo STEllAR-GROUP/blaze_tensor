@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/expressions/Forward.h
-//  \brief Header file for all forward declarations for expression class templates
+//  \file blaze_tensor/math/expressions/TensSerialExpr.h
+//  \brief Header file for the TensSerialExpr base class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,69 +33,42 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_FORWARD_H_
-#define _BLAZE_TENSOR_MATH_EXPRESSIONS_FORWARD_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSSERIALEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSSERIALEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Forward.h>
+#include <blaze/math/expressions/SerialExpr.h>
+
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
-template< typename > struct DenseTensor;
-template< typename > class DTensSerialExpr;
-template< typename, typename > class DTensDTensAddExpr;
-template< typename, typename > class DTensDTensMultExpr;
-template< typename, typename > class DTensDTensSchurExpr;
-template< typename, typename > class DTensDTensSubExpr;
-template< typename, typename > class DTensMapExpr;
-template< typename, typename > class DTensScalarMultExpr;
-template< typename, typename > class DTensScalarDivExpr;
-template< typename, typename, typename > class DTensDTensMapExpr;
-
-
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator+( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator-( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator*( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator%( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-// template< typename MT >
-// decltype(auto) trans( const DenseTensor<TT>& );
-
-template< typename TT >
-decltype(auto) eval( const DenseTensor<TT>& );
-
-template< typename TT >
-decltype(auto) serial( const DenseTensor<TT>& );
-
-// template< typename MT >
-// inline decltype(auto) inv( const DenseTensor<TT>& );
+//*************************************************************************************************
+/*!\brief Base class for all tensor serial evaluation expression templates.
+// \ingroup math
 //
-// template< typename MT, typename OP >
-// decltype(auto) map( const DenseTensor<TT>&, OP );
-//
-// template< typename TT1, typename TT2, typename OP >
-// decltype(auto) map( const DenseTensor<TT1>&, const DenseTensor<TT2>&, OP );
-//
-// template< typename MT, typename OP >
-// decltype(auto) reduce( const DenseTensor<TT>&, OP );
+// The TensSerialExpr class serves as a tag for all expression templates that enforce a serial
+// evaluation of a tensor. All classes, that represent a tensor serialization operation and
+// that are used within the expression template environment of the Blaze library have to
+// derive publicly from this class in order to qualify as tensor serial evaluation expression
+// template. Only in case a class is derived publicly from the TensSerialExpr base class, the
+// IsTensSerialExpr type trait recognizes the class as valid tensor serial evaluation expression
+// template.
+*/
+template< typename MT >  // Matrix base type of the expression
+struct TensSerialExpr
+   : public SerialExpr<MT>
+{};
+//*************************************************************************************************
 
 } // namespace blaze
 

@@ -1,10 +1,9 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densetensor/GeneralTest.h
-//  \brief Header file for the general DenseMatrix operation test
+//  \file blazetest/mathtest/submatrix/DenseUnalignedTest.h
+//  \brief Header file for the Submatrix dense unaligned test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,8 +32,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSETENSOR_GENERALTEST_H_
-#define _BLAZETEST_MATHTEST_DENSETENSOR_GENERALTEST_H_
+#ifndef _BLAZETEST_MATHTEST_SUBMATRIX_DENSEUNALIGNEDTEST_H_
+#define _BLAZETEST_MATHTEST_SUBMATRIX_DENSEUNALIGNEDTEST_H_
 
 
 //*************************************************************************************************
@@ -44,13 +43,17 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/Submatrix.h>
+#include <blazetest/system/Types.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace densetensor {
+namespace submatrix {
 
 //=================================================================================================
 //
@@ -59,24 +62,18 @@ namespace densetensor {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for tests of the DenseMatrix functionality.
+/*!\brief Auxiliary class for all tests of the dense unaligned Submatrix specialization.
 //
-// This class represents a test suite for the DenseMatrix functionality contained in the
-// <em><blaze/math/dense/DenseMatrix.h></em> header file. It performs a series of runtime
-// tests with general matrices.
+// This class represents a test suite for the blaze::Submatrix class template specialization for
+// dense unaligned submatrices. It performs a series of both compile time as well as runtime tests.
 */
-class GeneralTest
+class DenseUnalignedTest
 {
- private:
-   //**Type definitions****************************************************************************
-   using cplx = blaze::complex<int>;  //!< Complex element type.
-   //**********************************************************************************************
-
  public:
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit GeneralTest();
+   explicit DenseUnalignedTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -89,54 +86,89 @@ class GeneralTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testIsNan();
-//    void testIsSquare();
-//    void testIsSymmetric();
-//    void testIsHermitian();
-//    void testIsUniform();
-//    void testIsLower();
-//    void testIsUniLower();
-//    void testIsStrictlyLower();
-//    void testIsUpper();
-//    void testIsUniUpper();
-//    void testIsStrictlyUpper();
-//    void testIsDiagonal();
-//    void testIsIdentity();
-//    void testMinimum();
-//    void testMaximum();
-//    void testSoftmax();
-//    void testTrace();
-//    void testL1Norm();
-//    void testL2Norm();
-//    void testL3Norm();
-//    void testL4Norm();
-//    void testLpNorm();
+   void testConstructors();
+   void testAssignment();
+   void testAddAssign();
+   void testSubAssign();
+   void testSchurAssign();
+   void testMultAssign();
+   void testScaling();
+   void testFunctionCall();
+   void testIterator();
+   void testNonZeros();
+   void testReset();
+   void testClear();
+   void testTranspose();
+   void testCTranspose();
+   void testIsDefault();
+   void testIsSame();
+   void testSubmatrix();
+   void testRow();
+   void testRows();
+   void testColumn();
+   void testColumns();
+   void testBand();
 
    template< typename Type >
-   void checkRows( const Type& tensor, size_t expectedRows ) const;
+   void checkRows( const Type& matrix, size_t expectedRows ) const;
 
    template< typename Type >
-   void checkColumns( const Type& tensor, size_t expectedColumns ) const;
+   void checkColumns( const Type& matrix, size_t expectedColumns ) const;
 
    template< typename Type >
-   void checkPages( const Type& tensor, size_t expectedPages ) const;
+   void checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const;
 
    template< typename Type >
-   void checkCapacity( const Type& tensor, size_t minCapacity ) const;
-
-   template< typename Type >
-   void checkNonZeros( const Type& tensor, size_t expectedNonZeros ) const;
-
-   template< typename Type >
-   void checkNonZeros( const Type& tensor, size_t i, size_t k, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const;
    //@}
+   //**********************************************************************************************
+
+   //**Utility functions***************************************************************************
+   /*!\name Utility functions */
+   //@{
+   void initialize();
+   //@}
+   //**********************************************************************************************
+
+   //**Type definitions****************************************************************************
+   using MT   = blaze::DynamicMatrix<int,blaze::rowMajor>;  //!< Row-major dynamic matrix type
+   using OMT  = MT::OppositeType;                           //!< Column-major dynamic matrix type
+   using SMT  = blaze::Submatrix<MT>;                       //!< Dense submatrix type for row-major matrices.
+   using OSMT = blaze::Submatrix<OMT>;                      //!< Dense submatrix type for column-major matrices.
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
+   MT  mat_;   //!< Row-major dynamic matrix.
+               /*!< The \f$ 5 \times 4 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{4}{c}}
+                     0 &  0 &  0 &  0 \\
+                     0 &  1 &  0 &  0 \\
+                    -2 &  0 & -3 &  0 \\
+                     0 &  4 &  5 & -6 \\
+                     7 & -8 &  9 & 10 \\
+                    \end{array}\right)\f]. */
+   OMT tmat_;  //!< Column-major dynamic matrix.
+               /*!< The \f$ 4 \times 5 \f$ matrix is initialized as
+                    \f[\left(\begin{array}{*{4}{c}}
+                     0 &  0 & -2 &  0 &  7 \\
+                     0 &  1 &  0 &  4 & -8 \\
+                     0 &  0 & -3 &  5 &  9 \\
+                     0 &  0 &  0 & -6 & 10 \\
+                    \end{array}\right)\f]. */
+
    std::string test_;  //!< Label of the currently performed test.
    //@}
+   //**********************************************************************************************
+
+   //**Compile time checks*************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT   );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( SMT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OSMT );
+   /*! \endcond */
    //**********************************************************************************************
 };
 //*************************************************************************************************
@@ -151,26 +183,26 @@ class GeneralTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Checking the number of rows of the given dense tensor.
+/*!\brief Checking the number of rows of the given dense matrix.
 //
-// \param tensor The dense tensor to be checked.
-// \param expectedRows The expected number of rows of the dense tensor.
+// \param matrix The dense matrix to be checked.
+// \param expectedRows The expected number of rows of the dense matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of rows of the given dense tensor. In case the actual number
-// of rows does not correspond to the given expected number of rows, a \a std::runtime_error
-// exception is thrown.
+// This function checks the number of rows of the given dense matrix. In case the
+// actual number of rows does not correspond to the given expected number of rows, a
+// \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkRows( const Type& tensor, size_t expectedRows ) const
+template< typename Type >  // Type of the dense matrix
+void DenseUnalignedTest::checkRows( const Type& matrix, size_t expectedRows ) const
 {
-   if( tensor.rows() != expectedRows ) {
+   if( rows( matrix ) != expectedRows ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of rows detected\n"
           << " Details:\n"
-          << "   Number of rows         : " << tensor.rows() << "\n"
+          << "   Number of rows         : " << rows( matrix ) << "\n"
           << "   Expected number of rows: " << expectedRows << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -179,26 +211,26 @@ void GeneralTest::checkRows( const Type& tensor, size_t expectedRows ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of columns of the given dense tensor.
+/*!\brief Checking the number of columns of the given dense matrix.
 //
-// \param tensor The dense tensor to be checked.
-// \param expectedRows The expected number of columns of the dense tensor.
+// \param matrix The dense matrix to be checked.
+// \param expectedColumns The expected number of columns of the dense matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of columns of the given dense tensor. In case the
+// This function checks the number of columns of the given dense matrix. In case the
 // actual number of columns does not correspond to the given expected number of columns,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkColumns( const Type& tensor, size_t expectedColumns ) const
+template< typename Type >  // Type of the dense matrix
+void DenseUnalignedTest::checkColumns( const Type& matrix, size_t expectedColumns ) const
 {
-   if( tensor.columns() != expectedColumns ) {
+   if( columns( matrix ) != expectedColumns ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of columns detected\n"
           << " Details:\n"
-          << "   Number of columns         : " << tensor.columns() << "\n"
+          << "   Number of columns         : " << columns( matrix ) << "\n"
           << "   Expected number of columns: " << expectedColumns << "\n";
       throw std::runtime_error( oss.str() );
    }
@@ -207,93 +239,37 @@ void GeneralTest::checkColumns( const Type& tensor, size_t expectedColumns ) con
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of columns of the given dense tensor.
+/*!\brief Checking the number of non-zero elements of the given dense matrix.
 //
-// \param tensor The dense tensor to be checked.
-// \param expectedRows The expected number of columns of the dense tensor.
+// \param matrix The dense matrix to be checked.
+// \param expectedNonZeros The expected number of non-zero elements of the dense matrix.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of columns of the given dense tensor. In case the
-// actual number of columns does not correspond to the given expected number of columns,
-// a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkPages( const Type& tensor, size_t expectedPages ) const
-{
-   if( tensor.pages() != expectedPages ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Invalid number of pages detected\n"
-          << " Details:\n"
-          << "   Number of pages         : " << tensor.pages() << "\n"
-          << "   Expected number of pages: " << expectedPages << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking the capacity of the given dense tensor.
-//
-// \param tensor The dense tensor to be checked.
-// \param minCapacity The expected minimum capacity of the dense tensor.
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function checks the capacity of the given dense tensor. In case the actual capacity
-// is smaller than the given expected minimum capacity, a \a std::runtime_error exception is
-// thrown.
-*/
-template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkCapacity( const Type& tensor, size_t minCapacity ) const
-{
-   if( tensor.capacity() < minCapacity ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Invalid capacity detected\n"
-          << " Details:\n"
-          << "   Capacity                 : " << tensor.capacity() << "\n"
-          << "   Expected minimum capacity: " << minCapacity << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking the number of non-zero elements of the given dense tensor.
-//
-// \param tensor The dense tensor to be checked.
-// \param expectedNonZeros The expected number of non-zero elements of the dense tensor.
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function checks the number of non-zero elements of the given dense tensor. In
+// This function checks the number of non-zero elements of the given dense matrix. In
 // case the actual number of non-zero elements does not correspond to the given expected
 // number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkNonZeros( const Type& tensor, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the dense matrix
+void DenseUnalignedTest::checkNonZeros( const Type& matrix, size_t expectedNonZeros ) const
 {
-   if( tensor.nonZeros() != expectedNonZeros ) {
+   if( nonZeros( matrix ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid number of non-zero elements\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << tensor.nonZeros() << "\n"
+          << "   Number of non-zeros         : " << nonZeros( matrix ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( tensor.capacity() < tensor.nonZeros() ) {
+   if( capacity( matrix ) < nonZeros( matrix ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
           << " Error: Invalid capacity detected\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << tensor.nonZeros() << "\n"
-          << "   Capacity           : " << tensor.capacity() << "\n";
+          << "   Number of non-zeros: " << nonZeros( matrix ) << "\n"
+          << "   Capacity           : " << capacity( matrix ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -301,38 +277,40 @@ void GeneralTest::checkNonZeros( const Type& tensor, size_t expectedNonZeros ) c
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of non-zero elements in a specific row/column of the given dense tensor.
+/*!\brief Checking the number of non-zero elements in a specific row/column of the given dense matrix.
 //
-// \param tensor The dense tensor to be checked.
+// \param matrix The dense matrix to be checked.
 // \param index The row/column to be checked.
 // \param expectedNonZeros The expected number of non-zero elements in the specified row/column.
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function checks the number of non-zero elements in the specified row/column of the
-// given dense tensor. In case the actual number of non-zero elements does not correspond
+// given dense matrix. In case the actual number of non-zero elements does not correspond
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkNonZeros( const Type& tensor, size_t i, size_t k, size_t expectedNonZeros ) const
+template< typename Type >  // Type of the dense matrix
+void DenseUnalignedTest::checkNonZeros( const Type& matrix, size_t index, size_t expectedNonZeros ) const
 {
-   if( tensor.nonZeros( i, k ) != expectedNonZeros ) {
+   if( nonZeros( matrix, index ) != expectedNonZeros ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Invalid number of non-zero elements in row " << i << " page " << k << "\n"
+          << " Error: Invalid number of non-zero elements in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
           << " Details:\n"
-          << "   Number of non-zeros         : " << tensor.nonZeros( i, k ) << "\n"
+          << "   Number of non-zeros         : " << nonZeros( matrix, index ) << "\n"
           << "   Expected number of non-zeros: " << expectedNonZeros << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( tensor.capacity( i, k ) < tensor.nonZeros( i, k ) ) {
+   if( capacity( matrix, index ) < nonZeros( matrix, index ) ) {
       std::ostringstream oss;
       oss << " Test: " << test_ << "\n"
-          << " Error: Invalid capacity detected in row " << i << " page " << k << "\n"
+          << " Error: Invalid capacity detected in "
+          << ( blaze::IsRowMajorMatrix<Type>::value ? "row " : "column " ) << index << "\n"
           << " Details:\n"
-          << "   Number of non-zeros: " << nonZeros( tensor, i, k ) << "\n"
-          << "   Capacity           : " << capacity( tensor, i, k ) << "\n";
+          << "   Number of non-zeros: " << nonZeros( matrix, index ) << "\n"
+          << "   Capacity           : " << capacity( matrix, index ) << "\n";
       throw std::runtime_error( oss.str() );
    }
 }
@@ -348,13 +326,13 @@ void GeneralTest::checkNonZeros( const Type& tensor, size_t i, size_t k, size_t 
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the DenseMatrix class template.
+/*!\brief Testing the functionality of the dense unaligned Submatrix specialization.
 //
 // \return void
 */
 void runTest()
 {
-   GeneralTest();
+   DenseUnalignedTest();
 }
 //*************************************************************************************************
 
@@ -369,14 +347,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the general DenseMatrix operation test.
+/*!\brief Macro for the execution of the Submatrix dense unaligned test.
 */
-#define RUN_DENSETENSOR_GENERAL_TEST \
-   blazetest::mathtest::densetensor::runTest()
+#define RUN_SUBMATRIX_DENSEUNALIGNED_TEST \
+   blazetest::mathtest::submatrix::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace densetensor
+} // namespace submatrix
 
 } // namespace mathtest
 

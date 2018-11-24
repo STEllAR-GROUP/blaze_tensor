@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/expressions/Forward.h
-//  \brief Header file for all forward declarations for expression class templates
+//  \file blaze_tensor/math/Aliases.h
+//  \brief Header file for auxiliary alias declarations
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,69 +33,43 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_FORWARD_H_
-#define _BLAZE_TENSOR_MATH_EXPRESSIONS_FORWARD_H_
+#ifndef _BLAZE_TENSOR_MATH_ALIASES_H_
+#define _BLAZE_TENSOR_MATH_ALIASES_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Forward.h>
+#include <blaze/util/Types.h>
+
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  ALIAS DECLARATION
 //
 //=================================================================================================
 
-template< typename > struct DenseTensor;
-template< typename > class DTensSerialExpr;
-template< typename, typename > class DTensDTensAddExpr;
-template< typename, typename > class DTensDTensMultExpr;
-template< typename, typename > class DTensDTensSchurExpr;
-template< typename, typename > class DTensDTensSubExpr;
-template< typename, typename > class DTensMapExpr;
-template< typename, typename > class DTensScalarMultExpr;
-template< typename, typename > class DTensScalarDivExpr;
-template< typename, typename, typename > class DTensDTensMapExpr;
-
-
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator+( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator-( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator*( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator%( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-// template< typename MT >
-// decltype(auto) trans( const DenseTensor<TT>& );
-
-template< typename TT >
-decltype(auto) eval( const DenseTensor<TT>& );
-
-template< typename TT >
-decltype(auto) serial( const DenseTensor<TT>& );
-
-// template< typename MT >
-// inline decltype(auto) inv( const DenseTensor<TT>& );
+//*************************************************************************************************
+/*!\brief Alias declaration for nested \c TensorType type definitions.
+// \ingroup aliases
 //
-// template< typename MT, typename OP >
-// decltype(auto) map( const DenseTensor<TT>&, OP );
-//
-// template< typename TT1, typename TT2, typename OP >
-// decltype(auto) map( const DenseTensor<TT1>&, const DenseTensor<TT2>&, OP );
-//
-// template< typename MT, typename OP >
-// decltype(auto) reduce( const DenseTensor<TT>&, OP );
+// The TensorType_t alias declaration provides a convenient shortcut to access the nested
+// \a TensorType type definition of the given type \a T. The following code example shows
+// both ways to access the nested type definition:
+
+   \code
+   using Type1 = typename T::TensorType;
+   using Type2 = TensorType_t<T>;
+
+   BLAZE_CONSTRAINT_MUST_BE_STRICTLY_SAME_TYPE( Type1, Type2 );
+   \endcode
+*/
+template< typename T >
+using TensorType_t = typename T::TensorType;
+//*************************************************************************************************
 
 } // namespace blaze
 

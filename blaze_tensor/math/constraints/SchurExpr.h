@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/expressions/Forward.h
-//  \brief Header file for all forward declarations for expression class templates
+//  \file blaze_tensor/math/constraints/SchurExpr.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,69 +33,49 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_FORWARD_H_
-#define _BLAZE_TENSOR_MATH_EXPRESSIONS_FORWARD_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_SCHUREXPR_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_SCHUREXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/Forward.h>
+#include <blaze/math/constraints/SchurExpr.h>
+#include <blaze/math/typetraits/Size.h>
+
+#include <blaze_tensor/math/typetraits/IsTensor.h>
 
 namespace blaze {
 
+
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  MUST_FORM_VALID_TENSOR_SCHUREXPR CONSTRAINT
 //
 //=================================================================================================
 
-template< typename > struct DenseTensor;
-template< typename > class DTensSerialExpr;
-template< typename, typename > class DTensDTensAddExpr;
-template< typename, typename > class DTensDTensMultExpr;
-template< typename, typename > class DTensDTensSchurExpr;
-template< typename, typename > class DTensDTensSubExpr;
-template< typename, typename > class DTensMapExpr;
-template< typename, typename > class DTensScalarMultExpr;
-template< typename, typename > class DTensScalarDivExpr;
-template< typename, typename, typename > class DTensDTensMapExpr;
-
-
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator+( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator-( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator*( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-template< typename TT1, typename TT2 >
-decltype(auto) operator%( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
-
-// template< typename MT >
-// decltype(auto) trans( const DenseTensor<TT>& );
-
-template< typename TT >
-decltype(auto) eval( const DenseTensor<TT>& );
-
-template< typename TT >
-decltype(auto) serial( const DenseTensor<TT>& );
-
-// template< typename MT >
-// inline decltype(auto) inv( const DenseTensor<TT>& );
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
 //
-// template< typename MT, typename OP >
-// decltype(auto) map( const DenseTensor<TT>&, OP );
-//
-// template< typename TT1, typename TT2, typename OP >
-// decltype(auto) map( const DenseTensor<TT1>&, const DenseTensor<TT2>&, OP );
-//
-// template< typename MT, typename OP >
-// decltype(auto) reduce( const DenseTensor<TT>&, OP );
+// In case the given data types \a T1 and \a T2 do not form a valid matrix/matrix addition,
+// a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSOR_SCHUREXPR(T1,T2) \
+   static_assert( ::blaze::IsTensor_v<T1> && \
+                  ::blaze::IsTensor_v<T2> && \
+                  ( ( ::blaze::Size_v<T1,0UL> == -1L ) || \
+                    ( ::blaze::Size_v<T2,0UL> == -1L ) || \
+                    ( ::blaze::Size_v<T1,0UL> == ::blaze::Size_v<T2,0UL> ) ) && \
+                  ( ( ::blaze::Size_v<T1,1UL> == -1L ) || \
+                    ( ::blaze::Size_v<T2,1UL> == -1L ) || \
+                    ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,1UL> ) ) && \
+                  ( ( ::blaze::Size_v<T1,2UL> == -1L ) || \
+                    ( ::blaze::Size_v<T2,2UL> == -1L ) || \
+                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,2UL> ) ) \
+                , "Invalid matrix/matrix addition expression detected" )
+//*************************************************************************************************
 
 } // namespace blaze
 
