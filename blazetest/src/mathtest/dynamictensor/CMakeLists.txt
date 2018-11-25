@@ -39,8 +39,7 @@ set(tests
 )
 
 foreach(test ${tests})
-   add_executable(${category}${test} ${test}.cpp)
-   target_link_libraries(${category}${test} BlazeTensor)
-   set_target_properties(${category}${test} PROPERTIES FOLDER "Tests/${category}")
-   add_test(NAME ${category}${test} COMMAND ${category}${test})
+   add_blaze_tensor_test(${category}${test}
+      SOURCES ${test}.cpp
+      FOLDER "Tests/${category}")
 endforeach()

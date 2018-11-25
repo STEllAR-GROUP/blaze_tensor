@@ -30,6 +30,8 @@
 #
 # =================================================================================================
 
+include(BlazeTensor_AddTest)
+
 if(MSVC)
    add_definitions(-DNOMINMAX)
    add_definitions(-D_CRT_SECURE_NO_WARNINGS)

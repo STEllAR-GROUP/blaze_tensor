@@ -36,6 +36,9 @@ project(BlazeTensor CXX)
 set(CMAKE_CXX_STANDARD 14)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+# Add cmake directory
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+
 # Set up BlazeTensor target
 add_library(BlazeTensor INTERFACE)
 
