@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/Views.h
-//  \brief Header file for the vector and matrix views
+//  \file blaze_tensor/math/expressions/TensReduceExpr.h
+//  \brief Header file for the TensReduceExpr base class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,23 +33,43 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSREDUCEEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSREDUCEEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Views.h>
+#include <blaze/math/expressions/ReduceExpr.h>
 
-// #include <blaze_tensor/math/Column.h>
-// #include <blaze_tensor/math/Columns.h>
-// #include <blaze_tensor/math/Elements.h>
-#include <blaze_tensor/math/ColumnSlice.h>
-#include <blaze_tensor/math/PageSlice.h>
-#include <blaze_tensor/math/RowSlice.h>
-// #include <blaze_tensor/math/Rows.h>
-#include <blaze_tensor/math/Subtensor.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Base class for all tensor reduction expression templates.
+// \ingroup math
+//
+// The TensReduceExpr class serves as a tag for all expression templates that implement a tensor
+// reduction. All classes, that represent a tensor reduction and and that are used within the
+// expression template environment of the Blaze library have to derive publicly from this class
+// in order to qualify as tensor reduction expression template. Only in case a class is derived
+// publicly from the TensReduceExpr base class, the IsTensReduceExpr type trait recognizes the
+// class as valid tensor reduction expression template.
+*/
+template< typename VT  // Tensor base type of the expression
+        , size_t RF >  // Reduction flag
+struct TensReduceExpr
+   : public ReduceExpr<VT>
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

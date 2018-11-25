@@ -62,13 +62,17 @@
 #include <blaze/util/typetraits/IsNumeric.h>
 
 #include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
+#include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensMapExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
+#include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
 #include <blaze_tensor/math/expressions/DTensEvalExpr.h>
 #include <blaze_tensor/math/expressions/DTensMapExpr.h>
+#include <blaze_tensor/math/expressions/DTensReduceExpr.h>
 #include <blaze_tensor/math/expressions/DTensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/DTensScalarMultExpr.h>
+#include <blaze_tensor/math/expressions/DTensSerialExpr.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 
 namespace blaze {
@@ -349,6 +353,42 @@ inline auto operator/=( DenseTensor<TT>&& tens, ST scalar )
 //@{
 template< typename TT >
 bool isnan( const DenseTensor<TT>& dm );
+
+// template< bool RF, typename MT, bool SO >
+// bool isSymmetric( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isHermitian( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isUniform( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isLower( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isUniLower( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isStrictlyLower( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isUpper( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isUniUpper( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isDiagonal( const DenseMatrix<MT,SO>& dm );
+//
+// template< bool RF, typename MT, bool SO >
+// bool isIdentity( const DenseMatrix<MT,SO>& dm );
+
+template< typename MT >
+auto softmax( const DenseTensor<MT>& dm );
 //@}
 //*************************************************************************************************
 
@@ -391,6 +431,27 @@ bool isnan( const DenseTensor<TT>& dm )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Computes the softmax function for the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The given dense tensor for the softmax computation.
+// \return The resulting tensor.
+//
+// This function computes the softmax function (i.e. the normalized exponential function) for
+// the given dense tensor \a dm (see also https://en.wikipedia.org/wiki/Softmax_function). The
+// resulting dense tensor consists of real values in the range (0..1], which add up to 1.
+*/
+template< typename MT > // Type of the dense tensor
+auto softmax( const DenseTensor<MT>& dm )
+{
+   auto tmp( evaluate( exp( ~dm ) ) );
+   const auto scalar( sum( ~tmp ) );
+   tmp /= scalar;
+   return tmp;
+}
+//*************************************************************************************************
 
 } // namespace blaze
 

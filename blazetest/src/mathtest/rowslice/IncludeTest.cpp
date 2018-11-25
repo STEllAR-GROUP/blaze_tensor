@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/Views.h
-//  \brief Header file for the vector and matrix views
+//  \file src/mathtest/rowslice/IncludeTest.cpp
+//  \brief Source file for the PageSlice include test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,23 +33,23 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Views.h>
-
-// #include <blaze_tensor/math/Column.h>
-// #include <blaze_tensor/math/Columns.h>
-// #include <blaze_tensor/math/Elements.h>
-#include <blaze_tensor/math/ColumnSlice.h>
-#include <blaze_tensor/math/PageSlice.h>
 #include <blaze_tensor/math/RowSlice.h>
-// #include <blaze_tensor/math/Rows.h>
-#include <blaze_tensor/math/Subtensor.h>
 
-#endif
+
+
+
+//=================================================================================================
+//
+//  MAIN FUNCTION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+int main()
+{}
+//*************************************************************************************************

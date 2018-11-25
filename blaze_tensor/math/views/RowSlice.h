@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/views/PageSlice.h
-//  \brief Header file for the implementation of the PageSlice view
+//  \file blaze_tensor/math/views/RowSlice.h
+//  \brief Header file for the implementation of the RowSlice view
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_PAGESLICE_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_PAGESLICE_H_
+#ifndef _BLAZE_TENSOR_MATH_VIEWS_ROWSLICE_H_
+#define _BLAZE_TENSOR_MATH_VIEWS_ROWSLICE_H_
 
 
 //*************************************************************************************************
@@ -57,8 +57,8 @@
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
 #include <blaze_tensor/math/expressions/Tensor.h>
 #include <blaze_tensor/math/views/Forward.h>
-#include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
-#include <blaze_tensor/math/views/pageslice/Dense.h>
+#include <blaze_tensor/math/views/rowslice/BaseTemplate.h>
+#include <blaze_tensor/math/views/rowslice/Dense.h>
 
 namespace blaze {
 
@@ -69,61 +69,61 @@ namespace blaze {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Creating a view on a specific pageslice of the given tensor.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor.
+// \ingroup rowslice
 //
-// \param tensor The tensor containing the pageslice.
-// \param args Optional pageslice arguments.
-// \return View on the specified pageslice of the tensor.
-// \exception std::invalid_argument Invalid pageslice access index.
+// \param tensor The tensor containing the rowslice.
+// \param args Optional rowslice arguments.
+// \return View on the specified rowslice of the tensor.
+// \exception std::invalid_argument Invalid rowslice access index.
 //
-// This function returns an expression representing the specified pageslice of the given tensor.
+// This function returns an expression representing the specified rowslice of the given tensor.
 
    \code
    blaze::DynamicTensor<double> D;
    blaze::CompressedTensor<double> S;
    // ... Resizing and initialization
 
-   // Creating a view on the 3rd pageslice of the dense tensor D
-   auto pageslice3 = pageslice<3UL>( D );
+   // Creating a view on the 3rd rowslice of the dense tensor D
+   auto rowslice3 = rowslice<3UL>( D );
 
-   // Creating a view on the 4th pageslice of the sparse tensor S
-   auto pageslice4 = pageslice<4UL>( S );
+   // Creating a view on the 4th rowslice of the sparse tensor S
+   auto rowslice4 = rowslice<4UL>( S );
    \page()
 
-// By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
-// specified (i.e. if the specified index is greater than or equal to the total number of the pageslices
+// By default, the provided rowslice arguments are checked at runtime. In case the rowslice is not properly
+// specified (i.e. if the specified index is greater than or equal to the total number of the rowslices
 // in the given tensor) a \a std::invalid_argument exception is thrown. The checks can be skipped
 // by providing the optional \a blaze::unchecked argument.
 
    \code
-   auto pageslice3 = pageslice<3UL>( D, unchecked );
-   auto pageslice4 = pageslice<4UL>( S, unchecked );
+   auto rowslice3 = rowslice<3UL>( D, unchecked );
+   auto rowslice4 = rowslice<4UL>( S, unchecked );
    \page()
 */
-template< size_t I            // PageSlice index
+template< size_t I            // RowSlice index
         , typename MT         // Type of the tensor
-        , typename... RRAs >  // Optional pageslice arguments
-inline decltype(auto) pageslice( Tensor<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Optional rowslice arguments
+inline decltype(auto) rowslice( Tensor<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = PageSlice_<MT,I>;
+   using ReturnType = RowSlice_<MT,I>;
    return ReturnType( ~tensor, args... );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Creating a view on a specific pageslice of the given constant tensor.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given constant tensor.
+// \ingroup rowslice
 //
-// \param tensor The constant tensor containing the pageslice.
-// \param args Optional pageslice arguments.
-// \return View on the specified pageslice of the tensor.
-// \exception std::invalid_argument Invalid pageslice access index.
+// \param tensor The constant tensor containing the rowslice.
+// \param args Optional rowslice arguments.
+// \return View on the specified rowslice of the tensor.
+// \exception std::invalid_argument Invalid rowslice access index.
 //
-// This function returns an expression representing the specified pageslice of the given constant
+// This function returns an expression representing the specified rowslice of the given constant
 // tensor.
 
    \code
@@ -131,177 +131,177 @@ inline decltype(auto) pageslice( Tensor<MT>& tensor, RRAs... args )
    const blaze::DynamicTensor<double> D( ... );
    const blaze::CompressedTensor<double> S( ... );
 
-   // Creating a view on the 3rd pageslice of the dense tensor D
-   auto pageslice3 = pageslice<3UL>( D );
+   // Creating a view on the 3rd rowslice of the dense tensor D
+   auto rowslice3 = rowslice<3UL>( D );
 
-   // Creating a view on the 4th pageslice of the sparse tensor S
-   auto pageslice4 = pageslice<4UL>( S );
+   // Creating a view on the 4th rowslice of the sparse tensor S
+   auto rowslice4 = rowslice<4UL>( S );
    \page()
 
-// By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
-// specified (i.e. if the specified index is greater than or equal to the total number of the pageslices
+// By default, the provided rowslice arguments are checked at runtime. In case the rowslice is not properly
+// specified (i.e. if the specified index is greater than or equal to the total number of the rowslices
 // in the given tensor) a \a std::invalid_argument exception is thrown. The checks can be skipped
 // by providing the optional \a blaze::unchecked argument.
 
    \code
-   auto pageslice3 = pageslice<3UL>( D, unchecked );
-   auto pageslice4 = pageslice<4UL>( S, unchecked );
+   auto rowslice3 = rowslice<3UL>( D, unchecked );
+   auto rowslice4 = rowslice<4UL>( S, unchecked );
    \page()
 */
-template< size_t I            // PageSlice index
+template< size_t I            // RowSlice index
         , typename MT         // Type of the tensor
-        , typename... RRAs >  // Optional pageslice arguments
-inline decltype(auto) pageslice( const Tensor<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Optional rowslice arguments
+inline decltype(auto) rowslice( const Tensor<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const PageSlice_<const MT,I>;
+   using ReturnType = const RowSlice_<const MT,I>;
    return ReturnType( ~tensor, args... );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Creating a view on a specific pageslice of the given temporary tensor.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given temporary tensor.
+// \ingroup rowslice
 //
-// \param tensor The temporary tensor containing the pageslice.
-// \param args Optional pageslice arguments.
-// \return View on the specified pageslice of the tensor.
-// \exception std::invalid_argument Invalid pageslice access index.
+// \param tensor The temporary tensor containing the rowslice.
+// \param args Optional rowslice arguments.
+// \return View on the specified rowslice of the tensor.
+// \exception std::invalid_argument Invalid rowslice access index.
 //
-// This function returns an expression representing the specified pageslice of the given temporary
-// tensor. In case the pageslice is not properly specified (i.e. if the specified index is greater
-// than or equal to the total number of the pageslices in the given tensor) a \a std::invalid_argument
+// This function returns an expression representing the specified rowslice of the given temporary
+// tensor. In case the rowslice is not properly specified (i.e. if the specified index is greater
+// than or equal to the total number of the rowslices in the given tensor) a \a std::invalid_argument
 // exception is thrown.
 */
-template< size_t I            // PageSlice index
+template< size_t I            // RowSlice index
         , typename MT         // Type of the tensor
-        , typename... RRAs >  // Optional pageslice arguments
-inline decltype(auto) pageslice( Tensor<MT>&& tensor, RRAs... args )
+        , typename... RRAs >  // Optional rowslice arguments
+inline decltype(auto) rowslice( Tensor<MT>&& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = PageSlice_<MT,I>;
+   using ReturnType = RowSlice_<MT,I>;
    return ReturnType( ~tensor, args... );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Creating a view on a specific pageslice of the given tensor.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor.
+// \ingroup rowslice
 //
-// \param tensor The tensor containing the pageslice.
-// \param index The index of the pageslice.
-// \param args Optional pageslice arguments.
-// \return View on the specified pageslice of the tensor.
-// \exception std::invalid_argument Invalid pageslice access index.
+// \param tensor The tensor containing the rowslice.
+// \param index The index of the rowslice.
+// \param args Optional rowslice arguments.
+// \return View on the specified rowslice of the tensor.
+// \exception std::invalid_argument Invalid rowslice access index.
 //
-// This function returns an expression representing the specified pageslice of the given tensor.
+// This function returns an expression representing the specified rowslice of the given tensor.
 
    \code
    blaze::DynamicTensor<double> D;
    blaze::CompressedTensor<double> S;
    // ... Resizing and initialization
 
-   // Creating a view on the 3rd pageslice of the dense tensor D
-   auto pageslice3 = pageslice( D, 3UL );
+   // Creating a view on the 3rd rowslice of the dense tensor D
+   auto rowslice3 = rowslice( D, 3UL );
 
-   // Creating a view on the 4th pageslice of the sparse tensor S
-   auto pageslice4 = pageslice( S, 4UL );
+   // Creating a view on the 4th rowslice of the sparse tensor S
+   auto rowslice4 = rowslice( S, 4UL );
    \page()
 
-// By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
-// specified (i.e. if the specified index is greater than or equal to the total number of the pageslices
+// By default, the provided rowslice arguments are checked at runtime. In case the rowslice is not properly
+// specified (i.e. if the specified index is greater than or equal to the total number of the rowslices
 // in the given tensor) a \a std::invalid_argument exception is thrown. The checks can be skipped
 // by providing the optional \a blaze::unchecked argument.
 
    \code
-   auto pageslice3 = pageslice( D, 3UL, unchecked );
-   auto pageslice4 = pageslice( S, 4UL, unchecked );
+   auto rowslice3 = rowslice( D, 3UL, unchecked );
+   auto rowslice4 = rowslice( S, 4UL, unchecked );
    \page()
 */
 template< typename MT         // Type of the tensor
-        , typename... RRAs >  // Optional pageslice arguments
-inline decltype(auto) pageslice( Tensor<MT>& tensor, size_t index, RRAs... args )
+        , typename... RRAs >  // Optional rowslice arguments
+inline decltype(auto) rowslice( Tensor<MT>& tensor, size_t index, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = PageSlice_<MT>;
+   using ReturnType = RowSlice_<MT>;
    return ReturnType( ~tensor, index, args... );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Creating a view on a specific pageslice of the given constant tensor.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given constant tensor.
+// \ingroup rowslice
 //
-// \param tensor The constant tensor containing the pageslice.
-// \param index The index of the pageslice.
-// \param args Optional pageslice arguments.
-// \return View on the specified pageslice of the tensor.
-// \exception std::invalid_argument Invalid pageslice access index.
+// \param tensor The constant tensor containing the rowslice.
+// \param index The index of the rowslice.
+// \param args Optional rowslice arguments.
+// \return View on the specified rowslice of the tensor.
+// \exception std::invalid_argument Invalid rowslice access index.
 //
-// This function returns an expression representing the specified pageslice of the given constant
+// This function returns an expression representing the specified rowslice of the given constant
 // tensor.
 
    \code
    const blaze::DynamicTensor<double> D( ... );
    const blaze::CompressedTensor<double> S( ... );
 
-   // Creating a view on the 3rd pageslice of the dense tensor D
-   auto pageslice3 = pageslice( D, 3UL );
+   // Creating a view on the 3rd rowslice of the dense tensor D
+   auto rowslice3 = rowslice( D, 3UL );
 
-   // Creating a view on the 4th pageslice of the sparse tensor S
-   auto pageslice4 = pageslice( S, 4UL );
+   // Creating a view on the 4th rowslice of the sparse tensor S
+   auto rowslice4 = rowslice( S, 4UL );
    \page()
 
-// By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
-// specified (i.e. if the specified index is greater than or equal to the total number of the pageslices
+// By default, the provided rowslice arguments are checked at runtime. In case the rowslice is not properly
+// specified (i.e. if the specified index is greater than or equal to the total number of the rowslices
 // in the given tensor) a \a std::invalid_argument exception is thrown. The checks can be skipped
 // by providing the optional \a blaze::unchecked argument.
 
    \code
-   auto pageslice3 = pageslice( D, 3UL, unchecked );
-   auto pageslice4 = pageslice( S, 4UL, unchecked );
+   auto rowslice3 = rowslice( D, 3UL, unchecked );
+   auto rowslice4 = rowslice( S, 4UL, unchecked );
    \page()
 */
 template< typename MT         // Type of the tensor
-        , typename... RRAs >  // Optional pageslice arguments
-inline decltype(auto) pageslice( const Tensor<MT>& tensor, size_t index, RRAs... args )
+        , typename... RRAs >  // Optional rowslice arguments
+inline decltype(auto) rowslice( const Tensor<MT>& tensor, size_t index, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const PageSlice_<const MT>;
+   using ReturnType = const RowSlice_<const MT>;
    return ReturnType( ~tensor, index, args... );
 }
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Creating a view on a specific pageslice of the given temporary tensor.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given temporary tensor.
+// \ingroup rowslice
 //
-// \param tensor The temporary tensor containing the pageslice.
-// \param index The index of the pageslice.
-// \param args Optional pageslice arguments.
-// \return View on the specified pageslice of the tensor.
-// \exception std::invalid_argument Invalid pageslice access index.
+// \param tensor The temporary tensor containing the rowslice.
+// \param index The index of the rowslice.
+// \param args Optional rowslice arguments.
+// \return View on the specified rowslice of the tensor.
+// \exception std::invalid_argument Invalid rowslice access index.
 //
-// This function returns an expression representing the specified pageslice of the given temporary
-// tensor. In case the pageslice is not properly specified (i.e. if the specified index is greater
-// than or equal to the total number of the pageslices in the given tensor) a \a std::invalid_argument
+// This function returns an expression representing the specified rowslice of the given temporary
+// tensor. In case the rowslice is not properly specified (i.e. if the specified index is greater
+// than or equal to the total number of the rowslices in the given tensor) a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename MT         // Type of the tensor
-        , typename... RRAs >  // Optional pageslice arguments
-inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args )
+        , typename... RRAs >  // Optional rowslice arguments
+inline decltype(auto) rowslice( Tensor<MT>&& tensor, size_t index, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = PageSlice_<MT>;
+   using ReturnType = RowSlice_<MT>;
    return ReturnType( ~tensor, index, args... );
 }
 //*************************************************************************************************
@@ -317,25 +317,25 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given tensor/tensor addition.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor/tensor addition.
+// \ingroup rowslice
 //
 // \param tensor The constant tensor/tensor addition.
-// \param args The runtime pageslice arguments.
-// \return View on the specified pageslice of the addition.
+// \param args The runtime rowslice arguments.
+// \return View on the specified rowslice of the addition.
 //
-// This function returns an expression representing the specified pageslice of the given tensor/tensor
+// This function returns an expression representing the specified rowslice of the given tensor/tensor
 // addition.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const TensTensAddExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensTensAddExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) +
-          pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) +
+          rowslice<CRAs...>( (~tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -343,25 +343,25 @@ inline decltype(auto) pageslice( const TensTensAddExpr<MT>& tensor, RRAs... args
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given tensor/tensor subtraction.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor/tensor subtraction.
+// \ingroup rowslice
 //
 // \param tensor The constant tensor/tensor subtraction.
-// \param args The runtime pageslice arguments.
-// \return View on the specified pageslice of the subtraction.
+// \param args The runtime rowslice arguments.
+// \return View on the specified rowslice of the subtraction.
 //
-// This function returns an expression representing the specified pageslice of the given tensor/tensor
+// This function returns an expression representing the specified rowslice of the given tensor/tensor
 // subtraction.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const TensTensSubExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensTensSubExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) -
-          pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) -
+          rowslice<CRAs...>( (~tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -369,24 +369,24 @@ inline decltype(auto) pageslice( const TensTensSubExpr<MT>& tensor, RRAs... args
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given Schur product.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given Schur product.
+// \ingroup rowslice
 //
 // \param tensor The constant Schur product.
-// \param args The runtime pageslice arguments.
-// \return View on the specified pageslice of the Schur product.
+// \param args The runtime rowslice arguments.
+// \return View on the specified rowslice of the Schur product.
 //
-// This function returns an expression representing the specified pageslice of the given Schur product.
+// This function returns an expression representing the specified rowslice of the given Schur product.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const SchurExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const SchurExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) *
-          pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) *
+          rowslice<CRAs...>( (~tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -394,24 +394,24 @@ inline decltype(auto) pageslice( const SchurExpr<MT>& tensor, RRAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given tensor/tensor multiplication.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor/tensor multiplication.
+// \ingroup rowslice
 //
 // \param tensor The constant tensor/tensor multiplication.
-// \param args The runtime pageslice arguments
-// \return View on the specified pageslice of the multiplication.
+// \param args The runtime rowslice arguments
+// \return View on the specified rowslice of the multiplication.
 //
-// This function returns an expression representing the specified pageslice of the given tensor/tensor
+// This function returns an expression representing the specified rowslice of the given tensor/tensor
 // multiplication.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensTensMultExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
+   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -419,28 +419,28 @@ inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... arg
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given outer product.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given outer product.
+// \ingroup rowslice
 //
 // \param tensor The constant outer product.
-// \param args Optional pageslice arguments.
-// \return View on the specified pageslice of the outer product.
-// \exception std::invalid_argument Invalid pageslice access index.
+// \param args Optional rowslice arguments.
+// \return View on the specified rowslice of the outer product.
+// \exception std::invalid_argument Invalid rowslice access index.
 //
-// This function returns an expression representing the specified pageslice of the given outer product.
+// This function returns an expression representing the specified rowslice of the given outer product.
 */
-// template< size_t I            // PageSlice index
+// template< size_t I            // RowSlice index
 //         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Optional pageslice arguments
-// inline decltype(auto) pageslice( const VecTVecMultExpr<MT>& tensor, RRAs... args )
+//         , typename... RRAs >  // Optional rowslice arguments
+// inline decltype(auto) rowslice( const VecTVecMultExpr<MT>& tensor, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
 //    UNUSED_PARAMETER( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-//       if( (~tensor).pageslices() <= I ) {
-//          BLAZE_THPAGESLICE_INVALID_ARGUMENT( "Invalid pageslice access index" );
+//       if( (~tensor).rowslices() <= I ) {
+//          BLAZE_THROWSLICE_INVALID_ARGUMENT( "Invalid rowslice access index" );
 //       }
 //    }
 //
@@ -452,28 +452,28 @@ inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... arg
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given outer product.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given outer product.
+// \ingroup rowslice
 //
 // \param tensor The constant outer product.
-// \param index The index of the pageslice.
-// \param args Optional pageslice arguments.
-// \return View on the specified pageslice of the outer product.
-// \exception std::invalid_argument Invalid pageslice access index.
+// \param index The index of the rowslice.
+// \param args Optional rowslice arguments.
+// \return View on the specified rowslice of the outer product.
+// \exception std::invalid_argument Invalid rowslice access index.
 //
-// This function returns an expression representing the specified pageslice of the given outer product.
+// This function returns an expression representing the specified rowslice of the given outer product.
 */
 // template< typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Optional pageslice arguments
-// inline decltype(auto) pageslice( const VecTVecMultExpr<MT>& tensor, size_t index, RRAs... args )
+//         , typename... RRAs >  // Optional rowslice arguments
+// inline decltype(auto) rowslice( const VecTVecMultExpr<MT>& tensor, size_t index, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
 //    UNUSED_PARAMETER( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-//       if( (~tensor).pageslices() <= index ) {
-//          BLAZE_THPAGESLICE_INVALID_ARGUMENT( "Invalid pageslice access index" );
+//       if( (~tensor).rowslices() <= index ) {
+//          BLAZE_THROWSLICE_INVALID_ARGUMENT( "Invalid rowslice access index" );
 //       }
 //    }
 //
@@ -485,24 +485,24 @@ inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... arg
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given tensor/scalar multiplication.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor/scalar multiplication.
+// \ingroup rowslice
 //
 // \param tensor The constant tensor/scalar multiplication.
-// \param args The runtime pageslice arguments
-// \return View on the specified pageslice of the multiplication.
+// \param args The runtime rowslice arguments
+// \return View on the specified rowslice of the multiplication.
 //
-// This function returns an expression representing the specified pageslice of the given tensor/scalar
+// This function returns an expression representing the specified rowslice of the given tensor/scalar
 // multiplication.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const TensScalarMultExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensScalarMultExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
+   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -510,24 +510,24 @@ inline decltype(auto) pageslice( const TensScalarMultExpr<MT>& tensor, RRAs... a
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given tensor/scalar division.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor/scalar division.
+// \ingroup rowslice
 //
 // \param tensor The constant tensor/scalar division.
-// \param args The runtime pageslice arguments
-// \return View on the specified pageslice of the division.
+// \param args The runtime rowslice arguments
+// \return View on the specified rowslice of the division.
 //
-// This function returns an expression representing the specified pageslice of the given tensor/scalar
+// This function returns an expression representing the specified rowslice of the given tensor/scalar
 // division.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const TensScalarDivExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensScalarDivExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) / (~tensor).rightOperand();
+   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) / (~tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -535,24 +535,24 @@ inline decltype(auto) pageslice( const TensScalarDivExpr<MT>& tensor, RRAs... ar
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given unary tensor map operation.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given unary tensor map operation.
+// \ingroup rowslice
 //
 // \param tensor The constant unary tensor map operation.
-// \param args The runtime pageslice arguments
-// \return View on the specified pageslice of the unary map operation.
+// \param args The runtime rowslice arguments
+// \return View on the specified rowslice of the unary map operation.
 //
-// This function returns an expression representing the specified pageslice of the given unary tensor
+// This function returns an expression representing the specified rowslice of the given unary tensor
 // map operation.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const TensMapExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensMapExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( pageslice<CRAs...>( (~tensor).operand(), args... ), (~tensor).operation() );
+   return map( rowslice<CRAs...>( (~tensor).operand(), args... ), (~tensor).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -560,25 +560,25 @@ inline decltype(auto) pageslice( const TensMapExpr<MT>& tensor, RRAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given binary tensor map operation.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given binary tensor map operation.
+// \ingroup rowslice
 //
 // \param tensor The constant binary tensor map operation.
-// \param args The runtime pageslice arguments
-// \return View on the specified pageslice of the binary map operation.
+// \param args The runtime rowslice arguments
+// \return View on the specified rowslice of the binary map operation.
 //
-// This function returns an expression representing the specified pageslice of the given binary tensor
+// This function returns an expression representing the specified rowslice of the given binary tensor
 // map operation.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const TensTensMapExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensTensMapExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( pageslice<CRAs...>( (~tensor).leftOperand(), args... ),
-               pageslice<CRAs...>( (~tensor).rightOperand(), args... ),
+   return map( rowslice<CRAs...>( (~tensor).leftOperand(), args... ),
+               rowslice<CRAs...>( (~tensor).rightOperand(), args... ),
                (~tensor).operation() );
 }
 /*! \endcond */
@@ -587,24 +587,24 @@ inline decltype(auto) pageslice( const TensTensMapExpr<MT>& tensor, RRAs... args
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given tensor evaluation operation.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor evaluation operation.
+// \ingroup rowslice
 //
 // \param tensor The constant tensor evaluation operation.
-// \param args The runtime pageslice arguments
-// \return View on the specified pageslice of the evaluation operation.
+// \param args The runtime rowslice arguments
+// \return View on the specified rowslice of the evaluation operation.
 //
-// This function returns an expression representing the specified pageslice of the given tensor
+// This function returns an expression representing the specified rowslice of the given tensor
 // evaluation operation.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const TensEvalExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensEvalExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( pageslice<CRAs...>( (~tensor).operand(), args... ) );
+   return eval( rowslice<CRAs...>( (~tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -612,24 +612,24 @@ inline decltype(auto) pageslice( const TensEvalExpr<MT>& tensor, RRAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given tensor serialization operation.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor serialization operation.
+// \ingroup rowslice
 //
 // \param tensor The constant tensor serialization operation.
-// \param args The runtime pageslice arguments
-// \return View on the specified pageslice of the serialization operation.
+// \param args The runtime rowslice arguments
+// \return View on the specified rowslice of the serialization operation.
 //
-// This function returns an expression representing the specified pageslice of the given tensor
+// This function returns an expression representing the specified rowslice of the given tensor
 // serialization operation.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const TensSerialExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensSerialExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( pageslice<CRAs...>( (~tensor).operand(), args... ) );
+   return serial( rowslice<CRAs...>( (~tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -637,24 +637,24 @@ inline decltype(auto) pageslice( const TensSerialExpr<MT>& tensor, RRAs... args 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given tensor declaration operation.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor declaration operation.
+// \ingroup rowslice
 //
 // \param tensor The constant tensor declaration operation.
-// \param args The runtime pageslice arguments
-// \return View on the specified pageslice of the declaration operation.
+// \param args The runtime rowslice arguments
+// \return View on the specified rowslice of the declaration operation.
 //
-// This function returns an expression representing the specified pageslice of the given tensor
+// This function returns an expression representing the specified rowslice of the given tensor
 // declaration operation.
 */
-template< size_t... CRAs      // Compile time pageslice arguments
+template< size_t... CRAs      // Compile time rowslice arguments
         , typename MT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime pageslice arguments
-inline decltype(auto) pageslice( const DeclExpr<MT>& tensor, RRAs... args )
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const DeclExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).operand(), args... );
+   return rowslice<CRAs...>( (~tensor).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -662,20 +662,20 @@ inline decltype(auto) pageslice( const DeclExpr<MT>& tensor, RRAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific pageslice of the given tensor transpose operation.
-// \ingroup pageslice
+/*!\brief Creating a view on a specific rowslice of the given tensor transpose operation.
+// \ingroup rowslice
 //
 // \param tensor The constant tensor transpose operation.
-// \param args The runtime pageslice arguments
-// \return View on the specified pageslice of the transpose operation.
+// \param args The runtime rowslice arguments
+// \return View on the specified rowslice of the transpose operation.
 //
-// This function returns an expression representing the specified pageslice of the given tensor
+// This function returns an expression representing the specified rowslice of the given tensor
 // transpose operation.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
+// template< size_t... CRAs      // Compile time rowslice arguments
 //         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatTransExpr<MT>& tensor, RRAs... args )
+//         , typename... RRAs >  // Runtime rowslice arguments
+// inline decltype(auto) rowslice( const MatTransExpr<MT>& tensor, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -689,25 +689,25 @@ inline decltype(auto) pageslice( const DeclExpr<MT>& tensor, RRAs... args )
 
 //=================================================================================================
 //
-//  PAGESLICE OPERATORS
+//  ROWSLICE OPERATORS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the given pageslice.
-// \ingroup pageslice
+/*!\brief Resetting the given rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The pageslice to be resetted.
+// \param rowslice The rowslice to be resetted.
 // \return void
 */
 template< typename MT       // Type of the tensor
                    // Density flag
                    // Symmetry flag
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline void reset( PageSlice<MT,CRAs...>& pageslice )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline void reset( RowSlice<MT,CRAs...>& rowslice )
 {
-   pageslice.reset();
+   rowslice.reset();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -715,19 +715,19 @@ inline void reset( PageSlice<MT,CRAs...>& pageslice )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Resetting the given temporary pageslice.
-// \ingroup pageslice
+/*!\brief Resetting the given temporary rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The temporary pageslice to be resetted.
+// \param rowslice The temporary rowslice to be resetted.
 // \return void
 */
 template< typename MT       // Type of the tensor
                    // Density flag
                    // Symmetry flag
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline void reset( PageSlice<MT,CRAs...>&& pageslice )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline void reset( RowSlice<MT,CRAs...>&& rowslice )
 {
-   pageslice.reset();
+   rowslice.reset();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -735,21 +735,21 @@ inline void reset( PageSlice<MT,CRAs...>&& pageslice )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given pageslice.
-// \ingroup pageslice
+/*!\brief Clearing the given rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The pageslice to be cleared.
+// \param rowslice The rowslice to be cleared.
 // \return void
 //
-// Clearing a pageslice is equivalent to resetting it via the reset() function.
+// Clearing a rowslice is equivalent to resetting it via the reset() function.
 */
 template< typename MT       // Type of the tensor
                    // Density flag
                    // Symmetry flag
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline void clear( PageSlice<MT,CRAs...>& pageslice )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline void clear( RowSlice<MT,CRAs...>& rowslice )
 {
-   pageslice.reset();
+   rowslice.reset();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -757,21 +757,21 @@ inline void clear( PageSlice<MT,CRAs...>& pageslice )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Clearing the given temporary pageslice.
-// \ingroup pageslice
+/*!\brief Clearing the given temporary rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The temporary pageslice to be cleared.
+// \param rowslice The temporary rowslice to be cleared.
 // \return void
 //
-// Clearing a pageslice is equivalent to resetting it via the reset() function.
+// Clearing a rowslice is equivalent to resetting it via the reset() function.
 */
 template< typename MT       // Type of the tensor
                    // Density flag
                    // Symmetry flag
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline void clear( PageSlice<MT,CRAs...>&& pageslice )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline void clear( RowSlice<MT,CRAs...>&& rowslice )
 {
-   pageslice.reset();
+   rowslice.reset();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -779,40 +779,40 @@ inline void clear( PageSlice<MT,CRAs...>&& pageslice )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the given dense pageslice is in default state.
-// \ingroup pageslice
+/*!\brief Returns whether the given dense rowslice is in default state.
+// \ingroup rowslice
 //
-// \param pageslice The dense pageslice to be tested for its default state.
-// \return \a true in case the given dense pageslice is component-wise zero, \a false otherwise.
+// \param rowslice The dense rowslice to be tested for its default state.
+// \return \a true in case the given dense rowslice is component-wise zero, \a false otherwise.
 //
-// This function checks whether the dense pageslice is in default state. For instance, in case the
-// pageslice is instantiated for a built-in integral or floating point data type, the function returns
-// \a true in case all pageslice elements are 0 and \a false in case any pageslice element is not 0. The
+// This function checks whether the dense rowslice is in default state. For instance, in case the
+// rowslice is instantiated for a built-in integral or floating point data type, the function returns
+// \a true in case all rowslice elements are 0 and \a false in case any rowslice element is not 0. The
 // following example demonstrates the use of the \a isDefault function:
 
    \code
    blaze::DynamicTensor<int> A;
    // ... Resizing and initialization
-   if( isDefault( pageslice( A, 0UL ) ) ) { ... }
+   if( isDefault( rowslice( A, 0UL ) ) ) { ... }
    \page()
 
 // Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
 // semantics (blaze::relaxed):
 
    \code
-   if( isDefault<relaxed>( pageslice( A, 0UL ) ) ) { ... }
+   if( isDefault<relaxed>( rowslice( A, 0UL ) ) ) { ... }
    \page()
 */
 template< bool RF           // Relaxation flag
         , typename MT       // Type of the tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline bool isDefault( const PageSlice<MT,CRAs...>& pageslice )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline bool isDefault( const RowSlice<MT,CRAs...>& rowslice )
 {
    using blaze::isDefault;
 
-   for( size_t i=0UL; i<pageslice.rows(); ++i )
-      for( size_t j=0UL; j<pageslice.columns(); ++j )
-         if( !isDefault<RF>( pageslice(i, j) ) ) return false;
+   for( size_t i=0UL; i<rowslice.rows(); ++i )
+      for( size_t j=0UL; j<rowslice.columns(); ++j )
+         if( !isDefault<RF>( rowslice(i, j) ) ) return false;
    return true;
 }
 /*! \endcond */
@@ -821,28 +821,28 @@ inline bool isDefault( const PageSlice<MT,CRAs...>& pageslice )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the invariants of the given pageslice are intact.
-// \ingroup pageslice
+/*!\brief Returns whether the invariants of the given rowslice are intact.
+// \ingroup rowslice
 //
-// \param pageslice The pageslice to be tested.
-// \return \a true in case the given pageslice's invariants are intact, \a false otherwise.
+// \param rowslice The rowslice to be tested.
+// \return \a true in case the given rowslice's invariants are intact, \a false otherwise.
 //
-// This function checks whether the invariants of the pageslice are intact, i.e. if its state is valid.
+// This function checks whether the invariants of the rowslice are intact, i.e. if its state is valid.
 // In case the invariants are intact, the function returns \a true, else it will return \a false.
 // The following example demonstrates the use of the \a isIntact() function:
 
    \code
    blaze::DynamicTensor<int> A;
    // ... Resizing and initialization
-   if( isIntact( pageslice( A, 0UL ) ) ) { ... }
+   if( isIntact( rowslice( A, 0UL ) ) ) { ... }
    \page()
 */
 template< typename MT       // Type of the tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline bool isIntact( const PageSlice<MT,CRAs...>& pageslice ) noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline bool isIntact( const RowSlice<MT,CRAs...>& rowslice ) noexcept
 {
-   return ( pageslice.page() < pageslice.operand().pageslices() &&
-            isIntact( pageslice.operand() ) );
+   return ( rowslice.row() < rowslice.operand().rows() &&
+            isIntact( rowslice.operand() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -850,25 +850,25 @@ inline bool isIntact( const PageSlice<MT,CRAs...>& pageslice ) noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the two given pageslices represent the same observable state.
-// \ingroup pageslice
+/*!\brief Returns whether the two given rowslices represent the same observable state.
+// \ingroup rowslice
 //
-// \param a The first pageslice to be tested for its state.
-// \param b The second pageslice to be tested for its state.
-// \return \a true in case the two pageslices share a state, \a false otherwise.
+// \param a The first rowslice to be tested for its state.
+// \param b The second rowslice to be tested for its state.
+// \return \a true in case the two rowslices share a state, \a false otherwise.
 //
-// This overload of the isSame() function tests if the two given pageslices refer to exactly the same
-// range of the same tensor. In case both pageslices represent the same observable state, the function
+// This overload of the isSame() function tests if the two given rowslices refer to exactly the same
+// range of the same tensor. In case both rowslices represent the same observable state, the function
 // returns \a true, otherwise it returns \a false.
 */
-template< typename MT1       // Type of the tensor of the left-hand side pageslice
-        , size_t... CRAs1    // Compile time pageslice arguments of the left-hand side pageslice
-        , typename MT2       // Type of the tensor of the right-hand side pageslice
-        , size_t... CRAs2 >  // Compile time pageslice arguments of the right-hand side pageslice
-inline bool isSame( const PageSlice<MT1,CRAs1...>& a,
-                    const PageSlice<MT2,CRAs2...>& b ) noexcept
+template< typename MT1       // Type of the tensor of the left-hand side rowslice
+        , size_t... CRAs1    // Compile time rowslice arguments of the left-hand side rowslice
+        , typename MT2       // Type of the tensor of the right-hand side rowslice
+        , size_t... CRAs2 >  // Compile time rowslice arguments of the right-hand side rowslice
+inline bool isSame( const RowSlice<MT1,CRAs1...>& a,
+                    const RowSlice<MT2,CRAs2...>& b ) noexcept
 {
-   return ( isSame( a.operand(), b.operand() ) && ( a.page() == b.page() ) );
+   return ( isSame( a.operand(), b.operand() ) && ( a.row() == b.row() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -876,10 +876,10 @@ inline bool isSame( const PageSlice<MT1,CRAs1...>& a,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by setting a single element of a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by setting a single element of a rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The target pageslice.
+// \param rowslice The target rowslice.
 // \param i The row to be set.
 // \param j The column to be set.
 // \param value The value to be set to the element.
@@ -891,14 +891,14 @@ inline bool isSame( const PageSlice<MT1,CRAs1...>& a,
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename ET >   // Type of the element
-inline bool trySet( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, const ET& value )
+inline bool trySet( const RowSlice<MT,CRAs...>& rowslice, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rowslice.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < rowslice.columns(), "Invalid column access index" );
 
-   return trySet( pageslice.operand(), i, j, pageslice.page(), value );
+   return trySet( rowslice.operand(), rowslice.row(), j, i, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -906,10 +906,10 @@ inline bool trySet( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by adding to a single element of a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by adding to a single element of a rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The target pageslice.
+// \param rowslice The target rowslice.
 // \param i The row to be modified.
 // \param j The column to be modified.
 // \param value The value to be added to the element.
@@ -921,14 +921,14 @@ inline bool trySet( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename ET >   // Type of the element
-inline bool tryAdd( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, const ET& value )
+inline bool tryAdd( const RowSlice<MT,CRAs...>& rowslice, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rowslice.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < rowslice.columns(), "Invalid column access index" );
 
-   return tryAdd( pageslice.operand(), i, j, pageslice.page(), value );
+   return tryAdd( rowslice.operand(), rowslice.row(), j, i, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -936,10 +936,10 @@ inline bool tryAdd( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by subtracting from a single element of a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by subtracting from a single element of a rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The target pageslice.
+// \param rowslice The target rowslice.
 // \param i The row to be modified.
 // \param j The column to be modified.
 // \param value The value to be subtracted from the element.
@@ -951,14 +951,14 @@ inline bool tryAdd( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename ET >   // Type of the element
-inline bool trySub( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, const ET& value )
+inline bool trySub( const RowSlice<MT,CRAs...>& rowslice, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rowslice.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < rowslice.columns(), "Invalid column access index" );
 
-   return trySub( pageslice.operand(), i, j, pageslice.page(), value );
+   return trySub( rowslice.operand(), rowslice.row(), j, i, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -966,10 +966,10 @@ inline bool trySub( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by scaling a single element of a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by scaling a single element of a rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The target pageslice.
+// \param rowslice The target rowslice.
 // \param i The row to be modified.
 // \param j The column to be modified.
 // \param value The factor for the element.
@@ -981,14 +981,14 @@ inline bool trySub( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename ET >   // Type of the element
-inline bool tryMult( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, const ET& value )
+inline bool tryMult( const RowSlice<MT,CRAs...>& rowslice, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rowslice.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < rowslice.columns(), "Invalid column access index" );
 
-   return tryMult( pageslice.operand(), i, j, pageslice.page(), value );
+   return tryMult( rowslice.operand(), rowslice.row(), j, i, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -996,10 +996,10 @@ inline bool tryMult( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by scaling a range of elements of a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by scaling a range of elements of a rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The target pageslice.
+// \param rowslice The target rowslice.
 // \param index The index of the first element of the range to be modified.
 // \param size The number of elements of the range to be modified.
 // \param value The factor for the elements.
@@ -1011,17 +1011,17 @@ inline bool tryMult( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j,
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool
-   tryMult( const PageSlice<MT,CRAs...>& pageslice, size_t row, size_t col, size_t rows, size_t cols, const ET& value )
+   tryMult( const RowSlice<MT,CRAs...>& rowslice, size_t row, size_t col, size_t rows, size_t cols, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~pageslice).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( row + rows <= (~pageslice).rows(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( col <= (~pageslice).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( col + cols <= (~pageslice).columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( row <= (~rowslice).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( row + rows <= (~rowslice).rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( col <= (~rowslice).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( col + cols <= (~rowslice).columns(), "Invalid columns range size" );
 
-   return tryMult( pageslice.operand(), row, col, pageslice.page(), rows, cols, 1UL, value );
+   return tryMult( rowslice.operand(), rowslice.row(), col, row, 1UL, cols, rows, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1029,10 +1029,10 @@ BLAZE_ALWAYS_INLINE bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by scaling a single element of a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by scaling a single element of a rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The target pageslice.
+// \param rowslice The target rowslice.
 // \param index The index of the element to be modified.
 // \param value The divisor for the element.
 // \return \a true in case the operation would be successful, \a false if not.
@@ -1043,14 +1043,14 @@ BLAZE_ALWAYS_INLINE bool
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename ET >   // Type of the element
-inline bool tryDiv( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, const ET& value )
+inline bool tryDiv( const RowSlice<MT,CRAs...>& rowslice, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < pageslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < pageslice.columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < rowslice.rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < rowslice.columns(), "Invalid column access index" );
 
-   return tryDiv( pageslice.operand(), i, j, pageslice.page(), value );
+   return tryDiv( rowslice.operand(), rowslice.row(), j, i, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1058,10 +1058,10 @@ inline bool tryDiv( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by scaling a range of elements of a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by scaling a range of elements of a rowslice.
+// \ingroup rowslice
 //
-// \param pageslice The target pageslice.
+// \param rowslice The target rowslice.
 // \param index The index of the first element of the range to be modified.
 // \param size The number of elements of the range to be modified.
 // \param value The divisor for the elements.
@@ -1073,17 +1073,17 @@ inline bool tryDiv( const PageSlice<MT,CRAs...>& pageslice, size_t i, size_t j, 
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool
-   tryDiv( const PageSlice<MT,CRAs...>& pageslice, size_t row, size_t col, size_t rows, size_t cols, const ET& value )
+   tryDiv( const RowSlice<MT,CRAs...>& rowslice, size_t row, size_t col, size_t rows, size_t cols, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~pageslice).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( row + rows <= (~pageslice).rows(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( col <= (~pageslice).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( col + cols <= (~pageslice).columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( row <= (~rowslice).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( row + rows <= (~rowslice).rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( col <= (~rowslice).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( col + cols <= (~rowslice).columns(), "Invalid columns range size" );
 
-   return tryDiv( pageslice.operand(), row, col, pageslice.page(), rows, cols, 1UL, value );
+   return tryDiv( rowslice.operand(), rowslice.row(), col, row, 1UL, cols, rows, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1091,10 +1091,10 @@ BLAZE_ALWAYS_INLINE bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the assignment of a matrix to a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by the assignment of a matrix to a rowslice.
+// \ingroup rowslice
 //
-// \param lhs The target left-hand side pageslice.
+// \param lhs The target left-hand side rowslice.
 // \param rhs The right-hand side vector to be assigned.
 // \param index The index of the first element to be modified.
 // \return \a true in case the assignment would be successful, \a false if not.
@@ -1105,9 +1105,9 @@ BLAZE_ALWAYS_INLINE bool
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename VT >   // Type of the right-hand side matrix
-inline bool tryAssign( const PageSlice<MT,CRAs...>& lhs,
+inline bool tryAssign( const RowSlice<MT,CRAs...>& lhs,
                        const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
@@ -1115,7 +1115,7 @@ inline bool tryAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryAssign( lhs.operand(), ~rhs, lhs.row(), j, i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1123,10 +1123,10 @@ inline bool tryAssign( const PageSlice<MT,CRAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the addition assignment of a vector to a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by the addition assignment of a vector to a rowslice.
+// \ingroup rowslice
 //
-// \param lhs The target left-hand side pageslice.
+// \param lhs The target left-hand side rowslice.
 // \param rhs The right-hand side vector to be added.
 // \param index The index of the first element to be modified.
 // \return \a true in case the assignment would be successful, \a false if not.
@@ -1137,9 +1137,9 @@ inline bool tryAssign( const PageSlice<MT,CRAs...>& lhs,
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename VT >   // Type of the right-hand side matrix
-inline bool tryAddAssign( const PageSlice<MT,CRAs...>& lhs,
+inline bool tryAddAssign( const RowSlice<MT,CRAs...>& lhs,
                           const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
@@ -1147,7 +1147,7 @@ inline bool tryAddAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryAddAssign( lhs.operand(), ~rhs, lhs.row(), j, i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1155,10 +1155,10 @@ inline bool tryAddAssign( const PageSlice<MT,CRAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the subtraction assignment of a vector to a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by the subtraction assignment of a vector to a rowslice.
+// \ingroup rowslice
 //
-// \param lhs The target left-hand side pageslice.
+// \param lhs The target left-hand side rowslice.
 // \param rhs The right-hand side vector to be subtracted.
 // \param index The index of the first element to be modified.
 // \return \a true in case the assignment would be successful, \a false if not.
@@ -1169,9 +1169,9 @@ inline bool tryAddAssign( const PageSlice<MT,CRAs...>& lhs,
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename VT >   // Type of the right-hand side matrix
-inline bool trySubAssign( const PageSlice<MT,CRAs...>& lhs,
+inline bool trySubAssign( const RowSlice<MT,CRAs...>& lhs,
                           const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
@@ -1179,7 +1179,7 @@ inline bool trySubAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return trySubAssign( lhs.operand(), ~rhs, lhs.row(), j, i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1187,10 +1187,10 @@ inline bool trySubAssign( const PageSlice<MT,CRAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the multiplication assignment of a vector to a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by the multiplication assignment of a vector to a rowslice.
+// \ingroup rowslice
 //
-// \param lhs The target left-hand side pageslice.
+// \param lhs The target left-hand side rowslice.
 // \param rhs The right-hand side vector to be multiplied.
 // \param index The index of the first element to be modified.
 // \return \a true in case the assignment would be successful, \a false if not.
@@ -1201,9 +1201,9 @@ inline bool trySubAssign( const PageSlice<MT,CRAs...>& lhs,
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename VT >   // Type of the right-hand side matrix
-inline bool tryMultAssign( const PageSlice<MT,CRAs...>& lhs,
+inline bool tryMultAssign( const RowSlice<MT,CRAs...>& lhs,
                            const Vector<VT,true>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
@@ -1211,7 +1211,7 @@ inline bool tryMultAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryMultAssign( lhs.operand(), ~rhs, lhs.row(), j, i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1219,10 +1219,10 @@ inline bool tryMultAssign( const PageSlice<MT,CRAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Predict invariant violations by the division assignment of a vector to a pageslice.
-// \ingroup pageslice
+/*!\brief Predict invariant violations by the division assignment of a vector to a rowslice.
+// \ingroup rowslice
 //
-// \param lhs The target left-hand side pageslice.
+// \param lhs The target left-hand side rowslice.
 // \param rhs The right-hand side vector divisor.
 // \param index The index of the first element to be modified.
 // \return \a true in case the assignment would be successful, \a false if not.
@@ -1233,9 +1233,9 @@ inline bool tryMultAssign( const PageSlice<MT,CRAs...>& lhs,
 // assignment operator.
 */
 template< typename MT     // Type of the tensor
-        , size_t... CRAs  // Compile time pageslice arguments
+        , size_t... CRAs  // Compile time rowslice arguments
         , typename VT >   // Type of the right-hand side matrix
-inline bool tryDivAssign( const PageSlice<MT,CRAs...>& lhs,
+inline bool tryDivAssign( const RowSlice<MT,CRAs...>& lhs,
                           const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
@@ -1243,7 +1243,7 @@ inline bool tryDivAssign( const PageSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryDivAssign( lhs.operand(), ~rhs, lhs.row(), j, i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1251,13 +1251,13 @@ inline bool tryDivAssign( const PageSlice<MT,CRAs...>& lhs,
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given pageslice.
-// \ingroup pageslice
+/*!\brief Removal of all restrictions on the data access to the given rowslice.
+// \ingroup rowslice
 //
-// \param r The pageslice to be derestricted.
-// \return PageSlice without access restrictions.
+// \param r The rowslice to be derestricted.
+// \return RowSlice without access restrictions.
 //
-// This function removes all restrictions on the data access to the given pageslice. It returns a pageslice
+// This function removes all restrictions on the data access to the given rowslice. It returns a rowslice
 // object that does provide the same interface but does not have any restrictions on the data
 // access.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -1268,10 +1268,10 @@ template< typename MT  // Type of the tensor
               // Storage order
               // Density flag
               // Symmetry flag
-        , size_t I >   // PageSlice index
-inline decltype(auto) derestrict( PageSlice<MT,I>& r )
+        , size_t I >   // RowSlice index
+inline decltype(auto) derestrict( RowSlice<MT,I>& r )
 {
-   return pageslice<I>( derestrict( r.operand() ), unchecked );
+   return rowslice<I>( derestrict( r.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1279,14 +1279,14 @@ inline decltype(auto) derestrict( PageSlice<MT,I>& r )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given temporary pageslice.
-// \ingroup pageslice
+/*!\brief Removal of all restrictions on the data access to the given temporary rowslice.
+// \ingroup rowslice
 //
-// \param r The temporary pageslice to be derestricted.
-// \return PageSlice without access restrictions.
+// \param r The temporary rowslice to be derestricted.
+// \return RowSlice without access restrictions.
 //
-// This function removes all restrictions on the data access to the given temporary pageslice. It
-// returns a pageslice object that does provide the same interface but does not have any restrictions
+// This function removes all restrictions on the data access to the given temporary rowslice. It
+// returns a rowslice object that does provide the same interface but does not have any restrictions
 // on the data access.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -1296,10 +1296,10 @@ template< typename MT  // Type of the tensor
               // Storage order
               // Density flag
               // Symmetry flag
-        , size_t I >   // PageSlice index
-inline decltype(auto) derestrict( PageSlice<MT,I>&& r )
+        , size_t I >   // RowSlice index
+inline decltype(auto) derestrict( RowSlice<MT,I>&& r )
 {
-   return pageslice<I>( derestrict( r.operand() ), unchecked );
+   return rowslice<I>( derestrict( r.operand() ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1307,13 +1307,13 @@ inline decltype(auto) derestrict( PageSlice<MT,I>&& r )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given pageslice.
-// \ingroup pageslice
+/*!\brief Removal of all restrictions on the data access to the given rowslice.
+// \ingroup rowslice
 //
-// \param r The pageslice to be derestricted.
-// \return PageSlice without access restrictions.
+// \param r The rowslice to be derestricted.
+// \return RowSlice without access restrictions.
 //
-// This function removes all restrictions on the data access to the given pageslice. It returns a pageslice
+// This function removes all restrictions on the data access to the given rowslice. It returns a rowslice
 // object that does provide the same interface but does not have any restrictions on the data
 // access.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
@@ -1324,9 +1324,9 @@ template< typename MT  // Type of the tensor
               // Storage order
               // Density flag
          >    // Symmetry flag
-inline decltype(auto) derestrict( PageSlice<MT>& r )
+inline decltype(auto) derestrict( RowSlice<MT>& r )
 {
-   return pageslice( derestrict( r.operand() ), r.page(), unchecked );
+   return rowslice( derestrict( r.operand() ), r.row(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1334,14 +1334,14 @@ inline decltype(auto) derestrict( PageSlice<MT>& r )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Removal of all restrictions on the data access to the given temporary pageslice.
-// \ingroup pageslice
+/*!\brief Removal of all restrictions on the data access to the given temporary rowslice.
+// \ingroup rowslice
 //
-// \param r The temporary pageslice to be derestricted.
-// \return PageSlice without access restrictions.
+// \param r The temporary rowslice to be derestricted.
+// \return RowSlice without access restrictions.
 //
-// This function removes all restrictions on the data access to the given temporary pageslice. It
-// returns a pageslice object that does provide the same interface but does not have any restrictions
+// This function removes all restrictions on the data access to the given temporary rowslice. It
+// returns a rowslice object that does provide the same interface but does not have any restrictions
 // on the data access.\n
 // This function must \b NOT be called explicitly! It is used internally for the performance
 // optimized evaluation of expression templates. Calling this function explicitly might result
@@ -1351,9 +1351,9 @@ template< typename MT  // Type of the tensor
               // Storage order
               // Density flag
          >    // Symmetry flag
-inline decltype(auto) derestrict( PageSlice<MT>&& r )
+inline decltype(auto) derestrict( RowSlice<MT>&& r )
 {
-   return pageslice( derestrict( r.operand() ), r.page(), unchecked );
+   return rowslice( derestrict( r.operand() ), r.row(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1370,12 +1370,12 @@ inline decltype(auto) derestrict( PageSlice<MT>&& r )
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
-struct Size< PageSlice<MT,CRAs...>, 0UL >
+struct Size< RowSlice<MT,CRAs...>, 0UL >
    : public Size<MT,0UL>
 {};
 
 template< typename MT, size_t... CRAs >
-struct Size< PageSlice<MT,CRAs...>, 1UL >
+struct Size< RowSlice<MT,CRAs...>, 1UL >
    : public Size<MT,1UL>
 {};
 /*! \endcond */
@@ -1393,7 +1393,7 @@ struct Size< PageSlice<MT,CRAs...>, 1UL >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
-struct MaxSize< PageSlice<MT,CRAs...>, 0UL >
+struct MaxSize< RowSlice<MT,CRAs...>, 0UL >
    : public MaxSize<MT,1UL>
 {};
 /*! \endcond */
@@ -1411,7 +1411,7 @@ struct MaxSize< PageSlice<MT,CRAs...>, 0UL >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
-struct IsRestricted< PageSlice<MT,CRAs...> >
+struct IsRestricted< RowSlice<MT,CRAs...> >
    : public IsRestricted<MT>
 {};
 /*! \endcond */
@@ -1429,7 +1429,7 @@ struct IsRestricted< PageSlice<MT,CRAs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
-struct HasConstDataAccess< PageSlice<MT,CRAs...> >
+struct HasConstDataAccess< RowSlice<MT,CRAs...> >
    : public HasConstDataAccess<MT>
 {};
 /*! \endcond */
@@ -1447,7 +1447,7 @@ struct HasConstDataAccess< PageSlice<MT,CRAs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
-struct HasMutableDataAccess< PageSlice<MT,CRAs...> >
+struct HasMutableDataAccess< RowSlice<MT,CRAs...> >
    : public HasMutableDataAccess<MT>
 {};
 /*! \endcond */
@@ -1465,7 +1465,7 @@ struct HasMutableDataAccess< PageSlice<MT,CRAs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
-struct IsAligned< PageSlice<MT,CRAs...> >
+struct IsAligned< RowSlice<MT,CRAs...> >
    : public BoolConstant< IsAligned_v<MT> >
 {};
 /*! \endcond */
@@ -1483,7 +1483,7 @@ struct IsAligned< PageSlice<MT,CRAs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
-struct IsContiguous< PageSlice<MT,CRAs...> >
+struct IsContiguous< RowSlice<MT,CRAs...> >
    : public IsContiguous<MT>
 {};
 /*! \endcond */
@@ -1501,7 +1501,7 @@ struct IsContiguous< PageSlice<MT,CRAs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
-struct IsPadded< PageSlice<MT,CRAs...> >
+struct IsPadded< RowSlice<MT,CRAs...> >
    : public BoolConstant< IsPadded_v<MT> >
 {};
 /*! \endcond */
@@ -1519,7 +1519,7 @@ struct IsPadded< PageSlice<MT,CRAs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
-struct IsOpposedView< PageSlice<MT,CRAs...> >
+struct IsOpposedView< RowSlice<MT,CRAs...> >
    : public TrueType
 {};
 /*! \endcond */

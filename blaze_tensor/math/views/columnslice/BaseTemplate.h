@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/Views.h
-//  \brief Header file for the vector and matrix views
+//  \file blaze_tensor/math/views/columnslice/BaseTemplate.h
+//  \brief Header file for the implementation of the ColumnSlice base template
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,23 +33,62 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_H_
+#ifndef _BLAZE_TENSOR_MATH_VIEWS_COLUMNSLICE_BASETEMPLATE_H_
+#define _BLAZE_TENSOR_MATH_VIEWS_COLUMNSLICE_BASETEMPLATE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Views.h>
+#include <blaze/math/views/Row.h>
 
-// #include <blaze_tensor/math/Column.h>
-// #include <blaze_tensor/math/Columns.h>
-// #include <blaze_tensor/math/Elements.h>
-#include <blaze_tensor/math/ColumnSlice.h>
-#include <blaze_tensor/math/PageSlice.h>
-#include <blaze_tensor/math/RowSlice.h>
-// #include <blaze_tensor/math/Rows.h>
-#include <blaze_tensor/math/Subtensor.h>
+#include <blaze_tensor/math/typetraits/IsDenseTensor.h>
+
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Base template of the ColumnSlice class template.
+// \ingroup columnslice
+*/
+template< typename MT                       // Type of the tensor
+        , size_t... CRAs >                  // Compile time columnslice arguments
+class ColumnSlice;
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ALIAS DECLARATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the ColumnSlice class template.
+// \ingroup columnslice
+//
+// The ColumnSlice_ alias declaration represents a convenient shortcut for the specification of the
+// non-derived template arguments of the ColumnSlice class template.
+*/
+template< typename MT       // Type of the tensor
+        , size_t... CRAs >  // Compile time columnslice arguments
+using ColumnSlice_ = ColumnSlice< MT
+                , CRAs... >;
+/*! \endcond */
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

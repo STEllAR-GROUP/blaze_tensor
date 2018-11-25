@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/Views.h
-//  \brief Header file for the vector and matrix views
+//  \file blaze_tensor/math/ReductionFlag.h
+//  \brief Header file for the reduction flags
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,23 +33,44 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_H_
+#ifndef _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
+#define _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Views.h>
+#include <blaze/util/Types.h>
+#include <blaze/math/ReductionFlag.h>
 
-// #include <blaze_tensor/math/Column.h>
-// #include <blaze_tensor/math/Columns.h>
-// #include <blaze_tensor/math/Elements.h>
-#include <blaze_tensor/math/ColumnSlice.h>
-#include <blaze_tensor/math/PageSlice.h>
-#include <blaze_tensor/math/RowSlice.h>
-// #include <blaze_tensor/math/Rows.h>
-#include <blaze_tensor/math/Subtensor.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  REDUCTION FLAGS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Reduction flag for page-wise reduction operations.
+//
+// This flag can be used to perform page-wise reduction operations on tensors. The following
+// example shows the row-wise summation of a tensor:
+
+   \code
+   using blaze::rowMajor;
+   using blaze::columnVector;
+
+   blaze::DynamicTensor<int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
+
+   auto m = sum<pagewise>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
+   \endcode
+*/
+constexpr size_t pagewise = 2UL;
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

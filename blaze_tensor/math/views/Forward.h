@@ -47,7 +47,9 @@
 // #include <blaze_tensor/math/views/column/BaseTemplate.h>
 // #include <blaze_tensor/math/views/columns/BaseTemplate.h>
 // #include <blaze_tensor/math/views/elements/BaseTemplate.h>
+#include <blaze_tensor/math/views/columnslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
+#include <blaze_tensor/math/views/rowslice/BaseTemplate.h>
 // #include <blaze_tensor/math/views/rows/BaseTemplate.h>
 // #include <blaze_tensor/math/views/page/BaseTemplate.h>
 // #include <blaze_tensor/math/views/pages/BaseTemplate.h>

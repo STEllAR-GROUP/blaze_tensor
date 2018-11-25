@@ -31,10 +31,12 @@
 # =================================================================================================
 
 set(subdirs
+   columnslice
    customtensor
    densetensor
    dynamictensor
    pageslice
+   rowslice
    subtensor
 )
 

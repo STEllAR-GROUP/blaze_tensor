@@ -30,11 +30,10 @@
 #
 # =================================================================================================
 
-set(category Subtensor)
+set(category RowSlice)
 
 set(tests
-    DenseAlignedTest1
-    DenseAlignedTest2
+    DenseGeneralTest
     IncludeTest
 )
 

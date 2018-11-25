@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/Views.h
-//  \brief Header file for the vector and matrix views
+//  \file blaze_tensor/math/constraints/ColumnSlice.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,23 +33,56 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_COLUMNSLICE_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_COLUMNSLICE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Views.h>
+#include <blaze_tensor/math/typetraits/IsColumnSlice.h>
 
-// #include <blaze_tensor/math/Column.h>
-// #include <blaze_tensor/math/Columns.h>
-// #include <blaze_tensor/math/Elements.h>
-#include <blaze_tensor/math/ColumnSlice.h>
-#include <blaze_tensor/math/PageSlice.h>
-#include <blaze_tensor/math/RowSlice.h>
-// #include <blaze_tensor/math/Rows.h>
-#include <blaze_tensor/math/Subtensor.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  MUST_BE_COLUMNSLICE_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a columnslice type (i.e. a dense or sparse columnslice), a compilation
+// error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_COLUMNSLICE_TYPE(T) \
+   static_assert( ::blaze::IsColumnSlice_v<T>, "Non-columnslice type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_COLUMNSLICE_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a columnslice type (i.e. a dense or sparse columnslice), a compilation
+// error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_COLUMNSLICE_TYPE(T) \
+   static_assert( !::blaze::IsColumnSlice_v<T>, "ColumnSlice type detected" )
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

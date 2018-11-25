@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/views/pageslice/Dense.h
-//  \brief PageSlice specialization for dense tensors
+//  \file blaze_tensor/math/views/rowslice/Dense.h
+//  \brief RowSlice specialization for dense tensors
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_PAGESLICE_DENSE_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_PAGESLICE_DENSE_H_
+#ifndef _BLAZE_TENSOR_MATH_VIEWS_ROWSLICE_DENSE_H_
+#define _BLAZE_TENSOR_MATH_VIEWS_ROWSLICE_DENSE_H_
 
 
 //*************************************************************************************************
@@ -46,9 +46,9 @@
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/constraints/Subtensor.h>
-#include <blaze_tensor/math/traits/PageSliceTrait.h>
-#include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
-#include <blaze_tensor/math/views/pageslice/PageSliceData.h>
+#include <blaze_tensor/math/traits/RowSliceTrait.h>
+#include <blaze_tensor/math/views/rowslice/BaseTemplate.h>
+#include <blaze_tensor/math/views/rowslice/RowSliceData.h>
 
 namespace blaze {
 
@@ -60,49 +60,49 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of PageSlice for pageslices on pageslice-major dense tensors.
-// \ingroup pageslice
+/*!\brief Specialization of RowSlice for rowslices on dense tensors.
+// \ingroup rowslice
 //
-// This specialization of PageSlice adapts the class template to the requirements of pageslice-major
+// This specialization of RowSlice adapts the class template to the requirements of
 // dense tensors.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-class PageSlice
-   : public View< DenseMatrix< PageSlice<MT,CRAs...>, false > >
-   , private PageSliceData<CRAs...>
+        , size_t... CRAs >  // Compile time rowslice arguments
+class RowSlice
+   : public View< DenseMatrix< RowSlice<MT,CRAs...>, false > >
+   , private RowSliceData<CRAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = PageSliceData<CRAs...>;                     //!< The type of the PageSliceData base class.
+   using DataType = RowSliceData<CRAs...>;                     //!< The type of the RowSliceData base class.
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the dense tensor expression.
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   //! Type of this PageSlice instance.
-   using This = PageSlice<MT,CRAs...>;
+   //! Type of this RowSlice instance.
+   using This = RowSlice<MT,CRAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this PageSlice instance.
-   using ViewedType    = MT;                           //!< The type viewed by this PageSlice instance.
-   using ResultType    = PageSliceTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
+   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this RowSlice instance.
+   using ViewedType    = MT;                           //!< The type viewed by this RowSlice instance.
+   using ResultType    = RowSliceTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<MT>;            //!< Type of the pageslice elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the pageslice elements.
+   using ElementType   = ElementType_t<MT>;            //!< Type of the rowslice elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the rowslice elements.
    using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const PageSlice&;                  //!< Data type for composite expression templates.
+   using CompositeType = const RowSlice&;                  //!< Data type for composite expression templates.
 
-   //! Reference to a constant pageslice value.
+   //! Reference to a constant rowslice value.
    using ConstReference = ConstReference_t<MT>;
 
-   //! Reference to a non-constant pageslice value.
+   //! Reference to a non-constant rowslice value.
    using Reference = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
 
-   //! Pointer to a constant pageslice value.
+   //! Pointer to a constant rowslice value.
    using ConstPointer = ConstPointer_t<MT>;
 
-   //! Pointer to a non-constant pageslice value.
+   //! Pointer to a non-constant rowslice value.
    using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over constant elements.
@@ -124,26 +124,26 @@ class PageSlice
    /*!\name Constructors */
    //@{
    template< typename... RRAs >
-   explicit inline PageSlice( MT& tensor, RRAs... args );
+   explicit inline RowSlice( MT& tensor, RRAs... args );
 
-   PageSlice( const PageSlice& ) = default;
+   RowSlice( const RowSlice& ) = default;
    //@}
    //**********************************************************************************************
 
    //**Destructor**********************************************************************************
    /*!\name Destructor */
    //@{
-   ~PageSlice() = default;
+   ~RowSlice() = default;
    //@}
    //**********************************************************************************************
 
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j );
-   inline ConstReference operator()( size_t i, size_t j ) const;
-   inline Reference      at( size_t i, size_t j );
-   inline ConstReference at( size_t i, size_t j ) const;
+   inline Reference      operator()( size_t j, size_t k );
+   inline ConstReference operator()( size_t j, size_t k ) const;
+   inline Reference      at( size_t j, size_t k );
+   inline ConstReference at( size_t j, size_t k ) const;
    inline Pointer        data  () noexcept;
    inline ConstPointer   data  () const noexcept;
    inline Pointer        data  ( size_t i ) noexcept;
@@ -160,21 +160,21 @@ class PageSlice
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline PageSlice& operator=( const ElementType& rhs );
-   inline PageSlice& operator=( initializer_list<initializer_list<ElementType> > list );
-   inline PageSlice& operator=( const PageSlice& rhs );
+   inline RowSlice& operator=( const ElementType& rhs );
+   inline RowSlice& operator=( initializer_list<initializer_list<ElementType> > list );
+   inline RowSlice& operator=( const RowSlice& rhs );
 
-   template< typename VT > inline PageSlice& operator= ( const Matrix<VT,false>& rhs );
-   template< typename VT > inline PageSlice& operator+=( const Matrix<VT,false>& rhs );
-   template< typename VT > inline PageSlice& operator-=( const Matrix<VT,false>& rhs );
-   template< typename VT > inline PageSlice& operator%=( const Matrix<VT,false>& rhs );
+   template< typename VT > inline RowSlice& operator= ( const Matrix<VT,false>& rhs );
+   template< typename VT > inline RowSlice& operator+=( const Matrix<VT,false>& rhs );
+   template< typename VT > inline RowSlice& operator-=( const Matrix<VT,false>& rhs );
+   template< typename VT > inline RowSlice& operator%=( const Matrix<VT,false>& rhs );
    //@}
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   using DataType::page;
+   using DataType::row;
 
    inline MT&       operand() noexcept;
    inline const MT& operand() const noexcept;
@@ -194,7 +194,7 @@ class PageSlice
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-   template< typename Other > inline PageSlice& scale( const Other& scalar );
+   template< typename Other > inline RowSlice& scale( const Other& scalar );
    //@}
    //**********************************************************************************************
 
@@ -251,25 +251,25 @@ class PageSlice
    inline bool canAlias( const Other* alias ) const noexcept;
 
    template< typename MT2, size_t... CRAs2 >
-   inline bool canAlias( const PageSlice<MT2,CRAs2...>* alias ) const noexcept;
+   inline bool canAlias( const RowSlice<MT2,CRAs2...>* alias ) const noexcept;
 
    template< typename Other >
    inline bool isAliased( const Other* alias ) const noexcept;
 
    template< typename MT2, size_t... CRAs2 >
-   inline bool isAliased( const PageSlice<MT2,CRAs2...>* alias ) const noexcept;
+   inline bool isAliased( const RowSlice<MT2,CRAs2...>* alias ) const noexcept;
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t j, size_t k ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t j, size_t k ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t j, size_t k ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void store ( size_t j, size_t k, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t j, size_t k, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t j, size_t k, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t j, size_t k, const SIMDType& value ) noexcept;
 
    template< typename VT >
    inline auto assign( const DenseMatrix<VT,false>& rhs ) -> DisableIf_t< VectorizedAssign_v<VT> >;
@@ -301,12 +301,12 @@ class PageSlice
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   Operand tensor_;  //!< The tensor containing the pageslice.
+   Operand tensor_;  //!< The tensor containing the rowslice.
    //@}
    //**********************************************************************************************
 
    //**Friend declarations*************************************************************************
-   template< typename MT2, size_t... CRAs2 > friend class PageSlice;
+   template< typename MT2, size_t... CRAs2 > friend class RowSlice;
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -332,31 +332,31 @@ class PageSlice
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Constructor for pageslices on pageslice-major dense tensors.
+/*!\brief Constructor for rowslices on dense tensors.
 //
-// \param tensor The tensor containing the pageslice.
-// \param args The runtime pageslice arguments.
-// \exception std::invalid_argument Invalid pageslice access index.
+// \param tensor The tensor containing the rowslice.
+// \param args The runtime rowslice arguments.
+// \exception std::invalid_argument Invalid rowslice access index.
 //
-// By default, the provided pageslice arguments are checked at runtime. In case the pageslice is not properly
+// By default, the provided rowslice arguments are checked at runtime. In case the rowslice is not properly
 // specified (i.e. if the specified index is greater than the number of pages of the given tensor)
 // a \a std::invalid_argument exception is thrown. The checks can be skipped by providing the
 // optional \a blaze::unchecked argument.
 */
 template< typename MT         // Type of the dense tensor
-        , size_t... CRAs >    // Compile time pageslice arguments
-template< typename... RRAs >  // Runtime pageslice arguments
-inline PageSlice<MT,CRAs...>::PageSlice( MT& tensor, RRAs... args )
+        , size_t... CRAs >    // Compile time rowslice arguments
+template< typename... RRAs >  // Runtime rowslice arguments
+inline RowSlice<MT,CRAs...>::RowSlice( MT& tensor, RRAs... args )
    : DataType( args... )  // Base class initialization
-   , tensor_ ( tensor  )  // The tensor containing the pageslice
+   , tensor_ ( tensor  )  // The tensor containing the rowslice
 {
    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-      if( tensor_.pages() <= page() ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid pageslice access index" );
+      if( tensor_.rows() <= row() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid rowslice access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( page() < tensor_.pages(), "Invalid pageslice access index" );
+      BLAZE_USER_ASSERT( row() < tensor_.rows(), "Invalid rowslice access index" );
    }
 }
 /*! \endcond */
@@ -373,7 +373,7 @@ inline PageSlice<MT,CRAs...>::PageSlice( MT& tensor, RRAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subscript operator for the direct access to the pageslice elements.
+/*!\brief Subscript operator for the direct access to the rowslice elements.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \return Reference to the accessed value.
@@ -382,13 +382,13 @@ inline PageSlice<MT,CRAs...>::PageSlice( MT& tensor, RRAs... args )
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::Reference
-   PageSlice<MT,CRAs...>::operator()( size_t i, size_t j )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::Reference
+   RowSlice<MT,CRAs...>::operator()( size_t j, size_t k )
 {
-   BLAZE_USER_ASSERT( i < rows(),    "Invalid row access index" );
-   BLAZE_USER_ASSERT( j < columns(), "Invalid columns access index" );
-   return tensor_(i, j, page());
+   BLAZE_USER_ASSERT( j < columns(), "Invalid row access index" );
+   BLAZE_USER_ASSERT( k < rows()  , "Invalid columns access index" );
+   return tensor_(row(), j, k);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -396,7 +396,7 @@ inline typename PageSlice<MT,CRAs...>::Reference
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Subscript operator for the direct access to the pageslice elements.
+/*!\brief Subscript operator for the direct access to the rowslice elements.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \return Reference to the accessed value.
@@ -405,11 +405,11 @@ inline typename PageSlice<MT,CRAs...>::Reference
 // the at() function is guaranteed to perform a check of the given access index.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::ConstReference
-   PageSlice<MT,CRAs...>::operator()( size_t i, size_t j ) const
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::ConstReference
+   RowSlice<MT,CRAs...>::operator()( size_t j, size_t k ) const
 {
-   return const_cast<const MT&>( tensor_ )(i, j, page());
+   return const_cast<const MT&>( tensor_ )(row(), j, k);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -417,27 +417,27 @@ inline typename PageSlice<MT,CRAs...>::ConstReference
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Checked access to the pageslice elements.
+/*!\brief Checked access to the rowslice elements.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \return Reference to the accessed value.
-// \exception std::out_of_range Invalid pageslice access index.
+// \exception std::out_of_range Invalid rowslice access index.
 //
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::Reference
-   PageSlice<MT,CRAs...>::at( size_t i, size_t j )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::Reference
+   RowSlice<MT,CRAs...>::at( size_t j, size_t k )
 {
-   if( i >= rows() ) {
-      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
-   }
    if( j >= columns() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
    }
-   return (*this)(i, j);
+   if( k >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
+   }
+   return (*this)(j, k);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -445,27 +445,27 @@ inline typename PageSlice<MT,CRAs...>::Reference
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Checked access to the pageslice elements.
+/*!\brief Checked access to the rowslice elements.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \return Reference to the accessed value.
-// \exception std::out_of_range Invalid pageslice access index.
+// \exception std::out_of_range Invalid rowslice access index.
 //
 // In contrast to the subscript operator this function always performs a check of the given
 // access index.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::ConstReference
-   PageSlice<MT,CRAs...>::at( size_t i, size_t j ) const
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::ConstReference
+   RowSlice<MT,CRAs...>::at( size_t j, size_t k ) const
 {
-   if( i >= rows() ) {
-      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
-   }
    if( j >= columns() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
    }
-   return (*this)(i, j);
+   if( k >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
+   }
+   return (*this)(j, k);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -473,19 +473,19 @@ inline typename PageSlice<MT,CRAs...>::ConstReference
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Low-level data access to the pageslice elements.
+/*!\brief Low-level data access to the rowslice elements.
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the dense pageslice. Note that in case
-// of a column-major tensor you can NOT assume that the pageslice elements lie adjacent to each other!
+// This function returns a pointer to the internal storage of the dense rowslice. Note that in case
+// of a column-major tensor you can NOT assume that the rowslice elements lie adjacent to each other!
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::Pointer
-   PageSlice<MT,CRAs...>::data() noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::Pointer
+   RowSlice<MT,CRAs...>::data() noexcept
 {
-   return tensor_.data( 0, page() );
+   return tensor_.data( row(), 0UL );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -493,19 +493,19 @@ inline typename PageSlice<MT,CRAs...>::Pointer
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Low-level data access to the pageslice elements.
+/*!\brief Low-level data access to the rowslice elements.
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the dense pageslice. Note that in case
-// of a column-major tensor you can NOT assume that the pageslice elements lie adjacent to each other!
+// This function returns a pointer to the internal storage of the dense rowslice. Note that in case
+// of a column-major tensor you can NOT assume that the rowslice elements lie adjacent to each other!
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::ConstPointer
-   PageSlice<MT,CRAs...>::data() const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::ConstPointer
+   RowSlice<MT,CRAs...>::data() const noexcept
 {
-   return tensor_.data( 0, page() );
+   return tensor_.data( row(), 0UL );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -513,19 +513,19 @@ inline typename PageSlice<MT,CRAs...>::ConstPointer
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Low-level data access to the pageslice elements.
+/*!\brief Low-level data access to the rowslice elements.
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the dense pageslice. Note that in case
-// of a column-major tensor you can NOT assume that the pageslice elements lie adjacent to each other!
+// This function returns a pointer to the internal storage of the dense rowslice. Note that in case
+// of a column-major tensor you can NOT assume that the rowslice elements lie adjacent to each other!
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::Pointer
-   PageSlice<MT,CRAs...>::data( size_t i ) noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::Pointer
+   RowSlice<MT,CRAs...>::data( size_t k ) noexcept
 {
-   return tensor_.data( i, page() );
+   return tensor_.data( row(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -533,19 +533,19 @@ inline typename PageSlice<MT,CRAs...>::Pointer
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Low-level data access to the pageslice elements.
+/*!\brief Low-level data access to the rowslice elements.
 //
 // \return Pointer to the internal element storage.
 //
-// This function returns a pointer to the internal storage of the dense pageslice. Note that in case
-// of a column-major tensor you can NOT assume that the pageslice elements lie adjacent to each other!
+// This function returns a pointer to the internal storage of the dense rowslice. Note that in case
+// of a column-major tensor you can NOT assume that the rowslice elements lie adjacent to each other!
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::ConstPointer
-   PageSlice<MT,CRAs...>::data( size_t i ) const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::ConstPointer
+   RowSlice<MT,CRAs...>::data( size_t k ) const noexcept
 {
-   return tensor_.data( i, page() );
+   return tensor_.data( row(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -553,19 +553,19 @@ inline typename PageSlice<MT,CRAs...>::ConstPointer
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first element of the pageslice.
+/*!\brief Returns an iterator to the first element of the rowslice.
 //
 // \param i The row/column index.
-// \return Iterator to the first element of the given row on this pageslice.
+// \return Iterator to the first element of the given row on this rowslice.
 //
-// This function returns an iterator to the first element of the pageslice.
+// This function returns an iterator to the first element of the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::Iterator
-   PageSlice<MT,CRAs...>::begin( size_t i )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::Iterator
+   RowSlice<MT,CRAs...>::begin( size_t i )
 {
-   return tensor_.begin( i, page() );
+   return tensor_.begin( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -573,19 +573,19 @@ inline typename PageSlice<MT,CRAs...>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first element of the pageslice.
+/*!\brief Returns an iterator to the first element of the rowslice.
 //
 // \param i The row/column index.
-// \return Iterator to the first element of the pageslice.
+// \return Iterator to the first element of the rowslice.
 //
-// This function returns an iterator to the first element of the pageslice.
+// This function returns an iterator to the first element of the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::ConstIterator
-   PageSlice<MT,CRAs...>::begin( size_t i ) const
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::ConstIterator
+   RowSlice<MT,CRAs...>::begin( size_t i ) const
 {
-   return tensor_.cbegin( i, page() );
+   return tensor_.cbegin( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -593,19 +593,19 @@ inline typename PageSlice<MT,CRAs...>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator to the first element of the pageslice.
+/*!\brief Returns an iterator to the first element of the rowslice.
 //
 // \param i The row/column index.
-// \return Iterator to the first element of the pageslice.
+// \return Iterator to the first element of the rowslice.
 //
-// This function returns an iterator to the first element of the pageslice.
+// This function returns an iterator to the first element of the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::ConstIterator
-   PageSlice<MT,CRAs...>::cbegin( size_t i ) const
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::ConstIterator
+   RowSlice<MT,CRAs...>::cbegin( size_t i ) const
 {
-   return tensor_.cbegin( i, page() );
+   return tensor_.cbegin( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -613,19 +613,19 @@ inline typename PageSlice<MT,CRAs...>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator just past the last element of the pageslice.
+/*!\brief Returns an iterator just past the last element of the rowslice.
 //
 // \param i The row/column index.
-// \return Iterator just past the last element of the pageslice.
+// \return Iterator just past the last element of the rowslice.
 //
-// This function returns an iterator just past the last element of the pageslice.
+// This function returns an iterator just past the last element of the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::Iterator
-   PageSlice<MT,CRAs...>::end( size_t i )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::Iterator
+   RowSlice<MT,CRAs...>::end( size_t i )
 {
-   return tensor_.end( i, page() );
+   return tensor_.end( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -633,19 +633,19 @@ inline typename PageSlice<MT,CRAs...>::Iterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator just past the last element of the pageslice.
+/*!\brief Returns an iterator just past the last element of the rowslice.
 //
 // \param i The row/column index.
-// \return Iterator just past the last element of the pageslice.
+// \return Iterator just past the last element of the rowslice.
 //
-// This function returns an iterator just past the last element of the pageslice.
+// This function returns an iterator just past the last element of the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::ConstIterator
-   PageSlice<MT,CRAs...>::end( size_t i ) const
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::ConstIterator
+   RowSlice<MT,CRAs...>::end( size_t i ) const
 {
-   return tensor_.cend( i, page() );
+   return tensor_.cend( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -653,19 +653,19 @@ inline typename PageSlice<MT,CRAs...>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns an iterator just past the last element of the pageslice.
+/*!\brief Returns an iterator just past the last element of the rowslice.
 //
 // \param i The row/column index.
-// \return Iterator just past the last element of the pageslice.
+// \return Iterator just past the last element of the rowslice.
 //
-// This function returns an iterator just past the last element of the pageslice.
+// This function returns an iterator just past the last element of the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline typename PageSlice<MT,CRAs...>::ConstIterator
-   PageSlice<MT,CRAs...>::cend( size_t i ) const
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline typename RowSlice<MT,CRAs...>::ConstIterator
+   RowSlice<MT,CRAs...>::cend( size_t i ) const
 {
-   return tensor_.cend( i, page() );
+   return tensor_.cend( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -681,29 +681,29 @@ inline typename PageSlice<MT,CRAs...>::ConstIterator
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Homogeneous assignment to all pageslice elements.
+/*!\brief Homogeneous assignment to all rowslice elements.
 //
-// \param rhs Scalar value to be assigned to all pageslice elements.
-// \return Reference to the assigned pageslice.
+// \param rhs Scalar value to be assigned to all rowslice elements.
+// \return Reference to the assigned rowslice.
 //
-// This function homogeneously assigns the given value to all elements of the pageslice. Note that in
+// This function homogeneously assigns the given value to all elements of the rowslice. Note that in
 // case the underlying dense tensor is a lower/upper tensor only lower/upper and diagonal elements
 // of the underlying tensor are modified.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator=( const ElementType& rhs )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline RowSlice<MT,CRAs...>&
+   RowSlice<MT,CRAs...>::operator=( const ElementType& rhs )
 {
    decltype(auto) left( derestrict( tensor_ ) );
 
-   for (size_t i=0UL; i<rows(); ++i)
+   for (size_t k=0UL; k<rows(); ++k)
    {
       for (size_t j=0UL; j<columns(); ++j)
       {
-         if (!IsRestricted_v<MT> || trySet(*this, i, j, rhs))
+         if (!IsRestricted_v<MT> || trySet(*this, k, j, rhs))
          {
-            left(i, j, page()) = rhs;
+            left(row(), j, k) = rhs;
          }
       }
    }
@@ -715,31 +715,31 @@ inline PageSlice<MT,CRAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief List assignment to all pageslice elements.
+/*!\brief List assignment to all rowslice elements.
 //
 // \param list The initializer list.
-// \exception std::invalid_argument Invalid assignment to pageslice.
+// \exception std::invalid_argument Invalid assignment to rowslice.
 // \exception std::invalid_argument Invalid assignment to restricted tensor.
 //
 // This assignment operator offers the option to directly assign to all elements of the dense
-// pageslice by means of an initializer list. The pageslice elements are assigned the values from the given
+// rowslice by means of an initializer list. The rowslice elements are assigned the values from the given
 // initializer list. Missing values are reset to their default state. Note that in case the size
-// of the initializer list exceeds the size of the pageslice, a \a std::invalid_argument exception is
+// of the initializer list exceeds the size of the rowslice, a \a std::invalid_argument exception is
 // thrown. Also, if the underlying tensor \a MT is restricted and the assignment would violate
 // an invariant of the tensor, a \a std::invalid_argument exception is thrown.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator=(initializer_list<initializer_list<ElementType> > list)
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline RowSlice<MT,CRAs...>&
+   RowSlice<MT,CRAs...>::operator=(initializer_list<initializer_list<ElementType> > list)
 {
    if (list.size() > rows() || determineColumns(list) > columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to pageslice" );
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to rowslice" );
    }
 
    if( IsRestricted_v<MT> ) {
       const InitializerMatrix<ElementType> tmp( list );
-      if( !tryAssign( tensor_, tmp, 0UL, 0UL, page() ) ) {
+      if( !tryAssign( tensor_, tmp, row(), 0UL, 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
       }
    }
@@ -763,30 +763,30 @@ inline PageSlice<MT,CRAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Copy assignment operator for PageSlice.
+/*!\brief Copy assignment operator for RowSlice.
 //
-// \param rhs Dense pageslice to be copied.
-// \return Reference to the assigned pageslice.
-// \exception std::invalid_argument PageSlice sizes do not match.
+// \param rhs Dense rowslice to be copied.
+// \return Reference to the assigned rowslice.
+// \exception std::invalid_argument RowSlice sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted tensor.
 //
-// In case the current sizes of the two pageslices don't match, a \a std::invalid_argument exception
+// In case the current sizes of the two rowslices don't match, a \a std::invalid_argument exception
 // is thrown. Also, if the underlying tensor \a MT is a lower or upper triangular tensor and the
 // assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
 // exception is thrown.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator=( const PageSlice& rhs )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline RowSlice<MT,CRAs...>&
+   RowSlice<MT,CRAs...>::operator=( const RowSlice& rhs )
 {
    if( &rhs == this ) return *this;
 
    if( rows() != rhs.rows() || columns() != rhs.columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "PageSlice sizes do not match" );
+      BLAZE_THROW_INVALID_ARGUMENT( "RowSlice sizes do not match" );
    }
 
-   if( !tryAssign( tensor_, rhs, 0UL, 0UL, page() ) ) {
+   if( !tryAssign( tensor_, rhs, row(), 0UL, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -813,7 +813,7 @@ inline PageSlice<MT,CRAs...>&
 /*!\brief Assignment operator for different matrices.
 //
 // \param rhs Matrix to be assigned.
-// \return Reference to the assigned pageslice.
+// \return Reference to the assigned rowslice.
 // \exception std::invalid_argument Matrix sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted tensor.
 //
@@ -823,10 +823,10 @@ inline PageSlice<MT,CRAs...>&
 // exception is thrown.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side matrix
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator=( const Matrix<VT,false>& rhs )
+inline RowSlice<MT,CRAs...>&
+   RowSlice<MT,CRAs...>::operator=( const Matrix<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
@@ -838,7 +838,7 @@ inline PageSlice<MT,CRAs...>&
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
-   if( !tryAssign( tensor_, right, 0UL, 0UL, page() ) ) {
+   if( !tryAssign( tensor_, right, row(), 0UL, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -866,8 +866,8 @@ inline PageSlice<MT,CRAs...>&
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Addition assignment operator for the addition of a matrix (\f$ \vec{a}+=\vec{b} \f$).
 //
-// \param rhs The right-hand side matrix to be added to the dense pageslice.
-// \return Reference to the assigned pageslice.
+// \param rhs The right-hand side matrix to be added to the dense rowslice.
+// \return Reference to the assigned rowslice.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted tensor.
 //
@@ -877,10 +877,10 @@ inline PageSlice<MT,CRAs...>&
 // exception is thrown.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side matrix
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator+=( const Matrix<VT,false>& rhs )
+inline RowSlice<MT,CRAs...>&
+   RowSlice<MT,CRAs...>::operator+=( const Matrix<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
@@ -892,7 +892,7 @@ inline PageSlice<MT,CRAs...>&
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
-   if( !tryAddAssign( tensor_, right, 0UL, 0UL, page() ) ) {
+   if( !tryAddAssign( tensor_, right, row(), 0UL, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -918,8 +918,8 @@ inline PageSlice<MT,CRAs...>&
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Subtraction assignment operator for the subtraction of a matrix (\f$ \vec{a}-=\vec{b} \f$).
 //
-// \param rhs The right-hand side matrix to be subtracted from the dense pageslice.
-// \return Reference to the assigned pageslice.
+// \param rhs The right-hand side matrix to be subtracted from the dense rowslice.
+// \return Reference to the assigned rowslice.
 // \exception std::invalid_argument Vector sizes do not match.
 // \exception std::invalid_argument Invalid assignment to restricted tensor.
 //
@@ -929,10 +929,10 @@ inline PageSlice<MT,CRAs...>&
 // exception is thrown.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side matrix
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator-=( const Matrix<VT,false>& rhs )
+inline RowSlice<MT,CRAs...>&
+   RowSlice<MT,CRAs...>::operator-=( const Matrix<VT,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
@@ -944,7 +944,7 @@ inline PageSlice<MT,CRAs...>&
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
-   if( !trySubAssign( tensor_, right, 0UL, 0UL, page() ) ) {
+   if( !trySubAssign( tensor_, right, row(), 0UL, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -972,7 +972,7 @@ inline PageSlice<MT,CRAs...>&
 //        (\f$ \vec{a}\times=\vec{b} \f$).
 //
 // \param rhs The right-hand side matrix for the cross product.
-// \return Reference to the assigned pageslice.
+// \return Reference to the assigned rowslice.
 // \exception std::invalid_argument Invalid matrix size for cross product.
 // \exception std::invalid_argument Invalid assignment to restricted tensor.
 //
@@ -980,10 +980,10 @@ inline PageSlice<MT,CRAs...>&
 // exception is thrown.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side matrix
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator%=( const Matrix<VT,false>& rhs )
+inline RowSlice<MT,CRAs...>&
+   RowSlice<MT,CRAs...>::operator%=( const Matrix<VT,false>& rhs )
 {
    using blaze::assign;
 
@@ -997,7 +997,7 @@ inline PageSlice<MT,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySchurAssign( tensor_, (~rhs), 0UL, 0UL, page() ) ) {
+   if( !trySchurAssign( tensor_, (~rhs), row(), 0UL, 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1029,13 +1029,13 @@ inline PageSlice<MT,CRAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the tensor containing the pageslice.
+/*!\brief Returns the tensor containing the rowslice.
 //
-// \return The tensor containing the pageslice.
+// \return The tensor containing the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline MT& PageSlice<MT,CRAs...>::operand() noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline MT& RowSlice<MT,CRAs...>::operand() noexcept
 {
    return tensor_;
 }
@@ -1045,13 +1045,13 @@ inline MT& PageSlice<MT,CRAs...>::operand() noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the tensor containing the pageslice.
+/*!\brief Returns the tensor containing the rowslice.
 //
-// \return The tensor containing the pageslice.
+// \return The tensor containing the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline const MT& PageSlice<MT,CRAs...>::operand() const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline const MT& RowSlice<MT,CRAs...>::operand() const noexcept
 {
    return tensor_;
 }
@@ -1061,15 +1061,15 @@ inline const MT& PageSlice<MT,CRAs...>::operand() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the current size/dimension of the pageslice.
+/*!\brief Returns the current size/dimension of the rowslice.
 //
-// \return The size of the pageslice.
+// \return The size of the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline size_t PageSlice<MT,CRAs...>::rows() const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline size_t RowSlice<MT,CRAs...>::rows() const noexcept
 {
-   return tensor_.rows();
+   return tensor_.pages();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1077,13 +1077,13 @@ inline size_t PageSlice<MT,CRAs...>::rows() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the current size/dimension of the pageslice.
+/*!\brief Returns the current size/dimension of the rowslice.
 //
-// \return The size of the pageslice.
+// \return The size of the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline size_t PageSlice<MT,CRAs...>::columns() const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline size_t RowSlice<MT,CRAs...>::columns() const noexcept
 {
    return tensor_.columns();
 }
@@ -1093,18 +1093,18 @@ inline size_t PageSlice<MT,CRAs...>::columns() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the minimum capacity of the pageslice.
+/*!\brief Returns the minimum capacity of the rowslice.
 //
-// \return The minimum capacity of the pageslice.
+// \return The minimum capacity of the rowslice.
 //
-// This function returns the minimum capacity of the pageslice, which corresponds to the current size
+// This function returns the minimum capacity of the rowslice, which corresponds to the current size
 // plus padding.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline size_t PageSlice<MT,CRAs...>::spacing() const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline size_t RowSlice<MT,CRAs...>::spacing() const noexcept
 {
-   return tensor_.spacing();
+   return tensor_.spacing() * tensor_.rows();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1112,15 +1112,15 @@ inline size_t PageSlice<MT,CRAs...>::spacing() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the maximum capacity of the dense pageslice.
+/*!\brief Returns the maximum capacity of the dense rowslice.
 //
-// \return The maximum capacity of the dense pageslice.
+// \return The maximum capacity of the dense rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline size_t PageSlice<MT,CRAs...>::capacity() const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline size_t RowSlice<MT,CRAs...>::capacity() const noexcept
 {
-   return tensor_.capacity( 0UL, page() ) * tensor_.rows();
+   return tensor_.capacity( row(), 0UL ) * tensor_.pages();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1128,15 +1128,15 @@ inline size_t PageSlice<MT,CRAs...>::capacity() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the maximum capacity of the dense pageslice.
+/*!\brief Returns the maximum capacity of the dense rowslice.
 //
-// \return The maximum capacity of the dense pageslice.
+// \return The maximum capacity of the dense rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline size_t PageSlice<MT,CRAs...>::capacity( size_t i ) const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline size_t RowSlice<MT,CRAs...>::capacity( size_t i ) const noexcept
 {
-   return tensor_.capacity( i, page() ) * tensor_.rows();
+   return tensor_.capacity( row(), i ) * tensor_.pages();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1144,20 +1144,20 @@ inline size_t PageSlice<MT,CRAs...>::capacity( size_t i ) const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the number of non-zero elements in the pageslice.
+/*!\brief Returns the number of non-zero elements in the rowslice.
 //
-// \return The number of non-zero elements in the pageslice.
+// \return The number of non-zero elements in the rowslice.
 //
 // Note that the number of non-zero elements is always less than or equal to the current number
-// of columns of the tensor containing the pageslice.
+// of columns of the tensor containing the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline size_t PageSlice<MT,CRAs...>::nonZeros() const
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline size_t RowSlice<MT,CRAs...>::nonZeros() const
 {
    size_t count ( 0 );
    for ( size_t i = 0; i < rows(); ++i ) {
-      count += tensor_.nonZeros( i, page() );
+      count += tensor_.nonZeros( row(), i );
    }
    return count;
 }
@@ -1167,18 +1167,18 @@ inline size_t PageSlice<MT,CRAs...>::nonZeros() const
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns the number of non-zero elements in the pageslice.
+/*!\brief Returns the number of non-zero elements in the rowslice.
 //
-// \return The number of non-zero elements in the pageslice.
+// \return The number of non-zero elements in the rowslice.
 //
 // Note that the number of non-zero elements is always less than or equal to the current number
-// of columns of the tensor containing the pageslice.
+// of columns of the tensor containing the rowslice.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline size_t PageSlice<MT,CRAs...>::nonZeros( size_t i ) const
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline size_t RowSlice<MT,CRAs...>::nonZeros( size_t i ) const
 {
-   return tensor_.nonZeros( i, page() );
+   return tensor_.nonZeros( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1191,11 +1191,11 @@ inline size_t PageSlice<MT,CRAs...>::nonZeros( size_t i ) const
 // \return void
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline void PageSlice<MT,CRAs...>::reset()
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline void RowSlice<MT,CRAs...>::reset()
 {
    for ( size_t i = 0; i < rows(); ++i ) {
-      tensor_.reset( i, page() );
+      tensor_.reset( row(), i );
    }
 }
 /*! \endcond */
@@ -1209,10 +1209,10 @@ inline void PageSlice<MT,CRAs...>::reset()
 // \return void
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline void PageSlice<MT,CRAs...>::reset( size_t i )
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline void RowSlice<MT,CRAs...>::reset( size_t k )
 {
-   tensor_.reset( i, page() );
+   tensor_.reset( row(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1228,26 +1228,26 @@ inline void PageSlice<MT,CRAs...>::reset( size_t i )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Scaling of the pageslice by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
+/*!\brief Scaling of the rowslice by the scalar value \a scalar (\f$ \vec{a}=\vec{b}*s \f$).
 //
-// \param scalar The scalar value for the pageslice scaling.
-// \return Reference to the dense pageslice.
+// \param scalar The scalar value for the rowslice scaling.
+// \return Reference to the dense rowslice.
 //
-// This function scales the pageslice by applying the given scalar value \a scalar to each element
-// of the pageslice. For built-in and \c complex data types it has the same effect as using the
-// multiplication assignment operator. Note that the function cannot be used to scale a pageslice
-// on a lower or upper unitriangular tensor. The attempt to scale such a pageslice results in a
+// This function scales the rowslice by applying the given scalar value \a scalar to each element
+// of the rowslice. For built-in and \c complex data types it has the same effect as using the
+// multiplication assignment operator. Note that the function cannot be used to scale a rowslice
+// on a lower or upper unitriangular tensor. The attempt to scale such a rowslice results in a
 // compile time error!
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename Other >  // Data type of the scalar value
-inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::scale( const Other& scalar )
+inline RowSlice<MT,CRAs...>&
+   RowSlice<MT,CRAs...>::scale( const Other& scalar )
 {
-   for ( size_t i = 0; i < rows(); ++i ) {
+   for ( size_t k = 0; k < rows(); ++k ) {
       for ( size_t j = 0; j < columns(); ++j ) {
-         tensor_(i, j, page()) *= scalar;
+         tensor_(row(), j, k) *= scalar;
       }
    }
    return *this;
@@ -1266,19 +1266,19 @@ inline PageSlice<MT,CRAs...>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the dense pageslice can alias with the given address \a alias.
+/*!\brief Returns whether the dense rowslice can alias with the given address \a alias.
 //
 // \param alias The alias to be checked.
-// \return \a true in case the alias corresponds to this dense pageslice, \a false if not.
+// \return \a true in case the alias corresponds to this dense rowslice, \a false if not.
 //
-// This function returns whether the given address can alias with the dense pageslice. In contrast
+// This function returns whether the given address can alias with the dense rowslice. In contrast
 // to the isAliased() function this function is allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool PageSlice<MT,CRAs...>::canAlias( const Other* alias ) const noexcept
+inline bool RowSlice<MT,CRAs...>::canAlias( const Other* alias ) const noexcept
 {
    return tensor_.isAliased( alias );
 }
@@ -1288,23 +1288,23 @@ inline bool PageSlice<MT,CRAs...>::canAlias( const Other* alias ) const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the dense pageslice can alias with the given dense pageslice \a alias.
+/*!\brief Returns whether the dense rowslice can alias with the given dense rowslice \a alias.
 //
 // \param alias The alias to be checked.
-// \return \a true in case the alias corresponds to this dense pageslice, \a false if not.
+// \return \a true in case the alias corresponds to this dense rowslice, \a false if not.
 //
-// This function returns whether the given address can alias with the dense pageslice. In contrast
+// This function returns whether the given address can alias with the dense rowslice. In contrast
 // to the isAliased() function this function is allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT        // Type of the dense tensor
-        , size_t... CRAs >   // Compile time pageslice arguments
-template< typename MT2       // Data type of the foreign dense pageslice
-        , size_t... CRAs2 >  // Compile time pageslice arguments of the foreign dense pageslice
+        , size_t... CRAs >   // Compile time rowslice arguments
+template< typename MT2       // Data type of the foreign dense rowslice
+        , size_t... CRAs2 >  // Compile time rowslice arguments of the foreign dense rowslice
 inline bool
-   PageSlice<MT,CRAs...>::canAlias( const PageSlice<MT2,CRAs2...>* alias ) const noexcept
+   RowSlice<MT,CRAs...>::canAlias( const RowSlice<MT2,CRAs2...>* alias ) const noexcept
 {
-   return tensor_.isAliased( &alias->tensor_ ) && ( page() == alias->page() );
+   return tensor_.isAliased( &alias->tensor_ ) && ( row() == alias->row() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1312,19 +1312,19 @@ inline bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the dense pageslice is aliased with the given address \a alias.
+/*!\brief Returns whether the dense rowslice is aliased with the given address \a alias.
 //
 // \param alias The alias to be checked.
-// \return \a true in case the alias corresponds to this dense pageslice, \a false if not.
+// \return \a true in case the alias corresponds to this dense rowslice, \a false if not.
 //
-// This function returns whether the given address is aliased with the dense pageslice. In contrast
+// This function returns whether the given address is aliased with the dense rowslice. In contrast
 // to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename Other >  // Data type of the foreign expression
-inline bool PageSlice<MT,CRAs...>::isAliased( const Other* alias ) const noexcept
+inline bool RowSlice<MT,CRAs...>::isAliased( const Other* alias ) const noexcept
 {
    return tensor_.isAliased( alias );
 }
@@ -1334,23 +1334,23 @@ inline bool PageSlice<MT,CRAs...>::isAliased( const Other* alias ) const noexcep
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the dense pageslice is aliased with the given dense pageslice \a alias.
+/*!\brief Returns whether the dense rowslice is aliased with the given dense rowslice \a alias.
 //
 // \param alias The alias to be checked.
-// \return \a true in case the alias corresponds to this dense pageslice, \a false if not.
+// \return \a true in case the alias corresponds to this dense rowslice, \a false if not.
 //
-// This function returns whether the given address is aliased with the dense pageslice. In contrast
+// This function returns whether the given address is aliased with the dense rowslice. In contrast
 // to the canAlias() function this function is not allowed to use compile time expressions to
 // optimize the evaluation.
 */
 template< typename MT        // Type of the dense tensor
-        , size_t... CRAs >   // Compile time pageslice arguments
-template< typename MT2       // Data type of the foreign dense pageslice
-        , size_t... CRAs2 >  // Compile time pageslice arguments of the foreign dense pageslice
+        , size_t... CRAs >   // Compile time rowslice arguments
+template< typename MT2       // Data type of the foreign dense rowslice
+        , size_t... CRAs2 >  // Compile time rowslice arguments of the foreign dense rowslice
 inline bool
-   PageSlice<MT,CRAs...>::isAliased( const PageSlice<MT2,CRAs2...>* alias ) const noexcept
+   RowSlice<MT,CRAs...>::isAliased( const RowSlice<MT2,CRAs2...>* alias ) const noexcept
 {
-   return tensor_.isAliased( &alias->tensor_ ) && ( page() == alias->page() );
+   return tensor_.isAliased( &alias->tensor_ ) && ( row() == alias->row() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1358,17 +1358,17 @@ inline bool
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the dense pageslice is properly aligned in memory.
+/*!\brief Returns whether the dense rowslice is properly aligned in memory.
 //
-// \return \a true in case the dense pageslice is aligned, \a false if not.
+// \return \a true in case the dense rowslice is aligned, \a false if not.
 //
-// This function returns whether the dense pageslice is guaranteed to be properly aligned in memory,
-// i.e. whether the beginning and the end of the dense pageslice are guaranteed to conform to the
+// This function returns whether the dense rowslice is guaranteed to be properly aligned in memory,
+// i.e. whether the beginning and the end of the dense rowslice are guaranteed to conform to the
 // alignment restrictions of the element type \a Type.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline bool PageSlice<MT,CRAs...>::isAligned() const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline bool RowSlice<MT,CRAs...>::isAligned() const noexcept
 {
    return tensor_.isAligned();
 }
@@ -1378,18 +1378,18 @@ inline bool PageSlice<MT,CRAs...>::isAligned() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Returns whether the dense pageslice can be used in SMP assignments.
+/*!\brief Returns whether the dense rowslice can be used in SMP assignments.
 //
-// \return \a true in case the dense pageslice can be used in SMP assignments, \a false if not.
+// \return \a true in case the dense rowslice can be used in SMP assignments, \a false if not.
 //
-// This function returns whether the dense pageslice can be used in SMP assignments. In contrast to
+// This function returns whether the dense rowslice can be used in SMP assignments. In contrast to
 // the \a smpAssignable member enumeration, which is based solely on compile time information,
 // this function additionally provides runtime information (as for instance the current size
-// of the dense pageslice).
+// of the dense rowslice).
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-inline bool PageSlice<MT,CRAs...>::canSMPAssign() const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+inline bool RowSlice<MT,CRAs...>::canSMPAssign() const noexcept
 {
    return ( rows() * columns() > SMP_DMATASSIGN_THRESHOLD );
 }
@@ -1399,23 +1399,23 @@ inline bool PageSlice<MT,CRAs...>::canSMPAssign() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Load of a SIMD element of the dense pageslice.
+/*!\brief Load of a SIMD element of the dense rowslice.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \return The loaded SIMD element.
 //
-// This function performs a load of a specific SIMD element of the dense pageslice. The index
+// This function performs a load of a specific SIMD element of the dense rowslice. The index
 // must be smaller than the number of tensor columns. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
-   PageSlice<MT,CRAs...>::load( size_t i, size_t j ) const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+BLAZE_ALWAYS_INLINE typename RowSlice<MT,CRAs...>::SIMDType
+   RowSlice<MT,CRAs...>::load( size_t j, size_t k ) const noexcept
 {
-   return tensor_.load( i, j, page() );
+   return tensor_.load( row(), j, k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1423,23 +1423,23 @@ BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned load of a SIMD element of the dense pageslice.
+/*!\brief Aligned load of a SIMD element of the dense rowslice.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \return The loaded SIMD element.
 //
-// This function performs an aligned load of a specific SIMD element of the dense pageslice.
+// This function performs an aligned load of a specific SIMD element of the dense rowslice.
 // The index must be smaller than the number of tensor columns. This function must \b NOT
 // be called explicitly! It is used internally for the performance optimized evaluation of
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
-   PageSlice<MT,CRAs...>::loada( size_t i, size_t j ) const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+BLAZE_ALWAYS_INLINE typename RowSlice<MT,CRAs...>::SIMDType
+   RowSlice<MT,CRAs...>::loada( size_t j, size_t k ) const noexcept
 {
-   return tensor_.loada( i, j, page() );
+   return tensor_.loada( row(), j, k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1447,23 +1447,23 @@ BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned load of a SIMD element of the dense pageslice.
+/*!\brief Unaligned load of a SIMD element of the dense rowslice.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \return The loaded SIMD element.
 //
-// This function performs an unaligned load of a specific SIMD element of the dense pageslice.
+// This function performs an unaligned load of a specific SIMD element of the dense rowslice.
 // The index must be smaller than the number of tensor columns. This function must \b NOT
 // be called explicitly! It is used internally for the performance optimized evaluation of
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
-   PageSlice<MT,CRAs...>::loadu( size_t i, size_t j ) const noexcept
+        , size_t... CRAs >  // Compile time rowslice arguments
+BLAZE_ALWAYS_INLINE typename RowSlice<MT,CRAs...>::SIMDType
+   RowSlice<MT,CRAs...>::loadu( size_t j, size_t k ) const noexcept
 {
-   return tensor_.loadu( i, j, page() );
+   return tensor_.loadu( row(), j, k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1471,24 +1471,24 @@ BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Store of a SIMD element of the dense pageslice.
+/*!\brief Store of a SIMD element of the dense rowslice.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs a store a specific SIMD element of the dense pageslice. The index
+// This function performs a store a specific SIMD element of the dense rowslice. The index
 // must be smaller than the number of tensor columns. This function must \b NOT be called
 // explicitly! It is used internally for the performance optimized evaluation of expression
 // templates. Calling this function explicitly might result in erroneous results and/or in
 // compilation errors.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 BLAZE_ALWAYS_INLINE void
-   PageSlice<MT,CRAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
+   RowSlice<MT,CRAs...>::store( size_t j, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.store( i, j, page(), value );
+   tensor_.store( row(), j, k, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1496,24 +1496,24 @@ BLAZE_ALWAYS_INLINE void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned store of a SIMD element of the dense pageslice.
+/*!\brief Aligned store of a SIMD element of the dense rowslice.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an aligned store a specific SIMD element of the dense pageslice. The
+// This function performs an aligned store a specific SIMD element of the dense rowslice. The
 // index must be smaller than the number of tensor columns. This function must \b NOT be
 // called explicitly! It is used internally for the performance optimized evaluation of
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 BLAZE_ALWAYS_INLINE void
-   PageSlice<MT,CRAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
+   RowSlice<MT,CRAs...>::storea( size_t j, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.storea( i, j, page(), value );
+   tensor_.storea( row(), j, k, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1521,24 +1521,24 @@ BLAZE_ALWAYS_INLINE void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Unligned store of a SIMD element of the dense pageslice.
+/*!\brief Unligned store of a SIMD element of the dense rowslice.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \param value The SIMD element to be stored.
 // \return void
 //
-// This function performs an unaligned store a specific SIMD element of the dense pageslice.
+// This function performs an unaligned store a specific SIMD element of the dense rowslice.
 // The index must be smaller than the number of tensor columns. This function must \b NOT
 // be called explicitly! It is used internally for the performance optimized evaluation of
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 BLAZE_ALWAYS_INLINE void
-   PageSlice<MT,CRAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
+   RowSlice<MT,CRAs...>::storeu( size_t j, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.storeu( i, j, page(), value );
+   tensor_.storeu( row(), j, k, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1546,24 +1546,24 @@ BLAZE_ALWAYS_INLINE void
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned, non-temporal store of a SIMD element of the dense pageslice.
+/*!\brief Aligned, non-temporal store of a SIMD element of the dense rowslice.
 //
 // \param index Access index. The index must be smaller than the number of tensor columns.
 // \param value The SIMD element to be stored.
 // \return void
 //
 // This function performs an aligned, non-temporal store a specific SIMD element of the dense
-// pageslice. The index must be smaller than the number of tensor columns. This function must \b NOT
+// rowslice. The index must be smaller than the number of tensor columns. This function must \b NOT
 // be called explicitly! It is used internally for the performance optimized evaluation of
 // expression templates. Calling this function explicitly might result in erroneous results
 // and/or in compilation errors.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 BLAZE_ALWAYS_INLINE void
-   PageSlice<MT,CRAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
+   RowSlice<MT,CRAs...>::stream( size_t j, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.stream( i, j, page(), value );
+   tensor_.stream( row(), j, k, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1582,9 +1582,9 @@ BLAZE_ALWAYS_INLINE void
 // assignment operator.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
+inline auto RowSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
    -> DisableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
@@ -1593,11 +1593,11 @@ inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,j,page()) = (~rhs)(i,j);
-         tensor_(i,j+1UL,page()) = (~rhs)(i,j+1UL);
+         tensor_(row(),j,i) = (~rhs)(i,j);
+         tensor_(row(),j+1UL,i) = (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(i,jpos,page()) = (~rhs)(i,jpos);
+         tensor_(row(),jpos,i) = (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1617,9 +1617,9 @@ inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
 // assignment operator.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
+inline auto RowSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
    -> EnableIf_t< VectorizedAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -1682,9 +1682,9 @@ inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
 // assignment operator.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
+inline auto RowSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -1693,11 +1693,11 @@ inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,j,page()    ) += (~rhs)(i,j);
-         tensor_(i,j+1UL,page()) += (~rhs)(i,j+1UL);
+         tensor_(row(),j,i    ) += (~rhs)(i,j);
+         tensor_(row(),j+1UL,i) += (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(i,jpos,page()) += (~rhs)(i,jpos);
+         tensor_(row(),jpos,i) += (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1717,9 +1717,9 @@ inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
 // assignment operator.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
+inline auto RowSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
    -> EnableIf_t< VectorizedAddAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -1770,9 +1770,9 @@ inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
 // assignment operator.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
+inline auto RowSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -1781,11 +1781,11 @@ inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,j,page()    ) -= (~rhs)(i,j);
-         tensor_(i,j+1UL,page()) -= (~rhs)(i,j+1UL);
+         tensor_(row(),j,i    ) -= (~rhs)(i,j);
+         tensor_(row(),j+1UL,i) -= (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(i,jpos,page()) -= (~rhs)(i,jpos);
+         tensor_(row(),jpos,i) -= (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1805,9 +1805,9 @@ inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
 // assignment operator.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
+        , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
+inline auto RowSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
    -> EnableIf_t< VectorizedSubAssign_v<VT> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
@@ -1858,9 +1858,9 @@ inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
 // assignment operator.
 */
 template< typename MT       // Type of the tensor
-        , size_t... CSAs >  // Compile time pageslice arguments
+        , size_t... CSAs >  // Compile time rowslice arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto RowSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -1871,11 +1871,11 @@ inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rh
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,j,page()    ) *= (~rhs)(i,j    );
-         tensor_(i,j+1UL,page()) *= (~rhs)(i,j+1UL);
+         tensor_(row(),j,i    ) *= (~rhs)(i,j    );
+         tensor_(row(),j+1UL,i) *= (~rhs)(i,j+1UL);
       }
       if( jpos < columns() ) {
-         tensor_(i,jpos,page()) *= (~rhs)(i,jpos);
+         tensor_(row(),jpos,i) *= (~rhs)(i,jpos);
       }
    }
 }
@@ -1896,9 +1896,9 @@ inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rh
 // assignment operator.
 */
 template< typename MT       // Type of the tensor
-        , size_t... CSAs >  // Compile time pageslice arguments
+        , size_t... CSAs >  // Compile time rowslice arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
-inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+inline auto RowSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
    -> EnableIf_t< VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );

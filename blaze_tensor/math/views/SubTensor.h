@@ -48,6 +48,7 @@
 #include <blaze_tensor/math/expressions/Forward.h>
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
+#include <blaze_tensor/math/expressions/TensReduceExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensAddExpr.h>

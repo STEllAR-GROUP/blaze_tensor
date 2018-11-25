@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/pageslice/DenseGeneralTest.cpp
-//  \brief Source file for the PageSlice dense general test
+//  \file src/mathtest/rowslice/DenseGeneralTest.cpp
+//  \brief Source file for the RowSlice dense general test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -51,14 +51,14 @@
 #include <blaze_tensor/math/CustomTensor.h>
 #include <blaze_tensor/math/DynamicTensor.h>
 
-#include <blazetest/mathtest/pageslice/DenseGeneralTest.h>
+#include <blazetest/mathtest/rowslice/DenseGeneralTest.h>
 
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace pageslice {
+namespace rowslice {
 
 //=================================================================================================
 //
@@ -67,7 +67,7 @@ namespace pageslice {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the PageSlice dense general test.
+/*!\brief Constructor for the RowSlice dense general test.
 //
 // \exception std::runtime_error Operation error detected.
 */
@@ -107,12 +107,12 @@ DenseGeneralTest::DenseGeneralTest()
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the PageSlice constructors.
+/*!\brief Test of the RowSlice constructors.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all constructors of the PageSlice specialization. In case an
+// This function performs a test of all constructors of the RowSlice specialization. In case an
 // error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testConstructors()
@@ -122,111 +122,111 @@ void DenseGeneralTest::testConstructors()
    //=====================================================================================
 
    {
-      test_ = "PageSlice constructor (0x0)";
+      test_ = "RowSlice constructor (0x0)";
 
       MT mat;
 
-      // 0th matrix pageslice
+      // 0th matrix rowslice
       try {
-         blaze::pageslice( mat, 0UL );
+         blaze::rowslice( mat, 0UL );
       }
       catch( std::invalid_argument& ) {}
    }
 
    {
-      test_ = "PageSlice constructor (2x0)";
+      test_ = "RowSlice constructor (2x0)";
 
       MT mat( 2UL, 0UL, 2UL );
 
-      // 0th matrix pageslice
+      // 0th matrix rowslice
       {
-         RT pageslice0 = blaze::pageslice( mat, 0UL );
+         RT rowslice0 = blaze::rowslice( mat, 0UL );
 
-         checkRows    ( pageslice0, 2UL );
-         checkColumns ( pageslice0, 0UL );
-         checkCapacity( pageslice0, 0UL );
-         checkNonZeros( pageslice0, 0UL );
+         checkRows    ( rowslice0, 2UL );
+         checkColumns ( rowslice0, 0UL );
+         checkCapacity( rowslice0, 0UL );
+         checkNonZeros( rowslice0, 0UL );
       }
 
-      // 1st matrix pageslice
+      // 1st matrix rowslice
       {
-         RT pageslice1 = blaze::pageslice( mat, 1UL );
+         RT rowslice1 = blaze::rowslice( mat, 1UL );
 
-         checkRows    ( pageslice1, 2UL );
-         checkColumns ( pageslice1, 0UL );
-         checkCapacity( pageslice1, 0UL );
-         checkNonZeros( pageslice1, 0UL );
+         checkRows    ( rowslice1, 2UL );
+         checkColumns ( rowslice1, 0UL );
+         checkCapacity( rowslice1, 0UL );
+         checkNonZeros( rowslice1, 0UL );
       }
 
-      // 2nd matrix pageslice
+      // 2nd matrix rowslice
       try {
-         blaze::pageslice( mat, 2UL );
+         blaze::rowslice( mat, 2UL );
       }
       catch( std::invalid_argument& ) {}
    }
 
    {
-      test_ = "PageSlice constructor (5x4)";
+      test_ = "RowSlice constructor (5x4)";
 
       initialize();
 
-      // 0th tensor pageslice
+      // 0th tensor rowslice
       {
-         RT pageslice0 = blaze::pageslice( mat_, 0UL );
+         RT rowslice0 = blaze::rowslice( mat_, 0UL );
 
-         checkRows    ( pageslice0, 5UL );
-         checkColumns ( pageslice0, 4UL );
-         checkCapacity( pageslice0, 20UL );
-         checkNonZeros( pageslice0, 10UL );
+         checkRows    ( rowslice0, 5UL );
+         checkColumns ( rowslice0, 4UL );
+         checkCapacity( rowslice0, 20UL );
+         checkNonZeros( rowslice0, 10UL );
 
-         if( pageslice0(0,0) !=  0 || pageslice0(0,1) !=  0 || pageslice0(0,2) !=  0 || pageslice0(0,3) !=  0 ||
-             pageslice0(1,0) !=  0 || pageslice0(1,1) !=  1 || pageslice0(1,2) !=  0 || pageslice0(1,3) !=  0 ||
-             pageslice0(2,0) != -2 || pageslice0(2,1) !=  0 || pageslice0(2,2) != -3 || pageslice0(2,3) !=  0 ||
-             pageslice0(3,0) !=  0 || pageslice0(3,1) !=  4 || pageslice0(3,2) !=  5 || pageslice0(3,3) != -6 ||
-             pageslice0(4,0) !=  7 || pageslice0(4,1) != -8 || pageslice0(4,2) !=  9 || pageslice0(4,3) != 10 ) {
+         if( rowslice0(0,0) !=  0 || rowslice0(0,1) !=  0 || rowslice0(0,2) !=  0 || rowslice0(0,3) !=  0 ||
+             rowslice0(1,0) !=  0 || rowslice0(1,1) !=  1 || rowslice0(1,2) !=  0 || rowslice0(1,3) !=  0 ||
+             rowslice0(2,0) != -2 || rowslice0(2,1) !=  0 || rowslice0(2,2) != -3 || rowslice0(2,3) !=  0 ||
+             rowslice0(3,0) !=  0 || rowslice0(3,1) !=  4 || rowslice0(3,2) !=  5 || rowslice0(3,3) != -6 ||
+             rowslice0(4,0) !=  7 || rowslice0(4,1) != -8 || rowslice0(4,2) !=  9 || rowslice0(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 0th dense pageslice failed\n"
+                << " Error: Setup of 0th dense rowslice failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice0 << "\n"
+                << "   Result:\n" << rowslice0 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // 1st tensor pageslice
+      // 1st tensor rowslice
       {
-         RT pageslice1 = blaze::pageslice( mat_, 1UL );
+         RT rowslice1 = blaze::rowslice( mat_, 1UL );
 
-         checkRows    ( pageslice1, 5UL );
-         checkColumns ( pageslice1, 4UL );
-         checkCapacity( pageslice1, 20UL );
-         checkNonZeros( pageslice1, 10UL );
+         checkRows    ( rowslice1, 5UL );
+         checkColumns ( rowslice1, 4UL );
+         checkCapacity( rowslice1, 20UL );
+         checkNonZeros( rowslice1, 10UL );
 
-         if( pageslice1(0,0) !=  0 || pageslice1(0,1) !=  0 || pageslice1(0,2) !=  0 || pageslice1(0,3) !=  0 ||
-             pageslice1(1,0) !=  0 || pageslice1(1,1) !=  1 || pageslice1(1,2) !=  0 || pageslice1(1,3) !=  0 ||
-             pageslice1(2,0) != -2 || pageslice1(2,1) !=  0 || pageslice1(2,2) != -3 || pageslice1(2,3) !=  0 ||
-             pageslice1(3,0) !=  0 || pageslice1(3,1) !=  4 || pageslice1(3,2) !=  5 || pageslice1(3,3) != -6 ||
-             pageslice1(4,0) !=  7 || pageslice1(4,1) != -8 || pageslice1(4,2) !=  9 || pageslice1(4,3) != 10 ) {
+         if( rowslice1(0,0) !=  0 || rowslice1(0,1) !=  0 || rowslice1(0,2) !=  0 || rowslice1(0,3) !=  0 ||
+             rowslice1(1,0) !=  0 || rowslice1(1,1) !=  1 || rowslice1(1,2) !=  0 || rowslice1(1,3) !=  0 ||
+             rowslice1(2,0) != -2 || rowslice1(2,1) !=  0 || rowslice1(2,2) != -3 || rowslice1(2,3) !=  0 ||
+             rowslice1(3,0) !=  0 || rowslice1(3,1) !=  4 || rowslice1(3,2) !=  5 || rowslice1(3,3) != -6 ||
+             rowslice1(4,0) !=  7 || rowslice1(4,1) != -8 || rowslice1(4,2) !=  9 || rowslice1(4,3) != 10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Setup of 1st dense pageslice failed\n"
+                << " Error: Setup of 1st dense rowslice failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice1 << "\n"
+                << "   Result:\n" << rowslice1 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // 2nd tensor pageslice
+      // 2nd tensor rowslice
       try {
-         RT pageslice2 = blaze::pageslice( mat_, 2UL );
+         RT rowslice2 = blaze::rowslice( mat_, 2UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Out-of-bound page access succeeded\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n";
+             << "   Result:\n" << rowslice2 << "\n";
          throw std::runtime_error( oss.str() );
       }
       catch( std::invalid_argument& ) {}
@@ -235,12 +235,12 @@ void DenseGeneralTest::testConstructors()
 //*************************************************************************************************
 
 //*************************************************************************************************
-/*!\brief Test of the PageSlice assignment operators.
+/*!\brief Test of the RowSlice assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all assignment operators of the PageSlice specialization.
+// This function performs a test of all assignment operators of the RowSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testAssignment()
@@ -250,33 +250,33 @@ void DenseGeneralTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "PageSlice homogeneous assignment";
+      test_ = "RowSlice homogeneous assignment";
 
       initialize();
 
-      RT pageslice1 = blaze::pageslice( mat_, 1UL );
-      pageslice1 = 8;
+      RT rowslice1 = blaze::rowslice( mat_, 1UL );
+      rowslice1 = 8;
 
 
-      checkRows    ( pageslice1, 5UL );
-      checkColumns ( pageslice1, 4UL );
-      checkCapacity( pageslice1, 20UL );
-      checkNonZeros( pageslice1, 20UL );
+      checkRows    ( rowslice1, 5UL );
+      checkColumns ( rowslice1, 4UL );
+      checkCapacity( rowslice1, 20UL );
+      checkNonZeros( rowslice1, 20UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 30UL );
 
-      if( pageslice1(0,0) != 8 || pageslice1(0,1) != 8 || pageslice1(0,2) != 8 || pageslice1(0,3) != 8 ||
-          pageslice1(1,0) != 8 || pageslice1(1,1) != 8 || pageslice1(1,2) != 8 || pageslice1(1,3) != 8 ||
-          pageslice1(2,0) != 8 || pageslice1(2,1) != 8 || pageslice1(2,2) != 8 || pageslice1(2,3) != 8 ||
-          pageslice1(3,0) != 8 || pageslice1(3,1) != 8 || pageslice1(3,2) != 8 || pageslice1(3,3) != 8 ||
-          pageslice1(4,0) != 8 || pageslice1(4,1) != 8 || pageslice1(4,2) != 8 || pageslice1(4,3) != 8 ) {
+      if( rowslice1(0,0) != 8 || rowslice1(0,1) != 8 || rowslice1(0,2) != 8 || rowslice1(0,3) != 8 ||
+          rowslice1(1,0) != 8 || rowslice1(1,1) != 8 || rowslice1(1,2) != 8 || rowslice1(1,3) != 8 ||
+          rowslice1(2,0) != 8 || rowslice1(2,1) != 8 || rowslice1(2,2) != 8 || rowslice1(2,3) != 8 ||
+          rowslice1(3,0) != 8 || rowslice1(3,1) != 8 || rowslice1(3,2) != 8 || rowslice1(3,3) != 8 ||
+          rowslice1(4,0) != 8 || rowslice1(4,1) != 8 || rowslice1(4,2) != 8 || rowslice1(4,3) != 8 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice1 << "\n"
+             << "   Result:\n" << rowslice1 << "\n"
              << "   Expected result:\n(( 8 8 8 8 )\n( 8 8 8 8 )\n( 8 8 8 8 )\n( 8 8 8 8 )\n( 8 8 8 8 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -320,30 +320,30 @@ void DenseGeneralTest::testAssignment()
 
       initialize();
 
-      RT pageslice3 = blaze::pageslice( mat_, 1UL );
-      pageslice3 = {
+      RT rowslice3 = blaze::rowslice( mat_, 1UL );
+      rowslice3 = {
           {1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}
       };
 
-      checkRows    ( pageslice3, 5UL );
-      checkColumns ( pageslice3, 4UL );
-      checkCapacity( pageslice3, 20UL );
-      checkNonZeros( pageslice3, 20UL );
+      checkRows    ( rowslice3, 5UL );
+      checkColumns ( rowslice3, 4UL );
+      checkCapacity( rowslice3, 20UL );
+      checkNonZeros( rowslice3, 20UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 30UL );
 
-      if( pageslice3(0,0) != 1 || pageslice3(0,1) != 2 || pageslice3(0,2) != 3 || pageslice3(0,3) != 4 ||
-          pageslice3(1,0) != 1 || pageslice3(1,1) != 2 || pageslice3(1,2) != 3 || pageslice3(1,3) != 4 ||
-          pageslice3(2,0) != 1 || pageslice3(2,1) != 2 || pageslice3(2,2) != 3 || pageslice3(2,3) != 4 ||
-          pageslice3(3,0) != 1 || pageslice3(3,1) != 2 || pageslice3(3,2) != 3 || pageslice3(3,3) != 4 ||
-          pageslice3(4,0) != 1 || pageslice3(4,1) != 2 || pageslice3(4,2) != 3 || pageslice3(4,3) != 4 ) {
+      if( rowslice3(0,0) != 1 || rowslice3(0,1) != 2 || rowslice3(0,2) != 3 || rowslice3(0,3) != 4 ||
+          rowslice3(1,0) != 1 || rowslice3(1,1) != 2 || rowslice3(1,2) != 3 || rowslice3(1,3) != 4 ||
+          rowslice3(2,0) != 1 || rowslice3(2,1) != 2 || rowslice3(2,2) != 3 || rowslice3(2,3) != 4 ||
+          rowslice3(3,0) != 1 || rowslice3(3,1) != 2 || rowslice3(3,2) != 3 || rowslice3(3,3) != 4 ||
+          rowslice3(4,0) != 1 || rowslice3(4,1) != 2 || rowslice3(4,2) != 3 || rowslice3(4,3) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice3 << "\n"
+             << "   Result:\n" << rowslice3 << "\n"
              << "   Expected result:\n(( 1 2 3 4 )\n( 1 2 3 4 )\n( 1 2 3 4 )\n( 1 2 3 4 )\n( 1 2 3 4 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -382,28 +382,28 @@ void DenseGeneralTest::testAssignment()
 
       initialize();
 
-      RT pageslice3 = blaze::pageslice( mat_, 1UL );
-      pageslice3 = {{1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}};
+      RT rowslice3 = blaze::rowslice( mat_, 1UL );
+      rowslice3 = {{1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}};
 
-      checkRows    ( pageslice3, 5UL );
-      checkColumns ( pageslice3, 4UL );
-      checkCapacity( pageslice3, 20UL );
-      checkNonZeros( pageslice3, 10UL );
+      checkRows    ( rowslice3, 5UL );
+      checkColumns ( rowslice3, 4UL );
+      checkCapacity( rowslice3, 20UL );
+      checkNonZeros( rowslice3, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice3(0,0) != 1 || pageslice3(0,1) != 2 || pageslice3(0,2) != 0 || pageslice3(0,3) != 0 ||
-          pageslice3(1,0) != 1 || pageslice3(1,1) != 2 || pageslice3(1,2) != 0 || pageslice3(1,3) != 0 ||
-          pageslice3(2,0) != 1 || pageslice3(2,1) != 2 || pageslice3(2,2) != 0 || pageslice3(2,3) != 0 ||
-          pageslice3(3,0) != 1 || pageslice3(3,1) != 2 || pageslice3(3,2) != 0 || pageslice3(3,3) != 0 ||
-          pageslice3(4,0) != 1 || pageslice3(4,1) != 2 || pageslice3(4,2) != 0 || pageslice3(4,3) != 0 ) {
+      if( rowslice3(0,0) != 1 || rowslice3(0,1) != 2 || rowslice3(0,2) != 0 || rowslice3(0,3) != 0 ||
+          rowslice3(1,0) != 1 || rowslice3(1,1) != 2 || rowslice3(1,2) != 0 || rowslice3(1,3) != 0 ||
+          rowslice3(2,0) != 1 || rowslice3(2,1) != 2 || rowslice3(2,2) != 0 || rowslice3(2,3) != 0 ||
+          rowslice3(3,0) != 1 || rowslice3(3,1) != 2 || rowslice3(3,2) != 0 || rowslice3(3,3) != 0 ||
+          rowslice3(4,0) != 1 || rowslice3(4,1) != 2 || rowslice3(4,2) != 0 || rowslice3(4,3) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice3 << "\n"
+             << "   Result:\n" << rowslice3 << "\n"
              << "   Expected result:\n(( 1 2 0 0 )\n( 1 2 0 0 )\n( 1 2 0 0 )\n( 1 2 0 0 )\n( 1 2 0 0 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -443,33 +443,33 @@ void DenseGeneralTest::testAssignment()
    //=====================================================================================
 
    {
-      test_ = "PageSlice copy assignment";
+      test_ = "RowSlice copy assignment";
 
       initialize();
 
-      RT pageslice1 = blaze::pageslice( mat_, 0UL );
-      pageslice1 = 0;
-      pageslice1 = blaze::pageslice( mat_, 1UL );
+      RT rowslice1 = blaze::rowslice( mat_, 0UL );
+      rowslice1 = 0;
+      rowslice1 = blaze::rowslice( mat_, 1UL );
 
-      checkRows    ( pageslice1, 5UL );
-      checkColumns ( pageslice1, 4UL );
-      checkCapacity( pageslice1, 20UL );
-      checkNonZeros( pageslice1, 10UL );
+      checkRows    ( rowslice1, 5UL );
+      checkColumns ( rowslice1, 4UL );
+      checkCapacity( rowslice1, 20UL );
+      checkNonZeros( rowslice1, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice1(0,0) !=  0 || pageslice1(0,1) !=  0 || pageslice1(0,2) !=  0 || pageslice1(0,3) !=  0 ||
-          pageslice1(1,0) !=  0 || pageslice1(1,1) !=  1 || pageslice1(1,2) !=  0 || pageslice1(1,3) !=  0 ||
-          pageslice1(2,0) != -2 || pageslice1(2,1) !=  0 || pageslice1(2,2) != -3 || pageslice1(2,3) !=  0 ||
-          pageslice1(3,0) !=  0 || pageslice1(3,1) !=  4 || pageslice1(3,2) !=  5 || pageslice1(3,3) != -6 ||
-          pageslice1(4,0) !=  7 || pageslice1(4,1) != -8 || pageslice1(4,2) !=  9 || pageslice1(4,3) != 10 ) {
+      if( rowslice1(0,0) !=  0 || rowslice1(0,1) !=  0 || rowslice1(0,2) !=  0 || rowslice1(0,3) !=  0 ||
+          rowslice1(1,0) !=  0 || rowslice1(1,1) !=  1 || rowslice1(1,2) !=  0 || rowslice1(1,3) !=  0 ||
+          rowslice1(2,0) != -2 || rowslice1(2,1) !=  0 || rowslice1(2,2) != -3 || rowslice1(2,3) !=  0 ||
+          rowslice1(3,0) !=  0 || rowslice1(3,1) !=  4 || rowslice1(3,2) !=  5 || rowslice1(3,3) != -6 ||
+          rowslice1(4,0) !=  7 || rowslice1(4,1) != -8 || rowslice1(4,2) !=  9 || rowslice1(4,3) != 10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice1 << "\n"
+             << "   Result:\n" << rowslice1 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -513,32 +513,32 @@ void DenseGeneralTest::testAssignment()
 
       initialize();
 
-      RT pageslice1 = blaze::pageslice( mat_, 1UL );
+      RT rowslice1 = blaze::rowslice( mat_, 1UL );
 
       blaze::DynamicMatrix<int, blaze::rowMajor> m1;
       m1 = {{0, 8, 0, 9}, {0}, {0}, {0}, {0}};
 
-      pageslice1 = m1;
+      rowslice1 = m1;
 
-      checkRows    ( pageslice1, 5UL );
-      checkColumns ( pageslice1, 4UL );
-      checkCapacity( pageslice1, 20UL );
-      checkNonZeros( pageslice1, 2UL );
+      checkRows    ( rowslice1, 5UL );
+      checkColumns ( rowslice1, 4UL );
+      checkCapacity( rowslice1, 20UL );
+      checkNonZeros( rowslice1, 2UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 12UL );
 
-      if( pageslice1(0,0) !=  0 || pageslice1(0,1) !=  8 || pageslice1(0,2) !=  0 || pageslice1(0,3) !=  9 ||
-          pageslice1(1,0) !=  0 || pageslice1(1,1) !=  0 || pageslice1(1,2) !=  0 || pageslice1(1,3) !=  0 ||
-          pageslice1(2,0) !=  0 || pageslice1(2,1) !=  0 || pageslice1(2,2) !=  0 || pageslice1(2,3) !=  0 ||
-          pageslice1(3,0) !=  0 || pageslice1(3,1) !=  0 || pageslice1(3,2) !=  0 || pageslice1(3,3) !=  0 ||
-          pageslice1(4,0) !=  0 || pageslice1(4,1) !=  0 || pageslice1(4,2) !=  0 || pageslice1(4,3) !=  0 ) {
+      if( rowslice1(0,0) !=  0 || rowslice1(0,1) !=  8 || rowslice1(0,2) !=  0 || rowslice1(0,3) !=  9 ||
+          rowslice1(1,0) !=  0 || rowslice1(1,1) !=  0 || rowslice1(1,2) !=  0 || rowslice1(1,3) !=  0 ||
+          rowslice1(2,0) !=  0 || rowslice1(2,1) !=  0 || rowslice1(2,2) !=  0 || rowslice1(2,3) !=  0 ||
+          rowslice1(3,0) !=  0 || rowslice1(3,1) !=  0 || rowslice1(3,2) !=  0 || rowslice1(3,3) !=  0 ||
+          rowslice1(4,0) !=  0 || rowslice1(4,1) !=  0 || rowslice1(4,2) !=  0 || rowslice1(4,3) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice1 << "\n"
+             << "   Result:\n" << rowslice1 << "\n"
              << "   Expected result:\n(( 0 8 0 9 )\n(0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -581,7 +581,7 @@ void DenseGeneralTest::testAssignment()
 
       initialize();
 
-      RT pageslice1 = blaze::pageslice( mat_, 1UL );
+      RT rowslice1 = blaze::rowslice( mat_, 1UL );
 
       using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 80UL ) );
@@ -592,27 +592,27 @@ void DenseGeneralTest::testAssignment()
       m1(0,2) = 0;
       m1(0,3) = 9;
 
-      pageslice1 = m1;
+      rowslice1 = m1;
 
-      checkRows    ( pageslice1, 5UL );
-      checkColumns ( pageslice1, 4UL );
-      checkCapacity( pageslice1, 20UL );
-      checkNonZeros( pageslice1, 2UL );
+      checkRows    ( rowslice1, 5UL );
+      checkColumns ( rowslice1, 4UL );
+      checkCapacity( rowslice1, 20UL );
+      checkNonZeros( rowslice1, 2UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 12UL );
 
-      if( pageslice1(0,0) !=  0 || pageslice1(0,1) !=  8 || pageslice1(0,2) !=  0 || pageslice1(0,3) !=  9 ||
-          pageslice1(1,0) !=  0 || pageslice1(1,1) !=  0 || pageslice1(1,2) !=  0 || pageslice1(1,3) !=  0 ||
-          pageslice1(2,0) !=  0 || pageslice1(2,1) !=  0 || pageslice1(2,2) !=  0 || pageslice1(2,3) !=  0 ||
-          pageslice1(3,0) !=  0 || pageslice1(3,1) !=  0 || pageslice1(3,2) !=  0 || pageslice1(3,3) !=  0 ||
-          pageslice1(4,0) !=  0 || pageslice1(4,1) !=  0 || pageslice1(4,2) !=  0 || pageslice1(4,3) !=  0 ) {
+      if( rowslice1(0,0) !=  0 || rowslice1(0,1) !=  8 || rowslice1(0,2) !=  0 || rowslice1(0,3) !=  9 ||
+          rowslice1(1,0) !=  0 || rowslice1(1,1) !=  0 || rowslice1(1,2) !=  0 || rowslice1(1,3) !=  0 ||
+          rowslice1(2,0) !=  0 || rowslice1(2,1) !=  0 || rowslice1(2,2) !=  0 || rowslice1(2,3) !=  0 ||
+          rowslice1(3,0) !=  0 || rowslice1(3,1) !=  0 || rowslice1(3,2) !=  0 || rowslice1(3,3) !=  0 ||
+          rowslice1(4,0) !=  0 || rowslice1(4,1) !=  0 || rowslice1(4,2) !=  0 || rowslice1(4,3) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice1 << "\n"
+             << "   Result:\n" << rowslice1 << "\n"
              << "   Expected result:\n(( 0 8 0 9 )\n(0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -655,7 +655,7 @@ void DenseGeneralTest::testAssignment()
 
       initialize();
 
-      RT pageslice1 = blaze::pageslice( mat_, 1UL );
+      RT rowslice1 = blaze::rowslice( mat_, 1UL );
 
       using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[21] );
@@ -666,27 +666,27 @@ void DenseGeneralTest::testAssignment()
       m1(0,2) = 0;
       m1(0,3) = 9;
 
-      pageslice1 = m1;
+      rowslice1 = m1;
 
-      checkRows    ( pageslice1, 5UL );
-      checkColumns ( pageslice1, 4UL );
-      checkCapacity( pageslice1, 20UL );
-      checkNonZeros( pageslice1, 2UL );
+      checkRows    ( rowslice1, 5UL );
+      checkColumns ( rowslice1, 4UL );
+      checkCapacity( rowslice1, 20UL );
+      checkNonZeros( rowslice1, 2UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 12UL );
 
-      if( pageslice1(0,0) !=  0 || pageslice1(0,1) !=  8 || pageslice1(0,2) !=  0 || pageslice1(0,3) !=  9 ||
-          pageslice1(1,0) !=  0 || pageslice1(1,1) !=  0 || pageslice1(1,2) !=  0 || pageslice1(1,3) !=  0 ||
-          pageslice1(2,0) !=  0 || pageslice1(2,1) !=  0 || pageslice1(2,2) !=  0 || pageslice1(2,3) !=  0 ||
-          pageslice1(3,0) !=  0 || pageslice1(3,1) !=  0 || pageslice1(3,2) !=  0 || pageslice1(3,3) !=  0 ||
-          pageslice1(4,0) !=  0 || pageslice1(4,1) !=  0 || pageslice1(4,2) !=  0 || pageslice1(4,3) !=  0 ) {
+      if( rowslice1(0,0) !=  0 || rowslice1(0,1) !=  8 || rowslice1(0,2) !=  0 || rowslice1(0,3) !=  9 ||
+          rowslice1(1,0) !=  0 || rowslice1(1,1) !=  0 || rowslice1(1,2) !=  0 || rowslice1(1,3) !=  0 ||
+          rowslice1(2,0) !=  0 || rowslice1(2,1) !=  0 || rowslice1(2,2) !=  0 || rowslice1(2,3) !=  0 ||
+          rowslice1(3,0) !=  0 || rowslice1(3,1) !=  0 || rowslice1(3,2) !=  0 || rowslice1(3,3) !=  0 ||
+          rowslice1(4,0) !=  0 || rowslice1(4,1) !=  0 || rowslice1(4,2) !=  0 || rowslice1(4,3) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice1 << "\n"
+             << "   Result:\n" << rowslice1 << "\n"
              << "   Expected result:\n(( 0 8 0 9 )\n(0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -724,47 +724,47 @@ void DenseGeneralTest::testAssignment()
 
 
 //*************************************************************************************************
-/*!\brief Test of the PageSlice addition assignment operators.
+/*!\brief Test of the RowSlice addition assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the addition assignment operators of the PageSlice specialization.
+// This function performs a test of the addition assignment operators of the RowSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testAddAssign()
 {
    //=====================================================================================
-   // PageSlice addition assignment
+   // RowSlice addition assignment
    //=====================================================================================
 
    {
-      test_ = "PageSlice addition assignment";
+      test_ = "RowSlice addition assignment";
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
-      pageslice2 += blaze::pageslice( mat_, 0UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
+      rowslice2 += blaze::rowslice( mat_, 0UL );
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   2 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -4 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -6 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   8 || pageslice2(3,2) != 10 || pageslice2(3,3) != -12 ||
-          pageslice2(4,0) != 14 || pageslice2(4,1) != -16 || pageslice2(4,2) != 18 || pageslice2(4,3) !=  20 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   2 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -4 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -6 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   8 || rowslice2(3,2) != 10 || rowslice2(3,3) != -12 ||
+          rowslice2(4,0) != 14 || rowslice2(4,1) != -16 || rowslice2(4,2) != 18 || rowslice2(4,3) !=  20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -808,7 +808,7 @@ void DenseGeneralTest::testAddAssign()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
       const blaze::DynamicMatrix<short, blaze::rowMajor> vec{{0, 0, 0, 0},
                                                              {0, 1, 0, 0},
@@ -816,27 +816,27 @@ void DenseGeneralTest::testAddAssign()
                                                              {0, 4, 5, -6},
                                                              {7, -8, 9, 10}};
 
-      pageslice2 += vec;
+      rowslice2 += vec;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   2 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -4 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -6 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   8 || pageslice2(3,2) != 10 || pageslice2(3,3) != -12 ||
-          pageslice2(4,0) != 14 || pageslice2(4,1) != -16 || pageslice2(4,2) != 18 || pageslice2(4,3) !=  20 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   2 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -4 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -6 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   8 || rowslice2(3,2) != 10 || rowslice2(3,3) != -12 ||
+          rowslice2(4,0) != 14 || rowslice2(4,1) != -16 || rowslice2(4,2) != 18 || rowslice2(4,3) !=  20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -879,7 +879,7 @@ void DenseGeneralTest::testAddAssign()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
       using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 80UL ) );
@@ -905,27 +905,27 @@ void DenseGeneralTest::testAddAssign()
       m(4,2) =  9;
       m(4,3) = 10;
 
-      pageslice2 += m;
+      rowslice2 += m;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   2 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -4 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -6 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   8 || pageslice2(3,2) != 10 || pageslice2(3,3) != -12 ||
-          pageslice2(4,0) != 14 || pageslice2(4,1) != -16 || pageslice2(4,2) != 18 || pageslice2(4,3) !=  20 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   2 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -4 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -6 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   8 || rowslice2(3,2) != 10 || rowslice2(3,3) != -12 ||
+          rowslice2(4,0) != 14 || rowslice2(4,1) != -16 || rowslice2(4,2) != 18 || rowslice2(4,3) !=  20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -968,7 +968,7 @@ void DenseGeneralTest::testAddAssign()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
       using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[21] );
@@ -994,27 +994,27 @@ void DenseGeneralTest::testAddAssign()
       m(4,2) =  9;
       m(4,3) = 10;
 
-      pageslice2 += m;
+      rowslice2 += m;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   2 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -4 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -6 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   8 || pageslice2(3,2) != 10 || pageslice2(3,3) != -12 ||
-          pageslice2(4,0) != 14 || pageslice2(4,1) != -16 || pageslice2(4,2) != 18 || pageslice2(4,3) !=  20 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   2 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -4 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -6 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   8 || rowslice2(3,2) != 10 || rowslice2(3,3) != -12 ||
+          rowslice2(4,0) != 14 || rowslice2(4,1) != -16 || rowslice2(4,2) != 18 || rowslice2(4,3) !=  20 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1052,47 +1052,47 @@ void DenseGeneralTest::testAddAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the PageSlice subtraction assignment operators.
+/*!\brief Test of the RowSlice subtraction assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the subtraction assignment operators of the PageSlice
+// This function performs a test of the subtraction assignment operators of the RowSlice
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testSubAssign()
 {
    //=====================================================================================
-   // PageSlice subtraction assignment
+   // RowSlice subtraction assignment
    //=====================================================================================
 
    {
-      test_ = "PageSlice subtraction assignment";
+      test_ = "RowSlice subtraction assignment";
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
-      pageslice2 -= blaze::pageslice( mat_, 0UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
+      rowslice2 -= blaze::rowslice( mat_, 0UL );
 
-      checkRows    ( pageslice2,  5UL );
-      checkColumns ( pageslice2,  4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2,  0UL );
+      checkRows    ( rowslice2,  5UL );
+      checkColumns ( rowslice2,  4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2,  0UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 10UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=  0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=  0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=  0 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=  0 ||
-          pageslice2(2,0) !=  0 || pageslice2(2,1) !=  0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=  0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=  0 || pageslice2(3,2) !=  0 || pageslice2(3,3) !=  0 ||
-          pageslice2(4,0) !=  0 || pageslice2(4,1) !=  0 || pageslice2(4,2) !=  0 || pageslice2(4,3) !=  0 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=  0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=  0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=  0 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=  0 ||
+          rowslice2(2,0) !=  0 || rowslice2(2,1) !=  0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=  0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=  0 || rowslice2(3,2) !=  0 || rowslice2(3,3) !=  0 ||
+          rowslice2(4,0) !=  0 || rowslice2(4,1) !=  0 || rowslice2(4,2) !=  0 || rowslice2(4,3) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1136,7 +1136,7 @@ void DenseGeneralTest::testSubAssign()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
       const blaze::DynamicMatrix<short, blaze::rowMajor> vec{{0, 0, 0, 0},
                                                              {0, 1, 0, 0},
@@ -1144,27 +1144,27 @@ void DenseGeneralTest::testSubAssign()
                                                              {0, 4, 5, -6},
                                                              {7, -8, 9, 10}};
 
-      pageslice2 -= vec;
+      rowslice2 -= vec;
 
-      checkRows    ( pageslice2,  5UL );
-      checkColumns ( pageslice2,  4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2,  0UL );
+      checkRows    ( rowslice2,  5UL );
+      checkColumns ( rowslice2,  4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2,  0UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 10UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=  0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=  0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=  0 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=  0 ||
-          pageslice2(2,0) !=  0 || pageslice2(2,1) !=  0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=  0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=  0 || pageslice2(3,2) !=  0 || pageslice2(3,3) !=  0 ||
-          pageslice2(4,0) !=  0 || pageslice2(4,1) !=  0 || pageslice2(4,2) !=  0 || pageslice2(4,3) !=  0 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=  0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=  0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=  0 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=  0 ||
+          rowslice2(2,0) !=  0 || rowslice2(2,1) !=  0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=  0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=  0 || rowslice2(3,2) !=  0 || rowslice2(3,3) !=  0 ||
+          rowslice2(4,0) !=  0 || rowslice2(4,1) !=  0 || rowslice2(4,2) !=  0 || rowslice2(4,3) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1206,7 +1206,7 @@ void DenseGeneralTest::testSubAssign()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
       using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 80UL ) );
@@ -1232,27 +1232,27 @@ void DenseGeneralTest::testSubAssign()
       m(4,2) =  9;
       m(4,3) = 10;
 
-      pageslice2 -= m;
+      rowslice2 -= m;
 
-      checkRows    ( pageslice2,  5UL );
-      checkColumns ( pageslice2,  4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2,  0UL );
+      checkRows    ( rowslice2,  5UL );
+      checkColumns ( rowslice2,  4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2,  0UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 10UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=  0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=  0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=  0 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=  0 ||
-          pageslice2(2,0) !=  0 || pageslice2(2,1) !=  0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=  0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=  0 || pageslice2(3,2) !=  0 || pageslice2(3,3) !=  0 ||
-          pageslice2(4,0) !=  0 || pageslice2(4,1) !=  0 || pageslice2(4,2) !=  0 || pageslice2(4,3) !=  0 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=  0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=  0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=  0 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=  0 ||
+          rowslice2(2,0) !=  0 || rowslice2(2,1) !=  0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=  0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=  0 || rowslice2(3,2) !=  0 || rowslice2(3,3) !=  0 ||
+          rowslice2(4,0) !=  0 || rowslice2(4,1) !=  0 || rowslice2(4,2) !=  0 || rowslice2(4,3) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1295,7 +1295,7 @@ void DenseGeneralTest::testSubAssign()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
       using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[21] );
@@ -1321,27 +1321,27 @@ void DenseGeneralTest::testSubAssign()
       m(4,2) =  9;
       m(4,3) = 10;
 
-      pageslice2 -= m;
+      rowslice2 -= m;
 
-      checkRows    ( pageslice2,  5UL );
-      checkColumns ( pageslice2,  4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2,  0UL );
+      checkRows    ( rowslice2,  5UL );
+      checkColumns ( rowslice2,  4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2,  0UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 10UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=  0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=  0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=  0 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=  0 ||
-          pageslice2(2,0) !=  0 || pageslice2(2,1) !=  0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=  0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=  0 || pageslice2(3,2) !=  0 || pageslice2(3,3) !=  0 ||
-          pageslice2(4,0) !=  0 || pageslice2(4,1) !=  0 || pageslice2(4,2) !=  0 || pageslice2(4,3) !=  0 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=  0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=  0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=  0 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=  0 ||
+          rowslice2(2,0) !=  0 || rowslice2(2,1) !=  0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=  0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=  0 || rowslice2(3,2) !=  0 || rowslice2(3,3) !=  0 ||
+          rowslice2(4,0) !=  0 || rowslice2(4,1) !=  0 || rowslice2(4,2) !=  0 || rowslice2(4,3) !=  0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1379,48 +1379,48 @@ void DenseGeneralTest::testSubAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the PageSlice multiplication assignment operators.
+/*!\brief Test of the RowSlice multiplication assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the multiplication assignment operators of the PageSlice
+// This function performs a test of the multiplication assignment operators of the RowSlice
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testMultAssign()
 {
    //=====================================================================================
-   // PageSlice multiplication assignment
+   // RowSlice multiplication assignment
    //=====================================================================================
 
    {
-      test_ = "PageSlice multiplication assignment";
+      test_ = "RowSlice multiplication assignment";
 
       initialize();
 
       blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
                                   {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
 
-      RT pageslice2 = blaze::pageslice( m, 1UL );
-      pageslice2 *= blaze::pageslice( m, 0UL );
+      RT rowslice2 = blaze::rowslice( m, 1UL );
+      rowslice2 *= blaze::rowslice( m, 0UL );
 
-      checkRows    ( pageslice2, 3UL );
-      checkColumns ( pageslice2, 3UL );
-      checkCapacity( pageslice2, 9UL );
-      checkNonZeros( pageslice2, 9UL );
+      checkRows    ( rowslice2, 3UL );
+      checkColumns ( rowslice2, 3UL );
+      checkCapacity( rowslice2, 9UL );
+      checkNonZeros( rowslice2, 9UL );
       checkRows    ( m,  3UL );
       checkColumns ( m,  3UL );
       checkPages   ( m,  2UL );
       checkNonZeros( m, 18UL );
 
-      if( pageslice2(0,0) != 90 || pageslice2(0,1) != 114 || pageslice2(0,2) != 138 ||
-          pageslice2(1,0) != 54 || pageslice2(1,1) !=  69 || pageslice2(1,2) !=  84 ||
-          pageslice2(2,0) != 18 || pageslice2(2,1) !=  24 || pageslice2(2,2) !=  30 ) {
+      if( rowslice2(0,0) != 90 || rowslice2(0,1) != 114 || rowslice2(0,2) != 138 ||
+          rowslice2(1,0) != 54 || rowslice2(1,1) !=  69 || rowslice2(1,2) !=  84 ||
+          rowslice2(2,0) != 18 || rowslice2(2,1) !=  24 || rowslice2(2,2) !=  30 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 90 114 138 )\n( 54 69 84 )\n( 18 24 30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1459,30 +1459,30 @@ void DenseGeneralTest::testMultAssign()
       blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
                                   {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
 
-      RT pageslice2 = blaze::pageslice( m, 1UL );
+      RT rowslice2 = blaze::rowslice( m, 1UL );
 
       const blaze::DynamicMatrix<short, blaze::rowMajor> m1{
           {1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
 
-      pageslice2 *= m1;
+      rowslice2 *= m1;
 
-      checkRows    ( pageslice2, 3UL );
-      checkColumns ( pageslice2, 3UL );
-      checkCapacity( pageslice2, 9UL );
-      checkNonZeros( pageslice2, 9UL );
+      checkRows    ( rowslice2, 3UL );
+      checkColumns ( rowslice2, 3UL );
+      checkCapacity( rowslice2, 9UL );
+      checkNonZeros( rowslice2, 9UL );
       checkRows    ( m,  3UL );
       checkColumns ( m,  3UL );
       checkPages   ( m,  2UL );
       checkNonZeros( m, 18UL );
 
-      if( pageslice2(0,0) != 90 || pageslice2(0,1) != 114 || pageslice2(0,2) != 138 ||
-          pageslice2(1,0) != 54 || pageslice2(1,1) !=  69 || pageslice2(1,2) !=  84 ||
-          pageslice2(2,0) != 18 || pageslice2(2,1) !=  24 || pageslice2(2,2) !=  30 ) {
+      if( rowslice2(0,0) != 90 || rowslice2(0,1) != 114 || rowslice2(0,2) != 138 ||
+          rowslice2(1,0) != 54 || rowslice2(1,1) !=  69 || rowslice2(1,2) !=  84 ||
+          rowslice2(2,0) != 18 || rowslice2(2,1) !=  24 || rowslice2(2,2) !=  30 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 90 114 138 )\n( 54 69 84 )\n( 18 24 30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1518,7 +1518,7 @@ void DenseGeneralTest::testMultAssign()
       blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
                                   {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
 
-      RT pageslice2 = blaze::pageslice( m, 1UL );
+      RT rowslice2 = blaze::rowslice( m, 1UL );
 
 
       using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
@@ -1534,25 +1534,25 @@ void DenseGeneralTest::testMultAssign()
       m1(2,1) = 8;
       m1(2,2) = 9;
 
-      pageslice2 *= m1;
+      rowslice2 *= m1;
 
-      checkRows    ( pageslice2, 3UL );
-      checkColumns ( pageslice2, 3UL );
-      checkCapacity( pageslice2, 9UL );
-      checkNonZeros( pageslice2, 9UL );
+      checkRows    ( rowslice2, 3UL );
+      checkColumns ( rowslice2, 3UL );
+      checkCapacity( rowslice2, 9UL );
+      checkNonZeros( rowslice2, 9UL );
       checkRows    ( m,  3UL );
       checkColumns ( m,  3UL );
       checkPages   ( m,  2UL );
       checkNonZeros( m, 18UL );
 
-      if( pageslice2(0,0) != 90 || pageslice2(0,1) != 114 || pageslice2(0,2) != 138 ||
-          pageslice2(1,0) != 54 || pageslice2(1,1) !=  69 || pageslice2(1,2) !=  84 ||
-          pageslice2(2,0) != 18 || pageslice2(2,1) !=  24 || pageslice2(2,2) !=  30 ) {
+      if( rowslice2(0,0) != 90 || rowslice2(0,1) != 114 || rowslice2(0,2) != 138 ||
+          rowslice2(1,0) != 54 || rowslice2(1,1) !=  69 || rowslice2(1,2) !=  84 ||
+          rowslice2(2,0) != 18 || rowslice2(2,1) !=  24 || rowslice2(2,2) !=  30 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 90 114 138 )\n( 54 69 84 )\n( 18 24 30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1588,7 +1588,7 @@ void DenseGeneralTest::testMultAssign()
       blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
                                   {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
 
-      RT pageslice2 = blaze::pageslice( m, 1UL );
+      RT rowslice2 = blaze::rowslice( m, 1UL );
 
       using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[10] );
@@ -1603,25 +1603,25 @@ void DenseGeneralTest::testMultAssign()
       m1(2,1) = 8;
       m1(2,2) = 9;
 
-      pageslice2 *= m1;
+      rowslice2 *= m1;
 
-      checkRows    ( pageslice2, 3UL );
-      checkColumns ( pageslice2, 3UL );
-      checkCapacity( pageslice2, 9UL );
-      checkNonZeros( pageslice2, 9UL );
+      checkRows    ( rowslice2, 3UL );
+      checkColumns ( rowslice2, 3UL );
+      checkCapacity( rowslice2, 9UL );
+      checkNonZeros( rowslice2, 9UL );
       checkRows    ( m,  3UL );
       checkColumns ( m,  3UL );
       checkPages   ( m,  2UL );
       checkNonZeros( m, 18UL );
 
-      if( pageslice2(0,0) != 90 || pageslice2(0,1) != 114 || pageslice2(0,2) != 138 ||
-          pageslice2(1,0) != 54 || pageslice2(1,1) !=  69 || pageslice2(1,2) !=  84 ||
-          pageslice2(2,0) != 18 || pageslice2(2,1) !=  24 || pageslice2(2,2) !=  30 ) {
+      if( rowslice2(0,0) != 90 || rowslice2(0,1) != 114 || rowslice2(0,2) != 138 ||
+          rowslice2(1,0) != 54 || rowslice2(1,1) !=  69 || rowslice2(1,2) !=  84 ||
+          rowslice2(2,0) != 18 || rowslice2(2,1) !=  24 || rowslice2(2,2) !=  30 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 90 114 138 )\n( 54 69 84 )\n( 18 24 30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1651,46 +1651,46 @@ void DenseGeneralTest::testMultAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of the PageSlice Schur product assignment operators.
+/*!\brief Test of the RowSlice Schur product assignment operators.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the Schur product assignment operators of the PageSlice
+// This function performs a test of the Schur product assignment operators of the RowSlice
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testSchurAssign()
 {
    //=====================================================================================
-   // PageSlice Schur product assignment
+   // RowSlice Schur product assignment
    //=====================================================================================
 
    {
-      test_ = "PageSlice Schur product assignment";
+      test_ = "RowSlice Schur product assignment";
 
       blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
                                   {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
 
-      RT pageslice2 = blaze::pageslice( m, 1UL );
-      pageslice2 %= blaze::pageslice( m, 0UL );
+      RT rowslice2 = blaze::rowslice( m, 1UL );
+      rowslice2 %= blaze::rowslice( m, 0UL );
 
-      checkRows    ( pageslice2, 3UL );
-      checkColumns ( pageslice2, 3UL );
-      checkCapacity( pageslice2, 9UL );
-      checkNonZeros( pageslice2, 9UL );
+      checkRows    ( rowslice2, 3UL );
+      checkColumns ( rowslice2, 3UL );
+      checkCapacity( rowslice2, 9UL );
+      checkNonZeros( rowslice2, 9UL );
       checkRows    ( m,  3UL );
       checkColumns ( m,  3UL );
       checkPages   ( m,  2UL );
       checkNonZeros( m, 18UL );
 
-      if( pageslice2(0,0) !=  9 || pageslice2(0,1) != 16 || pageslice2(0,2) != 21 ||
-          pageslice2(1,0) != 24 || pageslice2(1,1) != 25 || pageslice2(1,2) != 24 ||
-          pageslice2(2,0) != 21 || pageslice2(2,1) != 16 || pageslice2(2,2) !=  9 ) {
+      if( rowslice2(0,0) !=  9 || rowslice2(0,1) != 16 || rowslice2(0,2) != 21 ||
+          rowslice2(1,0) != 24 || rowslice2(1,1) != 25 || rowslice2(1,2) != 24 ||
+          rowslice2(2,0) != 21 || rowslice2(2,1) != 16 || rowslice2(2,2) !=  9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1727,30 +1727,30 @@ void DenseGeneralTest::testSchurAssign()
       blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
                                   {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
 
-      RT pageslice2 = blaze::pageslice( m, 1UL );
+      RT rowslice2 = blaze::rowslice( m, 1UL );
 
       const blaze::DynamicMatrix<short, blaze::rowMajor> m1{
           {1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
 
-      pageslice2 %= m1;
+      rowslice2 %= m1;
 
-      checkRows    ( pageslice2, 3UL );
-      checkColumns ( pageslice2, 3UL );
-      checkCapacity( pageslice2, 9UL );
-      checkNonZeros( pageslice2, 9UL );
+      checkRows    ( rowslice2, 3UL );
+      checkColumns ( rowslice2, 3UL );
+      checkCapacity( rowslice2, 9UL );
+      checkNonZeros( rowslice2, 9UL );
       checkRows    ( m,  3UL );
       checkColumns ( m,  3UL );
       checkPages   ( m,  2UL );
       checkNonZeros( m, 18UL );
 
-      if( pageslice2(0,0) !=  9 || pageslice2(0,1) != 16 || pageslice2(0,2) != 21 ||
-          pageslice2(1,0) != 24 || pageslice2(1,1) != 25 || pageslice2(1,2) != 24 ||
-          pageslice2(2,0) != 21 || pageslice2(2,1) != 16 || pageslice2(2,2) !=  9 ) {
+      if( rowslice2(0,0) !=  9 || rowslice2(0,1) != 16 || rowslice2(0,2) != 21 ||
+          rowslice2(1,0) != 24 || rowslice2(1,1) != 25 || rowslice2(1,2) != 24 ||
+          rowslice2(2,0) != 21 || rowslice2(2,1) != 16 || rowslice2(2,2) !=  9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1786,7 +1786,7 @@ void DenseGeneralTest::testSchurAssign()
       blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
                                   {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
 
-      RT pageslice2 = blaze::pageslice( m, 1UL );
+      RT rowslice2 = blaze::rowslice( m, 1UL );
 
       using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
@@ -1801,25 +1801,25 @@ void DenseGeneralTest::testSchurAssign()
       m1(2,1) = 8;
       m1(2,2) = 9;
 
-      pageslice2 %= m1;
+      rowslice2 %= m1;
 
-      checkRows    ( pageslice2, 3UL );
-      checkColumns ( pageslice2, 3UL );
-      checkCapacity( pageslice2, 9UL );
-      checkNonZeros( pageslice2, 9UL );
+      checkRows    ( rowslice2, 3UL );
+      checkColumns ( rowslice2, 3UL );
+      checkCapacity( rowslice2, 9UL );
+      checkNonZeros( rowslice2, 9UL );
       checkRows    ( m,  3UL );
       checkColumns ( m,  3UL );
       checkPages   ( m,  2UL );
       checkNonZeros( m, 18UL );
 
-      if( pageslice2(0,0) !=  9 || pageslice2(0,1) != 16 || pageslice2(0,2) != 21 ||
-          pageslice2(1,0) != 24 || pageslice2(1,1) != 25 || pageslice2(1,2) != 24 ||
-          pageslice2(2,0) != 21 || pageslice2(2,1) != 16 || pageslice2(2,2) !=  9 ) {
+      if( rowslice2(0,0) !=  9 || rowslice2(0,1) != 16 || rowslice2(0,2) != 21 ||
+          rowslice2(1,0) != 24 || rowslice2(1,1) != 25 || rowslice2(1,2) != 24 ||
+          rowslice2(2,0) != 21 || rowslice2(2,1) != 16 || rowslice2(2,2) !=  9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1855,7 +1855,7 @@ void DenseGeneralTest::testSchurAssign()
       blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
                                   {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
 
-      RT pageslice2 = blaze::pageslice( m, 1UL );
+      RT rowslice2 = blaze::rowslice( m, 1UL );
 
       using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
       std::unique_ptr<int[]> memory( new int[10] );
@@ -1870,25 +1870,25 @@ void DenseGeneralTest::testSchurAssign()
       m1(2,1) = 8;
       m1(2,2) = 9;
 
-      pageslice2 %= m1;
+      rowslice2 %= m1;
 
-      checkRows    ( pageslice2, 3UL );
-      checkColumns ( pageslice2, 3UL );
-      checkCapacity( pageslice2, 9UL );
-      checkNonZeros( pageslice2, 9UL );
+      checkRows    ( rowslice2, 3UL );
+      checkColumns ( rowslice2, 3UL );
+      checkCapacity( rowslice2, 9UL );
+      checkNonZeros( rowslice2, 9UL );
       checkRows    ( m,  3UL );
       checkColumns ( m,  3UL );
       checkPages   ( m,  2UL );
       checkNonZeros( m, 18UL );
 
-      if( pageslice2(0,0) !=  9 || pageslice2(0,1) != 16 || pageslice2(0,2) != 21 ||
-          pageslice2(1,0) != 24 || pageslice2(1,1) != 25 || pageslice2(1,2) != 24 ||
-          pageslice2(2,0) != 21 || pageslice2(2,1) != 16 || pageslice2(2,2) !=  9 ) {
+      if( rowslice2(0,0) !=  9 || rowslice2(0,1) != 16 || rowslice2(0,2) != 21 ||
+          rowslice2(1,0) != 24 || rowslice2(1,1) != 25 || rowslice2(1,2) != 24 ||
+          rowslice2(2,0) != 21 || rowslice2(2,1) != 16 || rowslice2(2,2) !=  9 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1918,12 +1918,12 @@ void DenseGeneralTest::testSchurAssign()
 
 
 //*************************************************************************************************
-/*!\brief Test of all PageSlice (self-)scaling operations.
+/*!\brief Test of all RowSlice (self-)scaling operations.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of all available ways to scale an instance of the PageSlice
+// This function performs a test of all available ways to scale an instance of the RowSlice
 // specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testScaling()
@@ -1937,28 +1937,28 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
-      pageslice2 *= 3;
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
+      rowslice2 *= 3;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   3 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -6 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -9 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=  12 || pageslice2(3,2) != 15 || pageslice2(3,3) != -18 ||
-          pageslice2(4,0) != 21 || pageslice2(4,1) != -24 || pageslice2(4,2) != 27 || pageslice2(4,3) !=  30 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   3 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -6 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -9 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=  12 || rowslice2(3,2) != 15 || rowslice2(3,3) != -18 ||
+          rowslice2(4,0) != 21 || rowslice2(4,1) != -24 || rowslice2(4,2) != 27 || rowslice2(4,3) !=  30 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2002,28 +2002,28 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
-      pageslice2 = pageslice2 * 3;
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
+      rowslice2 = rowslice2 * 3;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   3 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -6 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -9 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=  12 || pageslice2(3,2) != 15 || pageslice2(3,3) != -18 ||
-          pageslice2(4,0) != 21 || pageslice2(4,1) != -24 || pageslice2(4,2) != 27 || pageslice2(4,3) !=  30 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   3 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -6 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -9 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=  12 || rowslice2(3,2) != 15 || rowslice2(3,3) != -18 ||
+          rowslice2(4,0) != 21 || rowslice2(4,1) != -24 || rowslice2(4,2) != 27 || rowslice2(4,3) !=  30 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2067,28 +2067,28 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
-      pageslice2 = 3 * pageslice2;
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
+      rowslice2 = 3 * rowslice2;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   3 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -6 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -9 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=  12 || pageslice2(3,2) != 15 || pageslice2(3,3) != -18 ||
-          pageslice2(4,0) != 21 || pageslice2(4,1) != -24 || pageslice2(4,2) != 27 || pageslice2(4,3) !=  30 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   3 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -6 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -9 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=  12 || rowslice2(3,2) != 15 || rowslice2(3,3) != -18 ||
+          rowslice2(4,0) != 21 || rowslice2(4,1) != -24 || rowslice2(4,2) != 27 || rowslice2(4,3) !=  30 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2132,28 +2132,28 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
-      pageslice2 /= (1.0/3.0);
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
+      rowslice2 /= (1.0/3.0);
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   3 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -6 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -9 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=  12 || pageslice2(3,2) != 15 || pageslice2(3,3) != -18 ||
-          pageslice2(4,0) != 21 || pageslice2(4,1) != -24 || pageslice2(4,2) != 27 || pageslice2(4,3) !=  30 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   3 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -6 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -9 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=  12 || rowslice2(3,2) != 15 || rowslice2(3,3) != -18 ||
+          rowslice2(4,0) != 21 || rowslice2(4,1) != -24 || rowslice2(4,2) != 27 || rowslice2(4,3) !=  30 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2197,28 +2197,28 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
-      pageslice2 = pageslice2 / (1.0/3.0);
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
+      rowslice2 = rowslice2 / (1.0/3.0);
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   3 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -6 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -9 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=  12 || pageslice2(3,2) != 15 || pageslice2(3,3) != -18 ||
-          pageslice2(4,0) != 21 || pageslice2(4,1) != -24 || pageslice2(4,2) != 27 || pageslice2(4,3) !=  30 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   3 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -6 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -9 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=  12 || rowslice2(3,2) != 15 || rowslice2(3,3) != -18 ||
+          rowslice2(4,0) != 21 || rowslice2(4,1) != -24 || rowslice2(4,2) != 27 || rowslice2(4,3) !=  30 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2254,38 +2254,38 @@ void DenseGeneralTest::testScaling()
 
 
    //=====================================================================================
-   // PageSlice::scale()
+   // RowSlice::scale()
    //=====================================================================================
 
    {
-      test_ = "PageSlice::scale()";
+      test_ = "RowSlice::scale()";
 
       initialize();
 
-      // Integral scaling the 3rd pageslice
+      // Integral scaling the 3rd rowslice
       {
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
-         pageslice2.scale( 3 );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
+         rowslice2.scale( 3 );
 
-         checkRows    ( pageslice2, 5UL );
-         checkColumns ( pageslice2, 4UL );
-         checkCapacity( pageslice2, 20UL );
-         checkNonZeros( pageslice2, 10UL );
+         checkRows    ( rowslice2, 5UL );
+         checkColumns ( rowslice2, 4UL );
+         checkCapacity( rowslice2, 20UL );
+         checkNonZeros( rowslice2, 10UL );
          checkRows    ( mat_,  5UL );
          checkColumns ( mat_,  4UL );
          checkPages   ( mat_,  2UL );
          checkNonZeros( mat_, 20UL );
 
-         if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-             pageslice2(1,0) !=  0 || pageslice2(1,1) !=   3 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-             pageslice2(2,0) != -6 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -9 || pageslice2(2,3) !=   0 ||
-             pageslice2(3,0) !=  0 || pageslice2(3,1) !=  12 || pageslice2(3,2) != 15 || pageslice2(3,3) != -18 ||
-             pageslice2(4,0) != 21 || pageslice2(4,1) != -24 || pageslice2(4,2) != 27 || pageslice2(4,3) !=  30 ) {
+         if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+             rowslice2(1,0) !=  0 || rowslice2(1,1) !=   3 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+             rowslice2(2,0) != -6 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -9 || rowslice2(2,3) !=   0 ||
+             rowslice2(3,0) !=  0 || rowslice2(3,1) !=  12 || rowslice2(3,2) != 15 || rowslice2(3,3) != -18 ||
+             rowslice2(4,0) != 21 || rowslice2(4,1) != -24 || rowslice2(4,2) != 27 || rowslice2(4,3) !=  30 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed self-scaling operation\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                    << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -2321,30 +2321,30 @@ void DenseGeneralTest::testScaling()
 
       initialize();
 
-      // Floating point scaling the 3rd pageslice
+      // Floating point scaling the 3rd rowslice
       {
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
-         pageslice2.scale( 0.5 );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
+         rowslice2.scale( 0.5 );
 
-         checkRows    ( pageslice2,  5UL );
-         checkColumns ( pageslice2,  4UL );
-         checkCapacity( pageslice2, 20UL );
-         checkNonZeros( pageslice2,  9UL );
+         checkRows    ( rowslice2,  5UL );
+         checkColumns ( rowslice2,  4UL );
+         checkCapacity( rowslice2, 20UL );
+         checkNonZeros( rowslice2,  9UL );
          checkRows    ( mat_,  5UL );
          checkColumns ( mat_,  4UL );
          checkPages   ( mat_,  2UL );
          checkNonZeros( mat_, 19UL );
 
-         if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=  0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=  0 ||
-             pageslice2(1,0) !=  0 || pageslice2(1,1) !=  0 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=  0 ||
-             pageslice2(2,0) != -1 || pageslice2(2,1) !=  0 || pageslice2(2,2) != -1 || pageslice2(2,3) !=  0 ||
-             pageslice2(3,0) !=  0 || pageslice2(3,1) !=  2 || pageslice2(3,2) !=  2 || pageslice2(3,3) != -3 ||
-             pageslice2(4,0) !=  3 || pageslice2(4,1) != -4 || pageslice2(4,2) !=  4 || pageslice2(4,3) !=  5 ) {
+         if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=  0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=  0 ||
+             rowslice2(1,0) !=  0 || rowslice2(1,1) !=  0 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=  0 ||
+             rowslice2(2,0) != -1 || rowslice2(2,1) !=  0 || rowslice2(2,2) != -1 || rowslice2(2,3) !=  0 ||
+             rowslice2(3,0) !=  0 || rowslice2(3,1) !=  2 || rowslice2(3,2) !=  2 || rowslice2(3,3) != -3 ||
+             rowslice2(4,0) !=  3 || rowslice2(4,1) != -4 || rowslice2(4,2) !=  4 || rowslice2(4,3) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed self-scaling operation\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                    << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( -1 0 -1 0 )\n( 0 12 2 -3 )\n( 3 -4 4 5 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -2383,13 +2383,13 @@ void DenseGeneralTest::testScaling()
 
 
 //*************************************************************************************************
-/*!\brief Test of the PageSlice function call operator.
+/*!\brief Test of the RowSlice function call operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the function call operator
-// of the PageSlice specialization. In case an error is detected, a \a std::runtime_error exception
+// of the RowSlice specialization. In case an error is detected, a \a std::runtime_error exception
 // is thrown.
 */
 void DenseGeneralTest::testFunctionCall()
@@ -2399,34 +2399,34 @@ void DenseGeneralTest::testFunctionCall()
    //=====================================================================================
 
    {
-      test_ = "PageSlice::operator()";
+      test_ = "RowSlice::operator()";
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
       // Assignment to the element at index (0,1)
-      pageslice2(0,1) = 9;
+      rowslice2(0,1) = 9;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 11UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 11UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 21UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   9 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -3 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-          pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -8 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   9 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -3 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+          rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -8 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2460,27 +2460,27 @@ void DenseGeneralTest::testFunctionCall()
       }
 
       // Assignment to the element at index (2,2)
-      pageslice2(2,2) = 0;
+      rowslice2(2,2) = 0;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   9 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-          pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -8 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   9 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+          rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -8 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2514,27 +2514,27 @@ void DenseGeneralTest::testFunctionCall()
       }
 
       // Assignment to the element at index (4,1)
-      pageslice2(4,1) = -9;
+      rowslice2(4,1) = -9;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   9 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-          pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -9 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   9 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+          rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -9 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2568,27 +2568,27 @@ void DenseGeneralTest::testFunctionCall()
       }
 
       // Addition assignment to the element at index (0,1)
-      pageslice2(0,1) += -3;
+      rowslice2(0,1) += -3;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   6 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-          pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -9 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   6 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+          rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -9 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2622,27 +2622,27 @@ void DenseGeneralTest::testFunctionCall()
       }
 
       // Subtraction assignment to the element at index (2,0)
-      pageslice2(2,0) -= 6;
+      rowslice2(2,0) -= 6;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   6 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -8 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-          pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -9 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   6 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -8 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+          rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -9 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2676,27 +2676,27 @@ void DenseGeneralTest::testFunctionCall()
       }
 
       // Multiplication assignment to the element at index (4,0)
-      pageslice2(4,0) *= -3;
+      rowslice2(4,0) *= -3;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=   0 || pageslice2(0,1) !=   6 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=   0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) !=  -8 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=   0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-          pageslice2(4,0) != -21 || pageslice2(4,1) !=  -9 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=   0 || rowslice2(0,1) !=   6 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=   0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) !=  -8 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=   0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+          rowslice2(4,0) != -21 || rowslice2(4,1) !=  -9 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -6 )\n( -21 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2730,27 +2730,27 @@ void DenseGeneralTest::testFunctionCall()
       }
 
       // Division assignment to the element at index (3,3)
-      pageslice2(3,3) /= 2;
+      rowslice2(3,3) /= 2;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=   0 || pageslice2(0,1) !=   6 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=   0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) !=  -8 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=   0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -3 ||
-          pageslice2(4,0) != -21 || pageslice2(4,1) !=  -9 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=   0 || rowslice2(0,1) !=   6 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=   0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) !=  -8 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=   0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -3 ||
+          rowslice2(4,0) != -21 || rowslice2(4,1) !=  -9 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -3 )\n( -21 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2788,13 +2788,13 @@ void DenseGeneralTest::testFunctionCall()
 
 
 //*************************************************************************************************
-/*!\brief Test of the PageSlice at() operator.
+/*!\brief Test of the RowSlice at() operator.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
 // This function performs a test of adding and accessing elements via the at() operator
-// of the PageSlice specialization. In case an error is detected, a \a std::runtime_error exception
+// of the RowSlice specialization. In case an error is detected, a \a std::runtime_error exception
 // is thrown.
 */
 void DenseGeneralTest::testAt()
@@ -2804,34 +2804,34 @@ void DenseGeneralTest::testAt()
    //=====================================================================================
 
    {
-      test_ = "PageSlice::at()";
+      test_ = "RowSlice::at()";
 
       initialize();
 
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
       // Assignment to the element at index (0,1)
-      pageslice2.at(0,1) = 9;
+      rowslice2.at(0,1) = 9;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 11UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 11UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 21UL );
 
-      if( pageslice2.at(0,0) !=  0 || pageslice2.at(0,1) !=   9 || pageslice2.at(0,2) !=  0 || pageslice2.at(0,3) !=   0 ||
-          pageslice2.at(1,0) !=  0 || pageslice2.at(1,1) !=   1 || pageslice2.at(1,2) !=  0 || pageslice2.at(1,3) !=   0 ||
-          pageslice2.at(2,0) != -2 || pageslice2.at(2,1) !=   0 || pageslice2.at(2,2) != -3 || pageslice2.at(2,3) !=   0 ||
-          pageslice2.at(3,0) !=  0 || pageslice2.at(3,1) !=   4 || pageslice2.at(3,2) !=  5 || pageslice2.at(3,3) !=  -6 ||
-          pageslice2.at(4,0) !=  7 || pageslice2.at(4,1) !=  -8 || pageslice2.at(4,2) !=  9 || pageslice2.at(4,3) !=  10 ) {
+      if( rowslice2.at(0,0) !=  0 || rowslice2.at(0,1) !=   9 || rowslice2.at(0,2) !=  0 || rowslice2.at(0,3) !=   0 ||
+          rowslice2.at(1,0) !=  0 || rowslice2.at(1,1) !=   1 || rowslice2.at(1,2) !=  0 || rowslice2.at(1,3) !=   0 ||
+          rowslice2.at(2,0) != -2 || rowslice2.at(2,1) !=   0 || rowslice2.at(2,2) != -3 || rowslice2.at(2,3) !=   0 ||
+          rowslice2.at(3,0) !=  0 || rowslice2.at(3,1) !=   4 || rowslice2.at(3,2) !=  5 || rowslice2.at(3,3) !=  -6 ||
+          rowslice2.at(4,0) !=  7 || rowslice2.at(4,1) !=  -8 || rowslice2.at(4,2) !=  9 || rowslice2.at(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: At() failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2865,27 +2865,27 @@ void DenseGeneralTest::testAt()
       }
 
       // Assignment to the element at index (2,2)
-      pageslice2.at(2,2) = 0;
+      rowslice2.at(2,2) = 0;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2.at(0,0) !=  0 || pageslice2.at(0,1) !=   9 || pageslice2.at(0,2) !=  0 || pageslice2.at(0,3) !=   0 ||
-          pageslice2.at(1,0) !=  0 || pageslice2.at(1,1) !=   1 || pageslice2.at(1,2) !=  0 || pageslice2.at(1,3) !=   0 ||
-          pageslice2.at(2,0) != -2 || pageslice2.at(2,1) !=   0 || pageslice2.at(2,2) !=  0 || pageslice2.at(2,3) !=   0 ||
-          pageslice2.at(3,0) !=  0 || pageslice2.at(3,1) !=   4 || pageslice2.at(3,2) !=  5 || pageslice2.at(3,3) !=  -6 ||
-          pageslice2.at(4,0) !=  7 || pageslice2.at(4,1) !=  -8 || pageslice2.at(4,2) !=  9 || pageslice2.at(4,3) !=  10 ) {
+      if( rowslice2.at(0,0) !=  0 || rowslice2.at(0,1) !=   9 || rowslice2.at(0,2) !=  0 || rowslice2.at(0,3) !=   0 ||
+          rowslice2.at(1,0) !=  0 || rowslice2.at(1,1) !=   1 || rowslice2.at(1,2) !=  0 || rowslice2.at(1,3) !=   0 ||
+          rowslice2.at(2,0) != -2 || rowslice2.at(2,1) !=   0 || rowslice2.at(2,2) !=  0 || rowslice2.at(2,3) !=   0 ||
+          rowslice2.at(3,0) !=  0 || rowslice2.at(3,1) !=   4 || rowslice2.at(3,2) !=  5 || rowslice2.at(3,3) !=  -6 ||
+          rowslice2.at(4,0) !=  7 || rowslice2.at(4,1) !=  -8 || rowslice2.at(4,2) !=  9 || rowslice2.at(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: At() failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2919,27 +2919,27 @@ void DenseGeneralTest::testAt()
       }
 
       // Assignment to the element at index (4,1)
-      pageslice2.at(4,1) = -9;
+      rowslice2.at(4,1) = -9;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2.at(0,0) !=  0 || pageslice2.at(0,1) !=   9 || pageslice2.at(0,2) !=  0 || pageslice2.at(0,3) !=   0 ||
-          pageslice2.at(1,0) !=  0 || pageslice2.at(1,1) !=   1 || pageslice2.at(1,2) !=  0 || pageslice2.at(1,3) !=   0 ||
-          pageslice2.at(2,0) != -2 || pageslice2.at(2,1) !=   0 || pageslice2.at(2,2) !=  0 || pageslice2.at(2,3) !=   0 ||
-          pageslice2.at(3,0) !=  0 || pageslice2.at(3,1) !=   4 || pageslice2.at(3,2) !=  5 || pageslice2.at(3,3) !=  -6 ||
-          pageslice2.at(4,0) !=  7 || pageslice2.at(4,1) !=  -9 || pageslice2.at(4,2) !=  9 || pageslice2.at(4,3) !=  10 ) {
+      if( rowslice2.at(0,0) !=  0 || rowslice2.at(0,1) !=   9 || rowslice2.at(0,2) !=  0 || rowslice2.at(0,3) !=   0 ||
+          rowslice2.at(1,0) !=  0 || rowslice2.at(1,1) !=   1 || rowslice2.at(1,2) !=  0 || rowslice2.at(1,3) !=   0 ||
+          rowslice2.at(2,0) != -2 || rowslice2.at(2,1) !=   0 || rowslice2.at(2,2) !=  0 || rowslice2.at(2,3) !=   0 ||
+          rowslice2.at(3,0) !=  0 || rowslice2.at(3,1) !=   4 || rowslice2.at(3,2) !=  5 || rowslice2.at(3,3) !=  -6 ||
+          rowslice2.at(4,0) !=  7 || rowslice2.at(4,1) !=  -9 || rowslice2.at(4,2) !=  9 || rowslice2.at(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: At() failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -2973,27 +2973,27 @@ void DenseGeneralTest::testAt()
       }
 
       // Addition assignment to the element at index (0,1)
-      pageslice2.at(0,1) += -3;
+      rowslice2.at(0,1) += -3;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2.at(0,0) !=  0 || pageslice2.at(0,1) !=   6 || pageslice2.at(0,2) !=  0 || pageslice2.at(0,3) !=   0 ||
-          pageslice2.at(1,0) !=  0 || pageslice2.at(1,1) !=   1 || pageslice2.at(1,2) !=  0 || pageslice2.at(1,3) !=   0 ||
-          pageslice2.at(2,0) != -2 || pageslice2.at(2,1) !=   0 || pageslice2.at(2,2) !=  0 || pageslice2.at(2,3) !=   0 ||
-          pageslice2.at(3,0) !=  0 || pageslice2.at(3,1) !=   4 || pageslice2.at(3,2) !=  5 || pageslice2.at(3,3) !=  -6 ||
-          pageslice2.at(4,0) !=  7 || pageslice2.at(4,1) !=  -9 || pageslice2.at(4,2) !=  9 || pageslice2.at(4,3) !=  10 ) {
+      if( rowslice2.at(0,0) !=  0 || rowslice2.at(0,1) !=   6 || rowslice2.at(0,2) !=  0 || rowslice2.at(0,3) !=   0 ||
+          rowslice2.at(1,0) !=  0 || rowslice2.at(1,1) !=   1 || rowslice2.at(1,2) !=  0 || rowslice2.at(1,3) !=   0 ||
+          rowslice2.at(2,0) != -2 || rowslice2.at(2,1) !=   0 || rowslice2.at(2,2) !=  0 || rowslice2.at(2,3) !=   0 ||
+          rowslice2.at(3,0) !=  0 || rowslice2.at(3,1) !=   4 || rowslice2.at(3,2) !=  5 || rowslice2.at(3,3) !=  -6 ||
+          rowslice2.at(4,0) !=  7 || rowslice2.at(4,1) !=  -9 || rowslice2.at(4,2) !=  9 || rowslice2.at(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: At() failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3027,27 +3027,27 @@ void DenseGeneralTest::testAt()
       }
 
       // Subtraction assignment to the element at index (2,0)
-      pageslice2.at(2,0) -= 6;
+      rowslice2.at(2,0) -= 6;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2.at(0,0) !=  0 || pageslice2.at(0,1) !=   6 || pageslice2.at(0,2) !=  0 || pageslice2.at(0,3) !=   0 ||
-          pageslice2.at(1,0) !=  0 || pageslice2.at(1,1) !=   1 || pageslice2.at(1,2) !=  0 || pageslice2.at(1,3) !=   0 ||
-          pageslice2.at(2,0) != -8 || pageslice2.at(2,1) !=   0 || pageslice2.at(2,2) !=  0 || pageslice2.at(2,3) !=   0 ||
-          pageslice2.at(3,0) !=  0 || pageslice2.at(3,1) !=   4 || pageslice2.at(3,2) !=  5 || pageslice2.at(3,3) !=  -6 ||
-          pageslice2.at(4,0) !=  7 || pageslice2.at(4,1) !=  -9 || pageslice2.at(4,2) !=  9 || pageslice2.at(4,3) !=  10 ) {
+      if( rowslice2.at(0,0) !=  0 || rowslice2.at(0,1) !=   6 || rowslice2.at(0,2) !=  0 || rowslice2.at(0,3) !=   0 ||
+          rowslice2.at(1,0) !=  0 || rowslice2.at(1,1) !=   1 || rowslice2.at(1,2) !=  0 || rowslice2.at(1,3) !=   0 ||
+          rowslice2.at(2,0) != -8 || rowslice2.at(2,1) !=   0 || rowslice2.at(2,2) !=  0 || rowslice2.at(2,3) !=   0 ||
+          rowslice2.at(3,0) !=  0 || rowslice2.at(3,1) !=   4 || rowslice2.at(3,2) !=  5 || rowslice2.at(3,3) !=  -6 ||
+          rowslice2.at(4,0) !=  7 || rowslice2.at(4,1) !=  -9 || rowslice2.at(4,2) !=  9 || rowslice2.at(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: At() failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3081,27 +3081,27 @@ void DenseGeneralTest::testAt()
       }
 
       // Multiplication assignment to the element at index (4,0)
-      pageslice2.at(4,0) *= -3;
+      rowslice2.at(4,0) *= -3;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2.at(0,0) !=   0 || pageslice2.at(0,1) !=   6 || pageslice2.at(0,2) !=  0 || pageslice2.at(0,3) !=   0 ||
-          pageslice2.at(1,0) !=   0 || pageslice2.at(1,1) !=   1 || pageslice2.at(1,2) !=  0 || pageslice2.at(1,3) !=   0 ||
-          pageslice2.at(2,0) !=  -8 || pageslice2.at(2,1) !=   0 || pageslice2.at(2,2) !=  0 || pageslice2.at(2,3) !=   0 ||
-          pageslice2.at(3,0) !=   0 || pageslice2.at(3,1) !=   4 || pageslice2.at(3,2) !=  5 || pageslice2.at(3,3) !=  -6 ||
-          pageslice2.at(4,0) != -21 || pageslice2.at(4,1) !=  -9 || pageslice2.at(4,2) !=  9 || pageslice2.at(4,3) !=  10 ) {
+      if( rowslice2.at(0,0) !=   0 || rowslice2.at(0,1) !=   6 || rowslice2.at(0,2) !=  0 || rowslice2.at(0,3) !=   0 ||
+          rowslice2.at(1,0) !=   0 || rowslice2.at(1,1) !=   1 || rowslice2.at(1,2) !=  0 || rowslice2.at(1,3) !=   0 ||
+          rowslice2.at(2,0) !=  -8 || rowslice2.at(2,1) !=   0 || rowslice2.at(2,2) !=  0 || rowslice2.at(2,3) !=   0 ||
+          rowslice2.at(3,0) !=   0 || rowslice2.at(3,1) !=   4 || rowslice2.at(3,2) !=  5 || rowslice2.at(3,3) !=  -6 ||
+          rowslice2.at(4,0) != -21 || rowslice2.at(4,1) !=  -9 || rowslice2.at(4,2) !=  9 || rowslice2.at(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: At() failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -6 )\n( -21 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3135,27 +3135,27 @@ void DenseGeneralTest::testAt()
       }
 
       // Division assignment to the element at index (3,3)
-      pageslice2.at(3,3) /= 2;
+      rowslice2.at(3,3) /= 2;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2.at(0,0) !=   0 || pageslice2.at(0,1) !=   6 || pageslice2.at(0,2) !=  0 || pageslice2.at(0,3) !=   0 ||
-          pageslice2.at(1,0) !=   0 || pageslice2.at(1,1) !=   1 || pageslice2.at(1,2) !=  0 || pageslice2.at(1,3) !=   0 ||
-          pageslice2.at(2,0) !=  -8 || pageslice2.at(2,1) !=   0 || pageslice2.at(2,2) !=  0 || pageslice2.at(2,3) !=   0 ||
-          pageslice2.at(3,0) !=   0 || pageslice2.at(3,1) !=   4 || pageslice2.at(3,2) !=  5 || pageslice2.at(3,3) !=  -3 ||
-          pageslice2.at(4,0) != -21 || pageslice2.at(4,1) !=  -9 || pageslice2.at(4,2) !=  9 || pageslice2.at(4,3) !=  10 ) {
+      if( rowslice2.at(0,0) !=   0 || rowslice2.at(0,1) !=   6 || rowslice2.at(0,2) !=  0 || rowslice2.at(0,3) !=   0 ||
+          rowslice2.at(1,0) !=   0 || rowslice2.at(1,1) !=   1 || rowslice2.at(1,2) !=  0 || rowslice2.at(1,3) !=   0 ||
+          rowslice2.at(2,0) !=  -8 || rowslice2.at(2,1) !=   0 || rowslice2.at(2,2) !=  0 || rowslice2.at(2,3) !=   0 ||
+          rowslice2.at(3,0) !=   0 || rowslice2.at(3,1) !=   4 || rowslice2.at(3,2) !=  5 || rowslice2.at(3,3) !=  -3 ||
+          rowslice2.at(4,0) != -21 || rowslice2.at(4,1) !=  -9 || rowslice2.at(4,2) !=  9 || rowslice2.at(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: At() failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -3 )\n( -21 -9 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3193,12 +3193,12 @@ void DenseGeneralTest::testAt()
 
 
 //*************************************************************************************************
-/*!\brief Test of the PageSlice iterator implementation.
+/*!\brief Test of the RowSlice iterator implementation.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the iterator implementation of the PageSlice specialization.
+// This function performs a test of the iterator implementation of the RowSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testIterator()
@@ -3242,10 +3242,10 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "Iterator/ConstIterator conversion";
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
-         RT::ConstIterator it( begin( pageslice2, 2UL ) );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
+         RT::ConstIterator it( begin( rowslice2, 2UL ) );
 
-         if( it == end( pageslice2, 2UL ) || *it != -2 ) {
+         if( it == end( rowslice2, 2UL ) || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -3253,12 +3253,12 @@ void DenseGeneralTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st pageslice via Iterator (end-begin)
+      // Counting the number of elements in 1st rowslice via Iterator (end-begin)
       {
          test_ = "Iterator subtraction (end-begin)";
 
-         RT pageslice1 = blaze::pageslice( mat_, 1UL );
-         const ptrdiff_t number( end( pageslice1, 2UL ) - begin( pageslice1, 2UL ) );
+         RT rowslice1 = blaze::rowslice( mat_, 1UL );
+         const ptrdiff_t number( end( rowslice1, 2UL ) - begin( rowslice1, 2UL ) );
 
          if( number != 4L ) {
             std::ostringstream oss;
@@ -3271,12 +3271,12 @@ void DenseGeneralTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 1st pageslice via Iterator (begin-end)
+      // Counting the number of elements in 1st rowslice via Iterator (begin-end)
       {
          test_ = "Iterator subtraction (begin-end)";
 
-         RT pageslice1 = blaze::pageslice( mat_, 1UL );
-         const ptrdiff_t number( begin( pageslice1, 2UL ) - end( pageslice1, 2UL ) );
+         RT rowslice1 = blaze::rowslice( mat_, 1UL );
+         const ptrdiff_t number( begin( rowslice1, 2UL ) - end( rowslice1, 2UL ) );
 
          if( number != -4L ) {
             std::ostringstream oss;
@@ -3289,12 +3289,12 @@ void DenseGeneralTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 2nd pageslice via ConstIterator (end-begin)
+      // Counting the number of elements in 2nd rowslice via ConstIterator (end-begin)
       {
          test_ = "ConstIterator subtraction (end-begin)";
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
-         const ptrdiff_t number( cend( pageslice2, 2UL ) - cbegin( pageslice2, 2UL ) );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
+         const ptrdiff_t number( cend( rowslice2, 2UL ) - cbegin( rowslice2, 2UL ) );
 
          if( number != 4L ) {
             std::ostringstream oss;
@@ -3307,12 +3307,12 @@ void DenseGeneralTest::testIterator()
          }
       }
 
-      // Counting the number of elements in 2nd pageslice via ConstIterator (begin-end)
+      // Counting the number of elements in 2nd rowslice via ConstIterator (begin-end)
       {
          test_ = "ConstIterator subtraction (begin-end)";
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
-         const ptrdiff_t number( cbegin( pageslice2, 2UL ) - cend( pageslice2, 2UL ) );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
+         const ptrdiff_t number( cbegin( rowslice2, 2UL ) - cend( rowslice2, 2UL ) );
 
          if( number != -4L ) {
             std::ostringstream oss;
@@ -3329,9 +3329,9 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "read-only access via ConstIterator";
 
-         RT pageslice3 = blaze::pageslice( mat_, 0UL );
-         RT::ConstIterator it ( cbegin( pageslice3, 4UL ) );
-         RT::ConstIterator end( cend( pageslice3, 4UL ) );
+         RT rowslice3 = blaze::rowslice( mat_, 0UL );
+         RT::ConstIterator it ( cbegin( rowslice3, 4UL ) );
+         RT::ConstIterator end( cend( rowslice3, 4UL ) );
 
          if( it == end || *it != 7 ) {
             std::ostringstream oss;
@@ -3426,23 +3426,23 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "assignment via Iterator";
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
          int value = 6;
 
-         for( RT::Iterator it=begin( pageslice2, 4UL ); it!=end( pageslice2, 4UL ); ++it ) {
+         for( RT::Iterator it=begin( rowslice2, 4UL ); it!=end( rowslice2, 4UL ); ++it ) {
             *it = value++;
          }
 
-         if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-             pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-             pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -3 || pageslice2(2,3) !=   0 ||
-             pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-             pageslice2(4,0) !=  6 || pageslice2(4,1) !=   7 || pageslice2(4,2) !=  8 || pageslice2(4,3) !=   9 ) {
+         if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+             rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+             rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -3 || rowslice2(2,3) !=   0 ||
+             rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+             rowslice2(4,0) !=  6 || rowslice2(4,1) !=   7 || rowslice2(4,2) !=  8 || rowslice2(4,3) !=   9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 6 7 8 9 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3480,23 +3480,23 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "addition assignment via Iterator";
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
          int value = 2;
 
-         for( RT::Iterator it=begin( pageslice2, 4UL ); it!=end( pageslice2, 4UL ); ++it ) {
+         for( RT::Iterator it=begin( rowslice2, 4UL ); it!=end( rowslice2, 4UL ); ++it ) {
             *it += value++;
          }
 
-         if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-             pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-             pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -3 || pageslice2(2,3) !=   0 ||
-             pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-             pageslice2(4,0) !=  8 || pageslice2(4,1) !=  10 || pageslice2(4,2) != 12 || pageslice2(4,3) !=  14 ) {
+         if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+             rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+             rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -3 || rowslice2(2,3) !=   0 ||
+             rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+             rowslice2(4,0) !=  8 || rowslice2(4,1) !=  10 || rowslice2(4,2) != 12 || rowslice2(4,3) !=  14 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Addition assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 8 10 12 14 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3534,23 +3534,23 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "subtraction assignment via Iterator";
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
          int value = 2;
 
-         for( RT::Iterator it=begin( pageslice2, 4UL ); it!=end( pageslice2, 4UL ); ++it ) {
+         for( RT::Iterator it=begin( rowslice2, 4UL ); it!=end( rowslice2, 4UL ); ++it ) {
             *it -= value++;
          }
 
-         if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-             pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-             pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -3 || pageslice2(2,3) !=   0 ||
-             pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-             pageslice2(4,0) !=  6 || pageslice2(4,1) !=   7 || pageslice2(4,2) !=  8 || pageslice2(4,3) !=   9 ) {
+         if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+             rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+             rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -3 || rowslice2(2,3) !=   0 ||
+             rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+             rowslice2(4,0) !=  6 || rowslice2(4,1) !=   7 || rowslice2(4,2) !=  8 || rowslice2(4,3) !=   9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Subtraction assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 6 7 8 9 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3588,23 +3588,23 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "multiplication assignment via Iterator";
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
          int value = 1;
 
-         for( RT::Iterator it=begin( pageslice2, 4UL ); it!=end( pageslice2, 4UL ); ++it ) {
+         for( RT::Iterator it=begin( rowslice2, 4UL ); it!=end( rowslice2, 4UL ); ++it ) {
             *it *= value++;
          }
 
-         if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-             pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-             pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -3 || pageslice2(2,3) !=   0 ||
-             pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-             pageslice2(4,0) !=  6 || pageslice2(4,1) !=  14 || pageslice2(4,2) != 24 || pageslice2(4,3) !=  36 ) {
+         if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+             rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+             rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -3 || rowslice2(2,3) !=   0 ||
+             rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+             rowslice2(4,0) !=  6 || rowslice2(4,1) !=  14 || rowslice2(4,2) != 24 || rowslice2(4,3) !=  36 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Multiplication assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 6 14 24 36 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3642,22 +3642,22 @@ void DenseGeneralTest::testIterator()
       {
          test_ = "division assignment via Iterator";
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
-         for( RT::Iterator it=begin( pageslice2, 4UL ); it!=end( pageslice2, 4UL ); ++it ) {
+         for( RT::Iterator it=begin( rowslice2, 4UL ); it!=end( rowslice2, 4UL ); ++it ) {
             *it /= 2;
          }
 
-         if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-             pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-             pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -3 || pageslice2(2,3) !=   0 ||
-             pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-             pageslice2(4,0) !=  3 || pageslice2(4,1) !=   7 || pageslice2(4,2) != 12 || pageslice2(4,3) !=  18 ) {
+         if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+             rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+             rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -3 || rowslice2(2,3) !=   0 ||
+             rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+             rowslice2(4,0) !=  3 || rowslice2(4,1) !=   7 || rowslice2(4,2) != 12 || rowslice2(4,3) !=  18 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Division assignment via iterator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 3 7 12 18 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3696,12 +3696,12 @@ void DenseGeneralTest::testIterator()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c nonZeros() member function of the PageSlice specialization.
+/*!\brief Test of the \c nonZeros() member function of the RowSlice specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c nonZeros() member function of the PageSlice specialization.
+// This function performs a test of the \c nonZeros() member function of the RowSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testNonZeros()
@@ -3711,58 +3711,58 @@ void DenseGeneralTest::testNonZeros()
    //=====================================================================================
 
    {
-      test_ = "PageSlice::nonZeros()";
+      test_ = "RowSlice::nonZeros()";
 
       initialize();
 
       // Initialization check
-      RT pageslice2 = blaze::pageslice( mat_, 1UL );
+      RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) != -3 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-          pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -8 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) != -3 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+          rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -8 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
 
-      // Changing the number of non-zeros via the dense pageslice
-      pageslice2(2, 2) = 0;
+      // Changing the number of non-zeros via the dense rowslice
+      rowslice2(2, 2) = 0;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2,  9UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2,  9UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 19UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-          pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -8 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+          rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -8 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3770,25 +3770,25 @@ void DenseGeneralTest::testNonZeros()
       // Changing the number of non-zeros via the dense matrix
       mat_(3,0,1) = 5;
 
-      checkRows    ( pageslice2, 5UL );
-      checkColumns ( pageslice2, 4UL );
-      checkCapacity( pageslice2, 20UL );
-      checkNonZeros( pageslice2, 10UL );
+      checkRows    ( rowslice2, 5UL );
+      checkColumns ( rowslice2, 4UL );
+      checkCapacity( rowslice2, 20UL );
+      checkNonZeros( rowslice2, 10UL );
       checkRows    ( mat_,  5UL );
       checkColumns ( mat_,  4UL );
       checkPages   ( mat_,  2UL );
       checkNonZeros( mat_, 20UL );
 
-      if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-          pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-          pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-          pageslice2(3,0) !=  5 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-          pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -8 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+      if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+          rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+          rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+          rowslice2(3,0) !=  5 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+          rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -8 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Matrix function call operator failed\n"
              << " Details:\n"
-             << "   Result:\n" << pageslice2 << "\n"
+             << "   Result:\n" << rowslice2 << "\n"
              << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 5 4 5 -6 )\n( 7 -8 9 10 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -3798,12 +3798,12 @@ void DenseGeneralTest::testNonZeros()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c reset() member function of the PageSlice specialization.
+/*!\brief Test of the \c reset() member function of the RowSlice specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c reset() member function of the PageSlice specialization.
+// This function performs a test of the \c reset() member function of the RowSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testReset()
@@ -3816,76 +3816,76 @@ void DenseGeneralTest::testReset()
    //=====================================================================================
 
    {
-      test_ = "PageSlice::reset()";
+      test_ = "RowSlice::reset()";
 
-      // Resetting a single element in pageslice 3
+      // Resetting a single element in rowslice 3
       {
          initialize();
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
-         reset( pageslice2(2, 2) );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
+         reset( rowslice2(2, 2) );
 
 
-         checkRows    ( pageslice2, 5UL );
-         checkColumns ( pageslice2, 4UL );
-         checkCapacity( pageslice2, 20UL );
-         checkNonZeros( pageslice2,  9UL );
+         checkRows    ( rowslice2, 5UL );
+         checkColumns ( rowslice2, 4UL );
+         checkCapacity( rowslice2, 20UL );
+         checkNonZeros( rowslice2,  9UL );
          checkRows    ( mat_,  5UL );
          checkColumns ( mat_,  4UL );
          checkPages   ( mat_,  2UL );
          checkNonZeros( mat_, 19UL );
 
-         if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-             pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-             pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-             pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-             pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -8 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+         if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+             rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+             rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+             rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+             rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -8 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Reset operator failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Resetting the 1st pageslice (lvalue)
+      // Resetting the 1st rowslice (lvalue)
       {
          initialize();
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
-         reset( pageslice2 );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
+         reset( rowslice2 );
 
-         checkRows    ( pageslice2, 5UL );
-         checkColumns ( pageslice2, 4UL );
-         checkCapacity( pageslice2, 20UL );
-         checkNonZeros( pageslice2,  0UL );
+         checkRows    ( rowslice2, 5UL );
+         checkColumns ( rowslice2, 4UL );
+         checkCapacity( rowslice2, 20UL );
+         checkNonZeros( rowslice2,  0UL );
          checkRows    ( mat_,  5UL );
          checkColumns ( mat_,  4UL );
          checkPages   ( mat_,  2UL );
          checkNonZeros( mat_, 10UL );
 
-         if( pageslice2(0,0) != 0 || pageslice2(0,1) !=  0 || pageslice2(0,2) != 0 || pageslice2(0,3) != 0 ||
-             pageslice2(1,0) != 0 || pageslice2(1,1) !=  0 || pageslice2(1,2) != 0 || pageslice2(1,3) != 0 ||
-             pageslice2(2,0) != 0 || pageslice2(2,1) !=  0 || pageslice2(2,2) != 0 || pageslice2(2,3) != 0 ||
-             pageslice2(3,0) != 0 || pageslice2(3,1) !=  0 || pageslice2(3,2) != 0 || pageslice2(3,3) != 0 ||
-             pageslice2(4,0) != 0 || pageslice2(4,1) !=  0 || pageslice2(4,2) != 0 || pageslice2(4,3) != 0 ) {
+         if( rowslice2(0,0) != 0 || rowslice2(0,1) !=  0 || rowslice2(0,2) != 0 || rowslice2(0,3) != 0 ||
+             rowslice2(1,0) != 0 || rowslice2(1,1) !=  0 || rowslice2(1,2) != 0 || rowslice2(1,3) != 0 ||
+             rowslice2(2,0) != 0 || rowslice2(2,1) !=  0 || rowslice2(2,2) != 0 || rowslice2(2,3) != 0 ||
+             rowslice2(3,0) != 0 || rowslice2(3,1) !=  0 || rowslice2(3,2) != 0 || rowslice2(3,3) != 0 ||
+             rowslice2(4,0) != 0 || rowslice2(4,1) !=  0 || rowslice2(4,2) != 0 || rowslice2(4,3) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 1st pageslice failed\n"
+                << " Error: Reset operation of 1st rowslice failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Resetting the 1st pageslice (rvalue)
+      // Resetting the 1st rowslice (rvalue)
       {
          initialize();
 
-         reset( blaze::pageslice( mat_, 1UL ) );
+         reset( blaze::rowslice( mat_, 1UL ) );
 
          checkRows    ( mat_,  5UL );
          checkColumns ( mat_,  4UL );
@@ -3904,7 +3904,7 @@ void DenseGeneralTest::testReset()
              mat_(4,0,1) !=  0 || mat_(4,1,1) !=   0 || mat_(4,2,1) !=  0 || mat_(4,3,1) !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Reset operation of 1st pageslice failed\n"
+                << " Error: Reset operation of 1st rowslice failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n((  0   0   0   0 )\n"
@@ -3926,12 +3926,12 @@ void DenseGeneralTest::testReset()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c clear() function with the PageSlice specialization.
+/*!\brief Test of the \c clear() function with the RowSlice specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c clear() function with the PageSlice specialization.
+// This function performs a test of the \c clear() function with the RowSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testClear()
@@ -3946,73 +3946,73 @@ void DenseGeneralTest::testClear()
    {
       test_ = "clear() function";
 
-      // Clearing a single element in pageslice 1
+      // Clearing a single element in rowslice 1
       {
          initialize();
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
-         clear( pageslice2(2, 2) );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
+         clear( rowslice2(2, 2) );
 
-         checkRows    ( pageslice2, 5UL );
-         checkColumns ( pageslice2, 4UL );
-         checkCapacity( pageslice2, 20UL );
-         checkNonZeros( pageslice2,  9UL );
+         checkRows    ( rowslice2, 5UL );
+         checkColumns ( rowslice2, 4UL );
+         checkCapacity( rowslice2, 20UL );
+         checkNonZeros( rowslice2,  9UL );
          checkRows    ( mat_,  5UL );
          checkColumns ( mat_,  4UL );
          checkPages   ( mat_,  2UL );
          checkNonZeros( mat_, 19UL );
 
-         if( pageslice2(0,0) !=  0 || pageslice2(0,1) !=   0 || pageslice2(0,2) !=  0 || pageslice2(0,3) !=   0 ||
-             pageslice2(1,0) !=  0 || pageslice2(1,1) !=   1 || pageslice2(1,2) !=  0 || pageslice2(1,3) !=   0 ||
-             pageslice2(2,0) != -2 || pageslice2(2,1) !=   0 || pageslice2(2,2) !=  0 || pageslice2(2,3) !=   0 ||
-             pageslice2(3,0) !=  0 || pageslice2(3,1) !=   4 || pageslice2(3,2) !=  5 || pageslice2(3,3) !=  -6 ||
-             pageslice2(4,0) !=  7 || pageslice2(4,1) !=  -8 || pageslice2(4,2) !=  9 || pageslice2(4,3) !=  10 ) {
+         if( rowslice2(0,0) !=  0 || rowslice2(0,1) !=   0 || rowslice2(0,2) !=  0 || rowslice2(0,3) !=   0 ||
+             rowslice2(1,0) !=  0 || rowslice2(1,1) !=   1 || rowslice2(1,2) !=  0 || rowslice2(1,3) !=   0 ||
+             rowslice2(2,0) != -2 || rowslice2(2,1) !=   0 || rowslice2(2,2) !=  0 || rowslice2(2,3) !=   0 ||
+             rowslice2(3,0) !=  0 || rowslice2(3,1) !=   4 || rowslice2(3,2) !=  5 || rowslice2(3,3) !=  -6 ||
+             rowslice2(4,0) !=  7 || rowslice2(4,1) !=  -8 || rowslice2(4,2) !=  9 || rowslice2(4,3) !=  10 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Clear operation failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Clearing the 3rd pageslice (lvalue)
+      // Clearing the 3rd rowslice (lvalue)
       {
          initialize();
 
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
-         clear( pageslice2 );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
+         clear( rowslice2 );
 
-         checkRows    ( pageslice2, 5UL );
-         checkColumns ( pageslice2, 4UL );
-         checkCapacity( pageslice2, 20UL );
-         checkNonZeros( pageslice2,  0UL );
+         checkRows    ( rowslice2, 5UL );
+         checkColumns ( rowslice2, 4UL );
+         checkCapacity( rowslice2, 20UL );
+         checkNonZeros( rowslice2,  0UL );
          checkRows    ( mat_,  5UL );
          checkColumns ( mat_,  4UL );
          checkPages   ( mat_,  2UL );
          checkNonZeros( mat_, 10UL );
 
-         if( pageslice2(0,0) != 0 || pageslice2(0,1) !=  0 || pageslice2(0,2) != 0 || pageslice2(0,3) != 0 ||
-             pageslice2(1,0) != 0 || pageslice2(1,1) !=  0 || pageslice2(1,2) != 0 || pageslice2(1,3) != 0 ||
-             pageslice2(2,0) != 0 || pageslice2(2,1) !=  0 || pageslice2(2,2) != 0 || pageslice2(2,3) != 0 ||
-             pageslice2(3,0) != 0 || pageslice2(3,1) !=  0 || pageslice2(3,2) != 0 || pageslice2(3,3) != 0 ||
-             pageslice2(4,0) != 0 || pageslice2(4,1) !=  0 || pageslice2(4,2) != 0 || pageslice2(4,3) != 0 ) {
+         if( rowslice2(0,0) != 0 || rowslice2(0,1) !=  0 || rowslice2(0,2) != 0 || rowslice2(0,3) != 0 ||
+             rowslice2(1,0) != 0 || rowslice2(1,1) !=  0 || rowslice2(1,2) != 0 || rowslice2(1,3) != 0 ||
+             rowslice2(2,0) != 0 || rowslice2(2,1) !=  0 || rowslice2(2,2) != 0 || rowslice2(2,3) != 0 ||
+             rowslice2(3,0) != 0 || rowslice2(3,1) !=  0 || rowslice2(3,2) != 0 || rowslice2(3,3) != 0 ||
+             rowslice2(4,0) != 0 || rowslice2(4,1) !=  0 || rowslice2(4,2) != 0 || rowslice2(4,3) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Clear operation of 3rd pageslice failed\n"
+                << " Error: Clear operation of 3rd rowslice failed\n"
                 << " Details:\n"
-                << "   Result:\n" << pageslice2 << "\n"
+                << "   Result:\n" << rowslice2 << "\n"
                 << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // Clearing the 4th pageslice (rvalue)
+      // Clearing the 4th rowslice (rvalue)
       {
          initialize();
 
-         clear( blaze::pageslice( mat_, 1UL ) );
+         clear( blaze::rowslice( mat_, 1UL ) );
 
          checkRows    ( mat_,  5UL );
          checkColumns ( mat_,  4UL );
@@ -4031,7 +4031,7 @@ void DenseGeneralTest::testClear()
              mat_(4,0,1) !=  0 || mat_(4,1,1) !=   0 || mat_(4,2,1) !=  0 || mat_(4,3,1) !=  0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
-                << " Error: Clear operation of 1st pageslice failed\n"
+                << " Error: Clear operation of 1st rowslice failed\n"
                 << " Details:\n"
                 << "   Result:\n" << mat_ << "\n"
                 << "   Expected result:\n((  0   0   0   0 )\n"
@@ -4053,12 +4053,12 @@ void DenseGeneralTest::testClear()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isDefault() function with the PageSlice specialization.
+/*!\brief Test of the \c isDefault() function with the RowSlice specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isDefault() function with the PageSlice specialization.
+// This function performs a test of the \c isDefault() function with the RowSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testIsDefault()
@@ -4075,49 +4075,49 @@ void DenseGeneralTest::testIsDefault()
 
       initialize();
 
-      // isDefault with default pageslice
+      // isDefault with default rowslice
       {
-         RT pageslice0 = blaze::pageslice( mat_, 0UL );
-         pageslice0 = 0;
+         RT rowslice0 = blaze::rowslice( mat_, 0UL );
+         rowslice0 = 0;
 
-         if( isDefault( pageslice0(0, 0) ) != true ) {
+         if( isDefault( rowslice0(0, 0) ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   PageSlice element: " << pageslice0(0, 0) << "\n";
+                << "   RowSlice element: " << rowslice0(0, 0) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( pageslice0 ) != true ) {
+         if( isDefault( rowslice0 ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   PageSlice:\n" << pageslice0 << "\n";
+                << "   RowSlice:\n" << rowslice0 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // isDefault with non-default pageslice
+      // isDefault with non-default rowslice
       {
-         RT pageslice1 = blaze::pageslice( mat_, 1UL );
+         RT rowslice1 = blaze::rowslice( mat_, 1UL );
 
-         if( isDefault( pageslice1(1, 1) ) != false ) {
+         if( isDefault( rowslice1(1, 1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   PageSlice element: " << pageslice1(1, 1) << "\n";
+                << "   RowSlice element: " << rowslice1(1, 1) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( isDefault( pageslice1 ) != false ) {
+         if( isDefault( rowslice1 ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   PageSlice:\n" << pageslice1 << "\n";
+                << "   RowSlice:\n" << rowslice1 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -4127,12 +4127,12 @@ void DenseGeneralTest::testIsDefault()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c isSame() function with the PageSlice specialization.
+/*!\brief Test of the \c isSame() function with the RowSlice specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c isSame() function with the PageSlice specialization.
+// This function performs a test of the \c isSame() function with the RowSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testIsSame()
@@ -4144,148 +4144,148 @@ void DenseGeneralTest::testIsSame()
    {
       test_ = "isSame() function";
 
-      // isSame with matching pageslices
+      // isSame with matching rowslices
       {
-         RT pageslice1 = blaze::pageslice( mat_, 1UL );
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
+         RT rowslice1 = blaze::rowslice( mat_, 1UL );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
-         if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
+         if( blaze::isSame( rowslice1, rowslice2 ) == false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   First pageslice:\n" << pageslice1 << "\n"
-                << "   Second pageslice:\n" << pageslice2 << "\n";
+                << "   First rowslice:\n" << rowslice1 << "\n"
+                << "   Second rowslice:\n" << rowslice2 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // isSame with non-matching pageslices
+      // isSame with non-matching rowslices
       {
-         RT pageslice1 = blaze::pageslice( mat_, 0UL );
-         RT pageslice2 = blaze::pageslice( mat_, 1UL );
+         RT rowslice1 = blaze::rowslice( mat_, 0UL );
+         RT rowslice2 = blaze::rowslice( mat_, 1UL );
 
-         pageslice1 = 42;
+         rowslice1 = 42;
 
-         if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+         if( blaze::isSame( rowslice1, rowslice2 ) == true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   First pageslice:\n" << pageslice1 << "\n"
-                << "   Second pageslice:\n" << pageslice2 << "\n";
+                << "   First rowslice:\n" << rowslice1 << "\n"
+                << "   Second rowslice:\n" << rowslice2 << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // isSame with pageslice and matching submatrix
+      // isSame with rowslice and matching submatrix
       {
-         RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sv   = blaze::submatrix( pageslice1, 0UL, 0UL, 5UL, 4UL );
+         RT   rowslice1 = blaze::rowslice( mat_, 1UL );
+         auto sv   = blaze::submatrix( rowslice1, 0UL, 0UL, 4UL, 5UL );
 
-         if( blaze::isSame( pageslice1, sv ) == false ) {
+         if( blaze::isSame( rowslice1, sv ) == false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Dense pageslice:\n" << pageslice1 << "\n"
+                << "   Dense rowslice:\n" << rowslice1 << "\n"
                 << "   Dense submatrix:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( blaze::isSame( sv, pageslice1 ) == false ) {
+         if( blaze::isSame( sv, rowslice1 ) == false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Dense pageslice:\n" << pageslice1 << "\n"
-                << "   Dense submatrix:\n" << sv << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // isSame with pageslice and non-matching submatrix (different size)
-      {
-         RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sv   = blaze::submatrix( pageslice1, 0UL, 0UL, 3UL, 3UL );
-
-         if( blaze::isSame( pageslice1, sv ) == true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSame evaluation\n"
-                << " Details:\n"
-                << "   Dense pageslice:\n" << pageslice1 << "\n"
-                << "   Dense submatrix:\n" << sv << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-
-         if( blaze::isSame( sv, pageslice1 ) == true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSame evaluation\n"
-                << " Details:\n"
-                << "   Dense pageslice:\n" << pageslice1 << "\n"
+                << "   Dense rowslice:\n" << rowslice1 << "\n"
                 << "   Dense submatrix:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-      // isSame with pageslice and non-matching submatrix (different offset)
+      // isSame with rowslice and non-matching submatrix (different size)
       {
-         RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sv   = blaze::submatrix( pageslice1, 1UL, 1UL, 3UL, 3UL );
+         RT   rowslice1 = blaze::rowslice( mat_, 1UL );
+         auto sv   = blaze::submatrix( rowslice1, 0UL, 0UL, 3UL, 3UL );
 
-         if( blaze::isSame( pageslice1, sv ) == true ) {
+         if( blaze::isSame( rowslice1, sv ) == true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Dense pageslice:\n" << pageslice1 << "\n"
+                << "   Dense rowslice:\n" << rowslice1 << "\n"
                 << "   Dense submatrix:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
 
-         if( blaze::isSame( sv, pageslice1 ) == true ) {
+         if( blaze::isSame( sv, rowslice1 ) == true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isSame evaluation\n"
                 << " Details:\n"
-                << "   Dense pageslice:\n" << pageslice1 << "\n"
+                << "   Dense rowslice:\n" << rowslice1 << "\n"
                 << "   Dense submatrix:\n" << sv << "\n";
             throw std::runtime_error( oss.str() );
          }
       }
 
-//       // isSame with matching pageslices on a common submatrix
+      // isSame with rowslice and non-matching submatrix (different offset)
+      {
+         RT   rowslice1 = blaze::rowslice( mat_, 1UL );
+         auto sv   = blaze::submatrix( rowslice1, 1UL, 1UL, 3UL, 3UL );
+
+         if( blaze::isSame( rowslice1, sv ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense rowslice:\n" << rowslice1 << "\n"
+                << "   Dense submatrix:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( sv, rowslice1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   Dense rowslice:\n" << rowslice1 << "\n"
+                << "   Dense submatrix:\n" << sv << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+//       // isSame with matching rowslices on a common submatrix
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm, 1UL );
+//          auto rowslice1 = blaze::rowslice( sm, 1UL );
+//          auto rowslice2 = blaze::rowslice( sm, 1UL );
 //
-//          if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
+//          if( blaze::isSame( rowslice1, rowslice2 ) == false ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 
-//       // isSame with non-matching pageslices on a common submatrix
+//       // isSame with non-matching rowslices on a common submatrix
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 0UL );
-//          auto pageslice2 = blaze::pageslice( sm, 1UL );
+//          auto rowslice1 = blaze::rowslice( sm, 0UL );
+//          auto rowslice2 = blaze::rowslice( sm, 1UL );
 //
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+//          if( blaze::isSame( rowslice1, rowslice2 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
@@ -4293,202 +4293,202 @@ void DenseGeneralTest::testIsSame()
 //       // isSame with matching subtensor on matrix and submatrix
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( mat_, 2UL );
-//          auto pageslice2 = blaze::pageslice( sm  , 1UL );
+//          auto rowslice1 = blaze::rowslice( mat_, 2UL );
+//          auto rowslice2 = blaze::rowslice( sm  , 1UL );
 //
-//          if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
+//          if( blaze::isSame( rowslice1, rowslice2 ) == false ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //
-//          if( blaze::isSame( pageslice2, pageslice1 ) == false ) {
+//          if( blaze::isSame( rowslice2, rowslice1 ) == false ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 
-//       // isSame with non-matching pageslices on tensor and subtensor (different pageslice)
+//       // isSame with non-matching rowslices on tensor and subtensor (different rowslice)
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( mat_, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm  , 1UL );
+//          auto rowslice1 = blaze::rowslice( mat_, 1UL );
+//          auto rowslice2 = blaze::rowslice( sm  , 1UL );
 //
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+//          if( blaze::isSame( rowslice1, rowslice2 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+//          if( blaze::isSame( rowslice2, rowslice1 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 
-//       // isSame with non-matching pageslices on tensor and subtensor (different size)
+//       // isSame with non-matching rowslices on tensor and subtensor (different size)
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( mat_, 2UL );
-//          auto pageslice2 = blaze::pageslice( sm  , 1UL );
+//          auto rowslice1 = blaze::rowslice( mat_, 2UL );
+//          auto rowslice2 = blaze::rowslice( sm  , 1UL );
 //
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+//          if( blaze::isSame( rowslice1, rowslice2 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+//          if( blaze::isSame( rowslice2, rowslice1 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 
-//       // isSame with matching pageslices on two subtensors
+//       // isSame with matching rowslices on two subtensors
 //       {
 //          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
 //          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
+//          auto rowslice1 = blaze::rowslice( sm1, 1UL );
+//          auto rowslice2 = blaze::rowslice( sm2, 0UL );
 //
-//          if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
+//          if( blaze::isSame( rowslice1, rowslice2 ) == false ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //
-//          if( blaze::isSame( pageslice2, pageslice1 ) == false ) {
+//          if( blaze::isSame( rowslice2, rowslice1 ) == false ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 
-//       // isSame with non-matching pageslices on two subtensors (different pageslice)
+//       // isSame with non-matching rowslices on two subtensors (different rowslice)
 //       {
 //          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
 //          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 1UL );
+//          auto rowslice1 = blaze::rowslice( sm1, 1UL );
+//          auto rowslice2 = blaze::rowslice( sm2, 1UL );
 //
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+//          if( blaze::isSame( rowslice1, rowslice2 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+//          if( blaze::isSame( rowslice2, rowslice1 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 
-//       // isSame with non-matching pageslices on two subtensors (different size)
+//       // isSame with non-matching rowslices on two subtensors (different size)
 //       {
 //          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
 //          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
+//          auto rowslice1 = blaze::rowslice( sm1, 1UL );
+//          auto rowslice2 = blaze::rowslice( sm2, 0UL );
 //
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+//          if( blaze::isSame( rowslice1, rowslice2 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+//          if( blaze::isSame( rowslice2, rowslice1 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 
-//       // isSame with non-matching pageslices on two subtensors (different offset)
+//       // isSame with non-matching rowslices on two subtensors (different offset)
 //       {
 //          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 3UL );
 //          auto sm2  = blaze::subtensor( mat_, 2UL, 1UL, 3UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
+//          auto rowslice1 = blaze::rowslice( sm1, 1UL );
+//          auto rowslice2 = blaze::rowslice( sm2, 0UL );
 //
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+//          if( blaze::isSame( rowslice1, rowslice2 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+//          if( blaze::isSame( rowslice2, rowslice1 ) == true ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
 //                 << " Error: Invalid isSame evaluation\n"
 //                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
+//                 << "   First rowslice:\n" << rowslice1 << "\n"
+//                 << "   Second rowslice:\n" << rowslice2 << "\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 
-//       // isSame with matching pageslice submatrices on a subtensor
+//       // isSame with matching rowslice submatrices on a subtensor
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 1UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice1, 0UL, 2UL );
+//          auto rowslice1 = blaze::rowslice( sm, 1UL );
+//          auto sv1  = blaze::submatrix( rowslice1, 0UL, 2UL );
+//          auto sv2  = blaze::submatrix( rowslice1, 0UL, 2UL );
 //
 //          if( blaze::isSame( sv1, sv2 ) == false ) {
 //             std::ostringstream oss;
@@ -4501,12 +4501,12 @@ void DenseGeneralTest::testIsSame()
 //          }
 //       }
 
-//       // isSame with non-matching pageslice subtensors on a submatrix (different size)
+//       // isSame with non-matching rowslice subtensors on a submatrix (different size)
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 1UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice1, 0UL, 3UL );
+//          auto rowslice1 = blaze::rowslice( sm, 1UL );
+//          auto sv1  = blaze::submatrix( rowslice1, 0UL, 2UL );
+//          auto sv2  = blaze::submatrix( rowslice1, 0UL, 3UL );
 //
 //          if( blaze::isSame( sv1, sv2 ) == true ) {
 //             std::ostringstream oss;
@@ -4519,12 +4519,12 @@ void DenseGeneralTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with non-matching pageslice subtensors on a submatrix (different offset)
+//       // isSame with non-matching rowslice subtensors on a submatrix (different offset)
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 1UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice1, 1UL, 2UL );
+//          auto rowslice1 = blaze::rowslice( sm, 1UL );
+//          auto sv1  = blaze::submatrix( rowslice1, 0UL, 2UL );
+//          auto sv2  = blaze::submatrix( rowslice1, 1UL, 2UL );
 //
 //          if( blaze::isSame( sv1, sv2 ) == true ) {
 //             std::ostringstream oss;
@@ -4537,14 +4537,14 @@ void DenseGeneralTest::testIsSame()
 //          }
 //       }
 
-//       // isSame with matching pageslice subtensors on two subtensors
+//       // isSame with matching rowslice subtensors on two subtensors
 //       {
 //          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
 //          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice2, 0UL, 2UL );
+//          auto rowslice1 = blaze::rowslice( sm1, 1UL );
+//          auto rowslice2 = blaze::rowslice( sm2, 0UL );
+//          auto sv1  = blaze::submatrix( rowslice1, 0UL, 2UL );
+//          auto sv2  = blaze::submatrix( rowslice2, 0UL, 2UL );
 //
 //          if( blaze::isSame( sv1, sv2 ) == false ) {
 //             std::ostringstream oss;
@@ -4557,14 +4557,14 @@ void DenseGeneralTest::testIsSame()
 //          }
 //       }
 
-//       // isSame with non-matching pageslice subtensors on two subtensors (different size)
+//       // isSame with non-matching rowslice subtensors on two subtensors (different size)
 //       {
 //          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
 //          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice2, 0UL, 3UL );
+//          auto rowslice1 = blaze::rowslice( sm1, 1UL );
+//          auto rowslice2 = blaze::rowslice( sm2, 0UL );
+//          auto sv1  = blaze::submatrix( rowslice1, 0UL, 2UL );
+//          auto sv2  = blaze::submatrix( rowslice2, 0UL, 3UL );
 //
 //          if( blaze::isSame( sv1, sv2 ) == true ) {
 //             std::ostringstream oss;
@@ -4577,14 +4577,14 @@ void DenseGeneralTest::testIsSame()
 //          }
 //       }
 
-//       // isSame with non-matching pageslice subtensors on two subtensors (different offset)
+//       // isSame with non-matching rowslice subtensors on two subtensors (different offset)
 //       {
 //          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
 //          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice2, 1UL, 2UL );
+//          auto rowslice1 = blaze::rowslice( sm1, 1UL );
+//          auto rowslice2 = blaze::rowslice( sm2, 0UL );
+//          auto sv1  = blaze::submatrix( rowslice1, 0UL, 2UL );
+//          auto sv2  = blaze::submatrix( rowslice2, 1UL, 2UL );
 //
 //          if( blaze::isSame( sv1, sv2 ) == true ) {
 //             std::ostringstream oss;
@@ -4602,12 +4602,12 @@ void DenseGeneralTest::testIsSame()
 
 
 //*************************************************************************************************
-/*!\brief Test of the \c submatrix() function with the PageSlice specialization.
+/*!\brief Test of the \c submatrix() function with the RowSlice specialization.
 //
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function performs a test of the \c submatrix() function used with the PageSlice specialization.
+// This function performs a test of the \c submatrix() function used with the RowSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
 void DenseGeneralTest::testSubmatrix()
@@ -4622,8 +4622,8 @@ void DenseGeneralTest::testSubmatrix()
       initialize();
 
       {
-         RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sm = blaze::submatrix( pageslice1, 1UL, 1UL, 2UL, 3UL );
+         RT   rowslice1 = blaze::rowslice( mat_, 1UL );
+         auto sm = blaze::submatrix( rowslice1, 1UL, 1UL, 2UL, 3UL );
 
          if( sm(0,0) != 1 ) {
             std::ostringstream oss;
@@ -4647,8 +4647,8 @@ void DenseGeneralTest::testSubmatrix()
       }
 
       try {
-         RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sm = blaze::submatrix( pageslice1, 4UL, 0UL, 4UL, 4UL );
+         RT   rowslice1 = blaze::rowslice( mat_, 1UL );
+         auto sm = blaze::submatrix( rowslice1, 4UL, 0UL, 4UL, 4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4660,8 +4660,8 @@ void DenseGeneralTest::testSubmatrix()
       catch( std::invalid_argument& ) {}
 
       try {
-         RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sm = blaze::submatrix( pageslice1, 0UL, 0UL, 2UL, 6UL );
+         RT   rowslice1 = blaze::rowslice( mat_, 1UL );
+         auto sm = blaze::submatrix( rowslice1, 0UL, 0UL, 2UL, 6UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4686,7 +4686,7 @@ void DenseGeneralTest::testSubmatrix()
 */
 void DenseGeneralTest::testRow()
 {
-   using blaze::pageslice;
+   using blaze::rowslice;
    using blaze::row;
    using blaze::aligned;
    using blaze::unaligned;
@@ -4702,10 +4702,10 @@ void DenseGeneralTest::testRow()
       initialize();
 
       {
-         RT pageslice1  = pageslice( mat_, 0UL );
-         RT pageslice2  = pageslice( mat_, 1UL );
-         auto row1 = row( pageslice1, 1UL );
-         auto row2 = row( pageslice2, 1UL );
+         RT rowslice1  = rowslice( mat_, 0UL );
+         RT rowslice2  = rowslice( mat_, 1UL );
+         auto row1 = row( rowslice1, 1UL );
+         auto row2 = row( rowslice2, 1UL );
 
          if( row1 != row2 ) {
             std::ostringstream oss;
@@ -4739,8 +4739,8 @@ void DenseGeneralTest::testRow()
       }
 
       try {
-         RT pageslice1  = pageslice( mat_, 0UL );
-         auto row8 = row( pageslice1, 8UL );
+         RT rowslice1  = rowslice( mat_, 0UL );
+         auto row8 = row( rowslice1, 8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4766,7 +4766,7 @@ void DenseGeneralTest::testRow()
 */
 void DenseGeneralTest::testRows()
 {
-   using blaze::pageslice;
+   using blaze::rowslice;
    using blaze::rows;
    using blaze::aligned;
    using blaze::unaligned;
@@ -4782,10 +4782,10 @@ void DenseGeneralTest::testRows()
       initialize();
 
       {
-         RT pageslice1 = pageslice( mat_, 0UL );
-         RT pageslice2 = pageslice( mat_, 1UL );
-         auto rs1 = rows( pageslice1, { 0UL, 2UL, 4UL, 3UL } );
-         auto rs2 = rows( pageslice2, { 0UL, 2UL, 4UL, 3UL } );
+         RT rowslice1 = rowslice( mat_, 0UL );
+         RT rowslice2 = rowslice( mat_, 1UL );
+         auto rs1 = rows( rowslice1, { 0UL, 2UL, 4UL, 3UL } );
+         auto rs2 = rows( rowslice2, { 0UL, 2UL, 4UL, 3UL } );
 
          if( rs1 != rs2 ) {
             std::ostringstream oss;
@@ -4819,8 +4819,8 @@ void DenseGeneralTest::testRows()
       }
 
       try {
-         RT pageslice1 = pageslice( mat_, 1UL );
-         auto rs  = rows( pageslice1, { 8UL } );
+         RT rowslice1 = rowslice( mat_, 1UL );
+         auto rs  = rows( rowslice1, { 8UL } );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4846,7 +4846,7 @@ void DenseGeneralTest::testRows()
 */
 void DenseGeneralTest::testColumn()
 {
-   using blaze::pageslice;
+   using blaze::rowslice;
    using blaze::column;
    using blaze::aligned;
    using blaze::unaligned;
@@ -4862,10 +4862,10 @@ void DenseGeneralTest::testColumn()
       initialize();
 
       {
-         RT pageslice1  = pageslice( mat_, 0UL );
-         RT pageslice2  = pageslice( mat_, 1UL );
-         auto col1 = column( pageslice1, 1UL );
-         auto col2 = column( pageslice2, 1UL );
+         RT rowslice1  = rowslice( mat_, 0UL );
+         RT rowslice2  = rowslice( mat_, 1UL );
+         auto col1 = column( rowslice1, 1UL );
+         auto col2 = column( rowslice2, 1UL );
 
          if( col1 != col2 ) {
             std::ostringstream oss;
@@ -4899,8 +4899,8 @@ void DenseGeneralTest::testColumn()
       }
 
       try {
-         RT pageslice1  = pageslice( mat_, 0UL );
-         auto col16 = column( pageslice1, 16UL );
+         RT rowslice1  = rowslice( mat_, 0UL );
+         auto col16 = column( rowslice1, 16UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4926,7 +4926,7 @@ void DenseGeneralTest::testColumn()
 */
 void DenseGeneralTest::testColumns()
 {
-   using blaze::pageslice;
+   using blaze::rowslice;
    using blaze::rows;
    using blaze::aligned;
    using blaze::unaligned;
@@ -4942,10 +4942,10 @@ void DenseGeneralTest::testColumns()
       initialize();
 
       {
-         RT pageslice1  = pageslice( mat_, 0UL );
-         RT pageslice2  = pageslice( mat_, 1UL );
-         auto cs1 = columns( pageslice1, { 0UL, 2UL, 2UL, 3UL } );
-         auto cs2 = columns( pageslice2, { 0UL, 2UL, 2UL, 3UL } );
+         RT rowslice1  = rowslice( mat_, 0UL );
+         RT rowslice2  = rowslice( mat_, 1UL );
+         auto cs1 = columns( rowslice1, { 0UL, 2UL, 2UL, 3UL } );
+         auto cs2 = columns( rowslice2, { 0UL, 2UL, 2UL, 3UL } );
 
          if( cs1 != cs2 ) {
             std::ostringstream oss;
@@ -4979,8 +4979,8 @@ void DenseGeneralTest::testColumns()
       }
 
       try {
-         RT pageslice1 = pageslice( mat_, 1UL );
-         auto cs  = columns( pageslice1, { 16UL } );
+         RT rowslice1 = rowslice( mat_, 1UL );
+         auto cs  = columns( rowslice1, { 16UL } );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -5006,7 +5006,7 @@ void DenseGeneralTest::testColumns()
 */
 void DenseGeneralTest::testBand()
 {
-   using blaze::pageslice;
+   using blaze::rowslice;
    using blaze::band;
    using blaze::aligned;
    using blaze::unaligned;
@@ -5022,10 +5022,10 @@ void DenseGeneralTest::testBand()
       initialize();
 
       {
-         RT pageslice1  = pageslice( mat_, 0UL );
-         RT pageslice2  = pageslice( mat_, 1UL );
-         auto b1 = band( pageslice1, 1L );
-         auto b2 = band( pageslice2, 1L );
+         RT rowslice1  = rowslice( mat_, 0UL );
+         RT rowslice2  = rowslice( mat_, 1UL );
+         auto b1 = band( rowslice1, 1L );
+         auto b2 = band( rowslice2, 1L );
 
          if( b1 != b2 ) {
             std::ostringstream oss;
@@ -5059,8 +5059,8 @@ void DenseGeneralTest::testBand()
       }
 
       try {
-         RT pageslice1 = pageslice( mat_, 1UL );
-         auto b8 = band( pageslice1, -8L );
+         RT rowslice1 = rowslice( mat_, 1UL );
+         auto b8 = band( rowslice1, -8L );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -5092,7 +5092,7 @@ void DenseGeneralTest::testBand()
 */
 void DenseGeneralTest::initialize()
 {
-   // Initializing the pageslice-major dynamic matrix
+   // Initializing the rowslice-major dynamic matrix
    mat_.reset();
    mat_(1,1,0) =  1;
    mat_(2,0,0) = -2;
@@ -5117,7 +5117,7 @@ void DenseGeneralTest::initialize()
 }
 //*************************************************************************************************
 
-} // namespace pageslice
+} // namespace rowslice
 
 } // namespace mathtest
 
@@ -5135,14 +5135,14 @@ void DenseGeneralTest::initialize()
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running PageSlice dense general test..." << std::endl;
+   std::cout << "   Running RowSlice dense general test..." << std::endl;
 
    try
    {
-      RUN_PAGESLICE_DENSEGENERAL_TEST;
+      RUN_ROWSLICE_DENSEGENERAL_TEST;
    }
    catch( std::exception& ex ) {
-      std::cerr << "\n\n ERROR DETECTED during PageSlice dense general test:\n"
+      std::cerr << "\n\n ERROR DETECTED during RowSlice dense general test:\n"
                 << ex.what() << "\n";
       return EXIT_FAILURE;
    }
