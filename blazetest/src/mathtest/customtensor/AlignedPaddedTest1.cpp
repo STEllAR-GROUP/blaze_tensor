@@ -42,6 +42,7 @@
 #include <iostream>
 #include <memory>
 #include <blaze/math/shims/NextMultiple.h>
+#include <blaze/system/Platform.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
@@ -1265,6 +1266,10 @@ void AlignedPaddedTest::testSubAssign()
 //  MAIN FUNCTION
 //
 //=================================================================================================
+
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
+#endif
 
 //*************************************************************************************************
 int main()

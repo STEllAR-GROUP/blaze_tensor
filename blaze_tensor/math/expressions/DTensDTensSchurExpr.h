@@ -633,7 +633,7 @@ class DTensDTensSchurExpr
    */
    inline bool canSMPAssign() const noexcept {
       return lhs_.canSMPAssign() || rhs_.canSMPAssign() ||
-             ( rows() * columns() * pages() >= SMP_DTENSDTENSSCHUR_THRESHOLD );
+             ( rows() * columns() * pages() >= SMP_DMATDMATSCHUR_THRESHOLD );
    }
    //**********************************************************************************************
 

@@ -57,8 +57,16 @@ target_include_directories(
          $<INSTALL_INTERFACE:blaze_tensor/>)
 
 # Import Blaze and "link" to BlazeTensor
-find_package(blaze REQUIRED)
+find_package(blaze REQUIRED NO_CMAKE_PACKAGE_REGISTRY)
 target_link_libraries(BlazeTensor INTERFACE blaze::blaze)
+
+# setup HPX, if needed
+get_target_property(blaze_parallelization_mode blaze::blaze INTERFACE_COMPILE_DEFINITIONS)
+if(blaze_parallelization_mode AND "${blaze_parallelization_mode}" STREQUAL "BLAZE_USE_HPX_THREADS")
+   find_package(HPX REQUIRED NO_CMAKE_PACKAGE_REGISTRY)
+   target_include_directories(BlazeTensor INTERFACE ${HPX_INCLUDE_DIRS})
+   target_link_libraries(BlazeTensor INTERFACE ${HPX_LIBRARIES})
+endif()
 
 export(PACKAGE BlazeTensor)
 

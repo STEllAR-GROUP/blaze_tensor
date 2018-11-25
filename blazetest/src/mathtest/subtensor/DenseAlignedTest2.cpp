@@ -41,6 +41,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+
+#include <blaze/system/Platform.h>
 #include <blaze/math/Views.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
@@ -2978,6 +2980,10 @@ void DenseAlignedTest::initialize()
 //  MAIN FUNCTION
 //
 //=================================================================================================
+
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
+#endif
 
 //*************************************************************************************************
 int main()

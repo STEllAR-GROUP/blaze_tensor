@@ -42,8 +42,10 @@
 //*************************************************************************************************
 
 #include <hpx/include/parallel_for_loop.hpp>
+
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/StorageOrder.h>
 #include <blaze/math/constraints/SMPAssignable.h>
 #include <blaze/math/functors/AddAssign.h>
 #include <blaze/math/functors/Assign.h>
@@ -51,23 +53,23 @@
 #include <blaze/math/functors/SchurAssign.h>
 #include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
-#include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/smp/Functions.h>
-#include <blaze/math/StorageOrder.h>
+#include <blaze/math/smp/SerialSection.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
+#include <blaze/math/views/Submatrix.h>
 #include <blaze/system/SMP.h>
-#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/algorithms/Min.h>
 
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/smp/TensorThreadMapping.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
-#include <blaze_tensor/math/views/Subtensor.h>
+#include <blaze_tensor/math/views/PageSlice.h>
 
 namespace blaze {
 
@@ -131,32 +133,35 @@ void hpxAssign( DenseTensor<TT1>& lhs, const DenseTensor<TT2>& rhs, OP op )
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread  );
       const size_t column( ( i % threadmap.second ) * colsPerThread  );
 
+      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
+         return;
+
       for (size_t k = 0; k != (~rhs).pages(); ++k)
       {
-         if( row >= (~rhs).rows() || column >= (~rhs).columns() )
-            return;
-
          const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
          const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
 
+         auto lhs_slice = pageslice( ~lhs, k );
+         auto rhs_slice = pageslice( ~rhs, k );
+
          if( simdEnabled && lhsAligned && rhsAligned ) {
-            auto       target( subtensor<aligned>( ~lhs, row, column, m, n, k ) );
-            const auto source( subtensor<aligned>( ~rhs, row, column, m, n, k ) );
+            auto       target( submatrix<aligned>  ( ~lhs_slice, row, column, m, n ) );
+            const auto source( submatrix<aligned>  ( ~rhs_slice, row, column, m, n ) );
             op( target, source );
          }
          else if( simdEnabled && lhsAligned ) {
-            auto       target( subtensor<aligned>( ~lhs, row, column, m, n, k ) );
-            const auto source( subtensor<unaligned>( ~rhs, row, column, m, n, k ) );
+            auto       target( submatrix<aligned>  ( ~lhs_slice, row, column, m, n ) );
+            const auto source( submatrix<unaligned>( ~rhs_slice, row, column, m, n ) );
             op( target, source );
          }
          else if( simdEnabled && rhsAligned ) {
-            auto       target( subtensor<unaligned>( ~lhs, row, column, m, n, k ) );
-            const auto source( subtensor<aligned>( ~rhs, row, column, m, n, k ) );
+            auto       target( submatrix<unaligned>( ~lhs_slice, row, column, m, n ) );
+            const auto source( submatrix<aligned>  ( ~rhs_slice, row, column, m, n ) );
             op( target, source );
          }
          else {
-            auto       target(subtensor<unaligned>(~lhs, row, column, m, n, k));
-            const auto source(subtensor<unaligned>(~rhs, row, column, m, n, k));
+            auto       target(submatrix<unaligned>(~lhs_slice, row, column, m, n ));
+            const auto source(submatrix<unaligned>(~rhs_slice, row, column, m, n ));
             op(target, source);
          }
       }
