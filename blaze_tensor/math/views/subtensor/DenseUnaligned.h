@@ -1915,7 +1915,7 @@ inline void Subtensor<MT,unaligned,CSAs...>::reset()
 {
    using blaze::clear;
 
-   for( size_t k=page(); j<page()+pages(); ++k )
+   for( size_t k=page(); k<page()+pages(); ++k )
       for( size_t i=row(); i<row()+rows(); ++i )
       {
          const size_t jbegin( column() );

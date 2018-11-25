@@ -125,7 +125,8 @@ inline DisableIf_t< DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
    for (size_t k=0UL; k<A.pages(); ++k) {
       for (size_t i=0UL; i<A.rows(); ++i) {
          for (size_t j=0UL; j<A.columns(); ++j) {
-            if (!equal(A(i, j, k), B(i, j, k))) return false;
+            if (!equal(A(i, j, k), B(i, j, k)))
+               return false;
          }
       }
    }

@@ -105,11 +105,12 @@ class DenseAlignedTest
    void testIsDefault();
    void testIsSame();
    void testSubtensor();
-   void testRow();
-   void testRows();
-   void testColumn();
-   void testColumns();
-   void testBand();
+   void testRowSlice();
+   void testRowSlices();
+   void testColumnSlice();
+   void testColumnSlices();
+   void testPageSlice();
+   void testPageSlices();
 
    template< typename Type >
    void checkRows( const Type& tensor, size_t expectedRows ) const;

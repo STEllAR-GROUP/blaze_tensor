@@ -1548,7 +1548,7 @@ inline decltype(auto)
       BLAZE_USER_ASSERT( page   + o <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, sm.pages() + page, m, n, o, args... );
+   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, sm.page() + page, m, n, o, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1595,7 +1595,7 @@ inline decltype(auto)
       BLAZE_USER_ASSERT( page   + o <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, sm.pages() + page, m, n, o, args... );
+   return subtensor<AF1>( sm.operand(), sm.row() + row, sm.column() + column, sm.page() + page, m, n, o, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
