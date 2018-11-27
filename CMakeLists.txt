@@ -103,8 +103,8 @@ install(
 )
 
 # Optionally build tests (primarily for devs)
-option(BUILD_TESTS "Build BlazeTensor tests" OFF)
-if(BUILD_TESTS)
+option(BLAZETENSOR_WITH_TESTS "Build BlazeTensor tests" OFF)
+if(BLAZETENSOR_WITH_TESTS)
    enable_testing()
    include(CTest)
 

@@ -351,7 +351,7 @@ class DTensReduceExpr<MT,OP,columnwise>
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
-         return ConstIterator( it.j_ + inc, k_ );
+         return ConstIterator( it.j_ + inc, it.k_ );
       }
       //*******************************************************************************************
 
@@ -363,7 +363,7 @@ class DTensReduceExpr<MT,OP,columnwise>
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
-         return ConstIterator( it.j_ + inc, k_ );
+         return ConstIterator( it.j_ + inc, it.k_ );
       }
       //*******************************************************************************************
 
@@ -375,7 +375,7 @@ class DTensReduceExpr<MT,OP,columnwise>
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
-         return ConstIterator( it.j_ - dec, k_ );
+         return ConstIterator( it.j_ - dec, it.k_ );
       }
       //*******************************************************************************************
 
@@ -1307,7 +1307,7 @@ class DTensReduceExpr<MT,OP,rowwise>
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
-         return ConstIterator( it.j_ + inc, i_ );
+         return ConstIterator( it.j_ + inc, it.i_ );
       }
       //*******************************************************************************************
 
@@ -1319,7 +1319,7 @@ class DTensReduceExpr<MT,OP,rowwise>
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
-         return ConstIterator( it.j_ + inc, i_ );
+         return ConstIterator( it.j_ + inc, it.i_ );
       }
       //*******************************************************************************************
 
@@ -1331,7 +1331,7 @@ class DTensReduceExpr<MT,OP,rowwise>
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
-         return ConstIterator( it.j_ - dec, i_ );
+         return ConstIterator( it.j_ - dec, it.i_ );
       }
       //*******************************************************************************************
 
@@ -1496,7 +1496,7 @@ class DTensReduceExpr<MT,OP,rowwise>
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return dm_.canSMPAssign() || ( row() * columns() > SMP_DMATREDUCE_THRESHOLD );
+      return dm_.canSMPAssign() || ( rows() * columns() > SMP_DMATREDUCE_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -2094,7 +2094,7 @@ class DTensReduceExpr<MT,OP,pagewise>
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( const ConstIterator& it, size_t inc ) {
-         return ConstIterator( it.k_ + inc, i_ );
+         return ConstIterator( it.k_ + inc, it.i_ );
       }
       //*******************************************************************************************
 
@@ -2106,7 +2106,7 @@ class DTensReduceExpr<MT,OP,pagewise>
       // \return The incremented iterator.
       */
       friend inline const ConstIterator operator+( size_t inc, const ConstIterator& it ) {
-         return ConstIterator( it.k_ + inc, i_ );
+         return ConstIterator( it.k_ + inc, it.i_ );
       }
       //*******************************************************************************************
 
@@ -2118,7 +2118,7 @@ class DTensReduceExpr<MT,OP,pagewise>
       // \return The decremented iterator.
       */
       friend inline const ConstIterator operator-( const ConstIterator& it, size_t dec ) {
-         return ConstIterator( it.k_ - dec, i_ );
+         return ConstIterator( it.k_ - dec, it.i_ );
       }
       //*******************************************************************************************
 

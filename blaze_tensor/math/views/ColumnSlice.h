@@ -1108,7 +1108,7 @@ template< typename MT     // Type of the tensor
         , size_t... CRAs  // Compile time columnslice arguments
         , typename VT >   // Type of the right-hand side matrix
 inline bool tryAssign( const ColumnSlice<MT,CRAs...>& lhs,
-                       const Matrix<VT,false>& rhs, size_t i, size_t k )
+                       const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
@@ -1140,7 +1140,7 @@ template< typename MT     // Type of the tensor
         , size_t... CRAs  // Compile time columnslice arguments
         , typename VT >   // Type of the right-hand side matrix
 inline bool tryAddAssign( const ColumnSlice<MT,CRAs...>& lhs,
-                          const Matrix<VT,false>& rhs, size_t i, size_t k )
+                          const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
@@ -1172,7 +1172,7 @@ template< typename MT     // Type of the tensor
         , size_t... CRAs  // Compile time columnslice arguments
         , typename VT >   // Type of the right-hand side matrix
 inline bool trySubAssign( const ColumnSlice<MT,CRAs...>& lhs,
-                          const Matrix<VT,false>& rhs, size_t i, size_t k )
+                          const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
@@ -1204,7 +1204,7 @@ template< typename MT     // Type of the tensor
         , size_t... CRAs  // Compile time columnslice arguments
         , typename VT >   // Type of the right-hand side matrix
 inline bool tryMultAssign( const ColumnSlice<MT,CRAs...>& lhs,
-                           const Vector<VT,true>& rhs, size_t i, size_t k )
+                           const Vector<VT,true>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
@@ -1236,7 +1236,7 @@ template< typename MT     // Type of the tensor
         , size_t... CRAs  // Compile time columnslice arguments
         , typename VT >   // Type of the right-hand side matrix
 inline bool tryDivAssign( const ColumnSlice<MT,CRAs...>& lhs,
-                          const Matrix<VT,false>& rhs, size_t i, size_t k )
+                          const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
