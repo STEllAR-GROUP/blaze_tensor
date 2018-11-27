@@ -166,13 +166,13 @@ inline TT1& operator*=( Tensor<TT1>&& lhs, const Tensor<TT2>& rhs )
 */
 template< typename MT    // Type of the tensor
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool trySet( const Tensor<MT>& mat, size_t i, size_t j, size_t k, const ET& value )
+BLAZE_ALWAYS_INLINE bool trySet( const Tensor<MT>& mat, size_t k, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( mat, i, j, k, value );
+   UNUSED_PARAMETER( mat, k, i, j, value );
 
    return true;
 }
@@ -199,13 +199,13 @@ BLAZE_ALWAYS_INLINE bool trySet( const Tensor<MT>& mat, size_t i, size_t j, size
 */
 template< typename MT    // Type of the tensor
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool tryAdd( const Tensor<MT>& mat, size_t i, size_t j, size_t k, const ET& value )
+BLAZE_ALWAYS_INLINE bool tryAdd( const Tensor<MT>& mat, size_t k, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( mat, i, j, k, value );
+   UNUSED_PARAMETER( mat, k, i, j, value );
 
    return true;
 }
@@ -232,13 +232,13 @@ BLAZE_ALWAYS_INLINE bool tryAdd( const Tensor<MT>& mat, size_t i, size_t j, size
 */
 template< typename MT    // Type of the tensor
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool trySub( const Tensor<MT>& mat, size_t i, size_t j, size_t k, const ET& value )
+BLAZE_ALWAYS_INLINE bool trySub( const Tensor<MT>& mat, size_t k, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( mat, i, j, k, value );
+   UNUSED_PARAMETER( mat, k, i, j, value );
 
    return true;
 }
@@ -265,13 +265,13 @@ BLAZE_ALWAYS_INLINE bool trySub( const Tensor<MT>& mat, size_t i, size_t j, size
 */
 template< typename MT    // Type of the tensor
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool tryMult( const Tensor<MT>& tens, size_t i, size_t j, size_t k, const ET& value )
+BLAZE_ALWAYS_INLINE bool tryMult( const Tensor<MT>& tens, size_t k, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < (~tens).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~tens).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~tens).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( tens, i, j, k, value );
+   UNUSED_PARAMETER( tens, k, i, j, value );
 
    return true;
 }
@@ -302,7 +302,7 @@ BLAZE_ALWAYS_INLINE bool tryMult( const Tensor<MT>& tens, size_t i, size_t j, si
 template< typename MT    // Type of the tensor
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool
-   tryMult( const Tensor<MT>& tens, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, const ET& value )
+   tryMult( const Tensor<MT>& tens, size_t row, size_t column, size_t page, size_t o, size_t m, size_t n, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~tens).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= (~tens).columns(), "Invalid column access index" );
@@ -311,7 +311,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( column + n <= (~tens).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + o <= (~tens).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( tens, row, column, page, m, n, o, value );
+   UNUSED_PARAMETER( tens, page, row, column, o, m, n, value );
 
    return true;
 }
@@ -338,13 +338,13 @@ BLAZE_ALWAYS_INLINE bool
 */
 template< typename MT    // Type of the tensor
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool tryDiv( const Tensor<MT>& mat, size_t i, size_t j, size_t k, const ET& value )
+BLAZE_ALWAYS_INLINE bool tryDiv( const Tensor<MT>& mat, size_t k, size_t i, size_t j, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~tens).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( mat, i, j, k, value );
+   UNUSED_PARAMETER( mat, k, i, j, value );
 
    return true;
 }
@@ -375,7 +375,7 @@ BLAZE_ALWAYS_INLINE bool tryDiv( const Tensor<MT>& mat, size_t i, size_t j, size
 template< typename MT    // Type of the tensor
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool
-   tryDiv( const Tensor<MT>& tens, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, const ET& value )
+   tryDiv( const Tensor<MT>& tens, size_t row, size_t column, size_t page, size_t o, size_t m, size_t n, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~tens).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= (~tens).columns(), "Invalid column access index" );
@@ -384,7 +384,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( column + n <= (~tens).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + o <= (~tens).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( tens, row, column, page, m, n, o, value );
+   UNUSED_PARAMETER( tens, page, row, column, o, m, n, value );
 
    return true;
 }
@@ -420,7 +420,7 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Tensor<MT>& lhs, const Matrix<VT,false
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -457,7 +457,7 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Tensor<TT1>& lhs, const Tensor<TT2>& r
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -493,7 +493,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,fa
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -530,7 +530,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,fa
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, band, page, row, column );
 
    return true;
 }
@@ -566,7 +566,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<TT1>& lhs, const Tensor<TT2>
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -602,7 +602,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,fa
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -640,7 +640,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,fa
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, band, page, row, column );
 
    return true;
 }
@@ -676,7 +676,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<TT1>& lhs, const Tensor<TT2>
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -712,7 +712,7 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,f
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -750,7 +750,7 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,f
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, band, page, row, column );
 
    return true;
 }
@@ -786,7 +786,7 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<TT1>& lhs, const Tensor<TT
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -823,7 +823,7 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<MT>& lhs, const Matrix<VT,
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -859,7 +859,7 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,fa
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -897,7 +897,7 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,fa
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, row, column, page );
+   UNUSED_PARAMETER( lhs, rhs, band, page, row, column );
 
    return true;
 }
@@ -1260,7 +1260,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Tensor<MT>& tensor, size_t i, size_t 
 */
 template< typename MT > // Type of the tensor
 BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<MT> >
-   resize_backend( Tensor<MT>& tensor, size_t m, size_t n, size_t o, bool preserve )
+   resize_backend( Tensor<MT>& tensor, size_t o, size_t m, size_t n, bool preserve )
 {
    UNUSED_PARAMETER( preserve );
 
@@ -1287,9 +1287,9 @@ BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<MT> >
 */
 template< typename MT > // Type of the tensor
 BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<MT> && !IsSquare_v<MT> >
-   resize_backend( Tensor<MT>& tensor, size_t m, size_t n, size_t o, bool preserve )
+   resize_backend( Tensor<MT>& tensor, size_t o, size_t m, size_t n, bool preserve )
 {
-   (~tensor).resize( m, n, o, preserve );
+   (~tensor).resize( o, m, n, preserve );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1311,7 +1311,7 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<MT> && !IsSquare_v<MT> >
 */
 // template< typename MT > // Type of the tensor
 // BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<MT> && IsSquare_v<MT> >
-//    resize_backend( Tensor<MT>& tensor, size_t m, size_t n, size_t o, bool preserve )
+//    resize_backend( Tensor<MT>& tensor, size_t o, size_t m, size_t n, bool preserve )
 // {
 //    if( m != n || m != o ) {
 //       BLAZE_THROW_INVALID_ARGUMENT( "Invalid resize arguments for square tensor" );
@@ -1362,9 +1362,9 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<MT> && !IsSquare_v<MT> >
    \endcode
 */
 template< typename MT > // Type of the tensor
-BLAZE_ALWAYS_INLINE void resize( Tensor<MT>& tensor, size_t m, size_t n, size_t o, bool preserve )
+BLAZE_ALWAYS_INLINE void resize( Tensor<MT>& tensor, size_t o, size_t m, size_t n, bool preserve )
 {
-   resize_backend( tensor, m, n, o, preserve );
+   resize_backend( tensor, o, m, n, preserve );
 }
 //*************************************************************************************************
 
@@ -1592,9 +1592,9 @@ BLAZE_ALWAYS_INLINE bool isSquare( const Tensor<MT>& tensor ) noexcept
    blaze::DynamicTensor<int> mat1( 4UL, 5UL );  // Setup of a 4x5 dynamic tensor
    blaze::DynamicTensor<int> mat2( 4UL, 5UL );  // Setup of a second 4x5 dynamic tensor
 
-   auto sub1 = subtensor( mat1, 0UL, 0UL, 4UL, 5UL );  // Subtensor fully covering mat1
-   auto sub2 = subtensor( mat1, 1UL, 1UL, 2UL, 3UL );  // Subtensor partially covering mat1
-   auto sub3 = subtensor( mat1, 1UL, 1UL, 2UL, 3UL );  // Subtensor partially covering mat1
+   auto sub1 = subtensor( mat1, 4UL, 0UL, 0UL, 5UL );  // Subtensor fully covering mat1
+   auto sub2 = subtensor( mat1, 2UL, 1UL, 1UL, 3UL );  // Subtensor partially covering mat1
+   auto sub3 = subtensor( mat1, 2UL, 1UL, 1UL, 3UL );  // Subtensor partially covering mat1
 
    isSame( mat1, mat1 );  // returns true since both objects refer to the same tensor
    isSame( mat1, mat2 );  // returns false since mat1 and mat2 are two different tensors

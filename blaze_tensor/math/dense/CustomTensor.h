@@ -208,7 +208,7 @@ namespace blaze {
    // Allocation of 32-bit aligned memory
    std::unique_ptr<int[],Deallocate> memory( allocate<int>( 40UL ) );
 
-   CustomTensor<int,aligned,padded> A( memory.get(), 5UL, 6UL, 8UL );
+   CustomTensor<int,aligned,padded> A( memory.get(), 8UL, 5UL, 6UL );
    \endcode
 
 // In the example, the tensor has six columns. However, since with AVX eight integer
@@ -317,7 +317,7 @@ namespace blaze {
    // Non-initialized custom 2x3 tensor with padding elements. All given arrays are
    // required to be properly aligned and padded. The memory is managed via a 'std::unique_ptr'.
    std::unique_ptr<double[],Deallocate> memory2( allocate<double>( 16UL ) );
-   CustomTensor<double,aligned,padded> B( memory2.get(), 2UL, 3UL, 8UL );
+   CustomTensor<double,aligned,padded> B( memory2.get(), 8UL, 2UL, 3UL );
 
    B(0,0) = 1.0; B(0,1) = 3.0; B(0,2) = 5.0;    // Initialization of the first row
    B(1,0) = 2.0; B(1,1) = 4.0; B(1,2) = 6.0;    // Initialization of the second row
@@ -417,8 +417,8 @@ class CustomTensor
    /*!\name Constructors */
    //@{
    explicit inline CustomTensor();
-   explicit inline CustomTensor( Type* ptr, size_t m, size_t n, size_t o );
-   explicit inline CustomTensor( Type* ptr, size_t m, size_t n, size_t o, size_t nn );
+   explicit inline CustomTensor( Type* ptr, size_t o, size_t m, size_t n );
+   explicit inline CustomTensor( Type* ptr, size_t o, size_t m, size_t n, size_t nn );
 
    inline CustomTensor( const CustomTensor& m );
    inline CustomTensor( CustomTensor&& m ) noexcept;
@@ -435,10 +435,10 @@ class CustomTensor
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j, size_t k ) noexcept;
-   inline ConstReference operator()( size_t i, size_t j, size_t k ) const noexcept;
-   inline Reference      at( size_t i, size_t j, size_t k );
-   inline ConstReference at( size_t i, size_t j, size_t k ) const;
+   inline Reference      operator()( size_t k, size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t k, size_t i, size_t j ) const noexcept;
+   inline Reference      at( size_t k, size_t i, size_t j );
+   inline ConstReference at( size_t k, size_t i, size_t j ) const;
    inline Pointer        data  () noexcept;
    inline ConstPointer   data  () const noexcept;
    inline Pointer        data  ( size_t i, size_t k ) noexcept;
@@ -458,7 +458,7 @@ class CustomTensor
    inline CustomTensor& operator=( const Type& set );
    inline CustomTensor& operator=( initializer_list< initializer_list< initializer_list<Type> > > list );
 
-   template< typename Other, size_t M, size_t N, size_t O >
+   template< typename Other, size_t O, size_t M, size_t N >
    inline CustomTensor& operator=( const Other (&array)[O][M][N] );
 
    inline CustomTensor& operator=( const CustomTensor& rhs );
@@ -502,8 +502,8 @@ class CustomTensor
    //**Resource management functions***************************************************************
    /*!\name Resource management functions */
    //@{
-   inline void reset( Type* ptr, size_t m, size_t n, size_t k );
-   inline void reset( Type* ptr, size_t m, size_t n, size_t k, size_t nn );
+   inline void reset( Type* ptr, size_t o, size_t m, size_t n );
+   inline void reset( Type* ptr, size_t o, size_t m, size_t n, size_t nn );
    //@}
    //**********************************************************************************************
 
@@ -572,14 +572,14 @@ class CustomTensor
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t i, size_t j, size_t k ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t k, size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t k, size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t k, size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void store ( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT >
    inline auto assign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT> >;
@@ -611,9 +611,9 @@ class CustomTensor
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
+   size_t o_;   //!< The current number of pages of the tensor.
    size_t m_;   //!< The current number of rows of the tensor.
    size_t n_;   //!< The current number of columns of the tensor.
-   size_t o_;   //!< The current number of pages of the tensor.
    size_t nn_;  //!< The number of elements between two rows.
    Type* v_;    //!< The custom array of elements.
                 /*!< Access to the tensor elements is gained via the function call
@@ -655,9 +655,9 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>::CustomTensor()
-   : m_ ( 0UL )      // The current number of rows of the tensor
+   : o_ ( 0UL )      // The current number of pages of the tensor
+   , m_ ( 0UL )      // The current number of rows of the tensor
    , n_ ( 0UL )      // The current number of columns of the tensor
-   , o_ ( 0UL )      // The current number of pages of the tensor
    , nn_( 0UL )      // The number of elements between two rows
    , v_ ( nullptr )  // The custom array of elements
 {}
@@ -689,10 +689,10 @@ template< typename Type  // Data type of the tensor
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
-inline CustomTensor<Type,AF,PF,RT>::CustomTensor( Type* ptr, size_t m, size_t n, size_t o )
-   : m_ ( m )    // The current number of rows of the tensor
+inline CustomTensor<Type,AF,PF,RT>::CustomTensor( Type* ptr, size_t o, size_t m, size_t n )
+   : o_ ( o )    // The current number of pages of the tensor
+   , m_ ( m )    // The current number of rows of the tensor
    , n_ ( n )    // The current number of columns of the tensor
-   , o_ ( o )    // The current number of pages of the tensor
    , nn_( n )    // The number of elements between two rows
    , v_ ( ptr )  // The custom array of elements
 {
@@ -736,10 +736,10 @@ template< typename Type  // Data type of the tensor
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
-inline CustomTensor<Type,AF,PF,RT>::CustomTensor( Type* ptr, size_t m, size_t n, size_t o, size_t nn )
-   : m_ ( m )    // The current number of rows of the tensor
+inline CustomTensor<Type,AF,PF,RT>::CustomTensor( Type* ptr, size_t o, size_t m, size_t n, size_t nn )
+   : o_ ( o )    // The current number of pages of the tensor
+   , m_ ( m )    // The current number of rows of the tensor
    , n_ ( n )    // The current number of columns of the tensor
-   , o_ ( o )    // The current number of pages of the tensor
    , nn_( nn )   // The number of elements between two rows
    , v_ ( ptr )  // The custom array of elements
 {
@@ -782,9 +782,9 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>::CustomTensor( const CustomTensor& m )
-   : m_ ( m.m_ )   // The current number of rows of the tensor
+   : o_ ( m.o_ )   // The current number of pages of the tensor
+   , m_ ( m.m_ )   // The current number of rows of the tensor
    , n_ ( m.n_ )   // The current number of columns of the tensor
-   , o_ ( m.o_ )   // The current number of pages of the tensor
    , nn_( m.nn_ )  // The number of elements between two rows
    , v_ ( m.v_ )   // The custom array of elements
 {}
@@ -801,15 +801,15 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>::CustomTensor( CustomTensor&& m ) noexcept
-   : m_ ( m.m_ )   // The current number of rows of the tensor
+   : o_ ( m.o_ )   // The current number of pages of the tensor
+   , m_ ( m.m_ )   // The current number of rows of the tensor
    , n_ ( m.n_ )   // The current number of columns of the tensor
-   , o_ ( m.o_ )   // The current number of pages of the tensor
    , nn_( m.nn_ )  // The number of elements between two rows
    , v_ ( m.v_ )   // The custom array of elements
 {
+   m.o_  = 0UL;
    m.m_  = 0UL;
    m.n_  = 0UL;
-   m.o_  = 0UL;
    m.nn_ = 0UL;
    m.v_  = nullptr;
 
@@ -841,7 +841,7 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::Reference
-   CustomTensor<Type,AF,PF,RT>::operator()( size_t i, size_t j, size_t k ) noexcept
+   CustomTensor<Type,AF,PF,RT>::operator()( size_t k, size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -866,7 +866,7 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstReference
-   CustomTensor<Type,AF,PF,RT>::operator()( size_t i, size_t j, size_t k ) const noexcept
+   CustomTensor<Type,AF,PF,RT>::operator()( size_t k, size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -892,7 +892,7 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::Reference
-   CustomTensor<Type,AF,PF,RT>::at( size_t i, size_t j, size_t k )
+   CustomTensor<Type,AF,PF,RT>::at( size_t k, size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -903,7 +903,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::Reference
    if( k >= o_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
    }
-   return (*this)(i,j,k);
+   return (*this)(k,i,j);
 }
 //*************************************************************************************************
 
@@ -924,7 +924,7 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstReference
-   CustomTensor<Type,AF,PF,RT>::at( size_t i, size_t j, size_t k ) const
+   CustomTensor<Type,AF,PF,RT>::at( size_t k, size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -935,7 +935,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::ConstReference
    if( k >= o_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
    }
-   return (*this)(i,j,k);
+   return (*this)(k,i,j);
 }
 //*************************************************************************************************
 
@@ -1305,9 +1305,9 @@ template< typename Type   // Data type of the tensor
         , bool PF         // Padding flag
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
+        , size_t O        // Number of pages of the initialization array
         , size_t M        // Number of rows of the initialization array
-        , size_t N        // Number of columns of the initialization array
-        , size_t O >      // Number of pages of the initialization array
+        , size_t N >      // Number of columns of the initialization array
 inline CustomTensor<Type,AF,PF,RT>&
    CustomTensor<Type,AF,PF,RT>::operator=( const Other (&array)[O][M][N] )
 {
@@ -1368,15 +1368,15 @@ template< typename Type  // Data type of the tensor
 inline CustomTensor<Type,AF,PF,RT>&
    CustomTensor<Type,AF,PF,RT>::operator=( CustomTensor&& rhs ) noexcept
 {
+   o_  = rhs.o_;
    m_  = rhs.m_;
    n_  = rhs.n_;
-   o_  = rhs.o_;
    nn_ = rhs.nn_;
    v_  = rhs.v_;
 
+   rhs.o_  = 0UL;
    rhs.m_  = 0UL;
    rhs.n_  = 0UL;
-   rhs.o_  = 0UL;
    rhs.nn_ = 0UL;
    rhs.v_  = nullptr;
 
@@ -1768,9 +1768,9 @@ template< typename Type  // Data type of the tensor
         , typename RT >  // Result type
 inline void CustomTensor<Type,AF,PF,RT>::clear()
 {
+   o_  = 0UL;
    m_  = 0UL;
    n_  = 0UL;
-   o_  = 0UL;
    nn_ = 0UL;
    v_  = nullptr;
 }
@@ -1791,9 +1791,9 @@ inline void CustomTensor<Type,AF,PF,RT>::swap( CustomTensor& m ) noexcept
 {
    using std::swap;
 
+   swap( o_ , m.o_  );
    swap( m_ , m.m_  );
    swap( n_ , m.n_  );
-   swap( o_ , m.o_  );
    swap( nn_, m.nn_ );
    swap( v_ , m.v_  );
 }
@@ -1943,11 +1943,11 @@ template< typename Type  // Data type of the tensor
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
-inline void CustomTensor<Type,AF,PF,RT>::reset( Type* ptr, size_t m, size_t n, size_t o )
+inline void CustomTensor<Type,AF,PF,RT>::reset( Type* ptr, size_t o, size_t m, size_t n )
 {
    BLAZE_STATIC_ASSERT( PF == unpadded );
 
-   CustomTensor tmp( ptr, m, n, o );
+   CustomTensor tmp( ptr, o, m, n );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -1980,9 +1980,9 @@ template< typename Type  // Data type of the tensor
         , bool AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
-inline void CustomTensor<Type,AF,PF,RT>::reset( Type* ptr, size_t m, size_t n, size_t o, size_t nn )
+inline void CustomTensor<Type,AF,PF,RT>::reset( Type* ptr, size_t o, size_t m, size_t n, size_t nn )
 {
-   CustomTensor tmp( ptr, m, n, o, nn );
+   CustomTensor tmp( ptr, o, m, n, nn );
    swap( tmp );
 }
 //*************************************************************************************************
@@ -2101,12 +2101,12 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE typename CustomTensor<Type,AF,PF,RT>::SIMDType
-   CustomTensor<Type,AF,PF,RT>::load( size_t i, size_t j, size_t k ) const noexcept
+   CustomTensor<Type,AF,PF,RT>::load( size_t k, size_t i, size_t j ) const noexcept
 {
    if( AF && PF )
-      return loada( i, j, k );
+      return loada( k, i, j );
    else
-      return loadu( i, j, k );
+      return loadu( k, i, j );
 }
 //*************************************************************************************************
 
@@ -2131,7 +2131,7 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE typename CustomTensor<Type,AF,PF,RT>::SIMDType
-   CustomTensor<Type,AF,PF,RT>::loada( size_t i, size_t j, size_t k ) const noexcept
+   CustomTensor<Type,AF,PF,RT>::loada( size_t k, size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -2169,7 +2169,7 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE typename CustomTensor<Type,AF,PF,RT>::SIMDType
-   CustomTensor<Type,AF,PF,RT>::loadu( size_t i, size_t j, size_t k ) const noexcept
+   CustomTensor<Type,AF,PF,RT>::loadu( size_t k, size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -2206,12 +2206,12 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomTensor<Type,AF,PF,RT>::store( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   CustomTensor<Type,AF,PF,RT>::store( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    if( AF && PF )
-      storea( i, j, k, value );
+      storea( k, i, j, value );
    else
-      storeu( i, j, k, value );
+      storeu( k, i, j, value );
 }
 //*************************************************************************************************
 
@@ -2237,7 +2237,7 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomTensor<Type,AF,PF,RT>::storea( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   CustomTensor<Type,AF,PF,RT>::storea( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2276,7 +2276,7 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomTensor<Type,AF,PF,RT>::storeu( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   CustomTensor<Type,AF,PF,RT>::storeu( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2314,7 +2314,7 @@ template< typename Type  // Data type of the tensor
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
-   CustomTensor<Type,AF,PF,RT>::stream( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   CustomTensor<Type,AF,PF,RT>::stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2362,11 +2362,11 @@ inline auto CustomTensor<Type,AF,PF,RT>::assign( const DenseTensor<MT>& rhs )
       for (size_t i=0UL; i<m_; ++i) {
          size_t row_elements = (k*m_+i)*nn_;
          for (size_t j=0UL; j<jpos; j+=2UL) {
-            v_[row_elements+j] = (~rhs)(i, j, k);
-            v_[row_elements+j+1UL] = (~rhs)(i, j+1UL, k);
+            v_[row_elements+j] = (~rhs)(k, i, j);
+            v_[row_elements+j+1UL] = (~rhs)(k, i, j+1UL);
          }
          if (jpos < n_) {
-            v_[row_elements+jpos] = (~rhs)(i, jpos, k);
+            v_[row_elements+jpos] = (~rhs)(k, i, jpos);
          }
       }
    }
@@ -2483,11 +2483,11 @@ inline auto CustomTensor<Type,AF,PF,RT>::addAssign( const DenseTensor<MT>& rhs )
          size_t j(jbegin);
 
          for (; (j+2UL) <= jend; j+=2UL) {
-            v_[row_elements+j] += (~rhs)(i, j, k);
-            v_[row_elements+j+1UL] += (~rhs)(i, j+1UL, k);
+            v_[row_elements+j] += (~rhs)(k, i, j);
+            v_[row_elements+j+1UL] += (~rhs)(k, i, j+1UL);
          }
          if (j < jend) {
-            v_[row_elements+j] += (~rhs)(i, j, k);
+            v_[row_elements+j] += (~rhs)(k, i, j);
          }
       }
    }
@@ -2587,11 +2587,11 @@ inline auto CustomTensor<Type,AF,PF,RT>::subAssign( const DenseTensor<MT>& rhs )
          size_t j(jbegin);
 
          for (; (j+2UL) <= jend; j+=2UL) {
-            v_[row_elements+j] -= (~rhs)(i, j, k);
-            v_[row_elements+j+1UL] -= (~rhs)(i, j+1UL, k);
+            v_[row_elements+j] -= (~rhs)(k, i, j);
+            v_[row_elements+j+1UL] -= (~rhs)(k, i, j+1UL);
          }
          if (j < jend) {
-            v_[row_elements+j] -= (~rhs)(i, j, k);
+            v_[row_elements+j] -= (~rhs)(k, i, j);
          }
       }
    }
@@ -2688,11 +2688,11 @@ inline auto CustomTensor<Type,AF,PF,RT>::schurAssign( const DenseTensor<MT>& rhs
       for (size_t i=0UL; i<m_; ++i) {
          size_t row_elements = (k*m_+i)*nn_;
          for (size_t j=0UL; j<jpos; j+=2UL) {
-            v_[row_elements+j] *= (~rhs)(i, j, k);
-            v_[row_elements+j+1UL] *= (~rhs)(i, j+1UL, k);
+            v_[row_elements+j] *= (~rhs)(k, i, j);
+            v_[row_elements+j+1UL] *= (~rhs)(k, i, j+1UL);
          }
          if (jpos < n_) {
-            v_[row_elements+jpos] *= (~rhs)(i, jpos, k);
+            v_[row_elements+jpos] *= (~rhs)(k, i, jpos);
          }
       }
    }

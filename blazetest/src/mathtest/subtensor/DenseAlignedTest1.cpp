@@ -133,8 +133,8 @@ void DenseAlignedTest::testConstructors()
                         const size_t n( blaze::min( maxn, mat1_.columns()-column ) );
                         const size_t o( blaze::min( maxo, mat1_.pages()-page) );
 
-                        const ASMT sm1 = subtensor<aligned>  ( mat1_, row, column, page, m, n, o );
-                        const USMT sm2 = subtensor<unaligned>( mat2_, row, column, page, m, n, o );
+                        const ASMT sm1 = subtensor<aligned>  ( mat1_, page, row, column, o, m, n );
+                        const USMT sm2 = subtensor<unaligned>( mat2_, page, row, column, o, m, n );
 
                         if( sm1 != sm2 ) {
                            std::ostringstream oss;
@@ -165,43 +165,31 @@ void DenseAlignedTest::testConstructors()
       }
 
       try {
+         ASMT sm = subtensor<aligned>( mat1_, 2UL, 0UL, 8UL, 16UL, 16UL, 16UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds subtensor succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
+         ASMT sm = subtensor<aligned>( mat1_, 2UL, 8UL, 0UL, 16UL, 16UL, 16UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds subtensor succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
+      try {
          ASMT sm = subtensor<aligned>( mat1_, 0UL, 8UL, 2UL, 16UL, 16UL, 16UL );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of out-of-bounds subtensor succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-
-      try {
-         ASMT sm = subtensor<aligned>( mat1_, 8UL, 0UL, 2UL, 16UL, 16UL, 16UL );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of out-of-bounds subtensor succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-
-      try {
-         ASMT sm = subtensor<aligned>( mat1_, 8UL, 2UL, 0UL, 16UL, 16UL, 16UL );
-
-         std::ostringstream oss;
-         oss << " Test: " << test_ << "\n"
-             << " Error: Setup of out-of-bounds subtensor succeeded\n"
-             << " Details:\n"
-             << "   Result:\n" << sm << "\n";
-         throw std::runtime_error( oss.str() );
-      }
-      catch( std::invalid_argument& ) {}
-
-      try {
-         ASMT sm = subtensor<aligned>( mat1_, 72UL, 0UL, 0UL, 8UL, 8UL, 8UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -236,10 +224,22 @@ void DenseAlignedTest::testConstructors()
       }
       catch( std::invalid_argument& ) {}
 
+      try {
+         ASMT sm = subtensor<aligned>( mat1_, 72UL, 0UL, 0UL, 8UL, 8UL, 8UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds subtensor succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << sm << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+
       if( blaze::AlignmentOf<int>::value > sizeof(int) )
       {
          try {
-            ASMT sm = subtensor<aligned>( mat1_, 8UL, 7UL, 8UL, 8UL, 8UL, 8UL );
+            ASMT sm = subtensor<aligned>( mat1_, 8UL, 8UL, 7UL, 8UL, 8UL, 8UL );
 
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
@@ -286,8 +286,8 @@ void DenseAlignedTest::testAssignment()
 
       // Assigning to a 8x12x8 subtensor
       {
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 8UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 8UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
          sm1 = 12;
          sm2 = 12;
 
@@ -311,8 +311,8 @@ void DenseAlignedTest::testAssignment()
 
       // Assigning to a 12x8x8 subtensor
       {
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 8UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 8UL );
          sm1 = 15;
          sm2 = 15;
 
@@ -336,8 +336,8 @@ void DenseAlignedTest::testAssignment()
 
       // Assigning to a 8x8x12 subtensor
       {
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
          sm1 = 42;
          sm2 = 42;
 
@@ -370,8 +370,8 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       initializer_list< initializer_list< initializer_list<int> > > list = {
          { { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12 },
@@ -434,8 +434,8 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       initializer_list< initializer_list< initializer_list<int> > > list = {
          { { 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12 },
@@ -495,10 +495,10 @@ void DenseAlignedTest::testAssignment()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm1 = subtensor<aligned>  ( mat1, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm2 = subtensor<unaligned>( mat2, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm1 = subtensor<aligned>  ( mat1, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm2 = subtensor<unaligned>( mat2, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -523,10 +523,10 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm1 = subtensor<aligned>  ( mat1_, 0UL, 0UL, 0UL, 8UL, 12UL, 4UL );
-      sm2 = subtensor<unaligned>( mat2_, 0UL, 0UL, 0UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm1 = subtensor<aligned>  ( mat1_, 0UL, 0UL, 0UL, 4UL, 8UL, 12UL );
+      sm2 = subtensor<unaligned>( mat2_, 0UL, 0UL, 0UL, 4UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -556,10 +556,10 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
-      blaze::DynamicTensor<short> mat( 8UL, 12UL, 4UL );
+      blaze::DynamicTensor<short> mat( 4UL, 8UL, 12UL );
       randomize( mat, short(randmin), short(randmax) );
 
       sm1 = mat;
@@ -588,12 +588,12 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 6144UL ) );
-      AlignedPadded mat( memory.get(), 8UL, 12UL, 4UL, 16UL );
+      AlignedPadded mat( memory.get(), 4UL, 8UL, 12UL, 16UL );
       randomize( mat, int(randmin), int(randmax) );
 
       sm1 = mat;
@@ -622,12 +622,12 @@ void DenseAlignedTest::testAssignment()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory( new int[385UL] );
-      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 12UL, 4UL );
+      UnalignedUnpadded mat( memory.get()+1UL, 4UL, 8UL, 12UL );
       randomize( mat, int(randmin), int(randmax) );
 
       sm1 = mat;
@@ -687,10 +687,10 @@ void DenseAlignedTest::testAddAssign()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm1 += subtensor<aligned>  ( mat1, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm2 += subtensor<unaligned>( mat2, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm1 += subtensor<aligned>  ( mat1, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm2 += subtensor<unaligned>( mat2, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -715,10 +715,10 @@ void DenseAlignedTest::testAddAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm1 += subtensor<aligned>  ( mat1_, 0UL, 0UL, 0UL, 8UL, 12UL, 4UL );
-      sm2 += subtensor<unaligned>( mat2_, 0UL, 0UL, 0UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm1 += subtensor<aligned>  ( mat1_, 0UL, 0UL, 0UL, 4UL, 8UL, 12UL );
+      sm2 += subtensor<unaligned>( mat2_, 0UL, 0UL, 0UL, 4UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -748,10 +748,10 @@ void DenseAlignedTest::testAddAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
-      blaze::DynamicTensor<short> mat( 8UL, 12UL, 4UL );
+      blaze::DynamicTensor<short> mat( 4UL, 8UL, 12UL );
       randomize( mat, short(randmin), short(randmax) );
 
       sm1 += mat;
@@ -780,12 +780,12 @@ void DenseAlignedTest::testAddAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 6144UL ) );
-      AlignedPadded mat( memory.get(), 8UL, 12UL, 4UL, 16UL );
+      AlignedPadded mat( memory.get(), 4UL, 8UL, 12UL, 16UL );
       randomize( mat, int(randmin), int(randmax) );
 
       sm1 += mat;
@@ -814,12 +814,12 @@ void DenseAlignedTest::testAddAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory( new int[385UL] );
-      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 12UL, 4UL );
+      UnalignedUnpadded mat( memory.get()+1UL, 4UL, 8UL, 12UL );
       randomize( mat, int(randmin), int(randmax) );
 
       sm1 += mat;
@@ -879,10 +879,10 @@ void DenseAlignedTest::testSubAssign()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm1 -= subtensor<aligned>  ( mat1, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm2 -= subtensor<unaligned>( mat2, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm1 -= subtensor<aligned>  ( mat1, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm2 -= subtensor<unaligned>( mat2, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -907,10 +907,10 @@ void DenseAlignedTest::testSubAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm1 -= subtensor<aligned>  ( mat1_, 0UL, 0UL, 0UL, 8UL, 12UL, 4UL );
-      sm2 -= subtensor<unaligned>( mat2_, 0UL, 0UL, 0UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm1 -= subtensor<aligned>  ( mat1_, 0UL, 0UL, 0UL, 4UL, 8UL, 12UL );
+      sm2 -= subtensor<unaligned>( mat2_, 0UL, 0UL, 0UL, 4UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -940,10 +940,10 @@ void DenseAlignedTest::testSubAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
-      blaze::DynamicTensor<short> mat( 8UL, 12UL, 4UL );
+      blaze::DynamicTensor<short> mat( 4UL, 8UL, 12UL );
       randomize( mat, short(randmin), short(randmax) );
 
       sm1 -= mat;
@@ -972,12 +972,12 @@ void DenseAlignedTest::testSubAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 6144UL ) );
-      AlignedPadded mat( memory.get(), 8UL, 12UL, 4UL, 16UL );
+      AlignedPadded mat( memory.get(), 4UL, 8UL, 12UL, 16UL );
       randomize( mat, int(randmin), int(randmax) );
 
       sm1 -= mat;
@@ -1006,12 +1006,12 @@ void DenseAlignedTest::testSubAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory( new int[385UL] );
-      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 12UL, 4UL );
+      UnalignedUnpadded mat( memory.get()+1UL, 4UL, 8UL, 12UL );
       randomize( mat, int(randmin), int(randmax) );
 
       sm1 -= mat;
@@ -1071,10 +1071,10 @@ void DenseAlignedTest::testSchurAssign()
       randomize( mat1, int(randmin), int(randmax) );
       mat2 = mat1;
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm1 %= subtensor<aligned>  ( mat1, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm2 %= subtensor<unaligned>( mat2, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm1 %= subtensor<aligned>  ( mat1, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm2 %= subtensor<unaligned>( mat2, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -1099,10 +1099,10 @@ void DenseAlignedTest::testSchurAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      sm1 %= subtensor<aligned>  ( mat1_, 0UL, 0UL, 0UL, 8UL, 12UL, 4UL );
-      sm2 %= subtensor<unaligned>( mat2_, 0UL, 0UL, 0UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      sm1 %= subtensor<aligned>  ( mat1_, 0UL, 0UL, 0UL, 4UL, 8UL, 12UL );
+      sm2 %= subtensor<unaligned>( mat2_, 0UL, 0UL, 0UL, 4UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -1132,10 +1132,10 @@ void DenseAlignedTest::testSchurAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
-      blaze::DynamicTensor<short> mat( 8UL, 12UL, 4UL );
+      blaze::DynamicTensor<short> mat( 4UL, 8UL, 12UL );
       randomize( mat, short(randmin), short(randmax) );
 
       sm1 %= mat;
@@ -1164,12 +1164,12 @@ void DenseAlignedTest::testSchurAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 6144UL ) );
-      AlignedPadded mat( memory.get(), 8UL, 12UL, 4UL, 16UL );
+      AlignedPadded mat( memory.get(), 4UL, 8UL, 12UL, 16UL );
       randomize( mat, int(randmin), int(randmax) );
 
       sm1 %= mat;
@@ -1198,12 +1198,12 @@ void DenseAlignedTest::testSchurAssign()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 4UL, 2UL, 8UL, 12UL, 4UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 4UL, 8UL, 12UL );
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory( new int[385UL] );
-      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 12UL, 4UL );
+      UnalignedUnpadded mat( memory.get()+1UL, 4UL, 8UL, 12UL );
       randomize( mat, int(randmin), int(randmax) );
 
       sm1 %= mat;
@@ -1263,10 +1263,10 @@ void DenseAlignedTest::testMultAssign()
 //       randomize( mat1, int(randmin), int(randmax) );
 //       mat2 = mat1;
 //
-//       ASMT sm1 = subtensor<aligned>  ( mat1_, 16UL, 16UL, 8UL, 8UL );
-//       USMT sm2 = subtensor<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
-//       sm1 *= subtensor<aligned>  ( mat1, 16UL, 16UL, 8UL, 8UL );
-//       sm2 *= subtensor<unaligned>( mat2, 16UL, 16UL, 8UL, 8UL );
+//       ASMT sm1 = subtensor<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+//       USMT sm2 = subtensor<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
+//       sm1 *= subtensor<aligned>  ( mat1, 8UL, 16UL, 16UL, 8UL );
+//       sm2 *= subtensor<unaligned>( mat2, 8UL, 16UL, 16UL, 8UL );
 //
 //       checkRows   ( sm1, 8UL );
 //       checkColumns( sm1, 8UL );
@@ -1289,10 +1289,10 @@ void DenseAlignedTest::testMultAssign()
 //
 //       initialize();
 //
-//       ASMT sm1 = subtensor<aligned>  ( mat1_, 16UL, 16UL, 8UL, 8UL );
-//       USMT sm2 = subtensor<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
-//       sm1 *= subtensor<aligned>  ( mat1_, 24UL, 24UL, 8UL, 8UL );
-//       sm2 *= subtensor<unaligned>( mat2_, 24UL, 24UL, 8UL, 8UL );
+//       ASMT sm1 = subtensor<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+//       USMT sm2 = subtensor<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
+//       sm1 *= subtensor<aligned>  ( mat1_, 8UL, 24UL, 24UL, 8UL );
+//       sm2 *= subtensor<unaligned>( mat2_, 8UL, 24UL, 24UL, 8UL );
 //
 //       checkRows   ( sm1, 8UL );
 //       checkColumns( sm1, 8UL );
@@ -1320,8 +1320,8 @@ void DenseAlignedTest::testMultAssign()
 //
 //       initialize();
 //
-//       ASMT sm1 = subtensor<aligned>  ( mat1_, 16UL, 16UL, 8UL, 8UL );
-//       USMT sm2 = subtensor<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
+//       ASMT sm1 = subtensor<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+//       USMT sm2 = subtensor<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
 //
 //       blaze::DynamicTensor<short,rowMajor> mat( 8UL, 8UL );
 //       randomize( mat, short(randmin), short(randmax) );
@@ -1350,8 +1350,8 @@ void DenseAlignedTest::testMultAssign()
 //
 //       initialize();
 //
-//       ASMT sm1 = subtensor<aligned>  ( mat1_, 16UL, 16UL, 8UL, 8UL );
-//       USMT sm2 = subtensor<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
+//       ASMT sm1 = subtensor<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+//       USMT sm2 = subtensor<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
 //
 //       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,rowMajor>;
 //       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 128UL ) );
@@ -1382,8 +1382,8 @@ void DenseAlignedTest::testMultAssign()
 //
 //       initialize();
 //
-//       ASMT sm1 = subtensor<aligned>  ( mat1_, 16UL, 16UL, 8UL, 8UL );
-//       USMT sm2 = subtensor<unaligned>( mat2_, 16UL, 16UL, 8UL, 8UL );
+//       ASMT sm1 = subtensor<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
+//       USMT sm2 = subtensor<unaligned>( mat2_, 8UL, 16UL, 16UL, 8UL );
 //
 //       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,rowMajor>;
 //       std::unique_ptr<int[]> memory( new int[65UL] );

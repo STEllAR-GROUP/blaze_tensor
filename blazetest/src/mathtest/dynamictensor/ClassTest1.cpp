@@ -159,7 +159,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor size constructor (0x4x2)";
 
-      blaze::DynamicTensor<int> tens( 0UL, 4UL, 2UL );
+      blaze::DynamicTensor<int> tens( 2UL, 0UL, 4UL );
 
       checkRows    ( tens, 0UL );
       checkColumns ( tens, 4UL );
@@ -170,7 +170,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor size constructor (3x0x1)";
 
-      blaze::DynamicTensor<int> tens( 3UL, 0UL, 1UL );
+      blaze::DynamicTensor<int> tens( 1UL, 3UL, 0UL );
 
       checkRows    ( tens, 3UL );
       checkColumns ( tens, 0UL );
@@ -181,7 +181,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor size constructor (3x1x0)";
 
-      blaze::DynamicTensor<int> tens( 3UL, 1UL, 0UL );
+      blaze::DynamicTensor<int> tens( 0UL, 3UL, 1UL );
 
       checkRows    ( tens, 3UL );
       checkColumns ( tens, 1UL );
@@ -192,7 +192,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor size constructor (3x4x1)";
 
-      blaze::DynamicTensor<int> tens( 3UL, 4UL, 1UL );
+      blaze::DynamicTensor<int> tens( 1UL, 3UL, 4UL );
 
       checkRows    ( tens,  3UL );
       checkColumns ( tens,  4UL );
@@ -219,7 +219,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor homogeneous initialization constructor (0x4x2)";
 
-      blaze::DynamicTensor<int> tens( 0UL, 4UL, 2UL, 2 );
+      blaze::DynamicTensor<int> tens( 2UL, 0UL, 4UL, 2 );
 
       checkRows    ( tens, 0UL );
       checkColumns ( tens, 4UL );
@@ -230,7 +230,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor homogeneous initialization constructor (3x0x2)";
 
-      blaze::DynamicTensor<int> tens( 3UL, 0UL, 2UL, 2 );
+      blaze::DynamicTensor<int> tens( 2UL, 3UL, 0UL, 2 );
 
       checkRows    ( tens, 3UL );
       checkColumns ( tens, 0UL );
@@ -241,7 +241,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor homogeneous initialization constructor (3x4x2)";
 
-      blaze::DynamicTensor<int> tens( 3UL, 4UL, 2UL, 2 );
+      blaze::DynamicTensor<int> tens( 2UL, 3UL, 4UL, 2 );
 
       checkRows    ( tens,  3UL );
       checkColumns ( tens,  4UL );
@@ -255,12 +255,12 @@ void ClassTest::testConstructors()
       checkNonZeros( tens,  1UL, 1UL, 4UL );
       checkNonZeros( tens,  2UL, 1UL, 4UL );
 
-      if( tens(0,0,0) != 2 || tens(0,1,0) != 2 || tens(0,2,0) != 2 || tens(0,3,0) != 2 ||
-          tens(1,0,0) != 2 || tens(1,1,0) != 2 || tens(1,2,0) != 2 || tens(1,3,0) != 2 ||
-          tens(2,0,0) != 2 || tens(2,1,0) != 2 || tens(2,2,0) != 2 || tens(2,3,0) != 2 ||
-          tens(0,0,1) != 2 || tens(0,1,1) != 2 || tens(0,2,1) != 2 || tens(0,3,1) != 2 ||
-          tens(1,0,1) != 2 || tens(1,1,1) != 2 || tens(1,2,1) != 2 || tens(1,3,1) != 2 ||
-          tens(2,0,1) != 2 || tens(2,1,1) != 2 || tens(2,2,1) != 2 || tens(2,3,1) != 2 ) {
+      if( tens(0,0,0) != 2 || tens(0,0,1) != 2 || tens(0,0,2) != 2 || tens(0,0,3) != 2 ||
+          tens(0,1,0) != 2 || tens(0,1,1) != 2 || tens(0,1,2) != 2 || tens(0,1,3) != 2 ||
+          tens(0,2,0) != 2 || tens(0,2,1) != 2 || tens(0,2,2) != 2 || tens(0,2,3) != 2 ||
+          tens(1,0,0) != 2 || tens(1,0,1) != 2 || tens(1,0,2) != 2 || tens(1,0,3) != 2 ||
+          tens(1,1,0) != 2 || tens(1,1,1) != 2 || tens(1,1,2) != 2 || tens(1,1,3) != 2 ||
+          tens(1,2,0) != 2 || tens(1,2,1) != 2 || tens(1,2,2) != 2 || tens(1,2,3) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -291,10 +291,10 @@ void ClassTest::testConstructors()
       checkNonZeros( tens, 0UL, 1UL, 3UL );
       checkNonZeros( tens, 1UL, 1UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 2 || tens(0,2,0) != 3 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ||
-          tens(0,0,1) != 1 || tens(0,1,1) != 2 || tens(0,2,1) != 3 ||
-          tens(1,0,1) != 4 || tens(1,1,1) != 5 || tens(1,2,1) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 2 || tens(0,0,2) != 3 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ||
+          tens(1,0,0) != 1 || tens(1,0,1) != 2 || tens(1,0,2) != 3 ||
+          tens(1,1,0) != 4 || tens(1,1,1) != 5 || tens(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -320,10 +320,10 @@ void ClassTest::testConstructors()
       checkNonZeros( tens, 1UL, 1UL, 3UL );
       checkNonZeros( tens, 1UL, 1UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 0 || tens(0,2,0) != 0 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ||
-          tens(0,0,1) != 1 || tens(0,1,1) != 0 || tens(0,2,1) != 0 ||
-          tens(1,0,1) != 4 || tens(1,1,1) != 5 || tens(1,2,1) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 0 || tens(0,0,2) != 0 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ||
+          tens(1,0,0) != 1 || tens(1,0,1) != 0 || tens(1,0,2) != 0 ||
+          tens(1,1,0) != 4 || tens(1,1,1) != 5 || tens(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -349,7 +349,7 @@ void ClassTest::testConstructors()
       array[3] = 4;
       array[4] = 5;
       array[5] = 6;
-      blaze::DynamicTensor<int> tens( 2UL, 3UL, 1UL, array.get() );
+      blaze::DynamicTensor<int> tens( 1UL, 2UL, 3UL, array.get() );
 
       checkRows    ( tens, 2UL );
       checkColumns ( tens, 3UL );
@@ -359,8 +359,8 @@ void ClassTest::testConstructors()
       checkNonZeros( tens, 0UL, 0UL, 3UL );
       checkNonZeros( tens, 1UL, 0UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 2 || tens(0,2,0) != 3 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 2 || tens(0,0,2) != 3 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -385,8 +385,8 @@ void ClassTest::testConstructors()
       checkNonZeros( tens, 0UL, 0UL, 3UL );
       checkNonZeros( tens, 1UL, 0UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 2 || tens(0,2,0) != 3 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 2 || tens(0,0,2) != 3 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -417,7 +417,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor copy constructor (0x3x1)";
 
-      blaze::DynamicTensor<int> mat1( 0UL, 3UL, 1UL );
+      blaze::DynamicTensor<int> mat1( 1UL, 0UL, 3UL );
       blaze::DynamicTensor<int> mat2( mat1 );
 
       checkRows    ( mat2, 0UL );
@@ -429,7 +429,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor copy constructor (2x0x1)";
 
-      blaze::DynamicTensor<int> mat1( 2UL, 0UL, 1UL );
+      blaze::DynamicTensor<int> mat1( 1UL, 2UL, 0UL );
       blaze::DynamicTensor<int> mat2( mat1 );
 
       checkRows    ( mat2, 2UL );
@@ -441,7 +441,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor copy constructor (2x1x0)";
 
-      blaze::DynamicTensor<int> mat1( 2UL, 1UL, 0UL );
+      blaze::DynamicTensor<int> mat1( 0UL, 2UL, 1UL );
       blaze::DynamicTensor<int> mat2( mat1 );
 
       checkRows    ( mat2, 2UL );
@@ -463,15 +463,15 @@ void ClassTest::testConstructors()
       checkPages   ( mat2,  2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2, 12UL );
-      checkNonZeros( mat2, 0UL, 0UL, 3UL );
-      checkNonZeros( mat2, 1UL, 0UL, 3UL );
-      checkNonZeros( mat2, 0UL, 1UL, 3UL );
-      checkNonZeros( mat2, 1UL, 1UL, 3UL );
+      checkNonZeros( mat2, 3UL, 0UL, 0UL );
+      checkNonZeros( mat2, 3UL, 1UL, 0UL );
+      checkNonZeros( mat2, 3UL, 0UL, 1UL );
+      checkNonZeros( mat2, 3UL, 1UL, 1UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -501,7 +501,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor move constructor (0x3x2)";
 
-      blaze::DynamicTensor<int> mat1( 0UL, 3UL, 2UL );
+      blaze::DynamicTensor<int> mat1( 2UL, 0UL, 3UL );
       blaze::DynamicTensor<int> mat2( std::move( mat1 ) );
 
       checkRows    ( mat2, 0UL );
@@ -513,7 +513,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor move constructor (2x0x1)";
 
-      blaze::DynamicTensor<int> mat1( 2UL, 0UL, 1UL );
+      blaze::DynamicTensor<int> mat1( 1UL, 2UL, 0UL );
       blaze::DynamicTensor<int> mat2( std::move( mat1 ) );
 
       checkRows    ( mat2, 2UL );
@@ -525,7 +525,7 @@ void ClassTest::testConstructors()
    {
       test_ = "DynamicTensor move constructor (2x1x0)";
 
-      blaze::DynamicTensor<int> mat1( 2UL, 1UL, 0UL );
+      blaze::DynamicTensor<int> mat1( 0UL, 2UL, 1UL );
       blaze::DynamicTensor<int> mat2( std::move( mat1 ) );
 
       checkRows    ( mat2, 2UL );
@@ -547,15 +547,15 @@ void ClassTest::testConstructors()
       checkPages   ( mat2,  2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2, 12UL );
-      checkNonZeros( mat2, 0UL, 0UL, 3UL );
-      checkNonZeros( mat2, 1UL, 0UL, 3UL );
-      checkNonZeros( mat2, 0UL, 1UL, 3UL );
-      checkNonZeros( mat2, 1UL, 1UL, 3UL );
+      checkNonZeros( mat2, 3UL, 0UL, 0UL );
+      checkNonZeros( mat2, 3UL, 1UL, 0UL );
+      checkNonZeros( mat2, 3UL, 0UL, 1UL );
+      checkNonZeros( mat2, 3UL, 1UL, 1UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -578,19 +578,19 @@ void ClassTest::testConstructors()
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      AlignedPadded mat1( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(0,2,0) = 3;
-      mat1(1,0,0) = 4;
-      mat1(1,1,0) = 5;
-      mat1(1,2,0) = 6;
-      mat1(0,0,1) = 1;
-      mat1(0,1,1) = 2;
-      mat1(0,2,1) = 3;
-      mat1(1,0,1) = 4;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
       mat1(1,1,1) = 5;
-      mat1(1,2,1) = 6;
+      mat1(1,1,2) = 6;
 
       const blaze::DynamicTensor<int> mat2( mat1 );
 
@@ -604,10 +604,10 @@ void ClassTest::testConstructors()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -626,19 +626,19 @@ void ClassTest::testConstructors()
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory( new int[13UL] );
-      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL, 2UL );
+      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 2UL, 3UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(0,2,0) = 3;
-      mat1(1,0,0) = 4;
-      mat1(1,1,0) = 5;
-      mat1(1,2,0) = 6;
-      mat1(0,0,1) = 1;
-      mat1(0,1,1) = 2;
-      mat1(0,2,1) = 3;
-      mat1(1,0,1) = 4;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
       mat1(1,1,1) = 5;
-      mat1(1,2,1) = 6;
+      mat1(1,1,2) = 6;
 
       const blaze::DynamicTensor<int> mat2( mat1 );
 
@@ -652,10 +652,10 @@ void ClassTest::testConstructors()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -687,7 +687,7 @@ void ClassTest::testAssignment()
    {
       test_ = "DynamicTensor homogeneous assignment";
 
-      blaze::DynamicTensor<int> tens( 3UL, 4UL, 2UL );
+      blaze::DynamicTensor<int> tens( 2UL, 3UL, 4UL );
       tens = 2;
 
       checkRows    ( tens,  3UL );
@@ -702,12 +702,12 @@ void ClassTest::testAssignment()
       checkNonZeros( tens,  1UL, 1UL, 4UL );
       checkNonZeros( tens,  2UL, 1UL, 4UL );
 
-      if( tens(0,0,0) != 2 || tens(0,1,0) != 2 || tens(0,2,0) != 2 || tens(0,3,0) != 2 ||
-          tens(1,0,0) != 2 || tens(1,1,0) != 2 || tens(1,2,0) != 2 || tens(1,3,0) != 2 ||
-          tens(2,0,0) != 2 || tens(2,1,0) != 2 || tens(2,2,0) != 2 || tens(2,3,0) != 2 ||
-          tens(0,0,1) != 2 || tens(0,1,1) != 2 || tens(0,2,1) != 2 || tens(0,3,1) != 2 ||
-          tens(1,0,1) != 2 || tens(1,1,1) != 2 || tens(1,2,1) != 2 || tens(1,3,1) != 2 ||
-          tens(2,0,1) != 2 || tens(2,1,1) != 2 || tens(2,2,1) != 2 || tens(2,3,1) != 2 ) {
+      if( tens(0,0,0) != 2 || tens(0,0,1) != 2 || tens(0,0,2) != 2 || tens(0,0,3) != 2 ||
+          tens(0,1,0) != 2 || tens(0,1,1) != 2 || tens(0,1,2) != 2 || tens(0,1,3) != 2 ||
+          tens(0,2,0) != 2 || tens(0,2,1) != 2 || tens(0,2,2) != 2 || tens(0,2,3) != 2 ||
+          tens(1,0,0) != 2 || tens(1,0,1) != 2 || tens(1,0,2) != 2 || tens(1,0,3) != 2 ||
+          tens(1,1,0) != 2 || tens(1,1,1) != 2 || tens(1,1,2) != 2 || tens(1,1,3) != 2 ||
+          tens(1,2,0) != 2 || tens(1,2,1) != 2 || tens(1,2,2) != 2 || tens(1,2,3) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -739,10 +739,10 @@ void ClassTest::testAssignment()
       checkNonZeros( tens,  0UL, 1UL, 3UL );
       checkNonZeros( tens,  1UL, 1UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 2 || tens(0,2,0) != 3 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ||
-          tens(0,0,1) != 1 || tens(0,1,1) != 2 || tens(0,2,1) != 3 ||
-          tens(1,0,1) != 4 || tens(1,1,1) != 5 || tens(1,2,1) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 2 || tens(0,0,2) != 3 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ||
+          tens(1,0,0) != 1 || tens(1,0,1) != 2 || tens(1,0,2) != 3 ||
+          tens(1,1,0) != 4 || tens(1,1,1) != 5 || tens(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -769,10 +769,10 @@ void ClassTest::testAssignment()
       checkNonZeros( tens, 0UL, 1UL, 1UL );
       checkNonZeros( tens, 1UL, 1UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 0 || tens(0,2,0) != 0 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ||
-          tens(0,0,1) != 1 || tens(0,1,1) != 0 || tens(0,2,1) != 0 ||
-          tens(1,0,1) != 4 || tens(1,1,1) != 5 || tens(1,2,1) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 0 || tens(0,0,2) != 0 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ||
+          tens(1,0,0) != 1 || tens(1,0,1) != 0 || tens(1,0,2) != 0 ||
+          tens(1,1,0) != 4 || tens(1,1,1) != 5 || tens(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -805,10 +805,10 @@ void ClassTest::testAssignment()
       checkNonZeros( tens,  0UL, 1UL, 3UL );
       checkNonZeros( tens,  1UL, 1UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 2 || tens(0,2,0) != 3 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ||
-          tens(0,0,1) != 1 || tens(0,1,1) != 2 || tens(0,2,1) != 3 ||
-          tens(1,0,1) != 4 || tens(1,1,1) != 5 || tens(1,2,1) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 2 || tens(0,0,2) != 3 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ||
+          tens(1,0,0) != 1 || tens(1,0,1) != 2 || tens(1,0,2) != 3 ||
+          tens(1,1,0) != 4 || tens(1,1,1) != 5 || tens(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -843,10 +843,10 @@ void ClassTest::testAssignment()
       checkNonZeros( tens,  0UL, 1UL, 3UL );
       checkNonZeros( tens,  1UL, 1UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 2 || tens(0,2,0) != 3 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ||
-          tens(0,0,1) != 1 || tens(0,1,1) != 2 || tens(0,2,1) != 3 ||
-          tens(1,0,1) != 4 || tens(1,1,1) != 5 || tens(1,2,1) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 2 || tens(0,0,2) != 3 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ||
+          tens(1,0,0) != 1 || tens(1,0,1) != 2 || tens(1,0,2) != 3 ||
+          tens(1,1,0) != 4 || tens(1,1,1) != 5 || tens(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -871,7 +871,7 @@ void ClassTest::testAssignment()
          const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
          const size_t pages  ( blaze::rand<size_t>( 0UL, 10UL ) );
-         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, pages, min, max ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( pages, rows, columns, min, max ) );
 
          mat1 = mat2;
 
@@ -913,10 +913,10 @@ void ClassTest::testAssignment()
       checkNonZeros( tens,  0UL, 1UL, 3UL );
       checkNonZeros( tens,  1UL, 1UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 2 || tens(0,2,0) != 3 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ||
-          tens(0,0,1) != 1 || tens(0,1,1) != 2 || tens(0,2,1) != 3 ||
-          tens(1,0,1) != 4 || tens(1,1,1) != 5 || tens(1,2,1) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 2 || tens(0,0,2) != 3 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ||
+          tens(1,0,0) != 1 || tens(1,0,1) != 2 || tens(1,0,2) != 3 ||
+          tens(1,1,0) != 4 || tens(1,1,1) != 5 || tens(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -950,10 +950,10 @@ void ClassTest::testAssignment()
       checkNonZeros( tens,  0UL, 1UL, 3UL );
       checkNonZeros( tens,  1UL, 1UL, 3UL );
 
-      if( tens(0,0,0) != 1 || tens(0,1,0) != 2 || tens(0,2,0) != 3 ||
-          tens(1,0,0) != 4 || tens(1,1,0) != 5 || tens(1,2,0) != 6 ||
-          tens(0,0,1) != 1 || tens(0,1,1) != 2 || tens(0,2,1) != 3 ||
-          tens(1,0,1) != 4 || tens(1,1,1) != 5 || tens(1,2,1) != 6 ) {
+      if( tens(0,0,0) != 1 || tens(0,0,1) != 2 || tens(0,0,2) != 3 ||
+          tens(0,1,0) != 4 || tens(0,1,1) != 5 || tens(0,1,2) != 6 ||
+          tens(1,0,0) != 1 || tens(1,0,1) != 2 || tens(1,0,2) != 3 ||
+          tens(1,1,0) != 4 || tens(1,1,1) != 5 || tens(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -972,19 +972,19 @@ void ClassTest::testAssignment()
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      AlignedPadded mat1( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(0,2,0) = 3;
-      mat1(1,0,0) = 4;
-      mat1(1,1,0) = 5;
-      mat1(1,2,0) = 6;
-      mat1(0,0,1) = 1;
-      mat1(0,1,1) = 2;
-      mat1(0,2,1) = 3;
-      mat1(1,0,1) = 4;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
       mat1(1,1,1) = 5;
-      mat1(1,2,1) = 6;
+      mat1(1,1,2) = 6;
 
       blaze::DynamicTensor<int> mat2;
       mat2 = mat1;
@@ -999,10 +999,10 @@ void ClassTest::testAssignment()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -1021,19 +1021,19 @@ void ClassTest::testAssignment()
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory( new int[13UL] );
-      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL, 2UL );
+      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 2UL, 3UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(0,2,0) = 3;
-      mat1(1,0,0) = 4;
-      mat1(1,1,0) = 5;
-      mat1(1,2,0) = 6;
-      mat1(0,0,1) = 1;
-      mat1(0,1,1) = 2;
-      mat1(0,2,1) = 3;
-      mat1(1,0,1) = 4;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
       mat1(1,1,1) = 5;
-      mat1(1,2,1) = 6;
+      mat1(1,1,2) = 6;
 
       blaze::DynamicTensor<int> mat2;
       mat2 = mat1;
@@ -1048,10 +1048,10 @@ void ClassTest::testAssignment()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -1076,7 +1076,7 @@ void ClassTest::testAssignment()
          const size_t rows   ( blaze::rand<size_t>( 0UL, 10UL ) );
          const size_t columns( blaze::rand<size_t>( 0UL, 10UL ) );
          const size_t pages  ( blaze::rand<size_t>( 0UL, 10UL ) );
-         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( rows, columns, pages, min, max ) );
+         const RandomMatrixType mat2( blaze::rand<RandomMatrixType>( pages, rows, columns, min, max ) );
 
          mat1 = mat2;
 
@@ -1131,10 +1131,10 @@ void ClassTest::testAddAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
@@ -1153,16 +1153,16 @@ void ClassTest::testAddAssign()
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      AlignedPadded mat1( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat1 = 0;
       mat1(0,0,0) =  1;
-      mat1(0,1,0) =  2;
-      mat1(1,0,0) = -3;
-      mat1(1,2,0) =  4;
-      mat1(0,0,1) =  1;
-      mat1(0,1,1) =  2;
-      mat1(1,0,1) = -3;
-      mat1(1,2,1) =  4;
+      mat1(0,0,1) =  2;
+      mat1(0,1,0) = -3;
+      mat1(0,1,2) =  4;
+      mat1(1,0,0) =  1;
+      mat1(1,0,1) =  2;
+      mat1(1,1,0) = -3;
+      mat1(1,1,2) =  4;
 
       blaze::DynamicTensor<int> mat2{{{0, -2, 6}, {5, 0, 0}},
                                      {{0, -2, 6}, {5, 0, 0}}};
@@ -1179,10 +1179,10 @@ void ClassTest::testAddAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 0 || mat2(0,2,1) != 6 ||
-          mat2(1,0,1) != 2 || mat2(1,1,1) != 0 || mat2(1,2,1) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
@@ -1201,16 +1201,16 @@ void ClassTest::testAddAssign()
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory( new int[13UL] );
-      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL, 2UL );
+      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 2UL, 3UL );
       mat1 = 0;
       mat1(0,0,0) =  1;
-      mat1(0,1,0) =  2;
-      mat1(1,0,0) = -3;
-      mat1(1,2,0) =  4;
-      mat1(0,0,1) =  1;
-      mat1(0,1,1) =  2;
-      mat1(1,0,1) = -3;
-      mat1(1,2,1) =  4;
+      mat1(0,0,1) =  2;
+      mat1(0,1,0) = -3;
+      mat1(0,1,2) =  4;
+      mat1(1,0,0) =  1;
+      mat1(1,0,1) =  2;
+      mat1(1,1,0) = -3;
+      mat1(1,1,2) =  4;
 
       blaze::DynamicTensor<int> mat2{{{0, -2, 6}, {5, 0, 0}},
                                      {{0, -2, 6}, {5, 0, 0}}};
@@ -1227,10 +1227,10 @@ void ClassTest::testAddAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
@@ -1279,10 +1279,10 @@ void ClassTest::testSubAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
@@ -1301,24 +1301,24 @@ void ClassTest::testSubAssign()
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      AlignedPadded mat1( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat1 = 0;
       mat1(0,0,0) = -1;
-      mat1(0,1,0) = -2;
-      mat1(1,0,0) =  3;
-      mat1(1,2,0) = -4;
-      mat1(0,0,1) = -1;
-      mat1(0,1,1) = -2;
-      mat1(1,0,1) =  3;
-      mat1(1,2,1) = -4;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
 
-      blaze::DynamicTensor<int> mat2( 2UL, 3UL, 2UL, 0 );
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      blaze::DynamicTensor<int> mat2( 2UL, 2UL, 3UL, 0 );
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 -= mat1;
 
@@ -1332,10 +1332,10 @@ void ClassTest::testSubAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 0 || mat2(0,2,1) != 6 ||
-          mat2(1,0,1) != 2 || mat2(1,1,1) != 0 || mat2(1,2,1) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
@@ -1354,24 +1354,24 @@ void ClassTest::testSubAssign()
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory( new int[13UL] );
-      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL, 2UL );
+      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 2UL, 3UL );
       mat1 = 0;
       mat1(0,0,0) = -1;
-      mat1(0,1,0) = -2;
-      mat1(1,0,0) =  3;
-      mat1(1,2,0) = -4;
-      mat1(0,0,1) = -1;
-      mat1(0,1,1) = -2;
-      mat1(1,0,1) =  3;
-      mat1(1,2,1) = -4;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
 
-      blaze::DynamicTensor<int> mat2( 2UL, 3UL, 2UL, 0 );
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      blaze::DynamicTensor<int> mat2( 2UL, 2UL, 3UL, 0 );
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 -= mat1;
 
@@ -1385,10 +1385,10 @@ void ClassTest::testSubAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 0 || mat2(0,2,1) != 6 ||
-          mat2(1,0,1) != 2 || mat2(1,1,1) != 0 || mat2(1,2,1) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"

@@ -388,7 +388,7 @@ inline typename RowSlice<MT,CRAs...>::Reference
 {
    BLAZE_USER_ASSERT( j < columns(), "Invalid row access index" );
    BLAZE_USER_ASSERT( k < rows()  , "Invalid columns access index" );
-   return tensor_(row(), j, k);
+   return tensor_(k, row(), j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -409,7 +409,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::ConstReference
    RowSlice<MT,CRAs...>::operator()( size_t j, size_t k ) const
 {
-   return const_cast<const MT&>( tensor_ )(row(), j, k);
+   return const_cast<const MT&>( tensor_ )(k, row(), j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -703,7 +703,7 @@ inline RowSlice<MT,CRAs...>&
       {
          if (!IsRestricted_v<MT> || trySet(*this, k, j, rhs))
          {
-            left(row(), j, k) = rhs;
+            left(k, row(), j) = rhs;
          }
       }
    }
@@ -1247,7 +1247,7 @@ inline RowSlice<MT,CRAs...>&
 {
    for ( size_t k = 0; k < rows(); ++k ) {
       for ( size_t j = 0; j < columns(); ++j ) {
-         tensor_(row(), j, k) *= scalar;
+         tensor_(k, row(), j) *= scalar;
       }
    }
    return *this;
@@ -1415,7 +1415,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename RowSlice<MT,CRAs...>::SIMDType
    RowSlice<MT,CRAs...>::load( size_t j, size_t k ) const noexcept
 {
-   return tensor_.load( row(), j, k );
+   return tensor_.load( k, row(), j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1439,7 +1439,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename RowSlice<MT,CRAs...>::SIMDType
    RowSlice<MT,CRAs...>::loada( size_t j, size_t k ) const noexcept
 {
-   return tensor_.loada( row(), j, k );
+   return tensor_.loada( k, row(), j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1463,7 +1463,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename RowSlice<MT,CRAs...>::SIMDType
    RowSlice<MT,CRAs...>::loadu( size_t j, size_t k ) const noexcept
 {
-   return tensor_.loadu( row(), j, k );
+   return tensor_.loadu( k, row(), j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1488,7 +1488,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    RowSlice<MT,CRAs...>::store( size_t j, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.store( row(), j, k, value );
+   tensor_.store( k, row(), j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1513,7 +1513,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    RowSlice<MT,CRAs...>::storea( size_t j, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.storea( row(), j, k, value );
+   tensor_.storea( k, row(), j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1538,7 +1538,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    RowSlice<MT,CRAs...>::storeu( size_t j, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.storeu( row(), j, k, value );
+   tensor_.storeu( k, row(), j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1563,7 +1563,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    RowSlice<MT,CRAs...>::stream( size_t j, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.stream( row(), j, k, value );
+   tensor_.stream( k, row(), j, value );
 }
 /*! \endcond */
 //*************************************************************************************************

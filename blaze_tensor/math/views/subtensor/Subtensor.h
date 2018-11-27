@@ -78,7 +78,7 @@
    auto sm1 = subtensor<3UL,0UL,1UL,4UL,8UL,2UL>( A );
 
    // Creating a dense subtensor of size 8x16x1, starting in row 0, column 4, and page 3 (runtime arguments)
-   auto sm2 = subtensor( A, 0UL, 4UL, 3UL, 8UL, 16UL, 1UL );
+   auto sm2 = subtensor( A, 3UL, 0UL, 4UL, 1UL, 8UL, 16UL );
    \endcode
 
 // The \c subtensor() function returns an expression representing the subtensor view. The type of
@@ -106,16 +106,16 @@
    // ... Resizing and initialization
 
    // Creating a dense subtensor of size 8x4, starting in row 0 and column 2
-   auto sm = subtensor( A, 0UL, 2UL, 8UL, 4UL );
+   auto sm = subtensor( A, 8UL, 0UL, 2UL, 4UL );
 
    // Setting the subtensor of A to a 8x4 subtensor of B
-   sm = subtensor( B, 0UL, 0UL, 8UL, 4UL );
+   sm = subtensor( B, 8UL, 0UL, 0UL, 4UL );
 
    // Copying the sparse tensor C into another 8x4 subtensor of A
-   subtensor( A, 8UL, 2UL, 8UL, 4UL ) = C;
+   subtensor( A, 8UL, 8UL, 2UL, 4UL ) = C;
 
    // Assigning part of the result of a tensor addition to the first subtensor
-   sm = subtensor( B + C, 0UL, 0UL, 8UL, 4UL );
+   sm = subtensor( B + C, 8UL, 0UL, 0UL, 4UL );
    \endcode
 
 // \n \section subtensor_element_access Element access
@@ -127,7 +127,7 @@
    // ... Resizing and initialization
 
    // Creating a 8x8 subtensor, starting from position (4,4)
-   auto sm = subtensor( A, 4UL, 4UL, 8UL, 8UL );
+   auto sm = subtensor( A, 8UL, 4UL, 4UL, 8UL );
 
    // Setting the element (0,0) of the subtensor, which corresponds to
    // the element at position (4,4) in tensor A
@@ -144,7 +144,7 @@
    // ... Resizing and initialization
 
    // Creating a reference to a specific subtensor of tensor A
-   auto sm = subtensor( A, 16UL, 16UL, 64UL, 128UL );
+   auto sm = subtensor( A, 64UL, 16UL, 16UL, 128UL );
 
    // Traversing the elements of the 0th row via iterators to non-const elements
    for( auto it=sm.begin(0); it!=sm.end(0); ++it ) {
@@ -164,7 +164,7 @@
    // ... Resizing and initialization
 
    // Creating a reference to a specific subtensor of tensor A
-   auto sm = subtensor( A, 16UL, 16UL, 64UL, 128UL );
+   auto sm = subtensor( A, 64UL, 16UL, 16UL, 128UL );
 
    // Traversing the elements of the 0th row via iterators to non-const elements
    for( auto it=sm.begin(0); it!=sm.end(0); ++it ) {
@@ -191,7 +191,7 @@
    \code
    blaze::CompressedMatrix<double,blaze::rowMajor> A( 256UL, 512UL );  // Non-initialized tensor of size 256x512
 
-   auto sm = subtensor( A, 10UL, 10UL, 16UL, 16UL );  // View on a 16x16 subtensor of A
+   auto sm = subtensor( A, 16UL, 10UL, 10UL, 16UL );  // View on a 16x16 subtensor of A
 
    // The function call operator provides access to all possible elements of the sparse subtensor,
    // including the zero elements. In case the function call operator is used to access an element
@@ -233,7 +233,7 @@
    // ... Resizing and initialization
 
    // Creating a view on the a 8x12 subtensor of tensor A
-   auto sm = subtensor( A, 0UL, 0UL, 8UL, 12UL );
+   auto sm = subtensor( A, 8UL, 0UL, 0UL, 12UL );
 
    sm.rows();      // Returns the number of rows of the subtensor
    sm.columns();   // Returns the number of columns of the subtensor
@@ -242,7 +242,7 @@
 
    sm.resize( 10UL, 8UL );  // Compilation error: Cannot resize a subtensor of a tensor
 
-   auto sm2 = subtensor( A, 8UL, 0UL, 12UL, 8UL );
+   auto sm2 = subtensor( A, 12UL, 8UL, 0UL, 8UL );
    swap( sm, sm2 );  // Compilation error: Swap operation not allowed
    \endcode
 
@@ -262,26 +262,26 @@
 
    // ... Resizing and initialization
 
-   auto sm = subtensor( D1, 0UL, 0UL, 8UL, 8UL );  // View on the 8x8 subtensor of tensor D1
+   auto sm = subtensor( D1, 8UL, 0UL, 0UL, 8UL );  // View on the 8x8 subtensor of tensor D1
                                                    // starting from row 0 and column 0
 
-   subtensor( D1, 0UL, 8UL, 8UL, 8UL ) = D2;  // Dense tensor initialization of the 8x8 subtensor
+   subtensor( D1, 8UL, 0UL, 8UL, 8UL ) = D2;  // Dense tensor initialization of the 8x8 subtensor
                                               // starting in row 0 and column 8
    sm = S1;                                   // Sparse tensor initialization of the second 8x8 subtensor
 
    D3 = sm + D2;                                   // Dense tensor/dense tensor addition
-   S2 = S1 - subtensor( D1, 8UL, 0UL, 8UL, 8UL );  // Sparse tensor/dense tensor subtraction
+   S2 = S1 - subtensor( D1, 8UL, 8UL, 0UL, 8UL );  // Sparse tensor/dense tensor subtraction
    D2 = sm * subtensor( D1, 8UL, 8UL, 8UL, 8UL );  // Dense tensor/dense tensor multiplication
 
-   subtensor( D1, 8UL, 0UL, 8UL, 8UL ) *= 2.0;      // In-place scaling of a subtensor of D1
+   subtensor( D1, 8UL, 8UL, 0UL, 8UL ) *= 2.0;      // In-place scaling of a subtensor of D1
    D2 = subtensor( D1, 8UL, 8UL, 8UL, 8UL ) * 2.0;  // Scaling of the a subtensor of D1
    D2 = 2.0 * sm;                                   // Scaling of the a subtensor of D1
 
-   subtensor( D1, 0UL, 8UL, 8UL, 8UL ) += D2;  // Addition assignment
-   subtensor( D1, 8UL, 0UL, 8UL, 8UL ) -= S1;  // Subtraction assignment
+   subtensor( D1, 8UL, 0UL, 8UL, 8UL ) += D2;  // Addition assignment
+   subtensor( D1, 8UL, 8UL, 0UL, 8UL ) -= S1;  // Subtraction assignment
    subtensor( D1, 8UL, 8UL, 8UL, 8UL ) *= sm;  // Multiplication assignment
 
-   a = subtensor( D1, 4UL, 4UL, 8UL, 8UL ) * b;  // Dense tensor/sparse vector multiplication
+   a = subtensor( D1, 8UL, 4UL, 4UL, 8UL ) * b;  // Dense tensor/sparse vector multiplication
    \endcode
 
 // \n \section subtensor_aligned_subtensor Aligned Subtensors
@@ -299,8 +299,8 @@
    // ... Resizing and initialization
 
    // Identical creations of an unaligned subtensor of size 8x8, starting in row 0 and column 0
-   auto sm1 = subtensor           ( A, 0UL, 0UL, 8UL, 8UL );
-   auto sm2 = subtensor<unaligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sm1 = subtensor           ( A, 8UL, 0UL, 0UL, 8UL );
+   auto sm2 = subtensor<unaligned>( A, 8UL, 0UL, 0UL, 8UL );
    auto sm3 = subtensor<0UL,0UL,8UL,8UL>          ( A );
    auto sm4 = subtensor<unaligned,0UL,0UL,8UL,8UL>( A );
    \endcode
@@ -323,7 +323,7 @@
    using blaze::aligned;
 
    // Creating an aligned subtensor of size 8x8, starting in row 0 and column 0
-   auto sv1 = subtensor<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sv1 = subtensor<aligned>( A, 8UL, 0UL, 0UL, 8UL );
    auto sv2 = subtensor<aligned,0UL,0UL,8UL,8UL>( A );
    \endcode
 
@@ -340,16 +340,16 @@
    // ... Resizing and initialization
 
    // OK: Starts at position (0,0), i.e. the first element of each row is aligned (due to padding)
-   auto dsm1 = subtensor<aligned>( D, 0UL, 0UL, 7UL, 11UL );
+   auto dsm1 = subtensor<aligned>( D, 7UL, 0UL, 0UL, 11UL );
 
    // OK: First column is a multiple of 4, i.e. the first element of each row is aligned (due to padding)
-   auto dsm2 = subtensor<aligned>( D, 3UL, 12UL, 8UL, 16UL );
+   auto dsm2 = subtensor<aligned>( D, 8UL, 3UL, 12UL, 16UL );
 
    // OK: First column is a multiple of 4 and the subtensor includes the last row and column
-   auto dsm3 = subtensor<aligned>( D, 4UL, 0UL, 9UL, 17UL );
+   auto dsm3 = subtensor<aligned>( D, 9UL, 4UL, 0UL, 17UL );
 
    // Error: First column is not a multiple of 4, i.e. the first element is not aligned
-   auto dsm4 = subtensor<aligned>( D, 2UL, 3UL, 12UL, 12UL );
+   auto dsm4 = subtensor<aligned>( D, 12UL, 2UL, 3UL, 12UL );
    \endcode
 
 // Note that the discussed alignment restrictions are only valid for aligned dense subtensors.
@@ -364,7 +364,7 @@
    // ... Resizing and initialization
 
    // Creating an aligned subtensor of size 8x8, starting in row 0 and column 0
-   auto sv = subtensor<aligned>( A, 0UL, 0UL, 8UL, 8UL );
+   auto sv = subtensor<aligned>( A, 8UL, 0UL, 0UL, 8UL );
    \endcode
 
 // \n \section subtensor_on_symmetric_matrices Subtensor on Symmetric Matrices
@@ -379,7 +379,7 @@
    SymmetricMatrix< DynamicTensor<int> > A( 16UL );
 
    // Creating a dense subtensor of size 8x12, starting in row 2 and column 4
-   auto sm = subtensor( A, 2UL, 4UL, 8UL, 12UL );
+   auto sm = subtensor( A, 8UL, 2UL, 4UL, 12UL );
    \endcode
 
 // It is important to note, however, that (compound) assignments to such subtensors have a
@@ -411,7 +411,7 @@
    //        ( 1 3 5 6 )
    //        ( 2 4 6 0 )
    //
-   subtensor( A1, 0UL, 2UL, 3UL, 2UL ) = B;  // OK
+   subtensor( A1, 3UL, 0UL, 2UL, 2UL ) = B;  // OK
 
    // Error: Assigning B to a subtensor of A2 such that the symmetry cannot be preserved!
    //   The elements marked with X cannot be assigned unambiguously!
@@ -421,7 +421,7 @@
    //        ( 2 X 6 0 )
    //        ( 0 0 0 0 )
    //
-   subtensor( A2, 0UL, 1UL, 3UL, 2UL ) = B;  // Assignment throws an exception!
+   subtensor( A2, 3UL, 0UL, 1UL, 2UL ) = B;  // Assignment throws an exception!
    \endcode
 */
 //*************************************************************************************************

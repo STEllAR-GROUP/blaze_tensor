@@ -193,10 +193,10 @@ class Subtensor<MT,aligned,CSAs...>
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j, size_t k );
-   inline ConstReference operator()( size_t i, size_t j, size_t k ) const;
-   inline Reference      at( size_t i, size_t j, size_t k );
-   inline ConstReference at( size_t i, size_t j, size_t k ) const;
+   inline Reference      operator()( size_t k, size_t i, size_t j );
+   inline ConstReference operator()( size_t k, size_t i, size_t j ) const;
+   inline Reference      at( size_t k, size_t i, size_t j );
+   inline ConstReference at( size_t k, size_t i, size_t j ) const;
    inline Pointer        data  () noexcept;
    inline ConstPointer   data  () const noexcept;
    inline Pointer        data  ( size_t i, size_t k ) noexcept;
@@ -345,14 +345,14 @@ class Subtensor<MT,aligned,CSAs...>
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t i, size_t j, size_t k ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t k, size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t k, size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t k, size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void store ( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
    inline auto assign( const DenseTensor<MT2>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT2> >;
@@ -477,13 +477,13 @@ inline Subtensor<MT,aligned,CSAs...>::Subtensor( MT& tensor, RSAs... args )
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline typename Subtensor<MT,aligned,CSAs...>::Reference
-   Subtensor<MT,aligned,CSAs...>::operator()( size_t i, size_t j, size_t k )
+   Subtensor<MT,aligned,CSAs...>::operator()( size_t k, size_t i, size_t j )
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_USER_ASSERT( k < pages()  , "Invalid page access index" );
 
-   return tensor_(row()+i,column()+j,page()+k);
+   return tensor_(page()+k,row()+i,column()+j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -503,13 +503,13 @@ inline typename Subtensor<MT,aligned,CSAs...>::Reference
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline typename Subtensor<MT,aligned,CSAs...>::ConstReference
-   Subtensor<MT,aligned,CSAs...>::operator()( size_t i, size_t j, size_t k ) const
+   Subtensor<MT,aligned,CSAs...>::operator()( size_t k, size_t i, size_t j ) const
 {
    BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index"    );
    BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
    BLAZE_USER_ASSERT( k < pages()  , "Invalid page access index" );
 
-   return const_cast<const MT&>( tensor_ )(row()+i,column()+j,page()+k);
+   return const_cast<const MT&>( tensor_ )(page()+k,row()+i,column()+j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -530,7 +530,7 @@ inline typename Subtensor<MT,aligned,CSAs...>::ConstReference
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline typename Subtensor<MT,aligned,CSAs...>::Reference
-   Subtensor<MT,aligned,CSAs...>::at( size_t i, size_t j, size_t k )
+   Subtensor<MT,aligned,CSAs...>::at( size_t k, size_t i, size_t j )
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -541,7 +541,7 @@ inline typename Subtensor<MT,aligned,CSAs...>::Reference
    if( k >= pages() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
    }
-   return (*this)(i,j,k);
+   return (*this)(k,i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -562,7 +562,7 @@ inline typename Subtensor<MT,aligned,CSAs...>::Reference
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline typename Subtensor<MT,aligned,CSAs...>::ConstReference
-   Subtensor<MT,aligned,CSAs...>::at( size_t i, size_t j, size_t k ) const
+   Subtensor<MT,aligned,CSAs...>::at( size_t k, size_t i, size_t j ) const
 {
    if( i >= rows() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -573,7 +573,7 @@ inline typename Subtensor<MT,aligned,CSAs...>::ConstReference
    if( k >= pages() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
    }
-   return (*this)(i,j,k);
+   return (*this)(k,i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -846,8 +846,8 @@ inline Subtensor<MT,aligned,CSAs...>&
           const size_t jend  ( column() + columns() );
 
           for( size_t j=jbegin; j<jend; ++j ) {
-             if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( tensor_, i, j, k, rhs ) )
-                left(i,j,k) = rhs;
+             if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( tensor_, k, i, j, rhs ) )
+                left(k,i,j) = rhs;
           }
        }
    }
@@ -1449,7 +1449,7 @@ inline size_t Subtensor<MT,aligned,CSAs...>::nonZeros() const
    for( size_t k=page(); k<kend; ++k )
       for( size_t i=row(); i<iend; ++i )
          for( size_t j=column(); j<jend; ++j )
-            if( !isDefault( tensor_(i,j,k) ) )
+            if( !isDefault( tensor_(k,i,j) ) )
                ++nonzeros;
 
    return nonzeros;
@@ -1481,7 +1481,7 @@ inline size_t Subtensor<MT,aligned,CSAs...>::nonZeros( size_t i, size_t k ) cons
    size_t nonzeros( 0UL );
 
    for( size_t j=column(); j<jend; ++j )
-      if( !isDefault( tensor_(row()+i,j,page()+k) ) )
+      if( !isDefault( tensor_(row()+page(),i,j+k) ) )
          ++nonzeros;
 
    return nonzeros;
@@ -1508,7 +1508,7 @@ inline void Subtensor<MT,aligned,CSAs...>::reset()
          const size_t jbegin( column() );
          const size_t jend  ( column()+columns() );
          for( size_t j=jbegin; j<jend; ++j )
-            clear( tensor_(i,j,k) );
+            clear( tensor_(k,i,j) );
       }
 }
 /*! \endcond */
@@ -1539,7 +1539,7 @@ inline void Subtensor<MT,aligned,CSAs...>::reset( size_t i, size_t k )
    const size_t jbegin( column() );
    const size_t jend  ( column()+columns() );
    for( size_t j=jbegin; j<jend; ++j )
-      clear( tensor_(row()+i,j,page()+k) );
+      clear( tensor_(row()+page(),i,j+k) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1665,7 +1665,7 @@ inline Subtensor<MT,aligned,CSAs...>&
          const size_t jend  ( column()+columns() );
 
          for( size_t j=jbegin; j<jend; ++j )
-            tensor_(i,j,k) *= scalar;
+            tensor_(k,i,j) *= scalar;
       }
    }
    return *this;
@@ -1848,9 +1848,9 @@ inline bool Subtensor<MT,aligned,CSAs...>::canSMPAssign() const noexcept
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 BLAZE_ALWAYS_INLINE typename Subtensor<MT,aligned,CSAs...>::SIMDType
-   Subtensor<MT,aligned,CSAs...>::load( size_t i, size_t j, size_t k ) const noexcept
+   Subtensor<MT,aligned,CSAs...>::load( size_t k, size_t i, size_t j ) const noexcept
 {
-   return loada( i, j, k );
+   return loada( k, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1875,7 +1875,7 @@ BLAZE_ALWAYS_INLINE typename Subtensor<MT,aligned,CSAs...>::SIMDType
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 BLAZE_ALWAYS_INLINE typename Subtensor<MT,aligned,CSAs...>::SIMDType
-   Subtensor<MT,aligned,CSAs...>::loada( size_t i, size_t j, size_t k ) const noexcept
+   Subtensor<MT,aligned,CSAs...>::loada( size_t k, size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1910,7 +1910,7 @@ BLAZE_ALWAYS_INLINE typename Subtensor<MT,aligned,CSAs...>::SIMDType
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 BLAZE_ALWAYS_INLINE typename Subtensor<MT,aligned,CSAs...>::SIMDType
-   Subtensor<MT,aligned,CSAs...>::loadu( size_t i, size_t j, size_t k ) const noexcept
+   Subtensor<MT,aligned,CSAs...>::loadu( size_t k, size_t i, size_t j ) const noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -1946,9 +1946,9 @@ BLAZE_ALWAYS_INLINE typename Subtensor<MT,aligned,CSAs...>::SIMDType
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 BLAZE_ALWAYS_INLINE void
-   Subtensor<MT,aligned,CSAs...>::store( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   Subtensor<MT,aligned,CSAs...>::store( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   return storea( i, j, k, value );
+   return storea( k, i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1974,7 +1974,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 BLAZE_ALWAYS_INLINE void
-   Subtensor<MT,aligned,CSAs...>::storea( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   Subtensor<MT,aligned,CSAs...>::storea( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2010,7 +2010,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 BLAZE_ALWAYS_INLINE void
-   Subtensor<MT,aligned,CSAs...>::storeu( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   Subtensor<MT,aligned,CSAs...>::storeu( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2047,7 +2047,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 BLAZE_ALWAYS_INLINE void
-   Subtensor<MT,aligned,CSAs...>::stream( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   Subtensor<MT,aligned,CSAs...>::stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
@@ -2091,11 +2091,11 @@ inline auto Subtensor<MT,aligned,CSAs...>::assign( const DenseTensor<MT2>& rhs )
    for( size_t k=0UL; k<pages(); ++k ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            tensor_(row()+i,column()+j    ,page()+k) = (~rhs)(i,j    ,k);
-            tensor_(row()+i,column()+j+1UL,page()+k) = (~rhs)(i,j+1UL,k);
+            tensor_(page()+k,row()+i,column()+j) = (~rhs)(k,i,j);
+            tensor_(page()+k,row()+i,column()+j+1UL) = (~rhs)(k,i,j+1UL);
          }
          if( jpos < columns() ) {
-            tensor_(row()+i,column()+jpos,page()+k) = (~rhs)(i,jpos,k);
+            tensor_(page()+k,row()+i,column()+jpos) = (~rhs)(k,i,jpos);
          }
       }
    }
@@ -2212,11 +2212,11 @@ inline auto Subtensor<MT,aligned,CSAs...>::addAssign( const DenseTensor<MT2>& rh
       for( size_t i=0UL; i<rows(); ++i )
       {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            tensor_(row()+i,column()+j    ,page()+k) += (~rhs)(i,j    ,k);
-            tensor_(row()+i,column()+j+1UL,page()+k) += (~rhs)(i,j+1UL,k);
+            tensor_(page()+k,row()+i,column()+j) += (~rhs)(k,i,j);
+            tensor_(page()+k,row()+i,column()+j+1UL) += (~rhs)(k,i,j+1UL);
          }
          if( jpos < columns() ) {
-            tensor_(row()+i,column()+jpos,page()+k) += (~rhs)(i,jpos,k);
+            tensor_(page()+k,row()+i,column()+jpos) += (~rhs)(k,i,jpos);
          }
       }
    }
@@ -2313,11 +2313,11 @@ inline auto Subtensor<MT,aligned,CSAs...>::subAssign( const DenseTensor<MT2>& rh
       for( size_t i=0UL; i<rows(); ++i )
       {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            tensor_(row()+i,column()+j    ,page()+k) -= (~rhs)(i,j    ,k);
-            tensor_(row()+i,column()+j+1UL,page()+k) -= (~rhs)(i,j+1UL,k);
+            tensor_(page()+k,row()+i,column()+j) -= (~rhs)(k,i,j);
+            tensor_(page()+k,row()+i,column()+j+1UL) -= (~rhs)(k,i,j+1UL);
          }
          if( jpos < columns() ) {
-            tensor_(row()+i,column()+jpos,page()+k) -= (~rhs)(i,jpos,k);
+            tensor_(page()+k,row()+i,column()+jpos) -= (~rhs)(k,i,jpos);
          }
       }
    }
@@ -2414,11 +2414,11 @@ inline auto Subtensor<MT,aligned,CSAs...>::schurAssign( const DenseTensor<MT2>& 
       for( size_t i=0UL; i<rows(); ++i )
       {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            tensor_(row()+i,column()+j    ,page()+k) *= (~rhs)(i,j    ,k);
-            tensor_(row()+i,column()+j+1UL,page()+k) *= (~rhs)(i,j+1UL,k);
+            tensor_(page()+k,row()+i,column()+j) *= (~rhs)(k,i,j);
+            tensor_(page()+k,row()+i,column()+j+1UL) *= (~rhs)(k,i,j+1UL);
          }
          if( jpos < columns() ) {
-            tensor_(row()+i,column()+jpos,page()+k) *= (~rhs)(i,jpos,k);
+            tensor_(page()+k,row()+i,column()+jpos) *= (~rhs)(k,i,jpos);
          }
       }
    }

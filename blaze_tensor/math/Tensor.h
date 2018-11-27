@@ -98,7 +98,7 @@ inline std::ostream& operator<<( std::ostream& os, const Tensor<MT>& m )
       for (size_t i = 0UL; i < tmp.rows(); ++i) {
          os << "(";
          for (size_t j = 0UL; j < tmp.columns(); ++j) {
-            os << std::setw(12) << tmp(i, j, k) << " ";
+            os << std::setw(12) << tmp(k, i, j) << " ";
          }
          os << ") ";
       }

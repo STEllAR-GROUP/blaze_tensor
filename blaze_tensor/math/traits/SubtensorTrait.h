@@ -66,25 +66,25 @@ template< typename, size_t, size_t, size_t, size_t, size_t, size_t, typename = v
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename T >
+template< size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename T >
 auto evalSubtensorTrait( T& )
-   -> typename SubtensorTraitEval1<T,I,J,K,M,N,O>::Type;
+   -> typename SubtensorTraitEval1<T,K,I,J,O,M,N>::Type;
 
 template< typename T >
 auto evalSubtensorTrait( T& )
    -> typename SubtensorTraitEval2<T,inf,inf,inf,inf,inf,inf>::Type;
 
-template< size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename T >
+template< size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename T >
 auto evalSubtensorTrait( const T& )
-   -> typename SubtensorTrait<T,I,J,K,M,N,O>::Type;
+   -> typename SubtensorTrait<T,K,I,J,O,M,N>::Type;
 
 template< typename T >
 auto evalSubtensorTrait( const T& )
    -> typename SubtensorTrait<T>::Type;
 
-template< size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename T >
+template< size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename T >
 auto evalSubtensorTrait( const volatile T& )
-   -> typename SubtensorTrait<T,I,J,K,M,N,O>::Type;
+   -> typename SubtensorTrait<T,K,I,J,O,M,N>::Type;
 
 template< typename T >
 auto evalSubtensorTrait( const volatile T& )
@@ -179,18 +179,18 @@ using SubtensorTrait_t = typename SubtensorTrait<MT,CSAs...>::Type;
 // \ingroup math_traits
 */
 template< typename MT  // Type of the tensor
+        , size_t K     // Index of the first page
         , size_t I     // Index of the first row
         , size_t J     // Index of the first column
-        , size_t K     // Index of the first page
+        , size_t O     // Number of pages
         , size_t M     // Number of rows
         , size_t N     // Number of columns
-        , size_t O     // Number of pages
         , typename >   // Restricting condition
 struct SubtensorTraitEval1
 {
  public:
    //**********************************************************************************************
-   using Type = typename SubtensorTraitEval2<MT,I,J,K,M,N,O>::Type;
+   using Type = typename SubtensorTraitEval2<MT,K,I,J,O,M,N>::Type;
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -203,12 +203,12 @@ struct SubtensorTraitEval1
 // \ingroup math_traits
 */
 template< typename MT  // Type of the tensor
+        , size_t K     // Index of the first page
         , size_t I     // Index of the first row
         , size_t J     // Index of the first column
-        , size_t K     // Index of the first page
+        , size_t O     // Number of pages
         , size_t M     // Number of rows
         , size_t N     // Number of columns
-        , size_t O     // Number of pages
         , typename >   // Restricting condition
 struct SubtensorTraitEval2
 {

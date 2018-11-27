@@ -132,15 +132,15 @@ void ClassTest::testSchurAssign()
       checkPages   ( mat2,  2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2,  4UL );
-      checkNonZeros( mat2, 0UL, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 0UL, 0UL );
+      checkNonZeros( mat2, 1UL, 1UL, 0UL );
       checkNonZeros( mat2, 1UL, 0UL, 1UL );
-      checkNonZeros( mat2, 0UL, 1UL, 1UL );
       checkNonZeros( mat2, 1UL, 1UL, 1UL );
 
-      if( mat2(0,0,0) !=   0 || mat2(0,1,0) != -4 || mat2(0,2,0) != 0 ||
-          mat2(1,0,0) != -15 || mat2(1,1,0) !=  0 || mat2(1,2,0) != 0 ||
-          mat2(0,0,1) !=   0 || mat2(0,1,1) != -4 || mat2(0,2,1) != 0 ||
-          mat2(1,0,1) != -15 || mat2(1,1,1) !=  0 || mat2(1,2,1) != 0 ) {
+      if( mat2(0,0,0) !=   0 || mat2(0,0,1) != -4 || mat2(0,0,2) != 0 ||
+          mat2(0,1,0) != -15 || mat2(0,1,1) !=  0 || mat2(0,1,2) != 0 ||
+          mat2(1,0,0) !=   0 || mat2(1,0,1) != -4 || mat2(1,0,2) != 0 ||
+          mat2(1,1,0) != -15 || mat2(1,1,1) !=  0 || mat2(1,1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Schur product assignment failed\n"
@@ -159,16 +159,16 @@ void ClassTest::testSchurAssign()
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      AlignedPadded mat1( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat1 = 0;
       mat1(0,0,0) =  1;
-      mat1(0,1,0) =  2;
-      mat1(1,0,0) = -3;
-      mat1(1,2,0) =  4;
-      mat1(0,0,1) =  1;
-      mat1(0,1,1) =  2;
-      mat1(1,0,1) = -3;
-      mat1(1,2,1) =  4;
+      mat1(0,0,1) =  2;
+      mat1(0,1,0) = -3;
+      mat1(0,1,2) =  4;
+      mat1(1,0,0) =  1;
+      mat1(1,0,1) =  2;
+      mat1(1,1,0) = -3;
+      mat1(1,1,2) =  4;
 
       blaze::DynamicTensor<int> mat2{{{0, -2, 6}, {5, 0, 0}},
                                      {{0, -2, 6}, {5, 0, 0}}};
@@ -180,15 +180,15 @@ void ClassTest::testSchurAssign()
       checkPages   ( mat2,  2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2,  4UL );
-      checkNonZeros( mat2, 0UL, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 0UL, 0UL );
+      checkNonZeros( mat2, 1UL, 1UL, 0UL );
       checkNonZeros( mat2, 1UL, 0UL, 1UL );
-      checkNonZeros( mat2, 0UL, 1UL, 1UL );
       checkNonZeros( mat2, 1UL, 1UL, 1UL );
 
-      if( mat2(0,0,0) !=   0 || mat2(0,1,0) != -4 || mat2(0,2,0) != 0 ||
-          mat2(1,0,0) != -15 || mat2(1,1,0) !=  0 || mat2(1,2,0) != 0 ||
-          mat2(0,0,1) !=   0 || mat2(0,1,1) != -4 || mat2(0,2,1) != 0 ||
-          mat2(1,0,1) != -15 || mat2(1,1,1) !=  0 || mat2(1,2,1) != 0 ) {
+      if( mat2(0,0,0) !=   0 || mat2(0,0,1) != -4 || mat2(0,0,2) != 0 ||
+          mat2(0,1,0) != -15 || mat2(0,1,1) !=  0 || mat2(0,1,2) != 0 ||
+          mat2(1,0,0) !=   0 || mat2(1,0,1) != -4 || mat2(1,0,2) != 0 ||
+          mat2(1,1,0) != -15 || mat2(1,1,1) !=  0 || mat2(1,1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Schur product assignment failed\n"
@@ -207,16 +207,16 @@ void ClassTest::testSchurAssign()
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory( new int[13UL] );
-      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL, 2UL );
+      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 2UL, 3UL );
       mat1 = 0;
       mat1(0,0,0) =  1;
-      mat1(0,1,0) =  2;
-      mat1(1,0,0) = -3;
-      mat1(1,2,0) =  4;
-      mat1(0,0,1) =  1;
-      mat1(0,1,1) =  2;
-      mat1(1,0,1) = -3;
-      mat1(1,2,1) =  4;
+      mat1(0,0,1) =  2;
+      mat1(0,1,0) = -3;
+      mat1(0,1,2) =  4;
+      mat1(1,0,0) =  1;
+      mat1(1,0,1) =  2;
+      mat1(1,1,0) = -3;
+      mat1(1,1,2) =  4;
 
       blaze::DynamicTensor<int> mat2{{{0, -2, 6}, {5, 0, 0}},
                                      {{0, -2, 6}, {5, 0, 0}}};
@@ -228,15 +228,15 @@ void ClassTest::testSchurAssign()
       checkPages   ( mat2,  2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2,  4UL );
-      checkNonZeros( mat2, 0UL, 0UL, 1UL );
+      checkNonZeros( mat2, 1UL, 0UL, 0UL );
+      checkNonZeros( mat2, 1UL, 1UL, 0UL );
       checkNonZeros( mat2, 1UL, 0UL, 1UL );
-      checkNonZeros( mat2, 0UL, 1UL, 1UL );
       checkNonZeros( mat2, 1UL, 1UL, 1UL );
 
-      if( mat2(0,0,0) !=   0 || mat2(0,1,0) != -4 || mat2(0,2,0) != 0 ||
-          mat2(1,0,0) != -15 || mat2(1,1,0) !=  0 || mat2(1,2,0) != 0 ||
-          mat2(0,0,1) !=   0 || mat2(0,1,1) != -4 || mat2(0,2,1) != 0 ||
-          mat2(1,0,1) != -15 || mat2(1,1,1) !=  0 || mat2(1,2,1) != 0 ) {
+      if( mat2(0,0,0) !=   0 || mat2(0,0,1) != -4 || mat2(0,0,2) != 0 ||
+          mat2(0,1,0) != -15 || mat2(0,1,1) !=  0 || mat2(0,1,2) != 0 ||
+          mat2(1,0,0) !=   0 || mat2(1,0,1) != -4 || mat2(1,0,2) != 0 ||
+          mat2(1,1,0) != -15 || mat2(1,1,1) !=  0 || mat2(1,1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Schur product assignment failed\n"
@@ -288,12 +288,12 @@ void ClassTest::testMultAssign()
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
       checkNonZeros( mat2,  2UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 0 || mat2(0,1,0) != 0 || mat2(0,2,0) != 0 ||
-          mat2(1,0,0) != 0 || mat2(1,1,0) != 9 || mat2(1,2,0) != 0 ||
-          mat2(2,0,0) != 0 || mat2(2,1,0) != 0 || mat2(2,2,0) != 0 ||
-          mat2(0,0,1) != 0 || mat2(0,1,1) != 0 || mat2(0,2,1) != 0 ||
-          mat2(1,0,1) != 0 || mat2(1,1,1) != 9 || mat2(1,2,1) != 0 ||
-          mat2(2,0,1) != 0 || mat2(2,1,1) != 0 || mat2(2,2,1) != 0 ) {
+      if( mat2(0,0,0) != 0 || mat2(0,0,1) != 0 || mat2(0,0,2) != 0 ||
+          mat2(0,1,0) != 0 || mat2(0,1,1) != 9 || mat2(0,1,2) != 0 ||
+          mat2(0,2,0) != 0 || mat2(0,2,1) != 0 || mat2(0,2,2) != 0 ||
+          mat2(1,0,0) != 0 || mat2(1,0,1) != 0 || mat2(1,0,2) != 0 ||
+          mat2(1,1,0) != 0 || mat2(1,1,1) != 9 || mat2(1,1,2) != 0 ||
+          mat2(1,2,0) != 0 || mat2(1,2,1) != 0 || mat2(1,2,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Multiplication assignment failed\n"
@@ -428,12 +428,12 @@ void ClassTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 2 ||
-          mat(2,0,0) != -4 || mat(2,1,0) != 0 || mat(2,2,0) != 6 ||
-          mat(0,0,1) !=  0 || mat(0,1,1) != 0 || mat(0,2,1) != 0 ||
-          mat(1,0,1) !=  0 || mat(1,1,1) != 0 || mat(1,2,1) != 2 ||
-          mat(2,0,1) != -4 || mat(2,1,1) != 0 || mat(2,2,1) != 6 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 2 ||
+          mat(0,2,0) != -4 || mat(0,2,1) != 0 || mat(0,2,2) != 6 ||
+          mat(1,0,0) !=  0 || mat(1,0,1) != 0 || mat(1,0,2) != 0 ||
+          mat(1,1,0) !=  0 || mat(1,1,1) != 0 || mat(1,1,2) != 2 ||
+          mat(1,2,0) != -4 || mat(1,2,1) != 0 || mat(1,2,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -468,12 +468,12 @@ void ClassTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 2 ||
-          mat(2,0,0) != -4 || mat(2,1,0) != 0 || mat(2,2,0) != 6 ||
-          mat(0,0,1) !=  0 || mat(0,1,1) != 0 || mat(0,2,1) != 0 ||
-          mat(1,0,1) !=  0 || mat(1,1,1) != 0 || mat(1,2,1) != 2 ||
-          mat(2,0,1) != -4 || mat(2,1,1) != 0 || mat(2,2,1) != 6 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 2 ||
+          mat(0,2,0) != -4 || mat(0,2,1) != 0 || mat(0,2,2) != 6 ||
+          mat(1,0,0) !=  0 || mat(1,0,1) != 0 || mat(1,0,2) != 0 ||
+          mat(1,1,0) !=  0 || mat(1,1,1) != 0 || mat(1,1,2) != 2 ||
+          mat(1,2,0) != -4 || mat(1,2,1) != 0 || mat(1,2,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -508,12 +508,12 @@ void ClassTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 2 ||
-          mat(2,0,0) != -4 || mat(2,1,0) != 0 || mat(2,2,0) != 6 ||
-          mat(0,0,1) !=  0 || mat(0,1,1) != 0 || mat(0,2,1) != 0 ||
-          mat(1,0,1) !=  0 || mat(1,1,1) != 0 || mat(1,2,1) != 2 ||
-          mat(2,0,1) != -4 || mat(2,1,1) != 0 || mat(2,2,1) != 6 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 2 ||
+          mat(0,2,0) != -4 || mat(0,2,1) != 0 || mat(0,2,2) != 6 ||
+          mat(1,0,0) !=  0 || mat(1,0,1) != 0 || mat(1,0,2) != 0 ||
+          mat(1,1,0) !=  0 || mat(1,1,1) != 0 || mat(1,1,2) != 2 ||
+          mat(1,2,0) != -4 || mat(1,2,1) != 0 || mat(1,2,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -548,12 +548,12 @@ void ClassTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 1 ||
-          mat(2,0,0) != -2 || mat(2,1,0) != 0 || mat(2,2,0) != 3 ||
-          mat(0,0,1) !=  0 || mat(0,1,1) != 0 || mat(0,2,1) != 0 ||
-          mat(1,0,1) !=  0 || mat(1,1,1) != 0 || mat(1,2,1) != 1 ||
-          mat(2,0,1) != -2 || mat(2,1,1) != 0 || mat(2,2,1) != 3 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 1 ||
+          mat(0,2,0) != -2 || mat(0,2,1) != 0 || mat(0,2,2) != 3 ||
+          mat(1,0,0) !=  0 || mat(1,0,1) != 0 || mat(1,0,2) != 0 ||
+          mat(1,1,0) !=  0 || mat(1,1,1) != 0 || mat(1,1,2) != 1 ||
+          mat(1,2,0) != -2 || mat(1,2,1) != 0 || mat(1,2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -588,12 +588,12 @@ void ClassTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 1 ||
-          mat(2,0,0) != -2 || mat(2,1,0) != 0 || mat(2,2,0) != 3 ||
-          mat(0,0,1) !=  0 || mat(0,1,1) != 0 || mat(0,2,1) != 0 ||
-          mat(1,0,1) !=  0 || mat(1,1,1) != 0 || mat(1,2,1) != 1 ||
-          mat(2,0,1) != -2 || mat(2,1,1) != 0 || mat(2,2,1) != 3 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 1 ||
+          mat(0,2,0) != -2 || mat(0,2,1) != 0 || mat(0,2,2) != 3 ||
+          mat(1,0,0) !=  0 || mat(1,0,1) != 0 || mat(1,0,2) != 0 ||
+          mat(1,1,0) !=  0 || mat(1,1,1) != 0 || mat(1,1,2) != 1 ||
+          mat(1,2,0) != -2 || mat(1,2,1) != 0 || mat(1,2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -628,12 +628,12 @@ void ClassTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 ||
-          mat(1,0,0) != 3 || mat(1,1,0) != 4 ||
-          mat(2,0,0) != 5 || mat(2,1,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 ||
-          mat(1,0,1) != 3 || mat(1,1,1) != 4 ||
-          mat(2,0,1) != 5 || mat(2,1,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 ||
+          mat(0,1,0) != 3 || mat(0,1,1) != 4 ||
+          mat(0,2,0) != 5 || mat(0,2,1) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 ||
+          mat(1,1,0) != 3 || mat(1,1,1) != 4 ||
+          mat(1,2,0) != 5 || mat(1,2,1) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
@@ -658,12 +658,12 @@ void ClassTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  2 || mat(0,1,0) !=  4 ||
-          mat(1,0,0) !=  6 || mat(1,1,0) !=  8 ||
-          mat(2,0,0) != 10 || mat(2,1,0) != 12 ||
-          mat(0,0,1) !=  2 || mat(0,1,1) !=  4 ||
-          mat(1,0,1) !=  6 || mat(1,1,1) !=  8 ||
-          mat(2,0,1) != 10 || mat(2,1,1) != 12 ) {
+      if( mat(0,0,0) !=  2 || mat(0,0,1) !=  4 ||
+          mat(0,1,0) !=  6 || mat(0,1,1) !=  8 ||
+          mat(0,2,0) != 10 || mat(0,2,1) != 12 ||
+          mat(1,0,0) !=  2 || mat(1,0,1) !=  4 ||
+          mat(1,1,0) !=  6 || mat(1,1,1) !=  8 ||
+          mat(1,2,0) != 10 || mat(1,2,1) != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scaling failed\n"
@@ -688,12 +688,12 @@ void ClassTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 ||
-          mat(1,0,0) != 3 || mat(1,1,0) != 4 ||
-          mat(2,0,0) != 5 || mat(2,1,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 ||
-          mat(1,0,1) != 3 || mat(1,1,1) != 4 ||
-          mat(2,0,1) != 5 || mat(2,1,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 ||
+          mat(0,1,0) != 3 || mat(0,1,1) != 4 ||
+          mat(0,2,0) != 5 || mat(0,2,1) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 ||
+          mat(1,1,0) != 3 || mat(1,1,1) != 4 ||
+          mat(1,2,0) != 5 || mat(1,2,1) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scaling failed\n"
@@ -711,12 +711,12 @@ void ClassTest::testScaling()
 
       blaze::DynamicTensor<complex<float>> mat( 2UL, 2UL, 2UL );
       mat(0,0,0) = complex<float>( 1.0F, 0.0F );
-      mat(0,1,0) = complex<float>( 2.0F, 0.0F );
-      mat(1,0,0) = complex<float>( 3.0F, 0.0F );
-      mat(1,1,0) = complex<float>( 4.0F, 0.0F );
-      mat(0,0,1) = complex<float>( 1.0F, 0.0F );
-      mat(0,1,1) = complex<float>( 2.0F, 0.0F );
-      mat(1,0,1) = complex<float>( 3.0F, 0.0F );
+      mat(0,0,1) = complex<float>( 2.0F, 0.0F );
+      mat(0,1,0) = complex<float>( 3.0F, 0.0F );
+      mat(0,1,1) = complex<float>( 4.0F, 0.0F );
+      mat(1,0,0) = complex<float>( 1.0F, 0.0F );
+      mat(1,0,1) = complex<float>( 2.0F, 0.0F );
+      mat(1,1,0) = complex<float>( 3.0F, 0.0F );
       mat(1,1,1) = complex<float>( 4.0F, 0.0F );
       mat.scale( complex<float>( 3.0F, 0.0F ) );
 
@@ -730,10 +730,10 @@ void ClassTest::testScaling()
       checkNonZeros( mat, 0UL, 1UL, 2UL );
       checkNonZeros( mat, 1UL, 1UL, 2UL );
 
-      if( mat(0,0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,1,0) != complex<float>(  6.0F, 0.0F ) ||
-          mat(1,0,0) != complex<float>( 9.0F, 0.0F ) || mat(1,1,0) != complex<float>( 12.0F, 0.0F ) ||
-          mat(0,0,1) != complex<float>( 3.0F, 0.0F ) || mat(0,1,1) != complex<float>(  6.0F, 0.0F ) ||
-          mat(1,0,1) != complex<float>( 9.0F, 0.0F ) || mat(1,1,1) != complex<float>( 12.0F, 0.0F ) ) {
+      if( mat(0,0,0) != complex<float>( 3.0F, 0.0F ) || mat(0,0,1) != complex<float>(  6.0F, 0.0F ) ||
+          mat(0,1,0) != complex<float>( 9.0F, 0.0F ) || mat(0,1,1) != complex<float>( 12.0F, 0.0F ) ||
+          mat(1,0,0) != complex<float>( 3.0F, 0.0F ) || mat(1,0,1) != complex<float>(  6.0F, 0.0F ) ||
+          mat(1,1,0) != complex<float>( 9.0F, 0.0F ) || mat(1,1,1) != complex<float>( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
@@ -766,9 +766,9 @@ void ClassTest::testFunctionCall()
       test_ = "Row-major DynamicTensor::operator()";
 
       // Assignment to the element (2,1)
-      blaze::DynamicTensor<int> mat( 3UL, 5UL, 2UL, 0 );
-      mat(2,1,0) = 1;
-      mat(2,1,1) = 1;
+      blaze::DynamicTensor<int> mat( 2UL, 3UL, 5UL, 0 );
+      mat(0,2,1) = 1;
+      mat(1,2,1) = 1;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -782,7 +782,7 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 0UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat(2,1,0) != 1 || mat(2,1,1) != 1) {
+      if( mat(0,2,1) != 1 || mat(1,2,1) != 1) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -793,8 +793,8 @@ void ClassTest::testFunctionCall()
       }
 
       // Assignment to the element (1,4)
-      mat(1,4,0) = 2;
-      mat(1,4,1) = 2;
+      mat(0,1,4) = 2;
+      mat(1,1,4) = 2;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -808,7 +808,7 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat(1,4,0) != 2 || mat(2,1,0) != 1 || mat(1,4,1) != 2 || mat(2,1,1) != 1 ) {
+      if( mat(0,1,4) != 2 || mat(0,2,1) != 1 || mat(1,1,4) != 2 || mat(1,2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -819,8 +819,8 @@ void ClassTest::testFunctionCall()
       }
 
       // Assignment to the element (0,3)
-      mat(0,3,0) = 3;
-      mat(0,3,1) = 3;
+      mat(0,0,3) = 3;
+      mat(1,0,3) = 3;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -834,8 +834,8 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat(0,3,0) != 3 || mat(1,4,0) != 2 || mat(2,1,0) != 1 ||
-          mat(0,3,1) != 3 || mat(1,4,1) != 2 || mat(2,1,1) != 1) {
+      if( mat(0,0,3) != 3 || mat(0,1,4) != 2 || mat(0,2,1) != 1 ||
+          mat(1,0,3) != 3 || mat(1,1,4) != 2 || mat(1,2,1) != 1) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -846,8 +846,8 @@ void ClassTest::testFunctionCall()
       }
 
       // Assignment to the element (2,2)
-      mat(2,2,0) = 4;
-      mat(2,2,1) = 4;
+      mat(0,2,2) = 4;
+      mat(1,2,2) = 4;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -861,8 +861,8 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != 3 || mat(1,4,0) != 2 || mat(2,1,0) != 1 || mat(2,2,0) != 4 ||
-          mat(0,3,1) != 3 || mat(1,4,1) != 2 || mat(2,1,1) != 1 || mat(2,2,1) != 4) {
+      if( mat(0,0,3) != 3 || mat(0,1,4) != 2 || mat(0,2,1) != 1 || mat(0,2,2) != 4 ||
+          mat(1,0,3) != 3 || mat(1,1,4) != 2 || mat(1,2,1) != 1 || mat(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -873,8 +873,8 @@ void ClassTest::testFunctionCall()
       }
 
       // Addition assignment to the element (2,1)
-      mat(2,1,0) += mat(0,3,0);
-      mat(2,1,1) += mat(0,3,1);
+      mat(0,2,1) += mat(0,0,3);
+      mat(1,2,1) += mat(1,0,3);
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -888,8 +888,8 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != 3 || mat(1,4,0) != 2 || mat(2,1,0) != 4 || mat(2,2,0) != 4 ||
-          mat(0,3,1) != 3 || mat(1,4,1) != 2 || mat(2,1,1) != 4 || mat(2,2,1) != 4) {
+      if( mat(0,0,3) != 3 || mat(0,1,4) != 2 || mat(0,2,1) != 4 || mat(0,2,2) != 4 ||
+          mat(1,0,3) != 3 || mat(1,1,4) != 2 || mat(1,2,1) != 4 || mat(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -900,8 +900,8 @@ void ClassTest::testFunctionCall()
       }
 
       // Subtraction assignment to the element (1,0)
-      mat(1,0,0) -= mat(1,4,0);
-      mat(1,0,1) -= mat(1,4,1);
+      mat(0,1,0) -= mat(0,1,4);
+      mat(1,1,0) -= mat(1,1,4);
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -915,8 +915,8 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != 3 || mat(1,0,0) != -2 || mat(1,4,0) != 2 || mat(2,1,0) != 4 || mat(2,2,0) != 4 ||
-          mat(0,3,1) != 3 || mat(1,0,1) != -2 || mat(1,4,1) != 2 || mat(2,1,1) != 4 || mat(2,2,1) != 4) {
+      if( mat(0,0,3) != 3 || mat(0,1,0) != -2 || mat(0,1,4) != 2 || mat(0,2,1) != 4 || mat(0,2,2) != 4 ||
+          mat(1,0,3) != 3 || mat(1,1,0) != -2 || mat(1,1,4) != 2 || mat(1,2,1) != 4 || mat(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -927,8 +927,8 @@ void ClassTest::testFunctionCall()
       }
 
       // Multiplication assignment to the element (0,3)
-      mat(0,3,0) *= -3;
-      mat(0,3,1) *= -3;
+      mat(0,0,3) *= -3;
+      mat(1,0,3) *= -3;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -942,8 +942,8 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != -9 || mat(1,0,0) != -2 || mat(1,4,0) != 2 || mat(2,1,0) != 4 || mat(2,2,0) != 4 ||
-          mat(0,3,1) != -9 || mat(1,0,1) != -2 || mat(1,4,1) != 2 || mat(2,1,1) != 4 || mat(2,2,1) != 4) {
+      if( mat(0,0,3) != -9 || mat(0,1,0) != -2 || mat(0,1,4) != 2 || mat(0,2,1) != 4 || mat(0,2,2) != 4 ||
+          mat(1,0,3) != -9 || mat(1,1,0) != -2 || mat(1,1,4) != 2 || mat(1,2,1) != 4 || mat(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -954,8 +954,8 @@ void ClassTest::testFunctionCall()
       }
 
       // Division assignment to the element (2,1)
-      mat(2,1,0) /= 2;
-      mat(2,1,1) /= 2;
+      mat(0,2,1) /= 2;
+      mat(1,2,1) /= 2;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -969,8 +969,8 @@ void ClassTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != -9 || mat(1,0,0) != -2 || mat(1,4,0) != 2 || mat(2,1,0) != 2 || mat(2,2,0) != 4 ||
-          mat(0,3,1) != -9 || mat(1,0,1) != -2 || mat(1,4,1) != 2 || mat(2,1,1) != 2 || mat(2,2,1) != 4) {
+      if( mat(0,0,3) != -9 || mat(0,1,0) != -2 || mat(0,1,4) != 2 || mat(0,2,1) != 2 || mat(0,2,2) != 4 ||
+          mat(1,0,3) != -9 || mat(1,1,0) != -2 || mat(1,1,4) != 2 || mat(1,2,1) != 2 || mat(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1003,9 +1003,9 @@ void ClassTest::testAt()
       test_ = "Row-major DynamicTensor::at()";
 
       // Assignment to the element (2,1)
-      blaze::DynamicTensor<int> mat( 3UL, 5UL, 2UL, 0 );
-      mat.at(2,1,0) = 1;
-      mat.at(2,1,1) = 1;
+      blaze::DynamicTensor<int> mat( 2UL, 3UL, 5UL, 0 );
+      mat.at(0,2,1) = 1;
+      mat.at(1,2,1) = 1;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1019,7 +1019,7 @@ void ClassTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 0UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat.at(2,1,0) != 1 || mat.at(2,1,1) != 1) {
+      if( mat.at(0,2,1) != 1 || mat.at(1,2,1) != 1) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Access via at() function failed\n"
@@ -1030,8 +1030,8 @@ void ClassTest::testAt()
       }
 
       // Assignment to the element (1,4)
-      mat.at(1,4,0) = 2;
-      mat.at(1,4,1) = 2;
+      mat.at(0,1,4) = 2;
+      mat.at(1,1,4) = 2;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1045,7 +1045,7 @@ void ClassTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat.at(1,4,0) != 2 || mat.at(2,1,0) != 1 || mat.at(1,4,1) != 2 || mat.at(2,1,1) != 1 ) {
+      if( mat.at(0,1,4) != 2 || mat.at(0,2,1) != 1 || mat.at(1,1,4) != 2 || mat.at(1,2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Access via at() function failed\n"
@@ -1055,8 +1055,8 @@ void ClassTest::testAt()
          throw std::runtime_error( oss.str() );
       }
 
-      mat.at(0,3,0) = 3;
-      mat.at(0,3,1) = 3;
+      mat.at(0,0,3) = 3;
+      mat.at(1,0,3) = 3;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1070,8 +1070,8 @@ void ClassTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat.at(0,3,0) != 3 || mat.at(1,4,0) != 2 || mat.at(2,1,0) != 1 ||
-          mat.at(0,3,1) != 3 || mat.at(1,4,1) != 2 || mat.at(2,1,1) != 1) {
+      if( mat.at(0,0,3) != 3 || mat.at(0,1,4) != 2 || mat.at(0,2,1) != 1 ||
+          mat.at(1,0,3) != 3 || mat.at(1,1,4) != 2 || mat.at(1,2,1) != 1) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Access via at() function failed\n"
@@ -1082,8 +1082,8 @@ void ClassTest::testAt()
       }
 
       // Assignment to the element (2,2)
-      mat.at(2,2,0) = 4;
-      mat.at(2,2,1) = 4;
+      mat.at(0,2,2) = 4;
+      mat.at(1,2,2) = 4;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1097,8 +1097,8 @@ void ClassTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != 3 || mat.at(1,4,0) != 2 || mat.at(2,1,0) != 1 || mat.at(2,2,0) != 4 ||
-          mat.at(0,3,1) != 3 || mat.at(1,4,1) != 2 || mat.at(2,1,1) != 1 || mat.at(2,2,1) != 4) {
+      if( mat.at(0,0,3) != 3 || mat.at(0,1,4) != 2 || mat.at(0,2,1) != 1 || mat.at(0,2,2) != 4 ||
+          mat.at(1,0,3) != 3 || mat.at(1,1,4) != 2 || mat.at(1,2,1) != 1 || mat.at(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Access via at() function failed\n"
@@ -1109,8 +1109,8 @@ void ClassTest::testAt()
       }
 
       // Addition assignment to the element (2,1)
-      mat.at(2,1,0) += mat.at(0,3,0);
-      mat.at(2,1,1) += mat.at(0,3,1);
+      mat.at(0,2,1) += mat.at(0,0,3);
+      mat.at(1,2,1) += mat.at(1,0,3);
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1124,8 +1124,8 @@ void ClassTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != 3 || mat.at(1,4,0) != 2 || mat.at(2,1,0) != 4 || mat.at(2,2,0) != 4 ||
-          mat.at(0,3,1) != 3 || mat.at(1,4,1) != 2 || mat.at(2,1,1) != 4 || mat.at(2,2,1) != 4) {
+      if( mat.at(0,0,3) != 3 || mat.at(0,1,4) != 2 || mat.at(0,2,1) != 4 || mat.at(0,2,2) != 4 ||
+          mat.at(1,0,3) != 3 || mat.at(1,1,4) != 2 || mat.at(1,2,1) != 4 || mat.at(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Access via at() function failed\n"
@@ -1136,8 +1136,8 @@ void ClassTest::testAt()
       }
 
       // Subtraction assignment to the element (1,0)
-      mat.at(1,0,0) -= mat.at(1,4,0);
-      mat.at(1,0,1) -= mat.at(1,4,1);
+      mat.at(0,1,0) -= mat.at(0,1,4);
+      mat.at(1,1,0) -= mat.at(1,1,4);
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1151,8 +1151,8 @@ void ClassTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != 3 || mat.at(1,0,0) != -2 || mat.at(1,4,0) != 2 || mat.at(2,1,0) != 4 || mat.at(2,2,0) != 4 ||
-          mat.at(0,3,1) != 3 || mat.at(1,0,1) != -2 || mat.at(1,4,1) != 2 || mat.at(2,1,1) != 4 || mat.at(2,2,1) != 4) {
+      if( mat.at(0,0,3) != 3 || mat.at(0,1,0) != -2 || mat.at(0,1,4) != 2 || mat.at(0,2,1) != 4 || mat.at(0,2,2) != 4 ||
+          mat.at(1,0,3) != 3 || mat.at(1,1,0) != -2 || mat.at(1,1,4) != 2 || mat.at(1,2,1) != 4 || mat.at(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Access via at() function failed\n"
@@ -1163,8 +1163,8 @@ void ClassTest::testAt()
       }
 
       // Multiplication assignment to the element (0,3)
-      mat.at(0,3,0) *= -3;
-      mat.at(0,3,1) *= -3;
+      mat.at(0,0,3) *= -3;
+      mat.at(1,0,3) *= -3;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1178,8 +1178,8 @@ void ClassTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != -9 || mat.at(1,0,0) != -2 || mat.at(1,4,0) != 2 || mat.at(2,1,0) != 4 || mat.at(2,2,0) != 4 ||
-          mat.at(0,3,1) != -9 || mat.at(1,0,1) != -2 || mat.at(1,4,1) != 2 || mat.at(2,1,1) != 4 || mat.at(2,2,1) != 4) {
+      if( mat.at(0,0,3) != -9 || mat.at(0,1,0) != -2 || mat.at(0,1,4) != 2 || mat.at(0,2,1) != 4 || mat.at(0,2,2) != 4 ||
+          mat.at(1,0,3) != -9 || mat.at(1,1,0) != -2 || mat.at(1,1,4) != 2 || mat.at(1,2,1) != 4 || mat.at(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Access via at() function failed\n"
@@ -1190,8 +1190,8 @@ void ClassTest::testAt()
       }
 
       // Division assignment to the element (2,1)
-      mat.at(2,1,0) /= 2;
-      mat.at(2,1,1) /= 2;
+      mat.at(0,2,1) /= 2;
+      mat.at(1,2,1) /= 2;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1205,8 +1205,8 @@ void ClassTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != -9 || mat.at(1,0,0) != -2 || mat.at(1,4,0) != 2 || mat.at(2,1,0) != 2 || mat.at(2,2,0) != 4 ||
-          mat.at(0,3,1) != -9 || mat.at(1,0,1) != -2 || mat.at(1,4,1) != 2 || mat.at(2,1,1) != 2 || mat.at(2,2,1) != 4) {
+      if( mat.at(0,0,3) != -9 || mat.at(0,1,0) != -2 || mat.at(0,1,4) != 2 || mat.at(0,2,1) != 2 || mat.at(0,2,2) != 4 ||
+          mat.at(1,0,3) != -9 || mat.at(1,1,0) != -2 || mat.at(1,1,4) != 2 || mat.at(1,2,1) != 2 || mat.at(1,2,2) != 4) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Access via at() function failed\n"
@@ -1216,9 +1216,9 @@ void ClassTest::testAt()
          throw std::runtime_error( oss.str() );
       }
 
-      // Attempt to assign to the element (3,0,0)
+      // Attempt to assign to the element (0,3,0)
       try {
-         mat.at(3,0,0) = 2;
+         mat.at(0,3,0) = 2;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1230,9 +1230,9 @@ void ClassTest::testAt()
       }
       catch( std::out_of_range& ) {}
 
-      // Attempt to assign to the element (0,5,0)
+      // Attempt to assign to the element (0,0,5)
       try {
-         mat.at(0,5,0) = 2;
+         mat.at(0,0,5) = 2;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1244,9 +1244,9 @@ void ClassTest::testAt()
       }
       catch( std::out_of_range& ) {}
 
-      // Attempt to assign to the element (0,1,3)
+      // Attempt to assign to the element (3,0,1)
       try {
-         mat.at(0,1,3) = 2;
+         mat.at(3,0,1) = 2;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1500,9 +1500,9 @@ void ClassTest::testIterator()
             *it = value++;
          }
 
-         if( mat(0,0,0) !=  0 || mat(0,1,0) != 1 || mat(0,2,0) !=  0 ||
-             mat(1,0,0) != -2 || mat(1,1,0) != 0 || mat(1,2,0) != -3 ||
-             mat(2,0,0) !=  7 || mat(2,1,0) != 8 || mat(2,2,0) !=  9 ) {
+         if( mat(0,0,0) !=  0 || mat(0,0,1) != 1 || mat(0,0,2) !=  0 ||
+             mat(0,1,0) != -2 || mat(0,1,1) != 0 || mat(0,1,2) != -3 ||
+             mat(0,2,0) !=  7 || mat(0,2,1) != 8 || mat(0,2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
@@ -1523,9 +1523,9 @@ void ClassTest::testIterator()
             *it += value++;
          }
 
-         if( mat(0,0,1) != 0 || mat(0,1,1) != 1 || mat(0,2,1) != 0 ||
-             mat(1,0,1) != 2 || mat(1,1,1) != 5 || mat(1,2,1) != 3 ||
-             mat(2,0,1) != 0 || mat(2,1,1) != 4 || mat(2,2,1) != 5 ) {
+         if( mat(1,0,0) != 0 || mat(1,0,1) != 1 || mat(1,0,2) != 0 ||
+             mat(1,1,0) != 2 || mat(1,1,1) != 5 || mat(1,1,2) != 3 ||
+             mat(1,2,0) != 0 || mat(1,2,1) != 4 || mat(1,2,2) != 5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Addition assignment via iterator failed\n"
@@ -1546,9 +1546,9 @@ void ClassTest::testIterator()
             *it -= value++;
          }
 
-         if( mat(0,0,0) !=  0 || mat(0,1,0) !=  1 || mat(0,2,0) !=  0 ||
-             mat(1,0,0) != -6 || mat(1,1,0) != -5 || mat(1,2,0) != -9 ||
-             mat(2,0,0) !=  7 || mat(2,1,0) !=  8 || mat(2,2,0) !=  9 ) {
+         if( mat(0,0,0) !=  0 || mat(0,0,1) !=  1 || mat(0,0,2) !=  0 ||
+             mat(0,1,0) != -6 || mat(0,1,1) != -5 || mat(0,1,2) != -9 ||
+             mat(0,2,0) !=  7 || mat(0,2,1) !=  8 || mat(0,2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Subtraction assignment via iterator failed\n"
@@ -1569,9 +1569,9 @@ void ClassTest::testIterator()
             *it *= value++;
          }
 
-         if( mat(0,0,1) !=  0 || mat(0,1,1) !=  1 || mat(0,2,1) !=  0 ||
-             mat(1,0,1) !=  4 || mat(1,1,1) != 15 || mat(1,2,1) != 12 ||
-             mat(2,0,1) !=  0 || mat(2,1,1) !=  4 || mat(2,2,1) !=  5 ) {
+         if( mat(1,0,0) !=  0 || mat(1,0,1) !=  1 || mat(1,0,2) !=  0 ||
+             mat(1,1,0) !=  4 || mat(1,1,1) != 15 || mat(1,1,2) != 12 ||
+             mat(1,2,0) !=  0 || mat(1,2,1) !=  4 || mat(1,2,2) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Multiplication assignment via iterator failed\n"
@@ -1590,9 +1590,9 @@ void ClassTest::testIterator()
             *it /= 2;
          }
 
-         if( mat(0,0,1) !=  0 || mat(0,1,1) != 1 || mat(0,2,1) !=  0 ||
-             mat(1,0,1) !=  2 || mat(1,1,1) != 7 || mat(1,2,1) !=  6 ||
-             mat(2,0,1) !=  0 || mat(2,1,1) != 4 || mat(2,2,1) !=  5 ) {
+         if( mat(1,0,0) !=  0 || mat(1,0,1) != 1 || mat(1,0,2) !=  0 ||
+             mat(1,1,0) !=  2 || mat(1,1,1) != 7 || mat(1,1,2) !=  6 ||
+             mat(1,2,0) !=  0 || mat(1,2,1) != 4 || mat(1,2,2) !=  5 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Division assignment via iterator failed\n"
@@ -1625,7 +1625,7 @@ void ClassTest::testNonZeros()
       test_ = "Row-major DynamicTensor::nonZeros()";
 
       {
-         blaze::DynamicTensor<int> mat( 2UL, 3UL, 2UL, 0 );
+         blaze::DynamicTensor<int> mat( 2UL, 2UL, 3UL, 0 );
 
          checkRows    ( mat,  2UL );
          checkColumns ( mat,  3UL );
@@ -1637,8 +1637,8 @@ void ClassTest::testNonZeros()
          checkNonZeros( mat,  1UL, 1UL, 0UL );
          checkNonZeros( mat,  1UL, 1UL, 0UL );
 
-         if( mat(0,0,0) != 0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-             mat(1,0,0) != 0 || mat(1,1,0) != 0 || mat(1,2,0) != 0 ) {
+         if( mat(0,0,0) != 0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+             mat(0,1,0) != 0 || mat(0,1,1) != 0 || mat(0,1,2) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1658,15 +1658,15 @@ void ClassTest::testNonZeros()
          checkPages(mat, 2UL);
          checkCapacity(mat, 12UL);
          checkNonZeros(mat, 6UL);
-         checkNonZeros(mat, 0UL, 0UL, 2UL);
-         checkNonZeros(mat, 1UL, 0UL, 1UL);
-         checkNonZeros(mat, 0UL, 1UL, 2UL);
+         checkNonZeros(mat, 2UL, 0UL, 0UL);
+         checkNonZeros(mat, 1UL, 1UL, 0UL);
+         checkNonZeros(mat, 2UL, 0UL, 1UL);
          checkNonZeros(mat, 1UL, 1UL, 1UL);
 
-         if (mat(0,0,0) != 0 || mat(0,1,0) != 1 || mat(0,2,0) != 2 ||
-             mat(1,0,0) != 0 || mat(1,1,0) != 3 || mat(1,2,0) != 0 ||
-             mat(0,0,1) != 0 || mat(0,1,1) != 1 || mat(0,2,1) != 2 ||
-             mat(1,0,1) != 0 || mat(1,1,1) != 3 || mat(1,2,1) != 0) {
+         if (mat(0,0,0) != 0 || mat(0,0,1) != 1 || mat(0,0,2) != 2 ||
+             mat(0,1,0) != 0 || mat(0,1,1) != 3 || mat(0,1,2) != 0 ||
+             mat(1,0,0) != 0 || mat(1,0,1) != 1 || mat(1,0,2) != 2 ||
+             mat(1,1,0) != 0 || mat(1,1,1) != 3 || mat(1,1,2) != 0) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1730,10 +1730,10 @@ void ClassTest::testReset()
          checkNonZeros( mat, 0UL, 1UL, 3UL );
          checkNonZeros( mat, 1UL, 1UL, 3UL );
 
-         if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 3 ||
-             mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-             mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-             mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+             mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+             mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+             mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1744,7 +1744,7 @@ void ClassTest::testReset()
          }
 
          // Resetting a single element
-         reset( mat(0,2,0) );
+         reset( mat(0,0,2) );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -1756,10 +1756,10 @@ void ClassTest::testReset()
          checkNonZeros( mat, 0UL, 1UL, 3UL );
          checkNonZeros( mat, 1UL, 1UL, 3UL );
 
-         if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 0 ||
-             mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-             mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-             mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 0 ||
+             mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+             mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+             mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1782,10 +1782,10 @@ void ClassTest::testReset()
          checkNonZeros( mat, 0UL, 1UL, 3UL );
          checkNonZeros( mat, 1UL, 1UL, 0UL );
 
-         if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 0 ||
-             mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-             mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-             mat(1,0,1) != 0 || mat(1,1,1) != 0 || mat(1,2,1) != 0 ) {
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 0 ||
+             mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+             mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+             mat(1,1,0) != 0 || mat(1,1,1) != 0 || mat(1,1,2) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1808,10 +1808,10 @@ void ClassTest::testReset()
          checkNonZeros( mat, 0UL, 1UL, 0UL );
          checkNonZeros( mat, 1UL, 1UL, 0UL );
 
-         if( mat(0,0,0) != 0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-             mat(1,0,0) != 0 || mat(1,1,0) != 0 || mat(1,2,0) != 0 ||
-             mat(0,0,1) != 0 || mat(0,1,1) != 0 || mat(0,2,1) != 0 ||
-             mat(1,0,1) != 0 || mat(1,1,1) != 0 || mat(1,2,1) != 0 ) {
+         if( mat(0,0,0) != 0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+             mat(0,1,0) != 0 || mat(0,1,1) != 0 || mat(0,1,2) != 0 ||
+             mat(1,0,0) != 0 || mat(1,0,1) != 0 || mat(1,0,2) != 0 ||
+             mat(1,1,0) != 0 || mat(1,1,1) != 0 || mat(1,1,2) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1874,10 +1874,10 @@ void ClassTest::testClear()
          checkNonZeros( mat, 0UL, 1UL, 3UL );
          checkNonZeros( mat, 1UL, 1UL, 3UL );
 
-         if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 3 ||
-             mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-             mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-             mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+             mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+             mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+             mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1900,10 +1900,10 @@ void ClassTest::testClear()
          checkNonZeros( mat, 0UL, 1UL, 3UL );
          checkNonZeros( mat, 1UL, 1UL, 3UL );
 
-         if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 0 ||
-             mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-             mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-             mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 0 ||
+             mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+             mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+             mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1952,7 +1952,7 @@ void ClassTest::testResize()
       checkNonZeros( mat, 0UL );
 
       // Resizing to 0x3x2
-      mat.resize( 0UL, 3UL, 2UL );
+      mat.resize( 2UL, 0UL, 3UL );
 
       checkRows    ( mat, 0UL );
       checkColumns ( mat, 3UL );
@@ -1960,7 +1960,7 @@ void ClassTest::testResize()
       checkNonZeros( mat, 0UL );
 
       // Resizing to 5x0x2
-      mat.resize( 5UL, 0UL, 2UL );
+      mat.resize( 2UL, 5UL, 0UL );
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 0UL );
@@ -1968,7 +1968,7 @@ void ClassTest::testResize()
       checkNonZeros( mat, 0UL );
 
       // Resizing to 5x2x0
-      mat.resize( 5UL, 2UL, 0UL );
+      mat.resize( 0UL, 5UL, 2UL );
 
       checkRows    ( mat, 5UL );
       checkColumns ( mat, 2UL );
@@ -1976,7 +1976,7 @@ void ClassTest::testResize()
       checkNonZeros( mat, 0UL );
 
       // Resizing to 2x1x2
-      mat.resize( 2UL, 1UL, 2UL );
+      mat.resize( 2UL, 2UL, 1UL );
       mat = 0;
 
       checkRows    ( mat, 2UL );
@@ -1986,15 +1986,15 @@ void ClassTest::testResize()
 
       // Resizing to 3x2x3 and preserving the elements
       mat(0,0,0) = 1;
-      mat(1,0,0) = 2;
-      mat.resize( 3UL, 2UL, 3UL, true );
+      mat(0,1,0) = 2;
+      mat.resize( 3UL, 3UL, 2UL, true );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
       checkPages   ( mat, 3UL );
       checkCapacity( mat, 18UL );
 
-      if( mat(0,0,0) != 1 || mat(1,0,0) != 2 ) {
+      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Resizing the tensor failed\n"
@@ -2005,8 +2005,8 @@ void ClassTest::testResize()
       }
 
       // Resizing to 2x2x2 and preserving the elements
-      mat(0,1,0) = 3;
-      mat(1,1,0) = 4;
+      mat(0,0,1) = 3;
+      mat(0,1,1) = 4;
       mat.resize( 2UL, 2UL, 2UL, true );
 
       checkRows    ( mat, 2UL );
@@ -2014,7 +2014,7 @@ void ClassTest::testResize()
       checkPages   ( mat, 2UL );
       checkCapacity( mat, 8UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 3 || mat(1,0,0) != 2 || mat(1,1,0) != 4 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 3 || mat(0,1,0) != 2 || mat(0,1,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Resizing the tensor failed\n"
@@ -2079,18 +2079,18 @@ void ClassTest::testExtend()
 
       // Further increasing the size of the tensor and preserving the elements
       mat(0,0,0) = 1;
-      mat(0,1,0) = 2;
-      mat(1,0,0) = 3;
-      mat(1,1,0) = 4;
-      mat.extend( 1UL, 1UL, 0UL, true );
+      mat(0,0,1) = 2;
+      mat(0,1,0) = 3;
+      mat(0,1,1) = 4;
+      mat.extend( 0UL, 1UL, 1UL, true );
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 3UL );
       checkPages   ( mat, 2UL );
       checkCapacity( mat, 18UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 ||
-          mat(1,0,0) != 3 || mat(1,1,0) != 4 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 ||
+          mat(0,1,0) != 3 || mat(0,1,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Extending the tensor failed\n"
@@ -2101,7 +2101,7 @@ void ClassTest::testExtend()
       }
 
       // Further increasing the size of the tensor
-      mat.extend( 4UL, 10UL, 3UL, false );
+      mat.extend( 3UL, 4UL, 10UL, false );
 
       checkRows    ( mat,   7UL );
       checkColumns ( mat,  13UL );
@@ -2203,10 +2203,10 @@ void ClassTest::testShrinkToFit()
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 3 ||
-             mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-             mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-             mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+             mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+             mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+             mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Shrinking the tensor failed\n"
@@ -2245,10 +2245,10 @@ void ClassTest::testShrinkToFit()
             throw std::runtime_error( oss.str() );
          }
 
-         if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 3 ||
-             mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-             mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-             mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+             mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+             mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+             mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Shrinking the tensor failed\n"
@@ -2294,19 +2294,19 @@ void ClassTest::testSwap()
       checkPages   ( mat1, 3UL );
       checkCapacity( mat1, 18UL );
       checkNonZeros( mat1, 18UL );
-      checkNonZeros( mat1, 0UL, 0UL, 3UL );
-      checkNonZeros( mat1, 1UL, 0UL, 3UL );
-      checkNonZeros( mat1, 0UL, 1UL, 3UL );
-      checkNonZeros( mat1, 1UL, 1UL, 3UL );
-      checkNonZeros( mat1, 0UL, 2UL, 3UL );
-      checkNonZeros( mat1, 1UL, 2UL, 3UL );
+      checkNonZeros( mat1, 3UL, 0UL, 0UL );
+      checkNonZeros( mat1, 3UL, 1UL, 0UL );
+      checkNonZeros( mat1, 3UL, 0UL, 1UL );
+      checkNonZeros( mat1, 3UL, 1UL, 1UL );
+      checkNonZeros( mat1, 3UL, 0UL, 2UL );
+      checkNonZeros( mat1, 3UL, 1UL, 2UL );
 
-      if( mat1(0,0,0) != 6 || mat1(0,1,0) != 5 || mat1(0,2,0) != 4 ||
-          mat1(1,0,0) != 3 || mat1(1,1,0) != 2 || mat1(1,2,0) != 1 ||
-          mat1(0,0,1) != 6 || mat1(0,1,1) != 5 || mat1(0,2,1) != 4 ||
-          mat1(1,0,1) != 3 || mat1(1,1,1) != 2 || mat1(1,2,1) != 1 ||
-          mat1(0,0,2) != 6 || mat1(0,1,2) != 5 || mat1(0,2,2) != 4 ||
-          mat1(1,0,2) != 3 || mat1(1,1,2) != 2 || mat1(1,2,2) != 1 ) {
+      if( mat1(0,0,0) != 6 || mat1(0,0,1) != 5 || mat1(0,0,2) != 4 ||
+          mat1(0,1,0) != 3 || mat1(0,1,1) != 2 || mat1(0,1,2) != 1 ||
+          mat1(1,0,0) != 6 || mat1(1,0,1) != 5 || mat1(1,0,2) != 4 ||
+          mat1(1,1,0) != 3 || mat1(1,1,1) != 2 || mat1(1,1,2) != 1 ||
+          mat1(2,0,0) != 6 || mat1(2,0,1) != 5 || mat1(2,0,2) != 4 ||
+          mat1(2,1,0) != 3 || mat1(2,1,1) != 2 || mat1(2,1,2) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Swapping the first tensor failed\n"
@@ -2321,19 +2321,19 @@ void ClassTest::testSwap()
       checkPages   ( mat2, 2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2, 8UL );
-      checkNonZeros( mat2, 0UL, 0UL, 2UL );
-      checkNonZeros( mat2, 1UL, 0UL, 1UL );
+      checkNonZeros( mat2, 2UL, 0UL, 0UL );
+      checkNonZeros( mat2, 1UL, 1UL, 0UL );
+      checkNonZeros( mat2, 1UL, 2UL, 0UL );
       checkNonZeros( mat2, 2UL, 0UL, 1UL );
-      checkNonZeros( mat2, 0UL, 1UL, 2UL );
       checkNonZeros( mat2, 1UL, 1UL, 1UL );
-      checkNonZeros( mat2, 2UL, 1UL, 1UL );
+      checkNonZeros( mat2, 1UL, 2UL, 1UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 ||
-          mat2(1,0,0) != 0 || mat2(1,1,0) != 3 ||
-          mat2(2,0,0) != 4 || mat2(2,1,0) != 0 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 ||
-          mat2(1,0,1) != 0 || mat2(1,1,1) != 3 ||
-          mat2(2,0,1) != 4 || mat2(2,1,1) != 0 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 ||
+          mat2(0,1,0) != 0 || mat2(0,1,1) != 3 ||
+          mat2(0,2,0) != 4 || mat2(0,2,1) != 0 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 ||
+          mat2(1,1,0) != 0 || mat2(1,1,1) != 3 ||
+          mat2(1,2,0) != 4 || mat2(1,2,1) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Swapping the second tensor failed\n"
@@ -2879,14 +2879,14 @@ void ClassTest::testIsDefault()
 
       // isDefault with default tensor
       {
-         blaze::DynamicTensor<int> mat( 2UL, 3UL, 2UL, 0 );
+         blaze::DynamicTensor<int> mat( 2UL, 2UL, 3UL, 0 );
 
-         if( isDefault( mat(0,1,0) ) != true ) {
+         if( isDefault( mat(0,0,1) ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Tensor element: " << mat(0,1,0) << "\n";
+                << "   Tensor element: " << mat(0,0,1) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -2902,15 +2902,15 @@ void ClassTest::testIsDefault()
 
       // isDefault with non-default tensor
       {
-         blaze::DynamicTensor<int> mat( 3UL, 2UL, 2UL, 0 );
-         mat(0,1,1) = 1;
+         blaze::DynamicTensor<int> mat( 2UL, 3UL, 2UL, 0 );
+         mat(1,0,1) = 1;
 
-         if( isDefault( mat(0,1,1) ) != false ) {
+         if( isDefault( mat(1,0,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Tensor element: " << mat(0,1,1) << "\n";
+                << "   Tensor element: " << mat(1,0,1) << "\n";
             throw std::runtime_error( oss.str() );
          }
 

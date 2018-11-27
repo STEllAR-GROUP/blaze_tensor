@@ -237,7 +237,7 @@ class DTensDTensMultExpr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
    */
-   inline ReturnType operator()( size_t i, size_t j, size_t k ) const {
+   inline ReturnType operator()( size_t k, size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( k < lhs_.pages(),   "Invalid page access index" );
       BLAZE_INTERNAL_ASSERT( j < rhs_.columns(), "Invalid column access index" );
@@ -255,7 +255,7 @@ class DTensDTensMultExpr
    // \return The resulting value.
    // \exception std::out_of_range Invalid tensor access index.
    */
-   inline ReturnType at( size_t i, size_t j, size_t k ) const {
+   inline ReturnType at( size_t k, size_t i, size_t j ) const {
       if( i >= lhs_.rows() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
       }
@@ -268,7 +268,7 @@ class DTensDTensMultExpr
       if( k >= rhs_.pages() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
       }
-      return (*this)(i,j,k);
+      return (*this)(k,i,j);
    }
    //**********************************************************************************************
 
@@ -4022,11 +4022,11 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
    */
-   inline ReturnType operator()( size_t i, size_t j, size_t k ) const {
+   inline ReturnType operator()( size_t k, size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < tensor_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < tensor_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( k < tensor_.pages(),   "Invalid page access index" );
-      return tensor_(i,j,k) * scalar_;
+      return tensor_(k,i,j) * scalar_;
    }
    //**********************************************************************************************
 
@@ -4038,7 +4038,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
    // \return The resulting value.
    // \exception std::out_of_range Invalid tensor access index.
    */
-   inline ReturnType at( size_t i, size_t j, size_t k ) const {
+   inline ReturnType at( size_t k, size_t i, size_t j ) const {
       if( i >= tensor_.rows() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
       }
@@ -4048,7 +4048,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       if( k >= tensor_.pages() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
       }
-      return (*this)(i,j,k);
+      return (*this)(k,i,j);
    }
    //**********************************************************************************************
 

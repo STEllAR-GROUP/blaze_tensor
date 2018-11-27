@@ -419,11 +419,11 @@ class DTensScalarDivExpr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
    */
-   inline ReturnType operator()( size_t i, size_t j, size_t k ) const {
+   inline ReturnType operator()( size_t k, size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < tensor_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < tensor_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( j < tensor_.pages(),   "Invalid page access index" );
-      return tensor_(i,j,k) / scalar_;
+      return tensor_(k,i,j) / scalar_;
    }
    //**********************************************************************************************
 
@@ -435,7 +435,7 @@ class DTensScalarDivExpr
    // \return The resulting value.
    // \exception std::out_of_range Invalid tensor access index.
    */
-   inline ReturnType at( size_t i, size_t j, size_t k ) const {
+   inline ReturnType at( size_t k, size_t i, size_t j ) const {
       if( i >= tensor_.rows() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
       }
@@ -445,7 +445,7 @@ class DTensScalarDivExpr
       if( k >= tensor_.pages() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
       }
-      return (*this)(i,j,k);
+      return (*this)(k,i,j);
    }
    //**********************************************************************************************
 
@@ -456,11 +456,11 @@ class DTensScalarDivExpr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE auto load( size_t i, size_t j, size_t k ) const noexcept {
+   BLAZE_ALWAYS_INLINE auto load( size_t k, size_t i, size_t j ) const noexcept {
       BLAZE_INTERNAL_ASSERT( i < tensor_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < tensor_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( j < tensor_.pages(),   "Invalid page access index" );
-      return tensor_.load(i,j,k) / set( scalar_ );
+      return tensor_.load(k,i,j) / set( scalar_ );
    }
    //**********************************************************************************************
 

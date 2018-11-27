@@ -376,7 +376,7 @@ inline typename ColumnSlice<MT,CRAs...>::Reference
 {
    BLAZE_USER_ASSERT( i < rows(),    "Invalid row access index" );
    BLAZE_USER_ASSERT( k < columns(), "Invalid columns access index" );
-   return tensor_(i, column(), k);
+   return tensor_(k, i, column());
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -397,7 +397,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::ConstReference
    ColumnSlice<MT,CRAs...>::operator()( size_t i, size_t k ) const
 {
-   return const_cast<const MT&>( tensor_ )(i, column(), k);
+   return const_cast<const MT&>( tensor_ )(k, i, column());
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1241,7 +1241,7 @@ inline ColumnSlice<MT,CRAs...>&
 {
    for ( size_t k = 0; k < rows(); ++k ) {
       for ( size_t i = 0; i < columns(); ++i ) {
-         tensor_(i, column(), k) *= scalar;
+         tensor_(k, i, column()) *= scalar;
       }
    }
    return *this;
@@ -1409,7 +1409,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename ColumnSlice<MT,CRAs...>::SIMDType
    ColumnSlice<MT,CRAs...>::load( size_t i, size_t k ) const noexcept
 {
-   return tensor_.load( i, column(), k );
+   return tensor_.load( k, i, column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1433,7 +1433,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename ColumnSlice<MT,CRAs...>::SIMDType
    ColumnSlice<MT,CRAs...>::loada( size_t i, size_t k ) const noexcept
 {
-   return tensor_.loada( i, column(), k );
+   return tensor_.loada( k, i, column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1457,7 +1457,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename ColumnSlice<MT,CRAs...>::SIMDType
    ColumnSlice<MT,CRAs...>::loadu( size_t i, size_t k ) const noexcept
 {
-   return tensor_.loadu( i, column(), k );
+   return tensor_.loadu( k, i, column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1482,7 +1482,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    ColumnSlice<MT,CRAs...>::store( size_t i, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.store( i, column(), k, value );
+   tensor_.store( k, i, column(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1507,7 +1507,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    ColumnSlice<MT,CRAs...>::storea( size_t i, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.storea( i, column(), k, value );
+   tensor_.storea( k, i, column(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1532,7 +1532,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    ColumnSlice<MT,CRAs...>::storeu( size_t i, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.storeu( i, column(), k, value );
+   tensor_.storeu( k, i, column(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1557,7 +1557,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    ColumnSlice<MT,CRAs...>::stream( size_t i, size_t k, const SIMDType& value ) noexcept
 {
-   tensor_.stream( i, column(), k, value );
+   tensor_.stream( k, i, column(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1585,7 +1585,7 @@ inline auto ColumnSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
 
    for (size_t k = 0UL; k < (~rhs).rows(); ++k ) {
       for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
-         tensor_(i,column(),k) = (~rhs)(k,i);
+         tensor_(k,i,column()) = (~rhs)(k,i);
       }
    }
 }
@@ -1615,7 +1615,7 @@ inline auto ColumnSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs
 
    for (size_t k = 0UL; k < (~rhs).rows(); ++k ) {
       for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
-         tensor_(i,column(),k) += (~rhs)(k,i);
+         tensor_(k,i,column()) += (~rhs)(k,i);
       }
    }
 }
@@ -1645,7 +1645,7 @@ inline auto ColumnSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs
 
    for (size_t k = 0UL; k < (~rhs).rows(); ++k ) {
       for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
-         tensor_(i,column(),k) -= (~rhs)(k,i);
+         tensor_(k,i,column()) -= (~rhs)(k,i);
       }
    }
 }
@@ -1675,7 +1675,7 @@ inline auto ColumnSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& 
 
    for (size_t k = 0UL; k < (~rhs).rows(); ++k ) {
       for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
-         tensor_(i,column(),k) *= (~rhs)(k,i);
+         tensor_(k,i,column()) *= (~rhs)(k,i);
       }
    }
 }

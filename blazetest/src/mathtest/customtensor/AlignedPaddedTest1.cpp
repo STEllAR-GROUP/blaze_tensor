@@ -127,7 +127,7 @@ void AlignedPaddedTest::testConstructors()
       // Constructor a 2x3 custom tensor
       {
          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-         MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+         MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
 
          checkRows    ( mat,  2UL );
          checkColumns ( mat,  3UL );
@@ -217,7 +217,7 @@ void AlignedPaddedTest::testConstructors()
       test_ = "Row-major CustomTensor copy constructor (0x3x2)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-      MT mat1( memory.get(), 0UL, 3UL, 2UL, 16UL );
+      MT mat1( memory.get(), 2UL, 0UL, 3UL, 16UL );
       MT mat2( mat1 );
 
       checkRows    ( mat2, 0UL );
@@ -230,7 +230,7 @@ void AlignedPaddedTest::testConstructors()
       test_ = "Row-major CustomTensor copy constructor (2x0x2)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 20UL ) );
-      MT mat1( memory.get(), 2UL, 0UL, 2UL, 0UL );
+      MT mat1( memory.get(), 2UL, 2UL, 0UL, 0UL );
       MT mat2( mat1 );
 
       checkRows    ( mat2, 2UL );
@@ -243,7 +243,7 @@ void AlignedPaddedTest::testConstructors()
       test_ = "Row-major CustomTensor copy constructor (2x2x0)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 20UL ) );
-      MT mat1( memory.get(), 2UL, 2UL, 0UL, 0UL );
+      MT mat1( memory.get(), 0UL, 2UL, 2UL, 0UL );
       MT mat2( mat1 );
 
       checkRows    ( mat2, 2UL );
@@ -256,19 +256,19 @@ void AlignedPaddedTest::testConstructors()
       test_ = "Row-major CustomTensor copy constructor (2x3)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      MT mat1( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(0,2,0) = 3;
-      mat1(1,0,0) = 4;
-      mat1(1,1,0) = 5;
-      mat1(1,2,0) = 6;
-      mat1(0,0,1) = 1;
-      mat1(0,1,1) = 2;
-      mat1(0,2,1) = 3;
-      mat1(1,0,1) = 4;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
       mat1(1,1,1) = 5;
-      mat1(1,2,1) = 6;
+      mat1(1,1,2) = 6;
 
       MT mat2( mat1 );
 
@@ -282,10 +282,10 @@ void AlignedPaddedTest::testConstructors()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -317,7 +317,7 @@ void AlignedPaddedTest::testConstructors()
       test_ = "Row-major CustomTensor move constructor (0x3x2)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-      MT mat1( memory.get(), 0UL, 3UL, 2UL, 16UL );
+      MT mat1( memory.get(), 2UL, 0UL, 3UL, 16UL );
       MT mat2( std::move( mat1 ) );
 
       checkRows    ( mat2, 0UL );
@@ -330,7 +330,7 @@ void AlignedPaddedTest::testConstructors()
       test_ = "Row-major CustomTensor move constructor (2x0x2)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 20UL ) );
-      MT mat1( memory.get(), 2UL, 0UL, 2UL, 0UL );
+      MT mat1( memory.get(), 2UL, 2UL, 0UL, 0UL );
       MT mat2( std::move( mat1 ) );
 
       checkRows    ( mat2, 2UL );
@@ -343,7 +343,7 @@ void AlignedPaddedTest::testConstructors()
       test_ = "Row-major CustomTensor move constructor (2x2x0)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 20UL ) );
-      MT mat1( memory.get(), 2UL, 2UL, 0UL, 0UL );
+      MT mat1( memory.get(), 0UL, 2UL, 2UL, 0UL );
       MT mat2( std::move( mat1 ) );
 
       checkRows    ( mat2, 2UL );
@@ -356,19 +356,19 @@ void AlignedPaddedTest::testConstructors()
       test_ = "Row-major CustomTensor move constructor (2x3x2)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      MT mat1( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(0,2,0) = 3;
-      mat1(1,0,0) = 4;
-      mat1(1,1,0) = 5;
-      mat1(1,2,0) = 6;
-      mat1(0,0,1) = 1;
-      mat1(0,1,1) = 2;
-      mat1(0,2,1) = 3;
-      mat1(1,0,1) = 4;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
       mat1(1,1,1) = 5;
-      mat1(1,2,1) = 6;
+      mat1(1,1,2) = 6;
 
       MT mat2( std::move( mat1 ) );
 
@@ -382,10 +382,10 @@ void AlignedPaddedTest::testConstructors()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Construction failed\n"
@@ -418,7 +418,7 @@ void AlignedPaddedTest::testAssignment()
       test_ = "Row-major CustomTensor homogeneous assignment";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 4UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 4UL, 16UL );
       mat = 2;
 
       checkRows    ( mat,  3UL );
@@ -433,12 +433,12 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat,  1UL, 1UL, 4UL );
       checkNonZeros( mat,  2UL, 1UL, 4UL );
 
-      if( mat(0,0,0) != 2 || mat(0,1,0) != 2 || mat(0,2,0) != 2 || mat(0,3,0) != 2 ||
-          mat(1,0,0) != 2 || mat(1,1,0) != 2 || mat(1,2,0) != 2 || mat(1,3,0) != 2 ||
-          mat(2,0,0) != 2 || mat(2,1,0) != 2 || mat(2,2,0) != 2 || mat(2,3,0) != 2 ||
-          mat(0,0,0) != 2 || mat(0,1,0) != 2 || mat(0,2,0) != 2 || mat(0,3,0) != 2 ||
-          mat(1,0,0) != 2 || mat(1,1,0) != 2 || mat(1,2,0) != 2 || mat(1,3,0) != 2 ||
-          mat(2,0,0) != 2 || mat(2,1,0) != 2 || mat(2,2,0) != 2 || mat(2,3,0) != 2 ) {
+      if( mat(0,0,0) != 2 || mat(0,0,1) != 2 || mat(0,0,2) != 2 || mat(0,0,3) != 2 ||
+          mat(0,1,0) != 2 || mat(0,1,1) != 2 || mat(0,1,2) != 2 || mat(0,1,3) != 2 ||
+          mat(0,2,0) != 2 || mat(0,2,1) != 2 || mat(0,2,2) != 2 || mat(0,2,3) != 2 ||
+          mat(0,0,0) != 2 || mat(0,0,1) != 2 || mat(0,0,2) != 2 || mat(0,0,3) != 2 ||
+          mat(0,1,0) != 2 || mat(0,1,1) != 2 || mat(0,1,2) != 2 || mat(0,1,3) != 2 ||
+          mat(0,2,0) != 2 || mat(0,2,1) != 2 || mat(0,2,2) != 2 || mat(0,2,3) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -458,7 +458,7 @@ void AlignedPaddedTest::testAssignment()
       test_ = "Row-major CustomTensor initializer list assignment (complete list)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat = {{{1, 2, 3}, {4, 5, 6}}, {{1, 2, 3}, {4, 5, 6}}};
 
       checkRows    ( mat, 2UL );
@@ -471,10 +471,10 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat, 0UL, 1UL, 3UL );
       checkNonZeros( mat, 1UL, 1UL, 3UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 3 ||
-          mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-          mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -489,7 +489,7 @@ void AlignedPaddedTest::testAssignment()
       test_ = "Row-major StaticMatrix initializer list assignment (incomplete list)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat = {{{1}, {4, 5, 6}}, {{1}, {4, 5, 6}}};
 
       checkRows    ( mat, 2UL );
@@ -502,10 +502,10 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat, 0UL, 1UL, 1UL );
       checkNonZeros( mat, 1UL, 1UL, 3UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-          mat(0,0,0) != 1 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(0,0,0) != 1 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -526,7 +526,7 @@ void AlignedPaddedTest::testAssignment()
 
       const int array[2UL][2UL][3UL] = {{{1, 2, 3}, {4, 5, 6}}, {{1, 2, 3}, {4, 5, 6}}};
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat = array;
 
       checkRows    ( mat, 2UL );
@@ -539,10 +539,10 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat, 0UL, 1UL, 3UL );
       checkNonZeros( mat, 1UL, 1UL, 3UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 3 ||
-          mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-          mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -562,22 +562,22 @@ void AlignedPaddedTest::testAssignment()
       test_ = "Row-major CustomTensor copy assignment";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      MT mat1( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(0,2,0) = 3;
-      mat1(1,0,0) = 4;
-      mat1(1,1,0) = 5;
-      mat1(1,2,0) = 6;
-      mat1(0,0,1) = 1;
-      mat1(0,1,1) = 2;
-      mat1(0,2,1) = 3;
-      mat1(1,0,1) = 4;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
       mat1(1,1,1) = 5;
-      mat1(1,2,1) = 6;
+      mat1(1,1,2) = 6;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = mat1;
 
       checkRows    ( mat2,  2UL );
@@ -590,10 +590,10 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -613,22 +613,22 @@ void AlignedPaddedTest::testAssignment()
       test_ = "Row-major CustomTensor move assignment";
 
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 64UL ) );
-      MT mat1( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat1( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(0,2,0) = 3;
-      mat1(1,0,0) = 4;
-      mat1(1,1,0) = 5;
-      mat1(1,2,0) = 6;
-      mat1(0,0,1) = 1;
-      mat1(0,1,1) = 2;
-      mat1(0,2,1) = 3;
-      mat1(1,0,1) = 4;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
       mat1(1,1,1) = 5;
-      mat1(1,2,1) = 6;
+      mat1(1,1,2) = 6;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = std::move( mat1 );
 
       checkRows    ( mat2,  2UL );
@@ -641,10 +641,10 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -668,22 +668,22 @@ void AlignedPaddedTest::testAssignment()
 
       using AlignedPadded = blaze::CustomTensor<short,aligned,padded>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 64UL ) );
-      AlignedPadded mat1( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat1(0,0,0) = 1U;
-      mat1(0,1,0) = 2U;
-      mat1(0,2,0) = 3U;
-      mat1(1,0,0) = 4U;
-      mat1(1,1,0) = 5U;
-      mat1(1,2,0) = 6U;
-      mat1(0,0,1) = 1U;
-      mat1(0,1,1) = 2U;
-      mat1(0,2,1) = 3U;
-      mat1(1,0,1) = 4U;
+      mat1(0,0,1) = 2U;
+      mat1(0,0,2) = 3U;
+      mat1(0,1,0) = 4U;
+      mat1(0,1,1) = 5U;
+      mat1(0,1,2) = 6U;
+      mat1(1,0,0) = 1U;
+      mat1(1,0,1) = 2U;
+      mat1(1,0,2) = 3U;
+      mat1(1,1,0) = 4U;
       mat1(1,1,1) = 5U;
-      mat1(1,2,1) = 6U;
+      mat1(1,1,2) = 6U;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = mat1;
 
       checkRows    ( mat2,  2UL );
@@ -696,10 +696,10 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -718,22 +718,22 @@ void AlignedPaddedTest::testAssignment()
 
       using AlignedPadded = blaze::CustomTensor<unsigned int,aligned,padded>;
       std::unique_ptr<unsigned int[],blaze::Deallocate> memory1( blaze::allocate<unsigned int>( 64UL ) );
-      AlignedPadded mat1( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat1(0,0,0) = 1U;
-      mat1(0,1,0) = 2U;
-      mat1(0,2,0) = 3U;
-      mat1(1,0,0) = 4U;
-      mat1(1,1,0) = 5U;
-      mat1(1,2,0) = 6U;
-      mat1(0,0,1) = 1U;
-      mat1(0,1,1) = 2U;
-      mat1(0,2,1) = 3U;
-      mat1(1,0,1) = 4U;
+      mat1(0,0,1) = 2U;
+      mat1(0,0,2) = 3U;
+      mat1(0,1,0) = 4U;
+      mat1(0,1,1) = 5U;
+      mat1(0,1,2) = 6U;
+      mat1(1,0,0) = 1U;
+      mat1(1,0,1) = 2U;
+      mat1(1,0,2) = 3U;
+      mat1(1,1,0) = 4U;
       mat1(1,1,1) = 5U;
-      mat1(1,2,1) = 6U;
+      mat1(1,1,2) = 6U;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = mat1;
 
       checkRows    ( mat2,  2UL );
@@ -746,10 +746,10 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -778,11 +778,11 @@ void AlignedPaddedTest::testAssignment()
 
          using AlignedPadded = blaze::CustomTensor<short,aligned,padded>;
          std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( rows*spacing*pages ) );
-         AlignedPadded mat1( memory1.get(), rows, columns, pages, spacing );
+         AlignedPadded mat1( memory1.get(), pages, rows, columns, spacing );
          randomize( mat1, min, max );
 
          std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( rows*spacing*pages ) );
-         MT mat2( memory2.get(), rows, columns, pages, spacing );
+         MT mat2( memory2.get(), pages, rows, columns, spacing );
          mat2 = mat1;
 
          if( mat1 != mat2 ) {
@@ -805,22 +805,22 @@ void AlignedPaddedTest::testAssignment()
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory1( new int[13UL] );
-      UnalignedUnpadded mat1( memory1.get()+1UL, 2UL, 3UL, 2UL );
+      UnalignedUnpadded mat1( memory1.get()+1UL, 2UL, 2UL, 3UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(0,2,0) = 3;
-      mat1(1,0,0) = 4;
-      mat1(1,1,0) = 5;
-      mat1(1,2,0) = 6;
-      mat1(0,0,1) = 1;
-      mat1(0,1,1) = 2;
-      mat1(0,2,1) = 3;
-      mat1(1,0,1) = 4;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
       mat1(1,1,1) = 5;
-      mat1(1,2,1) = 6;
+      mat1(1,1,2) = 6;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = mat1;
 
       checkRows    ( mat2,  2UL );
@@ -833,10 +833,10 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat2,  0UL, 1UL, 3UL );
       checkNonZeros( mat2,  1UL, 1UL, 3UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(0,2,0) != 3 ||
-          mat2(1,0,0) != 4 || mat2(1,1,0) != 5 || mat2(1,2,0) != 6 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 2 || mat2(0,2,1) != 3 ||
-          mat2(1,0,1) != 4 || mat2(1,1,1) != 5 || mat2(1,2,1) != 6 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -865,11 +865,11 @@ void AlignedPaddedTest::testAssignment()
 
          using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
          std::unique_ptr<int[]> memory1( new int[rows*columns*pages+1UL] );
-         UnalignedUnpadded mat1( memory1.get()+1UL, rows, columns, pages );
+         UnalignedUnpadded mat1( memory1.get()+1UL, pages, rows, columns );
          randomize( mat1, min, max );
 
          std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( rows*spacing*pages ) );
-         MT mat2( memory2.get(), rows, columns, pages, spacing );
+         MT mat2( memory2.get(), pages, rows, columns, spacing );
          mat2 = mat1;
 
          if( mat1 != mat2 ) {
@@ -910,26 +910,26 @@ void AlignedPaddedTest::testAddAssign()
 
       using AlignedPadded = blaze::CustomTensor<short,aligned,padded>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 64UL ) );
-      AlignedPadded mat1( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat1 = 0;
       mat1(0,0,0) =  1;
-      mat1(0,1,0) =  2;
-      mat1(1,0,0) = -3;
-      mat1(1,2,0) =  4;
-      mat1(0,0,1) =  1;
-      mat1(0,1,1) =  2;
-      mat1(1,0,1) = -3;
-      mat1(1,2,1) =  4;
+      mat1(0,0,1) =  2;
+      mat1(0,1,0) = -3;
+      mat1(0,1,2) =  4;
+      mat1(1,0,0) =  1;
+      mat1(1,0,1) =  2;
+      mat1(1,1,0) = -3;
+      mat1(1,1,2) =  4;
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = 0;
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 += mat1;
 
@@ -943,10 +943,10 @@ void AlignedPaddedTest::testAddAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 0 || mat2(0,2,1) != 6 ||
-          mat2(1,0,1) != 2 || mat2(1,1,1) != 0 || mat2(1,2,1) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
@@ -965,26 +965,26 @@ void AlignedPaddedTest::testAddAssign()
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 64UL ) );
-      AlignedPadded mat1( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat1 = 0;
       mat1(0,0,0) =  1;
-      mat1(0,1,0) =  2;
-      mat1(1,0,0) = -3;
-      mat1(1,2,0) =  4;
-      mat1(0,0,1) =  1;
-      mat1(0,1,1) =  2;
-      mat1(1,0,1) = -3;
-      mat1(1,2,1) =  4;
+      mat1(0,0,1) =  2;
+      mat1(0,1,0) = -3;
+      mat1(0,1,2) =  4;
+      mat1(1,0,0) =  1;
+      mat1(1,0,1) =  2;
+      mat1(1,1,0) = -3;
+      mat1(1,1,2) =  4;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = 0;
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 += mat1;
 
@@ -998,10 +998,10 @@ void AlignedPaddedTest::testAddAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 0 || mat2(0,2,1) != 6 ||
-          mat2(1,0,1) != 2 || mat2(1,1,1) != 0 || mat2(1,2,1) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
@@ -1020,26 +1020,26 @@ void AlignedPaddedTest::testAddAssign()
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory1( new int[13UL] );
-      UnalignedUnpadded mat1( memory1.get()+1UL, 2UL, 3UL, 2UL );
+      UnalignedUnpadded mat1( memory1.get()+1UL, 2UL, 2UL, 3UL );
       mat1 = 0;
       mat1(0,0,0) =  1;
-      mat1(0,1,0) =  2;
-      mat1(1,0,0) = -3;
-      mat1(1,2,0) =  4;
-      mat1(0,0,1) =  1;
-      mat1(0,1,1) =  2;
-      mat1(1,0,1) = -3;
-      mat1(1,2,1) =  4;
+      mat1(0,0,1) =  2;
+      mat1(0,1,0) = -3;
+      mat1(0,1,2) =  4;
+      mat1(1,0,0) =  1;
+      mat1(1,0,1) =  2;
+      mat1(1,1,0) = -3;
+      mat1(1,1,2) =  4;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = 0;
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 += mat1;
 
@@ -1053,10 +1053,10 @@ void AlignedPaddedTest::testAddAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 0 || mat2(0,2,1) != 6 ||
-          mat2(1,0,1) != 2 || mat2(1,1,1) != 0 || mat2(1,2,1) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Addition assignment failed\n"
@@ -1093,26 +1093,26 @@ void AlignedPaddedTest::testSubAssign()
 
       using AlignedPadded = blaze::CustomTensor<short,aligned,padded>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 64UL ) );
-      AlignedPadded mat1( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat1 = 0;
       mat1(0,0,0) = -1;
-      mat1(0,1,0) = -2;
-      mat1(1,0,0) =  3;
-      mat1(1,2,0) = -4;
-      mat1(0,0,1) = -1;
-      mat1(0,1,1) = -2;
-      mat1(1,0,1) =  3;
-      mat1(1,2,1) = -4;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = 0;
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 -= mat1;
 
@@ -1126,10 +1126,10 @@ void AlignedPaddedTest::testSubAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 0 || mat2(0,2,1) != 6 ||
-          mat2(1,0,1) != 2 || mat2(1,1,1) != 0 || mat2(1,2,1) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
@@ -1148,26 +1148,26 @@ void AlignedPaddedTest::testSubAssign()
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 64UL ) );
-      AlignedPadded mat1( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat1 = 0;
       mat1(0,0,0) = -1;
-      mat1(0,1,0) = -2;
-      mat1(1,0,0) =  3;
-      mat1(1,2,0) = -4;
-      mat1(0,0,1) = -1;
-      mat1(0,1,1) = -2;
-      mat1(1,0,1) =  3;
-      mat1(1,2,1) = -4;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = 0;
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 -= mat1;
 
@@ -1181,10 +1181,10 @@ void AlignedPaddedTest::testSubAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 0 || mat2(0,2,1) != 6 ||
-          mat2(1,0,1) != 2 || mat2(1,1,1) != 0 || mat2(1,2,1) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"
@@ -1203,26 +1203,26 @@ void AlignedPaddedTest::testSubAssign()
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory1( new int[13UL] );
-      UnalignedUnpadded mat1( memory1.get()+1UL, 2UL, 3UL, 2UL );
+      UnalignedUnpadded mat1( memory1.get()+1UL, 2UL, 2UL, 3UL );
       mat1 = 0;
       mat1(0,0,0) = -1;
-      mat1(0,1,0) = -2;
-      mat1(1,0,0) =  3;
-      mat1(1,2,0) = -4;
-      mat1(0,0,1) = -1;
-      mat1(0,1,1) = -2;
-      mat1(1,0,1) =  3;
-      mat1(1,2,1) = -4;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = 0;
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 -= mat1;
 
@@ -1236,10 +1236,10 @@ void AlignedPaddedTest::testSubAssign()
       checkNonZeros( mat2,  0UL, 1UL, 2UL );
       checkNonZeros( mat2,  1UL, 1UL, 2UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 0 || mat2(0,2,0) != 6 ||
-          mat2(1,0,0) != 2 || mat2(1,1,0) != 0 || mat2(1,2,0) != 4 ||
-          mat2(0,0,1) != 1 || mat2(0,1,1) != 0 || mat2(0,2,1) != 6 ||
-          mat2(1,0,1) != 2 || mat2(1,1,1) != 0 || mat2(1,2,1) != 4 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Subtraction assignment failed\n"

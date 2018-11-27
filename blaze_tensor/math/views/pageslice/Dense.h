@@ -388,7 +388,7 @@ inline typename PageSlice<MT,CRAs...>::Reference
 {
    BLAZE_USER_ASSERT( i < rows(),    "Invalid row access index" );
    BLAZE_USER_ASSERT( j < columns(), "Invalid columns access index" );
-   return tensor_(i, j, page());
+   return tensor_(page(), i, j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -409,7 +409,7 @@ template< typename MT       // Type of the dense tensor
 inline typename PageSlice<MT,CRAs...>::ConstReference
    PageSlice<MT,CRAs...>::operator()( size_t i, size_t j ) const
 {
-   return const_cast<const MT&>( tensor_ )(i, j, page());
+   return const_cast<const MT&>( tensor_ )(page(), i, j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -703,7 +703,7 @@ inline PageSlice<MT,CRAs...>&
       {
          if (!IsRestricted_v<MT> || trySet(*this, i, j, rhs))
          {
-            left(i, j, page()) = rhs;
+            left(page(), i, j) = rhs;
          }
       }
    }
@@ -1247,7 +1247,7 @@ inline PageSlice<MT,CRAs...>&
 {
    for ( size_t i = 0; i < rows(); ++i ) {
       for ( size_t j = 0; j < columns(); ++j ) {
-         tensor_(i, j, page()) *= scalar;
+         tensor_(page(), i, j) *= scalar;
       }
    }
    return *this;
@@ -1415,7 +1415,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
    PageSlice<MT,CRAs...>::load( size_t i, size_t j ) const noexcept
 {
-   return tensor_.load( i, j, page() );
+   return tensor_.load( page(), i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1439,7 +1439,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
    PageSlice<MT,CRAs...>::loada( size_t i, size_t j ) const noexcept
 {
-   return tensor_.loada( i, j, page() );
+   return tensor_.loada( page(), i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1463,7 +1463,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE typename PageSlice<MT,CRAs...>::SIMDType
    PageSlice<MT,CRAs...>::loadu( size_t i, size_t j ) const noexcept
 {
-   return tensor_.loadu( i, j, page() );
+   return tensor_.loadu( page(), i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1488,7 +1488,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    PageSlice<MT,CRAs...>::store( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   tensor_.store( i, j, page(), value );
+   tensor_.store( page(), i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1513,7 +1513,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    PageSlice<MT,CRAs...>::storea( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   tensor_.storea( i, j, page(), value );
+   tensor_.storea( page(), i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1538,7 +1538,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    PageSlice<MT,CRAs...>::storeu( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   tensor_.storeu( i, j, page(), value );
+   tensor_.storeu( page(), i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1563,7 +1563,7 @@ template< typename MT       // Type of the dense tensor
 BLAZE_ALWAYS_INLINE void
    PageSlice<MT,CRAs...>::stream( size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   tensor_.stream( i, j, page(), value );
+   tensor_.stream( page(), i, j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1593,11 +1593,11 @@ inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,j,page()) = (~rhs)(i,j);
-         tensor_(i,j+1UL,page()) = (~rhs)(i,j+1UL);
+         tensor_(page(),i,j) = (~rhs)(i,j);
+         tensor_(page(),i,j+1UL) = (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(i,jpos,page()) = (~rhs)(i,jpos);
+         tensor_(page(),i,jpos) = (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1693,11 +1693,11 @@ inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,j,page()    ) += (~rhs)(i,j);
-         tensor_(i,j+1UL,page()) += (~rhs)(i,j+1UL);
+         tensor_(page(),i,j    ) += (~rhs)(i,j);
+         tensor_(page(),i,j+1UL) += (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(i,jpos,page()) += (~rhs)(i,jpos);
+         tensor_(page(),i,jpos) += (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1781,11 +1781,11 @@ inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,j,page()    ) -= (~rhs)(i,j);
-         tensor_(i,j+1UL,page()) -= (~rhs)(i,j+1UL);
+         tensor_(page(),i,j    ) -= (~rhs)(i,j);
+         tensor_(page(),i,j+1UL) -= (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(i,jpos,page()) -= (~rhs)(i,jpos);
+         tensor_(page(),i,jpos) -= (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1871,11 +1871,11 @@ inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rh
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,j,page()    ) *= (~rhs)(i,j    );
-         tensor_(i,j+1UL,page()) *= (~rhs)(i,j+1UL);
+         tensor_(page(),i,j    ) *= (~rhs)(i,j    );
+         tensor_(page(),i,j+1UL) *= (~rhs)(i,j+1UL);
       }
       if( jpos < columns() ) {
-         tensor_(i,jpos,page()) *= (~rhs)(i,jpos);
+         tensor_(page(),i,jpos) *= (~rhs)(i,jpos);
       }
    }
 }

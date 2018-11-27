@@ -105,7 +105,7 @@ inline void Rand< CustomTensor<Type,AF,PF,RT> >::randomize( CustomTensor<Type,AF
    for (size_t k=0UL; k<o; ++k) {
       for (size_t i=0UL; i<m; ++i) {
          for (size_t j=0UL; j<n; ++j) {
-            randomize(tensor(i, j, k));
+            randomize(tensor(k, i, j));
          }
       }
    }
@@ -140,7 +140,7 @@ inline void Rand< CustomTensor<Type,AF,PF,RT> >::randomize( CustomTensor<Type,AF
    for (size_t k=0UL; k<o; ++k) {
       for (size_t i=0UL; i<m; ++i) {
          for (size_t j=0UL; j<n; ++j) {
-            randomize(tensor(i, j, k), min, max);
+            randomize(tensor(k, i, j), min, max);
          }
       }
    }

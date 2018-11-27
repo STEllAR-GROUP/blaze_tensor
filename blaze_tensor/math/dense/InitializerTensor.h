@@ -252,8 +252,8 @@ class InitializerTensor
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline ConstReference operator()( size_t i, size_t j, size_t k ) const noexcept;
-   inline ConstReference at( size_t i, size_t j, size_t k ) const;
+   inline ConstReference operator()( size_t k, size_t i, size_t j ) const noexcept;
+   inline ConstReference at( size_t k, size_t i, size_t j ) const;
    inline ConstPointer   data  () const noexcept;
    inline ConstPointer   data  ( size_t i, size_t k ) const noexcept;
    inline ConstIterator  begin ( size_t i, size_t k ) const noexcept;
@@ -357,9 +357,9 @@ const Type InitializerTensor<Type>::zero_{};
 */
 template< typename Type >  // Data type of the tensor
 inline InitializerTensor<Type>::InitializerTensor( initializer_list< initializer_list< initializer_list<Type> > > list ) noexcept
-   : m_   ( determineRows( list ) )     // The current number of rows of the tensor
+   : o_   ( list.size() )               // The current number of pages of the tensor
+   , m_   ( determineRows( list ) )     // The current number of rows of the tensor
    , n_   ( determineColumns( list ) )  // The current number of columns of the tensor
-   , o_   ( list.size() )               // The current number of pages of the tensor
    , list_( list )                      // The initializer list represented by the tensor
 {}
 //*************************************************************************************************
@@ -374,9 +374,9 @@ inline InitializerTensor<Type>::InitializerTensor( initializer_list< initializer
 */
 template< typename Type >  // Data type of the tensor
 inline InitializerTensor<Type>::InitializerTensor( initializer_list< initializer_list< initializer_list<Type> > > list, size_t m, size_t n )
-   : m_   ( m )            // The current number of rows of the tensor
+   : o_   ( list.size() )  // The current number of pages of the tensor
+   , m_   ( m )            // The current number of rows of the tensor
    , n_   ( n    )         // The current number of columns of the tensor
-   , o_   ( list.size() )  // The current number of pages of the tensor
    , list_( list )         // The initializer list represented by the tensor
 {
    if( m < determineRows( list ) ) {
@@ -410,7 +410,7 @@ inline InitializerTensor<Type>::InitializerTensor( initializer_list< initializer
 */
 template< typename Type >  // Data type of the tensor
 inline typename InitializerTensor<Type>::ConstReference
-   InitializerTensor<Type>::operator()( size_t i, size_t j, size_t k ) const noexcept
+   InitializerTensor<Type>::operator()( size_t k, size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -445,7 +445,7 @@ inline typename InitializerTensor<Type>::ConstReference
 */
 template< typename Type >  // Data type of the tensor
 inline typename InitializerTensor<Type>::ConstReference
-   InitializerTensor<Type>::at( size_t i, size_t j, size_t k ) const
+   InitializerTensor<Type>::at( size_t k, size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -456,7 +456,7 @@ inline typename InitializerTensor<Type>::ConstReference
    if( k >= o_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
    }
-   return (*this)(i,j,k);
+   return (*this)(k,i,j);
 }
 //*************************************************************************************************
 
@@ -723,9 +723,9 @@ inline void InitializerTensor<Type>::swap( InitializerTensor& m ) noexcept
 {
    using std::swap;
 
+   swap( o_   , m.o_    );
    swap( m_   , m.m_    );
    swap( n_   , m.n_    );
-   swap( o_   , m.o_    );
    swap( list_, m.list_ );
 }
 //*************************************************************************************************

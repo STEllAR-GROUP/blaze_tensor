@@ -140,7 +140,7 @@ inline auto operator==( const DenseTensor<T1>& tens, T2 scalar )
    for (size_t k=0; k<A.pages(); ++k) {
       for (size_t i=0; i<A.rows(); ++i) {
          for (size_t j=0; j<A.columns(); ++j) {
-            if (!equal(A(i, j, k), scalar)) return false;
+            if (!equal(A(k, i, j), scalar)) return false;
          }
       }
    }
@@ -235,7 +235,7 @@ inline auto operator*=( DenseTensor<TT>& tens, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, TT& >
 {
    if( IsRestricted_v<TT> ) {
-      if( !tryMult( ~tens, 0UL, 0UL, 0UL, (~tens).rows(), (~tens).columns(), (~tens).pages(), scalar ) ) {
+      if( !tryMult( ~tens, 0UL, 0UL, 0UL, (~tens).pages(), (~tens).rows(), (~tens).columns(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted tensor" );
       }
    }
@@ -299,7 +299,7 @@ inline auto operator/=( DenseTensor<TT>& tens, ST scalar )
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
    if( IsRestricted_v<TT> ) {
-      if( !tryDiv( ~tens, 0UL, 0UL, 0UL, (~tens).rows(), (~tens).columns(), (~tens).pages(), scalar ) ) {
+      if( !tryDiv( ~tens, 0UL, 0UL, 0UL, (~tens).pages(), (~tens).rows(), (~tens).columns(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted tensor" );
       }
    }
@@ -405,7 +405,7 @@ auto softmax( const DenseTensor<MT>& dm );
 // \a false.
 
    \code
-   blaze::DynamicTensor<double> A( 3UL, 4UL, 5UL );
+   blaze::DynamicTensor<double> A( 5UL, 3UL, 4UL );
    // ... Initialization
    if( isnan( A ) ) { ... }
    \endcode
@@ -423,7 +423,7 @@ bool isnan( const DenseTensor<TT>& dm )
    for (size_t k=0UL; k<A.pages(); ++k) {
       for (size_t i=0UL; i<A.rows(); ++i) {
          for (size_t j=0UL; j<A.columns(); ++j)
-            if (isnan(A(i, j, k))) return true;
+            if (isnan(A(k, i, j))) return true;
       }
    }
 

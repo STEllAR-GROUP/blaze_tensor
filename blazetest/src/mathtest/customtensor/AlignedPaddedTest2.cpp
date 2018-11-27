@@ -120,26 +120,26 @@ void AlignedPaddedTest::testSchurAssign()
 
       using AlignedPadded = blaze::CustomTensor<short,aligned,padded>;
       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 64UL ) );
-      AlignedPadded mat1( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat1 = 0;
       mat1(0,0,0) = -1;
-      mat1(0,1,0) = -2;
-      mat1(1,0,0) =  3;
-      mat1(1,2,0) = -4;
-      mat1(0,0,1) = -1;
-      mat1(0,1,1) = -2;
-      mat1(1,0,1) =  3;
-      mat1(1,2,1) = -4;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = 0;
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 %= mat1;
 
@@ -153,10 +153,10 @@ void AlignedPaddedTest::testSchurAssign()
       checkNonZeros( mat2,  0UL, 1UL, 1UL );
       checkNonZeros( mat2,  1UL, 1UL, 1UL );
 
-      if( mat2(0,0,0) !=  0 || mat2(0,1,0) != 4 || mat2(0,2,0) != 0 ||
-          mat2(1,0,0) != 15 || mat2(1,1,0) != 0 || mat2(1,2,0) != 0 ||
-          mat2(0,0,1) !=  0 || mat2(0,1,1) != 4 || mat2(0,2,1) != 0 ||
-          mat2(1,0,1) != 15 || mat2(1,1,1) != 0 || mat2(1,2,1) != 0 ) {
+      if( mat2(0,0,0) !=  0 || mat2(0,0,1) != 4 || mat2(0,0,2) != 0 ||
+          mat2(0,1,0) != 15 || mat2(0,1,1) != 0 || mat2(0,1,2) != 0 ||
+          mat2(1,0,0) !=  0 || mat2(1,0,1) != 4 || mat2(1,0,2) != 0 ||
+          mat2(1,1,0) != 15 || mat2(1,1,1) != 0 || mat2(1,1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Schur product assignment failed\n"
@@ -176,26 +176,26 @@ void AlignedPaddedTest::testSchurAssign()
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 64UL ) );
-      AlignedPadded mat1( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      AlignedPadded mat1( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat1 = 0;
       mat1(0,0,0) = -1;
-      mat1(0,1,0) = -2;
-      mat1(1,0,0) =  3;
-      mat1(1,2,0) = -4;
-      mat1(0,0,1) = -1;
-      mat1(0,1,1) = -2;
-      mat1(1,0,1) =  3;
-      mat1(1,2,1) = -4;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = 0;
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 %= mat1;
 
@@ -209,10 +209,10 @@ void AlignedPaddedTest::testSchurAssign()
       checkNonZeros( mat2,  0UL, 1UL, 1UL );
       checkNonZeros( mat2,  1UL, 1UL, 1UL );
 
-      if( mat2(0,0,0) !=  0 || mat2(0,1,0) != 4 || mat2(0,2,0) != 0 ||
-          mat2(1,0,0) != 15 || mat2(1,1,0) != 0 || mat2(1,2,0) != 0 ||
-          mat2(0,0,1) !=  0 || mat2(0,1,1) != 4 || mat2(0,2,1) != 0 ||
-          mat2(1,0,1) != 15 || mat2(1,1,1) != 0 || mat2(1,2,1) != 0 ) {
+      if( mat2(0,0,0) !=  0 || mat2(0,0,1) != 4 || mat2(0,0,2) != 0 ||
+          mat2(0,1,0) != 15 || mat2(0,1,1) != 0 || mat2(0,1,2) != 0 ||
+          mat2(1,0,0) !=  0 || mat2(1,0,1) != 4 || mat2(1,0,2) != 0 ||
+          mat2(1,1,0) != 15 || mat2(1,1,1) != 0 || mat2(1,1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Schur product assignment failed\n"
@@ -232,26 +232,26 @@ void AlignedPaddedTest::testSchurAssign()
 
       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
       std::unique_ptr<int[]> memory1( new int[13UL] );
-      UnalignedUnpadded mat1( memory1.get()+1UL, 2UL, 3UL, 2UL );
+      UnalignedUnpadded mat1( memory1.get()+1UL, 2UL, 2UL, 3UL );
       mat1 = 0;
       mat1(0,0,0) = -1;
-      mat1(0,1,0) = -2;
-      mat1(1,0,0) =  3;
-      mat1(1,2,0) = -4;
-      mat1(0,0,1) = -1;
-      mat1(0,1,1) = -2;
-      mat1(1,0,1) =  3;
-      mat1(1,2,1) = -4;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 64UL ) );
-      MT mat2( memory2.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat2( memory2.get(), 2UL, 2UL, 3UL, 16UL );
       mat2 = 0;
-      mat2(0,1,0) = -2;
-      mat2(0,2,0) =  6;
-      mat2(1,0,0) =  5;
-      mat2(0,1,1) = -2;
-      mat2(0,2,1) =  6;
-      mat2(1,0,1) =  5;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
 
       mat2 %= mat1;
 
@@ -265,10 +265,10 @@ void AlignedPaddedTest::testSchurAssign()
       checkNonZeros( mat2,  0UL, 1UL, 1UL );
       checkNonZeros( mat2,  1UL, 1UL, 1UL );
 
-      if( mat2(0,0,0) !=  0 || mat2(0,1,0) != 4 || mat2(0,2,0) != 0 ||
-          mat2(1,0,0) != 15 || mat2(1,1,0) != 0 || mat2(1,2,0) != 0 ||
-          mat2(0,0,1) !=  0 || mat2(0,1,1) != 4 || mat2(0,2,1) != 0 ||
-          mat2(1,0,1) != 15 || mat2(1,1,1) != 0 || mat2(1,2,1) != 0 ) {
+      if( mat2(0,0,0) !=  0 || mat2(0,0,1) != 4 || mat2(0,0,2) != 0 ||
+          mat2(0,1,0) != 15 || mat2(0,1,1) != 0 || mat2(0,1,2) != 0 ||
+          mat2(1,0,0) !=  0 || mat2(1,0,1) != 4 || mat2(1,0,2) != 0 ||
+          mat2(1,1,0) != 15 || mat2(1,1,1) != 0 || mat2(1,1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Schur product assignment failed\n"
@@ -305,7 +305,7 @@ void AlignedPaddedTest::testMultAssign()
 //
 //       using AlignedPadded = blaze::CustomTensor<short,aligned,padded>;
 //       std::unique_ptr<short[],blaze::Deallocate> memory1( blaze::allocate<short>( 48UL ) );
-//       AlignedPadded mat1( memory1.get(), 3UL, 3UL, 16UL );
+//       AlignedPadded mat1( memory1.get(), 16UL, 3UL, 3UL );
 //       mat1 = 0;
 //       mat1(0,1) = 2;
 //       mat1(1,0) = 1;
@@ -314,7 +314,7 @@ void AlignedPaddedTest::testMultAssign()
 //       mat1(2,2) = 5;
 //
 //       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 48UL ) );
-//       MT mat2( memory2.get(), 3UL, 3UL, 16UL );
+//       MT mat2( memory2.get(), 16UL, 3UL, 3UL );
 //       mat2 = 0;
 //       mat2(0,0) = 1;
 //       mat2(0,2) = 2;
@@ -352,7 +352,7 @@ void AlignedPaddedTest::testMultAssign()
 //
 //       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
 //       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 48UL ) );
-//       AlignedPadded mat1( memory1.get(), 3UL, 3UL, 16UL );
+//       AlignedPadded mat1( memory1.get(), 16UL, 3UL, 3UL );
 //       mat1 = 0;
 //       mat1(0,1) = 2;
 //       mat1(1,0) = 1;
@@ -361,7 +361,7 @@ void AlignedPaddedTest::testMultAssign()
 //       mat1(2,2) = 5;
 //
 //       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 48UL ) );
-//       MT mat2( memory2.get(), 3UL, 3UL, 16UL );
+//       MT mat2( memory2.get(), 16UL, 3UL, 3UL );
 //       mat2 = 0;
 //       mat2(0,0) = 1;
 //       mat2(0,2) = 2;
@@ -460,14 +460,14 @@ void AlignedPaddedTest::testScaling()
       test_ = "Row-major self-scaling (M*=s)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 3UL, 16UL );
       mat = 0;
-      mat(1,2,0) =  1;
-      mat(2,0,0) = -2;
-      mat(2,2,0) =  3;
-      mat(1,2,1) =  1;
-      mat(2,0,1) = -2;
-      mat(2,2,1) =  3;
+      mat(0,1,2) =  1;
+      mat(0,2,0) = -2;
+      mat(0,2,2) =  3;
+      mat(1,1,2) =  1;
+      mat(1,2,0) = -2;
+      mat(1,2,2) =  3;
 
       mat *= 2;
 
@@ -482,12 +482,12 @@ void AlignedPaddedTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 2 ||
-          mat(2,0,0) != -4 || mat(2,1,0) != 0 || mat(2,2,0) != 6 ||
-          mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 2 ||
-          mat(2,0,0) != -4 || mat(2,1,0) != 0 || mat(2,2,0) != 6 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 2 ||
+          mat(0,2,0) != -4 || mat(0,2,1) != 0 || mat(0,2,2) != 6 ||
+          mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 2 ||
+          mat(0,2,0) != -4 || mat(0,2,1) != 0 || mat(0,2,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -507,14 +507,14 @@ void AlignedPaddedTest::testScaling()
       test_ = "Row-major self-scaling (M=M*s)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 3UL, 16UL );
       mat = 0;
-      mat(1,2,0) =  1;
-      mat(2,0,0) = -2;
-      mat(2,2,0) =  3;
-      mat(1,2,1) =  1;
-      mat(2,0,1) = -2;
-      mat(2,2,1) =  3;
+      mat(0,1,2) =  1;
+      mat(0,2,0) = -2;
+      mat(0,2,2) =  3;
+      mat(1,1,2) =  1;
+      mat(1,2,0) = -2;
+      mat(1,2,2) =  3;
 
       mat = mat * 2;
 
@@ -529,12 +529,12 @@ void AlignedPaddedTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 2 ||
-          mat(2,0,0) != -4 || mat(2,1,0) != 0 || mat(2,2,0) != 6 ||
-          mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 2 ||
-          mat(2,0,0) != -4 || mat(2,1,0) != 0 || mat(2,2,0) != 6 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 2 ||
+          mat(0,2,0) != -4 || mat(0,2,1) != 0 || mat(0,2,2) != 6 ||
+          mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 2 ||
+          mat(0,2,0) != -4 || mat(0,2,1) != 0 || mat(0,2,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -554,14 +554,14 @@ void AlignedPaddedTest::testScaling()
       test_ = "Row-major self-scaling (M=s*M)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 3UL, 16UL );
       mat = 0;
-      mat(1,2,0) =  1;
-      mat(2,0,0) = -2;
-      mat(2,2,0) =  3;
-      mat(1,2,1) =  1;
-      mat(2,0,1) = -2;
-      mat(2,2,1) =  3;
+      mat(0,1,2) =  1;
+      mat(0,2,0) = -2;
+      mat(0,2,2) =  3;
+      mat(1,1,2) =  1;
+      mat(1,2,0) = -2;
+      mat(1,2,2) =  3;
 
       mat = 2 * mat;
 
@@ -576,12 +576,12 @@ void AlignedPaddedTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 2 ||
-          mat(2,0,0) != -4 || mat(2,1,0) != 0 || mat(2,2,0) != 6 ||
-          mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 2 ||
-          mat(2,0,0) != -4 || mat(2,1,0) != 0 || mat(2,2,0) != 6 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 2 ||
+          mat(0,2,0) != -4 || mat(0,2,1) != 0 || mat(0,2,2) != 6 ||
+          mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 2 ||
+          mat(0,2,0) != -4 || mat(0,2,1) != 0 || mat(0,2,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -601,14 +601,14 @@ void AlignedPaddedTest::testScaling()
       test_ = "Row-major self-scaling (M/=s)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 3UL, 16UL );
       mat = 0;
-      mat(1,2,0) =  2;
-      mat(2,0,0) = -4;
-      mat(2,2,0) =  6;
-      mat(1,2,1) =  2;
-      mat(2,0,1) = -4;
-      mat(2,2,1) =  6;
+      mat(0,1,2) =  2;
+      mat(0,2,0) = -4;
+      mat(0,2,2) =  6;
+      mat(1,1,2) =  2;
+      mat(1,2,0) = -4;
+      mat(1,2,2) =  6;
 
       mat /= 2;
 
@@ -623,12 +623,12 @@ void AlignedPaddedTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 1 ||
-          mat(2,0,0) != -2 || mat(2,1,0) != 0 || mat(2,2,0) != 3 ||
-          mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 1 ||
-          mat(2,0,0) != -2 || mat(2,1,0) != 0 || mat(2,2,0) != 3 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 1 ||
+          mat(0,2,0) != -2 || mat(0,2,1) != 0 || mat(0,2,2) != 3 ||
+          mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 1 ||
+          mat(0,2,0) != -2 || mat(0,2,1) != 0 || mat(0,2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -648,14 +648,14 @@ void AlignedPaddedTest::testScaling()
       test_ = "Row-major self-scaling (M=M/s)";
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 3UL, 16UL );
       mat = 0;
-      mat(1,2,0) =  2;
-      mat(2,0,0) = -4;
-      mat(2,2,0) =  6;
-      mat(1,2,1) =  2;
-      mat(2,0,1) = -4;
-      mat(2,2,1) =  6;
+      mat(0,1,2) =  2;
+      mat(0,2,0) = -4;
+      mat(0,2,2) =  6;
+      mat(1,1,2) =  2;
+      mat(1,2,0) = -4;
+      mat(1,2,2) =  6;
 
       mat = mat / 2;
 
@@ -670,12 +670,12 @@ void AlignedPaddedTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 1UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 1 ||
-          mat(2,0,0) != -2 || mat(2,1,0) != 0 || mat(2,2,0) != 3 ||
-          mat(0,0,0) !=  0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) !=  0 || mat(1,1,0) != 0 || mat(1,2,0) != 1 ||
-          mat(2,0,0) != -2 || mat(2,1,0) != 0 || mat(2,2,0) != 3 ) {
+      if( mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 1 ||
+          mat(0,2,0) != -2 || mat(0,2,1) != 0 || mat(0,2,2) != 3 ||
+          mat(0,0,0) !=  0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) !=  0 || mat(0,1,1) != 0 || mat(0,1,2) != 1 ||
+          mat(0,2,0) != -2 || mat(0,2,1) != 0 || mat(0,2,2) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed self-scaling operation\n"
@@ -696,19 +696,19 @@ void AlignedPaddedTest::testScaling()
 
       // Initialization check
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 2UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
       mat(0,0,0) = 1;
-      mat(0,1,0) = 2;
-      mat(1,0,0) = 3;
-      mat(1,1,0) = 4;
-      mat(2,0,0) = 5;
-      mat(2,1,0) = 6;
-      mat(0,0,1) = 1;
-      mat(0,1,1) = 2;
-      mat(1,0,1) = 3;
+      mat(0,0,1) = 2;
+      mat(0,1,0) = 3;
+      mat(0,1,1) = 4;
+      mat(0,2,0) = 5;
+      mat(0,2,1) = 6;
+      mat(1,0,0) = 1;
+      mat(1,0,1) = 2;
+      mat(1,1,0) = 3;
       mat(1,1,1) = 4;
-      mat(2,0,1) = 5;
-      mat(2,1,1) = 6;
+      mat(1,2,0) = 5;
+      mat(1,2,1) = 6;
 
       checkRows    ( mat, 3UL );
       checkColumns ( mat, 2UL );
@@ -722,12 +722,12 @@ void AlignedPaddedTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 ||
-          mat(1,0,0) != 3 || mat(1,1,0) != 4 ||
-          mat(2,0,0) != 5 || mat(2,1,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 ||
-          mat(1,0,1) != 3 || mat(1,1,1) != 4 ||
-          mat(2,0,1) != 5 || mat(2,1,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 ||
+          mat(0,1,0) != 3 || mat(0,1,1) != 4 ||
+          mat(0,2,0) != 5 || mat(0,2,1) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 ||
+          mat(1,1,0) != 3 || mat(1,1,1) != 4 ||
+          mat(1,2,0) != 5 || mat(1,2,1) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
@@ -752,12 +752,12 @@ void AlignedPaddedTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) != 2  || mat(0,1,0) != 4  ||
-          mat(1,0,0) != 6  || mat(1,1,0) != 8  ||
-          mat(2,0,0) != 10 || mat(2,1,0) != 12 ||
-          mat(0,0,1) != 2  || mat(0,1,1) != 4  ||
-          mat(1,0,1) != 6  || mat(1,1,1) != 8  ||
-          mat(2,0,1) != 10 || mat(2,1,1) != 12 ) {
+      if( mat(0,0,0) != 2  || mat(0,0,1) != 4  ||
+          mat(0,1,0) != 6  || mat(0,1,1) != 8  ||
+          mat(0,2,0) != 10 || mat(0,2,1) != 12 ||
+          mat(1,0,0) != 2  || mat(1,0,1) != 4  ||
+          mat(1,1,0) != 6  || mat(1,1,1) != 8  ||
+          mat(1,2,0) != 10 || mat(1,2,1) != 12 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
@@ -782,12 +782,12 @@ void AlignedPaddedTest::testScaling()
       checkNonZeros( mat, 1UL, 1UL, 2UL );
       checkNonZeros( mat, 2UL, 1UL, 2UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 ||
-          mat(1,0,0) != 3 || mat(1,1,0) != 4 ||
-          mat(2,0,0) != 5 || mat(2,1,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 ||
-          mat(1,0,1) != 3 || mat(1,1,1) != 4 ||
-          mat(2,0,1) != 5 || mat(2,1,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 ||
+          mat(0,1,0) != 3 || mat(0,1,1) != 4 ||
+          mat(0,2,0) != 5 || mat(0,2,1) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 ||
+          mat(1,1,0) != 3 || mat(1,1,1) != 4 ||
+          mat(1,2,0) != 5 || mat(1,2,1) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
@@ -811,12 +811,12 @@ void AlignedPaddedTest::testScaling()
       std::unique_ptr<cplx[],blaze::Deallocate> memory( blaze::allocate<cplx>( 64UL ) );
       AlignedPadded mat( memory.get(), 2UL, 2UL, 2UL, 16UL );
       mat(0,0,0) = cplx( 1.0F, 0.0F );
-      mat(0,1,0) = cplx( 2.0F, 0.0F );
-      mat(1,0,0) = cplx( 3.0F, 0.0F );
-      mat(1,1,0) = cplx( 4.0F, 0.0F );
-      mat(0,0,1) = cplx( 1.0F, 0.0F );
-      mat(0,1,1) = cplx( 2.0F, 0.0F );
-      mat(1,0,1) = cplx( 3.0F, 0.0F );
+      mat(0,0,1) = cplx( 2.0F, 0.0F );
+      mat(0,1,0) = cplx( 3.0F, 0.0F );
+      mat(0,1,1) = cplx( 4.0F, 0.0F );
+      mat(1,0,0) = cplx( 1.0F, 0.0F );
+      mat(1,0,1) = cplx( 2.0F, 0.0F );
+      mat(1,1,0) = cplx( 3.0F, 0.0F );
       mat(1,1,1) = cplx( 4.0F, 0.0F );
       mat.scale( cplx( 3.0F, 0.0F ) );
 
@@ -830,10 +830,10 @@ void AlignedPaddedTest::testScaling()
       checkNonZeros( mat,  0UL, 1UL, 2UL );
       checkNonZeros( mat,  1UL, 1UL, 2UL );
 
-      if( mat(0,0,0) != cplx( 3.0F, 0.0F ) || mat(0,1,0) != cplx(  6.0F, 0.0F ) ||
-          mat(1,0,0) != cplx( 9.0F, 0.0F ) || mat(1,1,0) != cplx( 12.0F, 0.0F ) ||
-          mat(0,0,1) != cplx( 3.0F, 0.0F ) || mat(0,1,1) != cplx(  6.0F, 0.0F ) ||
-          mat(1,0,1) != cplx( 9.0F, 0.0F ) || mat(1,1,1) != cplx( 12.0F, 0.0F ) ) {
+      if( mat(0,0,0) != cplx( 3.0F, 0.0F ) || mat(0,0,1) != cplx(  6.0F, 0.0F ) ||
+          mat(0,1,0) != cplx( 9.0F, 0.0F ) || mat(0,1,1) != cplx( 12.0F, 0.0F ) ||
+          mat(1,0,0) != cplx( 3.0F, 0.0F ) || mat(1,0,1) != cplx(  6.0F, 0.0F ) ||
+          mat(1,1,0) != cplx( 9.0F, 0.0F ) || mat(1,1,1) != cplx( 12.0F, 0.0F ) ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Scale operation failed\n"
@@ -868,10 +868,10 @@ void AlignedPaddedTest::testFunctionCall()
 
       // Assignment to the element (2,1,x)
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 5UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 5UL, 16UL );
       mat = 0;
-      mat(2,1,0) = 1;
-      mat(2,1,1) = 1;
+      mat(0,2,1) = 1;
+      mat(1,2,1) = 1;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -885,7 +885,7 @@ void AlignedPaddedTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 0UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat(2,1,0) != 1 || mat(2,1,1) != 1) {
+      if( mat(0,2,1) != 1 || mat(1,2,1) != 1) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -896,8 +896,8 @@ void AlignedPaddedTest::testFunctionCall()
       }
 
       // Assignment to the element (1,4)
-      mat(1,4,0) = 2;
-      mat(1,4,1) = 2;
+      mat(0,1,4) = 2;
+      mat(1,1,4) = 2;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -911,8 +911,8 @@ void AlignedPaddedTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat(1,4,0) != 2 || mat(2,1,0) != 1 ||
-          mat(1,4,1) != 2 || mat(2,1,1) != 1 ) {
+      if( mat(0,1,4) != 2 || mat(0,2,1) != 1 ||
+          mat(1,1,4) != 2 || mat(1,2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -923,8 +923,8 @@ void AlignedPaddedTest::testFunctionCall()
       }
 
       // Assignment to the element (0,3)
-      mat(0,3,0) = 3;
-      mat(0,3,1) = 3;
+      mat(0,0,3) = 3;
+      mat(1,0,3) = 3;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -938,8 +938,8 @@ void AlignedPaddedTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat(0,3,0) != 3 || mat(1,4,0) != 2 || mat(2,1,0) != 1 ||
-          mat(0,3,1) != 3 || mat(1,4,1) != 2 || mat(2,1,1) != 1 ) {
+      if( mat(0,0,3) != 3 || mat(0,1,4) != 2 || mat(0,2,1) != 1 ||
+          mat(1,0,3) != 3 || mat(1,1,4) != 2 || mat(1,2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -950,8 +950,8 @@ void AlignedPaddedTest::testFunctionCall()
       }
 
       // Assignment to the element (2,2)
-      mat(2,2,0) = 4;
-      mat(2,2,1) = 4;
+      mat(0,2,2) = 4;
+      mat(1,2,2) = 4;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -965,8 +965,8 @@ void AlignedPaddedTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != 3 || mat(1,4,0) != 2 || mat(2,2,0) != 4 || mat(2,1,0) != 1 ||
-          mat(0,3,1) != 3 || mat(1,4,1) != 2 || mat(2,2,1) != 4 || mat(2,1,1) != 1 ) {
+      if( mat(0,0,3) != 3 || mat(0,1,4) != 2 || mat(0,2,2) != 4 || mat(0,2,1) != 1 ||
+          mat(1,0,3) != 3 || mat(1,1,4) != 2 || mat(1,2,2) != 4 || mat(1,2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -977,8 +977,8 @@ void AlignedPaddedTest::testFunctionCall()
       }
 
       // Addition assignment to the element (2,1)
-      mat(2,1,0) += mat(0,3,0);
-      mat(2,1,1) += mat(0,3,1);
+      mat(0,2,1) += mat(0,0,3);
+      mat(1,2,1) += mat(1,0,3);
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -992,8 +992,8 @@ void AlignedPaddedTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != 3 || mat(1,4,0) != 2 || mat(2,2,0) != 4 || mat(2,1,0) != 4 ||
-          mat(0,3,1) != 3 || mat(1,4,1) != 2 || mat(2,2,1) != 4 || mat(2,1,1) != 4 ) {
+      if( mat(0,0,3) != 3 || mat(0,1,4) != 2 || mat(0,2,2) != 4 || mat(0,2,1) != 4 ||
+          mat(1,0,3) != 3 || mat(1,1,4) != 2 || mat(1,2,2) != 4 || mat(1,2,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1004,8 +1004,8 @@ void AlignedPaddedTest::testFunctionCall()
       }
 
       // Subtraction assignment to the element (1,0)
-      mat(1,0,0) -= mat(1,4,0);
-      mat(1,0,1) -= mat(1,4,1);
+      mat(0,1,0) -= mat(0,1,4);
+      mat(1,1,0) -= mat(1,1,4);
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1019,8 +1019,8 @@ void AlignedPaddedTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != 3 || mat(1,0,0) != -2 || mat(1,4,0) != 2 || mat(2,2,0) != 4 || mat(2,1,0) != 4 ||
-          mat(0,3,1) != 3 || mat(1,0,1) != -2 || mat(1,4,1) != 2 || mat(2,2,1) != 4 || mat(2,1,1) != 4 ) {
+      if( mat(0,0,3) != 3 || mat(0,1,0) != -2 || mat(0,1,4) != 2 || mat(0,2,2) != 4 || mat(0,2,1) != 4 ||
+          mat(1,0,3) != 3 || mat(1,1,0) != -2 || mat(1,1,4) != 2 || mat(1,2,2) != 4 || mat(1,2,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1031,8 +1031,8 @@ void AlignedPaddedTest::testFunctionCall()
       }
 
       // Multiplication assignment to the element (0,3)
-      mat(0,3,0) *= -3;
-      mat(0,3,1) *= -3;
+      mat(0,0,3) *= -3;
+      mat(1,0,3) *= -3;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1046,8 +1046,8 @@ void AlignedPaddedTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != -9 || mat(1,0,0) != -2 || mat(1,4,0) != 2 || mat(2,2,0) != 4 || mat(2,1,0) != 4 ||
-          mat(0,3,1) != -9 || mat(1,0,1) != -2 || mat(1,4,1) != 2 || mat(2,2,1) != 4 || mat(2,1,1) != 4 ) {
+      if( mat(0,0,3) != -9 || mat(0,1,0) != -2 || mat(0,1,4) != 2 || mat(0,2,2) != 4 || mat(0,2,1) != 4 ||
+          mat(1,0,3) != -9 || mat(1,1,0) != -2 || mat(1,1,4) != 2 || mat(1,2,2) != 4 || mat(1,2,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1058,8 +1058,8 @@ void AlignedPaddedTest::testFunctionCall()
       }
 
       // Division assignment to the element (2,1)
-      mat(2,1,0) /= 2;
-      mat(2,1,1) /= 2;
+      mat(0,2,1) /= 2;
+      mat(1,2,1) /= 2;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1073,8 +1073,8 @@ void AlignedPaddedTest::testFunctionCall()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat(0,3,0) != -9 || mat(1,0,0) != -2 || mat(1,4,0) != 2 || mat(2,2,0) != 4 || mat(2,1,0) != 2 ||
-          mat(0,3,1) != -9 || mat(1,0,1) != -2 || mat(1,4,1) != 2 || mat(2,2,1) != 4 || mat(2,1,1) != 2 ) {
+      if( mat(0,0,3) != -9 || mat(0,1,0) != -2 || mat(0,1,4) != 2 || mat(0,2,2) != 4 || mat(0,2,1) != 2 ||
+          mat(1,0,3) != -9 || mat(1,1,0) != -2 || mat(1,1,4) != 2 || mat(1,2,2) != 4 || mat(1,2,1) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1109,10 +1109,10 @@ void AlignedPaddedTest::testAt()
 
       // Assignment to the element (2,1,x)
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 5UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 5UL, 16UL );
       mat = 0;
-      mat.at(2,1,0) = 1;
-      mat.at(2,1,1) = 1;
+      mat.at(0,2,1) = 1;
+      mat.at(1,2,1) = 1;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1126,7 +1126,7 @@ void AlignedPaddedTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 0UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat.at(2,1,0) != 1 || mat.at(2,1,1) != 1) {
+      if( mat.at(0,2,1) != 1 || mat.at(1,2,1) != 1) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1137,8 +1137,8 @@ void AlignedPaddedTest::testAt()
       }
 
       // Assignment to the element (1,4)
-      mat.at(1,4,0) = 2;
-      mat.at(1,4,1) = 2;
+      mat.at(0,1,4) = 2;
+      mat.at(1,1,4) = 2;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1152,8 +1152,8 @@ void AlignedPaddedTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat.at(1,4,0) != 2 || mat.at(2,1,0) != 1 ||
-          mat.at(1,4,1) != 2 || mat.at(2,1,1) != 1 ) {
+      if( mat.at(0,1,4) != 2 || mat.at(0,2,1) != 1 ||
+          mat.at(1,1,4) != 2 || mat.at(1,2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1164,8 +1164,8 @@ void AlignedPaddedTest::testAt()
       }
 
       // Assignment to the element (0,3)
-      mat.at(0,3,0) = 3;
-      mat.at(0,3,1) = 3;
+      mat.at(0,0,3) = 3;
+      mat.at(1,0,3) = 3;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1179,8 +1179,8 @@ void AlignedPaddedTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 1UL );
 
-      if( mat.at(0,3,0) != 3 || mat.at(1,4,0) != 2 || mat.at(2,1,0) != 1 ||
-          mat.at(0,3,1) != 3 || mat.at(1,4,1) != 2 || mat.at(2,1,1) != 1 ) {
+      if( mat.at(0,0,3) != 3 || mat.at(0,1,4) != 2 || mat.at(0,2,1) != 1 ||
+          mat.at(1,0,3) != 3 || mat.at(1,1,4) != 2 || mat.at(1,2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1191,8 +1191,8 @@ void AlignedPaddedTest::testAt()
       }
 
       // Assignment to the element (2,2)
-      mat.at(2,2,0) = 4;
-      mat.at(2,2,1) = 4;
+      mat.at(0,2,2) = 4;
+      mat.at(1,2,2) = 4;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1206,8 +1206,8 @@ void AlignedPaddedTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != 3 || mat.at(1,4,0) != 2 || mat.at(2,2,0) != 4 || mat.at(2,1,0) != 1 ||
-          mat.at(0,3,1) != 3 || mat.at(1,4,1) != 2 || mat.at(2,2,1) != 4 || mat.at(2,1,1) != 1 ) {
+      if( mat.at(0,0,3) != 3 || mat.at(0,1,4) != 2 || mat.at(0,2,2) != 4 || mat.at(0,2,1) != 1 ||
+          mat.at(1,0,3) != 3 || mat.at(1,1,4) != 2 || mat.at(1,2,2) != 4 || mat.at(1,2,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1218,8 +1218,8 @@ void AlignedPaddedTest::testAt()
       }
 
       // Addition assignment to the element (2,1)
-      mat.at(2,1,0) += mat.at(0,3,0);
-      mat.at(2,1,1) += mat.at(0,3,1);
+      mat.at(0,2,1) += mat.at(0,0,3);
+      mat.at(1,2,1) += mat.at(1,0,3);
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1233,8 +1233,8 @@ void AlignedPaddedTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 1UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != 3 || mat.at(1,4,0) != 2 || mat.at(2,2,0) != 4 || mat.at(2,1,0) != 4 ||
-          mat.at(0,3,1) != 3 || mat.at(1,4,1) != 2 || mat.at(2,2,1) != 4 || mat.at(2,1,1) != 4 ) {
+      if( mat.at(0,0,3) != 3 || mat.at(0,1,4) != 2 || mat.at(0,2,2) != 4 || mat.at(0,2,1) != 4 ||
+          mat.at(1,0,3) != 3 || mat.at(1,1,4) != 2 || mat.at(1,2,2) != 4 || mat.at(1,2,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1245,8 +1245,8 @@ void AlignedPaddedTest::testAt()
       }
 
       // Subtraction assignment to the element (1,0)
-      mat.at(1,0,0) -= mat.at(1,4,0);
-      mat.at(1,0,1) -= mat.at(1,4,1);
+      mat.at(0,1,0) -= mat.at(0,1,4);
+      mat.at(1,1,0) -= mat.at(1,1,4);
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1260,8 +1260,8 @@ void AlignedPaddedTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != 3 || mat.at(1,0,0) != -2 || mat.at(1,4,0) != 2 || mat.at(2,2,0) != 4 || mat.at(2,1,0) != 4 ||
-          mat.at(0,3,1) != 3 || mat.at(1,0,1) != -2 || mat.at(1,4,1) != 2 || mat.at(2,2,1) != 4 || mat.at(2,1,1) != 4 ) {
+      if( mat.at(0,0,3) != 3 || mat.at(0,1,0) != -2 || mat.at(0,1,4) != 2 || mat.at(0,2,2) != 4 || mat.at(0,2,1) != 4 ||
+          mat.at(1,0,3) != 3 || mat.at(1,1,0) != -2 || mat.at(1,1,4) != 2 || mat.at(1,2,2) != 4 || mat.at(1,2,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1272,8 +1272,8 @@ void AlignedPaddedTest::testAt()
       }
 
       // Multiplication assignment to the element (0,3)
-      mat.at(0,3,0) *= -3;
-      mat.at(0,3,1) *= -3;
+      mat.at(0,0,3) *= -3;
+      mat.at(1,0,3) *= -3;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1287,8 +1287,8 @@ void AlignedPaddedTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != -9 || mat.at(1,0,0) != -2 || mat.at(1,4,0) != 2 || mat.at(2,2,0) != 4 || mat.at(2,1,0) != 4 ||
-          mat.at(0,3,1) != -9 || mat.at(1,0,1) != -2 || mat.at(1,4,1) != 2 || mat.at(2,2,1) != 4 || mat.at(2,1,1) != 4 ) {
+      if( mat.at(0,0,3) != -9 || mat.at(0,1,0) != -2 || mat.at(0,1,4) != 2 || mat.at(0,2,2) != 4 || mat.at(0,2,1) != 4 ||
+          mat.at(1,0,3) != -9 || mat.at(1,1,0) != -2 || mat.at(1,1,4) != 2 || mat.at(1,2,2) != 4 || mat.at(1,2,1) != 4 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1299,8 +1299,8 @@ void AlignedPaddedTest::testAt()
       }
 
       // Division assignment to the element (2,1)
-      mat.at(2,1,0) /= 2;
-      mat.at(2,1,1) /= 2;
+      mat.at(0,2,1) /= 2;
+      mat.at(1,2,1) /= 2;
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -1314,8 +1314,8 @@ void AlignedPaddedTest::testAt()
       checkNonZeros( mat,  1UL, 1UL, 2UL );
       checkNonZeros( mat,  2UL, 1UL, 2UL );
 
-      if( mat.at(0,3,0) != -9 || mat.at(1,0,0) != -2 || mat.at(1,4,0) != 2 || mat.at(2,2,0) != 4 || mat.at(2,1,0) != 2 ||
-          mat.at(0,3,1) != -9 || mat.at(1,0,1) != -2 || mat.at(1,4,1) != 2 || mat.at(2,2,1) != 4 || mat.at(2,1,1) != 2 ) {
+      if( mat.at(0,0,3) != -9 || mat.at(0,1,0) != -2 || mat.at(0,1,4) != 2 || mat.at(0,2,2) != 4 || mat.at(0,2,1) != 2 ||
+          mat.at(1,0,3) != -9 || mat.at(1,1,0) != -2 || mat.at(1,1,4) != 2 || mat.at(1,2,2) != 4 || mat.at(1,2,1) != 2 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Function call operator failed\n"
@@ -1325,9 +1325,9 @@ void AlignedPaddedTest::testAt()
          throw std::runtime_error( oss.str() );
       }
 
-      // Attempt to assign to the element (3,0,0)
+      // Attempt to assign to the element (0,3,0)
       try {
-         mat.at(3,0,0) = 2;
+         mat.at(0,3,0) = 2;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1339,9 +1339,9 @@ void AlignedPaddedTest::testAt()
       }
       catch( std::out_of_range& ) {}
 
-      // Attempt to assign to the element (0,5,1)
+      // Attempt to assign to the element (1,0,5)
       try {
-         mat.at(0,5,1) = 2;
+         mat.at(1,0,5) = 2;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1353,9 +1353,9 @@ void AlignedPaddedTest::testAt()
       }
       catch( std::out_of_range& ) {}
 
-      // Attempt to assign to the element (0,1,3)
+      // Attempt to assign to the element (3,0,1)
       try {
-         mat.at(0,1,3) = 2;
+         mat.at(3,0,1) = 2;
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -1391,18 +1391,18 @@ void AlignedPaddedTest::testIterator()
       using ConstIterator = MT::ConstIterator;
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
-      MT mat( memory.get(), 3UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 3UL, 3UL, 16UL );
       mat = 0;
-      mat(0,1,0) =  1;
-      mat(1,0,0) = -2;
-      mat(1,2,0) = -3;
-      mat(2,1,0) =  4;
-      mat(2,2,0) =  5;
-      mat(0,1,1) =  1;
-      mat(1,0,1) = -2;
-      mat(1,2,1) = -3;
-      mat(2,1,1) =  4;
-      mat(2,2,1) =  5;
+      mat(0,0,1) =  1;
+      mat(0,1,0) = -2;
+      mat(0,1,2) = -3;
+      mat(0,2,1) =  4;
+      mat(0,2,2) =  5;
+      mat(1,0,1) =  1;
+      mat(1,1,0) = -2;
+      mat(1,1,2) = -3;
+      mat(1,2,1) =  4;
+      mat(1,2,2) =  5;
 
       // Testing the Iterator default constructor
       {
@@ -1620,12 +1620,12 @@ void AlignedPaddedTest::testIterator()
             *it = value++;
          }
 
-         if( mat(0,0,0) !=  0 || mat(0,1,0) != 1 || mat(0,2,0) !=  0 ||
-             mat(1,0,0) != -2 || mat(1,1,0) != 0 || mat(1,2,0) != -3 ||
-             mat(2,0,0) !=  0 || mat(2,1,0) != 4 || mat(2,2,0) !=  5 ||
-             mat(0,0,1) !=  0 || mat(0,1,1) != 1 || mat(0,2,1) !=  0 ||
-             mat(1,0,1) != -2 || mat(1,1,1) != 0 || mat(1,2,1) != -3 ||
-             mat(2,0,1) !=  7 || mat(2,1,1) != 8 || mat(2,2,1) !=  9 ) {
+         if( mat(0,0,0) !=  0 || mat(0,0,1) != 1 || mat(0,0,2) !=  0 ||
+             mat(0,1,0) != -2 || mat(0,1,1) != 0 || mat(0,1,2) != -3 ||
+             mat(0,2,0) !=  0 || mat(0,2,1) != 4 || mat(0,2,2) !=  5 ||
+             mat(1,0,0) !=  0 || mat(1,0,1) != 1 || mat(1,0,2) !=  0 ||
+             mat(1,1,0) != -2 || mat(1,1,1) != 0 || mat(1,1,2) != -3 ||
+             mat(1,2,0) !=  7 || mat(1,2,1) != 8 || mat(1,2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Assignment via iterator failed\n"
@@ -1646,12 +1646,12 @@ void AlignedPaddedTest::testIterator()
             *it += value++;
          }
 
-         if( mat(0,0,0) !=  0 || mat(0,1,0) != 1 || mat(0,2,0) !=  0 ||
-             mat(1,0,0) !=  2 || mat(1,1,0) != 5 || mat(1,2,0) !=  3 ||
-             mat(2,0,0) !=  0 || mat(2,1,0) != 4 || mat(2,2,0) !=  5 ||
-             mat(0,0,1) !=  0 || mat(0,1,1) != 1 || mat(0,2,1) !=  0 ||
-             mat(1,0,1) != -2 || mat(1,1,1) != 0 || mat(1,2,1) != -3 ||
-             mat(2,0,1) !=  7 || mat(2,1,1) != 8 || mat(2,2,1) !=  9 ) {
+         if( mat(0,0,0) !=  0 || mat(0,0,1) != 1 || mat(0,0,2) !=  0 ||
+             mat(0,1,0) !=  2 || mat(0,1,1) != 5 || mat(0,1,2) !=  3 ||
+             mat(0,2,0) !=  0 || mat(0,2,1) != 4 || mat(0,2,2) !=  5 ||
+             mat(1,0,0) !=  0 || mat(1,0,1) != 1 || mat(1,0,2) !=  0 ||
+             mat(1,1,0) != -2 || mat(1,1,1) != 0 || mat(1,1,2) != -3 ||
+             mat(1,2,0) !=  7 || mat(1,2,1) != 8 || mat(1,2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Addition assignment via iterator failed\n"
@@ -1672,12 +1672,12 @@ void AlignedPaddedTest::testIterator()
             *it -= value++;
          }
 
-         if( mat(0,0,0) !=  0 || mat(0,1,0) != 1 || mat(0,2,0) !=  0 ||
-             mat(1,0,0) != -2 || mat(1,1,0) != 0 || mat(1,2,0) != -3 ||
-             mat(2,0,0) !=  0 || mat(2,1,0) != 4 || mat(2,2,0) !=  5 ||
-             mat(0,0,1) !=  0 || mat(0,1,1) != 1 || mat(0,2,1) !=  0 ||
-             mat(1,0,1) != -2 || mat(1,1,1) != 0 || mat(1,2,1) != -3 ||
-             mat(2,0,1) !=  7 || mat(2,1,1) != 8 || mat(2,2,1) !=  9 ) {
+         if( mat(0,0,0) !=  0 || mat(0,0,1) != 1 || mat(0,0,2) !=  0 ||
+             mat(0,1,0) != -2 || mat(0,1,1) != 0 || mat(0,1,2) != -3 ||
+             mat(0,2,0) !=  0 || mat(0,2,1) != 4 || mat(0,2,2) !=  5 ||
+             mat(1,0,0) !=  0 || mat(1,0,1) != 1 || mat(1,0,2) !=  0 ||
+             mat(1,1,0) != -2 || mat(1,1,1) != 0 || mat(1,1,2) != -3 ||
+             mat(1,2,0) !=  7 || mat(1,2,1) != 8 || mat(1,2,2) !=  9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Subtraction assignment via iterator failed\n"
@@ -1698,12 +1698,12 @@ void AlignedPaddedTest::testIterator()
             *it *= value++;
          }
 
-         if( mat(0,0,0) !=  0 || mat(0,1,0) != 1 || mat(0,2,0) !=   0 ||
-             mat(1,0,0) != -4 || mat(1,1,0) != 0 || mat(1,2,0) != -12 ||
-             mat(2,0,0) !=  0 || mat(2,1,0) != 4 || mat(2,2,0) !=   5 ||
-             mat(0,0,1) !=  0 || mat(0,1,1) != 1 || mat(0,2,1) !=   0 ||
-             mat(1,0,1) != -2 || mat(1,1,1) != 0 || mat(1,2,1) !=  -3 ||
-             mat(2,0,1) !=  7 || mat(2,1,1) != 8 || mat(2,2,1) !=   9 ) {
+         if( mat(0,0,0) !=  0 || mat(0,0,1) != 1 || mat(0,0,2) !=   0 ||
+             mat(0,1,0) != -4 || mat(0,1,1) != 0 || mat(0,1,2) != -12 ||
+             mat(0,2,0) !=  0 || mat(0,2,1) != 4 || mat(0,2,2) !=   5 ||
+             mat(1,0,0) !=  0 || mat(1,0,1) != 1 || mat(1,0,2) !=   0 ||
+             mat(1,1,0) != -2 || mat(1,1,1) != 0 || mat(1,1,2) !=  -3 ||
+             mat(1,2,0) !=  7 || mat(1,2,1) != 8 || mat(1,2,2) !=   9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Multiplication assignment via iterator failed\n"
@@ -1722,12 +1722,12 @@ void AlignedPaddedTest::testIterator()
             *it /= 2;
          }
 
-         if( mat(0,0,0) !=  0 || mat(0,1,0) != 1 || mat(0,2,0) !=   0 ||
-             mat(1,0,0) != -4 || mat(1,1,0) != 0 || mat(1,2,0) != -12 ||
-             mat(2,0,0) !=  0 || mat(2,1,0) != 4 || mat(2,2,0) !=   5 ||
-             mat(0,0,1) !=  0 || mat(0,1,1) != 1 || mat(0,2,1) !=   0 ||
-             mat(1,0,1) != -1 || mat(1,1,1) != 0 || mat(1,2,1) !=  -1 ||
-             mat(2,0,1) !=  7 || mat(2,1,1) != 8 || mat(2,2,1) !=   9 ) {
+         if( mat(0,0,0) !=  0 || mat(0,0,1) != 1 || mat(0,0,2) !=   0 ||
+             mat(0,1,0) != -4 || mat(0,1,1) != 0 || mat(0,1,2) != -12 ||
+             mat(0,2,0) !=  0 || mat(0,2,1) != 4 || mat(0,2,2) !=   5 ||
+             mat(1,0,0) !=  0 || mat(1,0,1) != 1 || mat(1,0,2) !=   0 ||
+             mat(1,1,0) != -1 || mat(1,1,1) != 0 || mat(1,1,2) !=  -1 ||
+             mat(1,2,0) !=  7 || mat(1,2,1) != 8 || mat(1,2,2) !=   9 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Division assignment via iterator failed\n"
@@ -1762,7 +1762,7 @@ void AlignedPaddedTest::testNonZeros()
 
       {
          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-         MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+         MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
          mat = 0;
 
          checkRows    ( mat,  2UL );
@@ -1775,10 +1775,10 @@ void AlignedPaddedTest::testNonZeros()
          checkNonZeros( mat,  0UL, 1UL, 0UL );
          checkNonZeros( mat,  1UL, 1UL, 0UL );
 
-         if( mat(0,0,0) != 0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-             mat(1,0,0) != 0 || mat(1,1,0) != 0 || mat(1,2,0) != 0 ||
-             mat(0,0,1) != 0 || mat(0,1,1) != 0 || mat(0,2,1) != 0 ||
-             mat(1,0,1) != 0 || mat(1,1,1) != 0 || mat(1,2,1) != 0 ) {
+         if( mat(0,0,0) != 0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+             mat(0,1,0) != 0 || mat(0,1,1) != 0 || mat(0,1,2) != 0 ||
+             mat(1,0,0) != 0 || mat(1,0,1) != 0 || mat(1,0,2) != 0 ||
+             mat(1,1,0) != 0 || mat(1,1,1) != 0 || mat(1,1,2) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1791,13 +1791,13 @@ void AlignedPaddedTest::testNonZeros()
 
       {
          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-         MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+         MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
          mat = 0;
-         mat(0,1,0) = 1;
-         mat(0,2,0) = 2;
-         mat(1,1,0) = 3;
-         mat(0,1,1) = 1;
-         mat(0,2,1) = 2;
+         mat(0,0,1) = 1;
+         mat(0,0,2) = 2;
+         mat(0,1,1) = 3;
+         mat(1,0,1) = 1;
+         mat(1,0,2) = 2;
          mat(1,1,1) = 3;
 
          checkRows    ( mat,  2UL );
@@ -1810,10 +1810,10 @@ void AlignedPaddedTest::testNonZeros()
          checkNonZeros( mat,  0UL, 1UL, 2UL );
          checkNonZeros( mat,  1UL, 1UL, 1UL );
 
-         if( mat(0,0,0) != 0 || mat(0,1,0) != 1 || mat(0,2,0) != 2 ||
-             mat(1,0,0) != 0 || mat(1,1,0) != 3 || mat(1,2,0) != 0 ||
-             mat(0,0,1) != 0 || mat(0,1,1) != 1 || mat(0,2,1) != 2 ||
-             mat(1,0,1) != 0 || mat(1,1,1) != 3 || mat(1,2,1) != 0 ) {
+         if( mat(0,0,0) != 0 || mat(0,0,1) != 1 || mat(0,0,2) != 2 ||
+             mat(0,1,0) != 0 || mat(0,1,1) != 3 || mat(0,1,2) != 0 ||
+             mat(1,0,0) != 0 || mat(1,0,1) != 1 || mat(1,0,2) != 2 ||
+             mat(1,1,0) != 0 || mat(1,1,1) != 3 || mat(1,1,2) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Initialization failed\n"
@@ -1851,19 +1851,19 @@ void AlignedPaddedTest::testReset()
 
       // Initialization check
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat(0,0,0) = 1;
-      mat(0,1,0) = 2;
-      mat(0,2,0) = 3;
-      mat(1,0,0) = 4;
-      mat(1,1,0) = 5;
-      mat(1,2,0) = 6;
-      mat(0,0,1) = 1;
-      mat(0,1,1) = 2;
-      mat(0,2,1) = 3;
-      mat(1,0,1) = 4;
+      mat(0,0,1) = 2;
+      mat(0,0,2) = 3;
+      mat(0,1,0) = 4;
+      mat(0,1,1) = 5;
+      mat(0,1,2) = 6;
+      mat(1,0,0) = 1;
+      mat(1,0,1) = 2;
+      mat(1,0,2) = 3;
+      mat(1,1,0) = 4;
       mat(1,1,1) = 5;
-      mat(1,2,1) = 6;
+      mat(1,1,2) = 6;
 
       checkRows    ( mat,  2UL );
       checkColumns ( mat,  3UL );
@@ -1875,10 +1875,10 @@ void AlignedPaddedTest::testReset()
       checkNonZeros( mat,  0UL, 1UL, 3UL );
       checkNonZeros( mat,  1UL, 1UL, 3UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 3 ||
-          mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-          mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
@@ -1889,7 +1889,7 @@ void AlignedPaddedTest::testReset()
       }
 
       // Resetting a single element
-      reset( mat(0,2,0) );
+      reset( mat(0,0,2) );
 
       checkRows    ( mat,  2UL );
       checkColumns ( mat,  3UL );
@@ -1901,10 +1901,10 @@ void AlignedPaddedTest::testReset()
       checkNonZeros( mat,  0UL, 1UL, 3UL );
       checkNonZeros( mat,  1UL, 1UL, 3UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 0 ||
-          mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-          mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 0 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation failed\n"
@@ -1927,10 +1927,10 @@ void AlignedPaddedTest::testReset()
       checkNonZeros( mat,  0UL, 1UL, 3UL );
       checkNonZeros( mat,  1UL, 1UL, 0UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 0 ||
-          mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-          mat(1,0,1) != 0 || mat(1,1,1) != 0 || mat(1,2,1) != 0 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 0 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+          mat(1,1,0) != 0 || mat(1,1,1) != 0 || mat(1,1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation failed\n"
@@ -1953,10 +1953,10 @@ void AlignedPaddedTest::testReset()
       checkNonZeros( mat,  0UL, 1UL, 0UL );
       checkNonZeros( mat,  1UL, 1UL, 0UL );
 
-      if( mat(0,0,0) != 0 || mat(0,1,0) != 0 || mat(0,2,0) != 0 ||
-          mat(1,0,0) != 0 || mat(1,1,0) != 0 || mat(1,2,0) != 0 ||
-          mat(0,0,1) != 0 || mat(0,1,1) != 0 || mat(0,2,1) != 0 ||
-          mat(1,0,1) != 0 || mat(1,1,1) != 0 || mat(1,2,1) != 0 ) {
+      if( mat(0,0,0) != 0 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) != 0 || mat(0,1,1) != 0 || mat(0,1,2) != 0 ||
+          mat(1,0,0) != 0 || mat(1,0,1) != 0 || mat(1,0,2) != 0 ||
+          mat(1,1,0) != 0 || mat(1,1,1) != 0 || mat(1,1,2) != 0 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Reset operation failed\n"
@@ -1976,11 +1976,11 @@ void AlignedPaddedTest::testReset()
       test_ = "Row-major CustomTensor::reset( Type*, size_t, size_t, size_t, size_t )";
 
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 64UL ) );
-      MT mat( memory1.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat( memory1.get(), 2UL, 2UL, 3UL, 16UL );
       mat = 2;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 96UL ) );
-      mat.reset( memory2.get(), 3UL, 5UL, 2UL, 16UL );
+      mat.reset( memory2.get(), 2UL, 3UL, 5UL, 16UL );
 
       checkRows    ( mat,  3UL );
       checkColumns ( mat,  5UL );
@@ -2014,19 +2014,19 @@ void AlignedPaddedTest::testClear()
 
       // Initialization check
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-      MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+      MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
       mat(0,0,0) = 1;
-      mat(0,1,0) = 2;
-      mat(0,2,0) = 3;
-      mat(1,0,0) = 4;
-      mat(1,1,0) = 5;
-      mat(1,2,0) = 6;
-      mat(0,0,1) = 1;
-      mat(0,1,1) = 2;
-      mat(0,2,1) = 3;
-      mat(1,0,1) = 4;
+      mat(0,0,1) = 2;
+      mat(0,0,2) = 3;
+      mat(0,1,0) = 4;
+      mat(0,1,1) = 5;
+      mat(0,1,2) = 6;
+      mat(1,0,0) = 1;
+      mat(1,0,1) = 2;
+      mat(1,0,2) = 3;
+      mat(1,1,0) = 4;
       mat(1,1,1) = 5;
-      mat(1,2,1) = 6;
+      mat(1,1,2) = 6;
 
       checkRows    ( mat,  2UL );
       checkColumns ( mat,  3UL );
@@ -2038,10 +2038,10 @@ void AlignedPaddedTest::testClear()
       checkNonZeros( mat,  0UL, 1UL, 3UL );
       checkNonZeros( mat,  1UL, 1UL, 3UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 3 ||
-          mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-          mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Initialization failed\n"
@@ -2052,7 +2052,7 @@ void AlignedPaddedTest::testClear()
       }
 
       // Clearing a single element
-      clear( mat(0,2,0) );
+      clear( mat(0,0,2) );
 
       checkRows    ( mat,  2UL );
       checkColumns ( mat,  3UL );
@@ -2064,10 +2064,10 @@ void AlignedPaddedTest::testClear()
       checkNonZeros( mat,  0UL, 1UL, 3UL );
       checkNonZeros( mat,  1UL, 1UL, 3UL );
 
-      if( mat(0,0,0) != 1 || mat(0,1,0) != 2 || mat(0,2,0) != 0 ||
-          mat(1,0,0) != 4 || mat(1,1,0) != 5 || mat(1,2,0) != 6 ||
-          mat(0,0,1) != 1 || mat(0,1,1) != 2 || mat(0,2,1) != 3 ||
-          mat(1,0,1) != 4 || mat(1,1,1) != 5 || mat(1,2,1) != 6 ) {
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 0 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Clear operation failed\n"
@@ -2110,15 +2110,15 @@ void AlignedPaddedTest::testSwap()
       std::unique_ptr<int[],blaze::Deallocate> memory1( blaze::allocate<int>( 64UL ) );
       MT mat1( memory1.get(), 2UL, 2UL, 2UL, 16UL );
       mat1(0,0,0) = 1;
-      mat1(0,1,0) = 2;
-      mat1(1,0,0) = 0;
-      mat1(1,1,0) = 3;
+      mat1(0,0,1) = 2;
+      mat1(0,1,0) = 0;
+      mat1(0,1,1) = 3;
 
       std::unique_ptr<int[],blaze::Deallocate> memory2( blaze::allocate<int>( 128UL ) );
       MT mat2( memory2.get(), 2UL, 2UL, 2UL, 32UL );
-      mat2(0,0,1) = 4;
-      mat2(0,1,1) = 3;
-      mat2(1,0,1) = 2;
+      mat2(1,0,0) = 4;
+      mat2(1,0,1) = 3;
+      mat2(1,1,0) = 2;
       mat2(1,1,1) = 1;
 
       swap( mat1, mat2 );
@@ -2128,7 +2128,7 @@ void AlignedPaddedTest::testSwap()
       checkPages   ( mat1,   2UL );
       checkCapacity( mat1, 128UL );
 
-      if( mat1(0,0,1) != 4 || mat1(0,1,1) != 3 || mat1(1,0,1) != 2 || mat1(1,1,1) != 1 ) {
+      if( mat1(1,0,0) != 4 || mat1(1,0,1) != 3 || mat1(1,1,0) != 2 || mat1(1,1,1) != 1 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Swapping the first tensor failed\n"
@@ -2143,7 +2143,7 @@ void AlignedPaddedTest::testSwap()
       checkPages   ( mat2,  2UL );
       checkCapacity( mat2, 64UL );
 
-      if( mat2(0,0,0) != 1 || mat2(0,1,0) != 2 || mat2(1,0,0) != 0 || mat2(1,1,0) != 3 ) {
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,1,0) != 0 || mat2(0,1,1) != 3 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Swapping the second tensor failed\n"
@@ -2179,7 +2179,7 @@ void AlignedPaddedTest::testTranspose()
 //       // Self-transpose of a 3x3 tensor
 //       {
 //          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//          MT mat( memory.get(), 3UL, 3UL, 16UL );
+//          MT mat( memory.get(), 16UL, 3UL, 3UL );
 //          mat(0,0) = 1;
 //          mat(0,1) = 0;
 //          mat(0,2) = 2;
@@ -2216,7 +2216,7 @@ void AlignedPaddedTest::testTranspose()
 //       // Try to self-transpose a 3x5 tensor
 //       try {
 //          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//          MT mat( memory.get(), 3UL, 5UL, 16UL );
+//          MT mat( memory.get(), 16UL, 3UL, 5UL );
 //
 //          transpose( mat );
 //
@@ -2234,7 +2234,7 @@ void AlignedPaddedTest::testTranspose()
 //       // Self-transpose of a 3x3 tensor
 //       {
 //          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//          MT mat( memory.get(), 3UL, 3UL, 16UL );
+//          MT mat( memory.get(), 16UL, 3UL, 3UL );
 //          mat(0,0) = 1;
 //          mat(0,1) = 0;
 //          mat(0,2) = 2;
@@ -2271,7 +2271,7 @@ void AlignedPaddedTest::testTranspose()
 //       // Try to self-transpose a 3x5 tensor
 //       try {
 //          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//          MT mat( memory.get(), 3UL, 5UL, 16UL );
+//          MT mat( memory.get(), 16UL, 3UL, 5UL );
 //
 //          mat = trans( mat );
 //
@@ -2315,7 +2315,7 @@ void AlignedPaddedTest::testCTranspose()
 //       // Self-transpose of a 3x3 tensor
 //       {
 //          std::unique_ptr<cplx[],blaze::Deallocate> memory( blaze::allocate<cplx>( 48UL ) );
-//          AlignedPadded mat( memory.get(), 3UL, 3UL, 16UL );
+//          AlignedPadded mat( memory.get(), 16UL, 3UL, 3UL );
 //          mat(0,0) = cplx(1,-1);
 //          mat(0,1) = cplx(0, 0);
 //          mat(0,2) = cplx(2,-2);
@@ -2354,7 +2354,7 @@ void AlignedPaddedTest::testCTranspose()
 //       // Try to self-transpose a 3x5 tensor
 //       try {
 //          std::unique_ptr<cplx[],blaze::Deallocate> memory( blaze::allocate<cplx>( 48UL ) );
-//          AlignedPadded mat( memory.get(), 3UL, 5UL, 16UL );
+//          AlignedPadded mat( memory.get(), 16UL, 3UL, 5UL );
 //
 //          ctranspose( mat );
 //
@@ -2379,7 +2379,7 @@ void AlignedPaddedTest::testCTranspose()
 //       // Self-transpose of a 3x3 tensor
 //       {
 //          std::unique_ptr<cplx[],blaze::Deallocate> memory( blaze::allocate<cplx>( 48UL ) );
-//          AlignedPadded mat( memory.get(), 3UL, 3UL, 16UL );
+//          AlignedPadded mat( memory.get(), 16UL, 3UL, 3UL );
 //          mat(0,0) = cplx(1,-1);
 //          mat(0,1) = cplx(0, 0);
 //          mat(0,2) = cplx(2,-2);
@@ -2418,7 +2418,7 @@ void AlignedPaddedTest::testCTranspose()
 //       // Try to self-transpose a 3x5 tensor
 //       try {
 //          std::unique_ptr<cplx[],blaze::Deallocate> memory( blaze::allocate<cplx>( 48UL ) );
-//          AlignedPadded mat( memory.get(), 3UL, 5UL, 16UL );
+//          AlignedPadded mat( memory.get(), 16UL, 3UL, 5UL );
 //
 //          mat = ctrans( mat );
 //
@@ -2471,15 +2471,15 @@ void AlignedPaddedTest::testIsDefault()
       // isDefault with default tensor
       {
          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
-         MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+         MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
          reset( mat );
 
-         if( isDefault( mat(0,1,0) ) != true ) {
+         if( isDefault( mat(0,0,1) ) != true ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element: " << mat(0,1,0) << "\n";
+                << "   Matrix element: " << mat(0,0,1) << "\n";
             throw std::runtime_error( oss.str() );
          }
 
@@ -2496,16 +2496,16 @@ void AlignedPaddedTest::testIsDefault()
       // isDefault with non-default tensor
       {
          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 128UL ) );
-         MT mat( memory.get(), 2UL, 3UL, 2UL, 16UL );
+         MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
          reset( mat );
-         mat(0,1,1) = 1;
+         mat(1,0,1) = 1;
 
-         if( isDefault( mat(0,1,1) ) != false ) {
+         if( isDefault( mat(1,0,1) ) != false ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Invalid isDefault evaluation\n"
                 << " Details:\n"
-                << "   Matrix element: " << mat(0,1,1) << "\n";
+                << "   Matrix element: " << mat(1,0,1) << "\n";
             throw std::runtime_error( oss.str() );
          }
 

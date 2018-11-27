@@ -76,8 +76,8 @@ namespace blaze {
    MatrixType3 C( 200UL, 250UL );
 
    using SubtensorType1 = decltype( blaze::subtensor<2UL,2UL,4UL,8UL>( A ) );
-   using SubtensorType2 = decltype( blaze::subtensor<aligned>( B, 8UL, 8UL, 24UL, 32UL ) );
-   using SubtensorType3 = decltype( blaze::subtensor( C, 5UL, 7UL, 13UL, 17UL ) );
+   using SubtensorType2 = decltype( blaze::subtensor<aligned>( B, 24UL, 8UL, 8UL, 32UL ) );
+   using SubtensorType3 = decltype( blaze::subtensor( C, 13UL, 5UL, 7UL, 17UL ) );
 
    blaze::IsSubtensor< SubtensorType1 >::value       // Evaluates to 1
    blaze::IsSubtensor< const SubtensorType2 >::Type  // Results in TrueType

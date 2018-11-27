@@ -125,7 +125,7 @@ inline DisableIf_t< DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
    for (size_t k=0UL; k<A.pages(); ++k) {
       for (size_t i=0UL; i<A.rows(); ++i) {
          for (size_t j=0UL; j<A.columns(); ++j) {
-            if (!equal(A(i, j, k), B(i, j, k)))
+            if (!equal(A(k, i, j), B(k, i, j)))
                return false;
          }
       }
@@ -185,20 +185,20 @@ inline EnableIf_t< DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
          size_t j(0UL);
 
          for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
-            if (!equal(A.load(i, j, k), B.load(i, j, k))) return false;
+            if (!equal(A.load(k, i, j), B.load(k, i, j))) return false;
             if (!equal(A.load(i, j+SIMDSIZE, k), B.load(i, j+SIMDSIZE, k))) return false;
             if (!equal(A.load(i, j+SIMDSIZE*2UL, k), B.load(i, j+SIMDSIZE*2UL, k))) return false;
             if (!equal(A.load(i, j+SIMDSIZE*3UL, k), B.load(i, j+SIMDSIZE*3UL, k))) return false;
          }
          for (; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL) {
-            if (!equal(A.load(i, j, k), B.load(i, j, k))) return false;
+            if (!equal(A.load(k, i, j), B.load(k, i, j))) return false;
             if (!equal(A.load(i, j+SIMDSIZE, k), B.load(i, j+SIMDSIZE, k))) return false;
          }
          for (; j<jpos; j+=SIMDSIZE) {
-            if (!equal(A.load(i, j, k), B.load(i, j, k))) return false;
+            if (!equal(A.load(k, i, j), B.load(k, i, j))) return false;
          }
          for (; remainder && j<A.columns(); ++j) {
-            if (!equal(A(i, j, k), B(i, j, k))) return false;
+            if (!equal(A(k, i, j), B(k, i, j))) return false;
          }
       }
    }

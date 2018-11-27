@@ -68,10 +68,10 @@ class Rand< DynamicTensor<Type> >
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   inline const DynamicTensor<Type> generate( size_t m, size_t n, size_t o ) const;
+   inline const DynamicTensor<Type> generate( size_t o, size_t m, size_t n ) const;
 
    template< typename Arg >
-   inline const DynamicTensor<Type> generate( size_t m, size_t n, size_t o, const Arg& min, const Arg& max ) const;
+   inline const DynamicTensor<Type> generate( size_t o, size_t m, size_t n, const Arg& min, const Arg& max ) const;
    //@}
    //**********************************************************************************************
 
@@ -99,9 +99,9 @@ class Rand< DynamicTensor<Type> >
 */
 template< typename Type > // Data type of the tensor
 inline const DynamicTensor<Type>
-   Rand< DynamicTensor<Type> >::generate( size_t m, size_t n, size_t o ) const
+   Rand< DynamicTensor<Type> >::generate( size_t o, size_t m, size_t n ) const
 {
-   DynamicTensor<Type> tensor( m, n, o );
+   DynamicTensor<Type> tensor( o, m, n );
    randomize( tensor );
    return tensor;
 }
@@ -122,9 +122,9 @@ inline const DynamicTensor<Type>
 template< typename Type > // Data type of the tensor
 template< typename Arg >  // Min/max argument type
 inline const DynamicTensor<Type>
-   Rand< DynamicTensor<Type> >::generate( size_t m, size_t n, size_t o, const Arg& min, const Arg& max ) const
+   Rand< DynamicTensor<Type> >::generate( size_t o, size_t m, size_t n, const Arg& min, const Arg& max ) const
 {
-   DynamicTensor<Type> tensor( m, n, o );
+   DynamicTensor<Type> tensor( o, m, n );
    randomize( tensor, min, max );
    return tensor;
 }
@@ -151,7 +151,7 @@ inline void Rand< DynamicTensor<Type> >::randomize( DynamicTensor<Type>& tensor 
    for (size_t k=0UL; k<o; ++k) {
       for (size_t i=0UL; i<m; ++i) {
          for (size_t j=0UL; j<n; ++j) {
-            randomize(tensor(i, j, k));
+            randomize(tensor(k, i, j));
          }
       }
    }
@@ -183,7 +183,7 @@ inline void Rand< DynamicTensor<Type> >::randomize( DynamicTensor<Type>& tensor,
    for (size_t k=0UL; k<o; ++k) {
       for (size_t i=0UL; i<m; ++i) {
          for (size_t j=0UL; j<n; ++j) {
-            randomize(tensor(i, j, k), min, max);
+            randomize(tensor(k, i, j), min, max);
          }
       }
    }

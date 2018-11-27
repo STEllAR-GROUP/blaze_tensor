@@ -90,8 +90,8 @@ namespace blaze {
    using blaze::CompressedTensor;
 
    DynamicTensor<double> A( 2, 3, 4 );              // Default constructed, non-initialized, 2x3 tensor
-   A(0,0,0) = 1.0; A(0,1,0) = 2.0; A(0,2,0) = 3.0;  // Initialization of the first row
-   A(1,0,0) = 4.0; A(1,1,0) = 5.0; A(1,2,0) = 6.0;  // Initialization of the second row
+   A(0,0,0) = 1.0; A(0,0,1) = 2.0; A(0,0,2) = 3.0;  // Initialization of the first row
+   A(0,1,0) = 4.0; A(0,1,1) = 5.0; A(0,1,2) = 6.0;  // Initialization of the second row
 
    DynamicTensor<float> B( 2, 3 );              // Default constructed column-major single precision 2x3 tensor
    B(0,0) = 1.0; B(0,1) = 3.0; B(0,2) = 5.0;    // Initialization of the first row
@@ -180,12 +180,12 @@ class DynamicTensor
    /*!\name Constructors */
    //@{
    explicit inline DynamicTensor() noexcept;
-   explicit inline DynamicTensor( size_t m, size_t n, size_t o );
-   explicit inline DynamicTensor( size_t m, size_t n, size_t o, const Type& init );
+   explicit inline DynamicTensor( size_t o, size_t m, size_t n );
+   explicit inline DynamicTensor( size_t o, size_t m, size_t n, const Type& init );
    explicit inline DynamicTensor( initializer_list< initializer_list< initializer_list<Type> > > list );
 
    template< typename Other >
-   explicit inline DynamicTensor( size_t m, size_t n, size_t o, const Other* array );
+   explicit inline DynamicTensor( size_t o, size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Rows, size_t Cols, size_t Pages >
    explicit inline DynamicTensor( const Other (&array)[Pages][Rows][Cols] );
@@ -206,16 +206,16 @@ class DynamicTensor
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t i, size_t j, size_t k ) noexcept;
-   inline ConstReference operator()( size_t i, size_t j, size_t k ) const noexcept;
-   inline Reference      at( size_t i, size_t j, size_t k );
-   inline ConstReference at( size_t i, size_t j, size_t k ) const;
+   inline Reference      operator()( size_t k, size_t i, size_t j ) noexcept;
+   inline ConstReference operator()( size_t k, size_t i, size_t j ) const noexcept;
+   inline Reference      at( size_t k, size_t i, size_t j );
+   inline ConstReference at( size_t k, size_t i, size_t j ) const;
    inline Pointer        data  () noexcept;
    inline ConstPointer   data  () const noexcept;
    inline Pointer        data  ( size_t i, size_t k ) noexcept;
    inline ConstPointer   data  ( size_t i, size_t k ) const noexcept;
-   inline Pointer        data  ( size_t i, size_t j, size_t k ) noexcept;
-   inline ConstPointer   data  ( size_t i, size_t j, size_t k ) const noexcept;
+   inline Pointer        data  ( size_t k, size_t i, size_t j ) noexcept;
+   inline ConstPointer   data  ( size_t k, size_t i, size_t j ) const noexcept;
    inline Iterator       begin ( size_t i, size_t k ) noexcept;
    inline ConstIterator  begin ( size_t i, size_t k ) const noexcept;
    inline ConstIterator  cbegin( size_t i, size_t k ) const noexcept;
@@ -258,8 +258,8 @@ class DynamicTensor
    inline void   reset();
    inline void   reset( size_t i, size_t k );
    inline void   clear();
-          void   resize ( size_t m, size_t n, size_t o, bool preserve=true );
-   inline void   extend ( size_t m, size_t n, size_t o, bool preserve=true );
+          void   resize ( size_t o, size_t m, size_t n, bool preserve=true );
+   inline void   extend ( size_t o, size_t m, size_t n, bool preserve=true );
    inline void   reserve( size_t elements );
    inline void   shrinkToFit();
    inline void   swap( DynamicTensor& m ) noexcept;
@@ -346,14 +346,14 @@ class DynamicTensor
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t j, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t j, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t i, size_t j, size_t k ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType load ( size_t k, size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loada( size_t k, size_t i, size_t j ) const noexcept;
+   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t k, size_t i, size_t j ) const noexcept;
 
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void store ( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storea( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void storeu( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
+   BLAZE_ALWAYS_INLINE void stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT >
    inline auto assign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT> >;
@@ -392,9 +392,9 @@ class DynamicTensor
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
+   size_t o_;                //!< The current number of pages of the tensor.
    size_t m_;                //!< The current number of rows of the tensor.
    size_t n_;                //!< The current number of columns of the tensor.
-   size_t o_;                //!< The current number of pages of the tensor.
    size_t nn_;               //!< The alignment adjusted number of columns.
    size_t capacity_;         //!< The maximum capacity of the tensor.
    Type* BLAZE_RESTRICT v_;  //!< The dynamically allocated tensor elements.
@@ -435,9 +435,9 @@ class DynamicTensor
 */
 template< typename Type > // Data type of the tensor
 inline DynamicTensor<Type>::DynamicTensor() noexcept
-   : m_       ( 0UL )      // The current number of rows of the tensor
+   : o_       ( 0UL )      // The current number of pages of the tensor
+   , m_       ( 0UL )      // The current number of rows of the tensor
    , n_       ( 0UL )      // The current number of columns of the tensor
-   , o_       ( 0UL )      // The current number of pages of the tensor
    , nn_      ( 0UL )      // The alignment adjusted number of columns
    , capacity_( 0UL )      // The maximum capacity of the tensor
    , v_       ( nullptr )  // The tensor elements
@@ -455,10 +455,10 @@ inline DynamicTensor<Type>::DynamicTensor() noexcept
 // element initialization is performed!
 */
 template< typename Type > // Data type of the tensor
-inline DynamicTensor<Type>::DynamicTensor( size_t m, size_t n, size_t o )
-   : m_       ( m )                            // The current number of rows of the tensor
+inline DynamicTensor<Type>::DynamicTensor( size_t o, size_t m, size_t n )
+   : o_       ( o )                            // The current number of pages of the tensor
+   , m_       ( m )                            // The current number of rows of the tensor
    , n_       ( n )                            // The current number of columns of the tensor
-   , o_       ( o )                            // The current number of pages of the tensor
    , nn_      ( addPadding( n ) )              // The alignment adjusted number of columns
    , capacity_( m_*nn_*o_ )                    // The maximum capacity of the tensor
    , v_       ( allocate<Type>( capacity_ ) )  // The tensor elements
@@ -480,7 +480,7 @@ inline DynamicTensor<Type>::DynamicTensor( size_t m, size_t n, size_t o )
 
 
 //*************************************************************************************************
-/*!\brief Constructor for a homogenous initialization of all \f$ m \times n \f$ tensor elements.
+/*!\brief Constructor for a homogeneous initialization of all \f$ m \times n \f$ tensor elements.
 //
 // \param m The number of rows of the tensor.
 // \param n The number of columns of the tensor.
@@ -489,8 +489,8 @@ inline DynamicTensor<Type>::DynamicTensor( size_t m, size_t n, size_t o )
 // All tensor elements are initialized with the specified value.
 */
 template< typename Type > // Data type of the tensor
-inline DynamicTensor<Type>::DynamicTensor( size_t m, size_t n, size_t o, const Type& init )
-   : DynamicTensor( m, n, o )
+inline DynamicTensor<Type>::DynamicTensor( size_t o, size_t m, size_t n, const Type& init )
+   : DynamicTensor( o, m, n )
 {
    for (size_t k=0UL; k<o; ++k) {
       for (size_t i=0UL; i<m; ++i) {
@@ -564,7 +564,7 @@ inline DynamicTensor<Type>::DynamicTensor( initializer_list< initializer_list< i
 
    int* array = new int[20];
    // ... Initialization of the dynamic array
-   blaze::DynamicTensor<int> v( 4UL, 5UL, 6UL, array );
+   blaze::DynamicTensor<int> v( 6UL, 4UL, 5UL, array );
    delete[] array;
    \endcode
 
@@ -574,8 +574,8 @@ inline DynamicTensor<Type>::DynamicTensor( initializer_list< initializer_list< i
 */
 template< typename Type > // Data type of the tensor
 template< typename Other >  // Data type of the initialization array
-inline DynamicTensor<Type>::DynamicTensor( size_t m, size_t n, size_t o, const Other* array )
-   : DynamicTensor( m, n, o )
+inline DynamicTensor<Type>::DynamicTensor( size_t o, size_t m, size_t n, const Other* array )
+   : DynamicTensor( o, m, n )
 {
    for (size_t k=0UL; k<o; ++k) {
       for (size_t i=0UL; i<m; ++i) {
@@ -624,7 +624,7 @@ template< typename Other  // Data type of the initialization array
         , size_t Cols     // Number of columns of the initialization array
         , size_t Pages >  // Number of pages of the initialization array
 inline DynamicTensor<Type>::DynamicTensor( const Other (&array)[Pages][Rows][Cols] )
-   : DynamicTensor( Rows, Cols, Pages )
+   : DynamicTensor( Pages, Rows, Cols )
 {
    for (size_t k=0UL; k<Pages; ++k) {
       for (size_t i=0UL; i<Rows; ++i) {
@@ -650,7 +650,7 @@ inline DynamicTensor<Type>::DynamicTensor( const Other (&array)[Pages][Rows][Col
 */
 template< typename Type > // Data type of the tensor
 inline DynamicTensor<Type>::DynamicTensor( const DynamicTensor& m )
-   : DynamicTensor( m.m_, m.n_, m.o_ )
+   : DynamicTensor( m.o_, m.m_, m.n_ )
 {
    BLAZE_INTERNAL_ASSERT( capacity_ <= m.capacity_, "Invalid capacity estimation" );
 
@@ -668,16 +668,16 @@ inline DynamicTensor<Type>::DynamicTensor( const DynamicTensor& m )
 */
 template< typename Type > // Data type of the tensor
 inline DynamicTensor<Type>::DynamicTensor( DynamicTensor&& m ) noexcept
-   : m_       ( m.m_        )  // The current number of rows of the tensor
+   : o_       ( m.o_        )  // The current number of pages of the tensor
+   , m_       ( m.m_        )  // The current number of rows of the tensor
    , n_       ( m.n_        )  // The current number of columns of the tensor
-   , o_       ( m.o_        )  // The current number of pages of the tensor
    , nn_      ( m.nn_       )  // The alignment adjusted number of columns
    , capacity_( m.capacity_ )  // The maximum capacity of the tensor
    , v_       ( m.v_        )  // The tensor elements
 {
+   m.o_        = 0UL;
    m.m_        = 0UL;
    m.n_        = 0UL;
-   m.o_        = 0UL;
    m.nn_       = 0UL;
    m.capacity_ = 0UL;
    m.v_        = nullptr;
@@ -693,7 +693,7 @@ inline DynamicTensor<Type>::DynamicTensor( DynamicTensor&& m ) noexcept
 template< typename Type > // Data type of the tensor
 template< typename MT >   // Type of the foreign tensor
 inline DynamicTensor<Type>::DynamicTensor( const Tensor<MT>& m )
-   : DynamicTensor( (~m).rows(), (~m).columns(), (~m).pages() )
+   : DynamicTensor( (~m).pages(), (~m).rows(), (~m).columns() )
 {
    smpAssign( *this, ~m );
 
@@ -742,7 +742,7 @@ inline DynamicTensor<Type>::~DynamicTensor()
 */
 template< typename Type > // Data type of the tensor
 inline typename DynamicTensor<Type>::Reference
-   DynamicTensor<Type>::operator()( size_t i, size_t j, size_t k ) noexcept
+   DynamicTensor<Type>::operator()( size_t k, size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -765,7 +765,7 @@ inline typename DynamicTensor<Type>::Reference
 */
 template< typename Type > // Data type of the tensor
 inline typename DynamicTensor<Type>::ConstReference
-   DynamicTensor<Type>::operator()( size_t i, size_t j, size_t k ) const noexcept
+   DynamicTensor<Type>::operator()( size_t k, size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i<m_, "Invalid row access index"    );
    BLAZE_USER_ASSERT( j<n_, "Invalid column access index" );
@@ -789,7 +789,7 @@ inline typename DynamicTensor<Type>::ConstReference
 */
 template< typename Type > // Data type of the tensor
 inline typename DynamicTensor<Type>::Reference
-   DynamicTensor<Type>::at( size_t i, size_t j, size_t k )
+   DynamicTensor<Type>::at( size_t k, size_t i, size_t j )
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -800,7 +800,7 @@ inline typename DynamicTensor<Type>::Reference
    if( k >= o_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
    }
-   return (*this)(i,j,k);
+   return (*this)(k,i,j);
 }
 //*************************************************************************************************
 
@@ -819,7 +819,7 @@ inline typename DynamicTensor<Type>::Reference
 */
 template< typename Type > // Data type of the tensor
 inline typename DynamicTensor<Type>::ConstReference
-   DynamicTensor<Type>::at( size_t i, size_t j, size_t k ) const
+   DynamicTensor<Type>::at( size_t k, size_t i, size_t j ) const
 {
    if( i >= m_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
@@ -830,7 +830,7 @@ inline typename DynamicTensor<Type>::ConstReference
    if( k >= o_ ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
    }
-   return (*this)(i,j,k);
+   return (*this)(k,i,j);
 }
 //*************************************************************************************************
 
@@ -888,11 +888,11 @@ inline typename DynamicTensor<Type>::ConstPointer
 */
 template< typename Type > // Data type of the tensor
 inline typename DynamicTensor<Type>::Pointer
-   DynamicTensor<Type>::data( size_t i, size_t j ) noexcept
+   DynamicTensor<Type>::data( size_t i, size_t k ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor row access index" );
-   BLAZE_USER_ASSERT( j < o_, "Invalid dense tensor row access index" );
-   return v_ + (j*m_+i)*nn_;
+   BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor row access index" );
+   return v_ + (k*m_+i)*nn_;
 }
 //*************************************************************************************************
 
@@ -928,7 +928,7 @@ inline typename DynamicTensor<Type>::ConstPointer
 */
 template< typename Type > // Data type of the tensor
 inline typename DynamicTensor<Type>::Pointer
-   DynamicTensor<Type>::data( size_t i, size_t j, size_t k ) noexcept
+   DynamicTensor<Type>::data( size_t k, size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor element access index" );
    BLAZE_USER_ASSERT( j < n_, "Invalid dense tensor element access index" );
@@ -949,7 +949,7 @@ inline typename DynamicTensor<Type>::Pointer
 */
 template< typename Type > // Data type of the tensor
 inline typename DynamicTensor<Type>::ConstPointer
-   DynamicTensor<Type>::data( size_t i, size_t j, size_t k ) const noexcept
+   DynamicTensor<Type>::data( size_t k, size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor element access index" );
    BLAZE_USER_ASSERT( j < n_, "Invalid dense tensor element access index" );
@@ -1204,7 +1204,7 @@ template< typename Other  // Data type of the initialization array
         , size_t Pages >  // Number of pages of the initialization array
 inline DynamicTensor<Type>& DynamicTensor<Type>::operator=( const Other (&array)[Pages][Rows][Cols] )
 {
-   resize( Rows, Cols, Pages, false );
+   resize( Pages, Rows, Cols, false );
 
    for (size_t k=0UL; k<Pages; ++k) {
       for (size_t i=0UL; i<Rows; ++i) {
@@ -1232,7 +1232,7 @@ inline DynamicTensor<Type>& DynamicTensor<Type>::operator=( const DynamicTensor&
 {
    if( &rhs == this ) return *this;
 
-   resize( rhs.m_, rhs.n_, rhs.o_, false );
+   resize( rhs.o_, rhs.m_, rhs.n_, false );
    smpAssign( *this, ~rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1253,16 +1253,16 @@ inline DynamicTensor<Type>& DynamicTensor<Type>::operator=( DynamicTensor&& rhs 
 {
    deallocate( v_ );
 
+   o_        = rhs.o_;
    m_        = rhs.m_;
    n_        = rhs.n_;
-   o_        = rhs.o_;
    nn_       = rhs.nn_;
    capacity_ = rhs.capacity_;
    v_        = rhs.v_;
 
+   rhs.o_        = 0UL;
    rhs.m_        = 0UL;
    rhs.n_        = 0UL;
-   rhs.o_        = 0UL;
    rhs.nn_       = 0UL;
    rhs.capacity_ = 0UL;
    rhs.v_        = nullptr;
@@ -1290,7 +1290,7 @@ inline DynamicTensor<Type>& DynamicTensor<Type>::operator=( const Tensor<MT>& rh
       swap( tmp );
    }
    else {
-      resize( (~rhs).rows(), (~rhs).columns(), (~rhs).pages(), false );
+      resize( (~rhs).pages(), (~rhs).rows(), (~rhs).columns(), false );
       smpAssign( *this, ~rhs );
    }
 
@@ -1650,7 +1650,7 @@ inline void DynamicTensor<Type>::clear()
                               \f]
 */
 template< typename Type > // Data type of the tensor
-void DynamicTensor<Type>::resize( size_t m, size_t n, size_t o, bool preserve )
+void DynamicTensor<Type>::resize( size_t o, size_t m, size_t n, bool preserve )
 {
    using std::swap;
    using blaze::min;
@@ -1716,9 +1716,9 @@ void DynamicTensor<Type>::resize( size_t m, size_t n, size_t o, bool preserve )
 // initialized!
 */
 template< typename Type > // Data type of the tensor
-inline void DynamicTensor<Type>::extend( size_t m, size_t n, size_t k, bool preserve )
+inline void DynamicTensor<Type>::extend( size_t o, size_t m, size_t n, bool preserve )
 {
-   resize( m_+m, n_+n, o_+k, preserve );
+   resize( o_+o, m_+m, n_+n, preserve );
 }
 //*************************************************************************************************
 
@@ -1790,9 +1790,9 @@ inline void DynamicTensor<Type>::swap( DynamicTensor& m ) noexcept
 {
    using std::swap;
 
+   swap( o_ , m.o_  );
    swap( m_ , m.m_  );
    swap( n_ , m.n_  );
-   swap( o_ , m.o_  );
    swap( nn_, m.nn_ );
    swap( capacity_, m.capacity_ );
    swap( v_ , m.v_  );
@@ -2077,12 +2077,12 @@ inline bool DynamicTensor<Type>::canSMPAssign() const noexcept
 */
 template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE typename DynamicTensor<Type>::SIMDType
-   DynamicTensor<Type>::load( size_t i, size_t j, size_t k ) const noexcept
+   DynamicTensor<Type>::load( size_t k, size_t i, size_t j ) const noexcept
 {
    if( usePadding )
-      return loada( i, j, k );
+      return loada( k, i, j );
    else
-      return loadu( i, j, k );
+      return loadu( k, i, j );
 }
 //*************************************************************************************************
 
@@ -2104,7 +2104,7 @@ BLAZE_ALWAYS_INLINE typename DynamicTensor<Type>::SIMDType
 */
 template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE typename DynamicTensor<Type>::SIMDType
-   DynamicTensor<Type>::loada( size_t i, size_t j, size_t k ) const noexcept
+   DynamicTensor<Type>::loada( size_t k, size_t i, size_t j ) const noexcept
 {
    using blaze::loada;
 
@@ -2139,7 +2139,7 @@ BLAZE_ALWAYS_INLINE typename DynamicTensor<Type>::SIMDType
 */
 template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE typename DynamicTensor<Type>::SIMDType
-   DynamicTensor<Type>::loadu( size_t i, size_t j, size_t k ) const noexcept
+   DynamicTensor<Type>::loadu( size_t k, size_t i, size_t j ) const noexcept
 {
    using blaze::loadu;
 
@@ -2173,12 +2173,12 @@ BLAZE_ALWAYS_INLINE typename DynamicTensor<Type>::SIMDType
 */
 template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE void
-   DynamicTensor<Type>::store( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   DynamicTensor<Type>::store( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    if( usePadding )
-      storea( i, j, k, value );
+      storea( k, i, j, value );
    else
-      storeu( i, j, k, value );
+      storeu( k, i, j, value );
 }
 //*************************************************************************************************
 
@@ -2201,7 +2201,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE void
-   DynamicTensor<Type>::storea( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   DynamicTensor<Type>::storea( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storea;
 
@@ -2237,7 +2237,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE void
-   DynamicTensor<Type>::storeu( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   DynamicTensor<Type>::storeu( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::storeu;
 
@@ -2272,7 +2272,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE void
-   DynamicTensor<Type>::stream( size_t i, size_t j, size_t k, const SIMDType& value ) noexcept
+   DynamicTensor<Type>::stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
    using blaze::stream;
 
@@ -2317,11 +2317,11 @@ inline auto DynamicTensor<Type>::assign( const DenseTensor<MT>& rhs )
       for (size_t i=0UL; i<m_; ++i) {
          size_t row_elements = (k*m_+i)*nn_;
          for (size_t j=0UL; j<jpos; j+=2UL) {
-            v_[row_elements+j] = (~rhs)(i, j, k);
-            v_[row_elements+j+1UL] = (~rhs)(i, j+1UL, k);
+            v_[row_elements+j] = (~rhs)(k, i, j);
+            v_[row_elements+j+1UL] = (~rhs)(k, i, j+1UL);
          }
          if (jpos < n_) {
-            v_[row_elements+jpos] = (~rhs)(i, jpos, k);
+            v_[row_elements+jpos] = (~rhs)(k, i, jpos);
          }
       }
    }
@@ -2431,11 +2431,11 @@ inline auto DynamicTensor<Type>::addAssign( const DenseTensor<MT>& rhs )
          size_t j(jbegin);
 
          for (; (j+2UL) <= jend; j+=2UL) {
-            v_[row_elements+j] += (~rhs)(i, j, k);
-            v_[row_elements+j+1UL] += (~rhs)(i, j+1UL, k);
+            v_[row_elements+j] += (~rhs)(k, i, j);
+            v_[row_elements+j+1UL] += (~rhs)(k, i, j+1UL);
          }
          if (j < jend) {
-            v_[row_elements+j] += (~rhs)(i, j, k);
+            v_[row_elements+j] += (~rhs)(k, i, j);
          }
       }
    }
@@ -2528,11 +2528,11 @@ inline auto DynamicTensor<Type>::subAssign( const DenseTensor<MT>& rhs )
          size_t j(jbegin);
 
          for (; (j+2UL) <= jend; j+=2UL) {
-            v_[row_elements+j] -= (~rhs)(i, j, k);
-            v_[row_elements+j+1UL] -= (~rhs)(i, j+1UL, k);
+            v_[row_elements+j] -= (~rhs)(k, i, j);
+            v_[row_elements+j+1UL] -= (~rhs)(k, i, j+1UL);
          }
          if (j < jend) {
-            v_[row_elements+j] -= (~rhs)(i, j, k);
+            v_[row_elements+j] -= (~rhs)(k, i, j);
          }
       }
    }
@@ -2623,11 +2623,11 @@ inline auto DynamicTensor<Type>::schurAssign( const DenseTensor<MT>& rhs )
       for (size_t i=0UL; i<m_; ++i) {
          size_t row_elements = (k*m_+i)*nn_;
          for (size_t j=0UL; j<jpos; j+=2UL) {
-            v_[row_elements+j] *= (~rhs)(i, j, k);
-            v_[row_elements+j+1UL] *= (~rhs)(i, j+1UL, k);
+            v_[row_elements+j] *= (~rhs)(k, i, j);
+            v_[row_elements+j+1UL] *= (~rhs)(k, i, j+1UL);
          }
          if (jpos < n_) {
-            v_[row_elements+jpos] *= (~rhs)(i, jpos, k);
+            v_[row_elements+jpos] *= (~rhs)(k, i, jpos);
          }
       }
    }

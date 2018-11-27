@@ -48,7 +48,13 @@ function(add_blaze_tensor_test name)
 
    get_target_property(blaze_parallelization_mode blaze::blaze INTERFACE_COMPILE_DEFINITIONS)
    if(blaze_parallelization_mode AND "${blaze_parallelization_mode}" STREQUAL "BLAZE_USE_HPX_THREADS")
-      hpx_setup_target(${name} TYPE EXECUTABLE)
+      set(compile_flags)
+      if(MSVC)
+         set(compile_flags COMPILE_FLAGS -wd4146)
+      endif()
+      hpx_setup_target(${name}
+         TYPE EXECUTABLE
+         ${compile_flags})
    endif()
 endfunction()
 

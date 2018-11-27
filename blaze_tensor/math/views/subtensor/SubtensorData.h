@@ -92,7 +92,7 @@ struct SubtensorData<>
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline SubtensorData( size_t rindex, size_t cindex, size_t pindex, size_t m, size_t n, size_t o, RSAs... args );
+   explicit inline SubtensorData( size_t pindex, size_t rindex, size_t cindex, size_t o, size_t m, size_t n, RSAs... args );
 
    SubtensorData( const SubtensorData& ) = default;
    //@}
@@ -128,12 +128,12 @@ struct SubtensorData<>
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
+   const size_t page_;    //!< The first page of the subtensor.
    const size_t row_;     //!< The first row of the subtensor.
    const size_t column_;  //!< The first column of the subtensor.
-   const size_t page_;    //!< The first page of the subtensor.
+   const size_t o_;       //!< The number of pages of the subtensor.
    const size_t m_;       //!< The number of rows of the subtensor.
    const size_t n_;       //!< The number of columns of the subtensor.
-   const size_t o_;       //!< The number of pages of the subtensor.
    //@}
    //**********************************************************************************************
 };
@@ -152,13 +152,13 @@ struct SubtensorData<>
 // \param args The optional subtensor arguments.
 */
 template< typename... RSAs >  // Optional subtensor arguments
-inline SubtensorData<>::SubtensorData( size_t rindex, size_t cindex, size_t pindex, size_t m, size_t n, size_t o, RSAs... args )
-   : row_   ( rindex )  // The first row of the subtensor
+inline SubtensorData<>::SubtensorData( size_t pindex, size_t rindex, size_t cindex, size_t o, size_t m, size_t n, RSAs... args )
+   : page_  ( pindex )  // The first page of the subtensor
+   , row_   ( rindex )  // The first row of the subtensor
    , column_( cindex )  // The first column of the subtensor
-   , page_  ( pindex )  // The first page of the subtensor
+   , o_     ( o      )  // The number of columns of the subtensor
    , m_     ( m      )  // The number of rows of the subtensor
    , n_     ( n      )  // The number of columns of the subtensor
-   , o_     ( o      )  // The number of columns of the subtensor
 {
    UNUSED_PARAMETER( args... );
 }
@@ -266,13 +266,13 @@ inline size_t SubtensorData<>::pages() const noexcept
 // This specialization of SubtensorData adapts the class template to the requirements of two
 // compile time arguments.
 */
-template< size_t I    // Index of the first row
+template< size_t K    // Index of the first page
+        , size_t I    // Index of the first row
         , size_t J    // Index of the first column
-        , size_t K    // Index of the first page
+        , size_t O    // Number of pages
         , size_t M    // Number of rows
-        , size_t N    // Number of columns
-        , size_t O >  // Number of pages
-struct SubtensorData<I,J,K,M,N,O>
+        , size_t N >  // Number of columns
+struct SubtensorData<K,I,J,O,M,N>
 {
  public:
    //**Constructors********************************************************************************
@@ -321,14 +321,14 @@ struct SubtensorData<I,J,K,M,N,O>
 //
 // \param args The optional subtensor arguments.
 */
-template< size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t K            // Index of the first page
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , size_t O >          // Number of pages
+template< size_t K    // Index of the first page
+        , size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t O    // Number of pages
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
 template< typename... RSAs >  // Optional subtensor arguments
-inline SubtensorData<I,J,K,M,N,O>::SubtensorData( RSAs... args )
+inline SubtensorData<K,I,J,O,M,N>::SubtensorData( RSAs... args )
 {
    UNUSED_PARAMETER( args... );
 }
@@ -342,13 +342,13 @@ inline SubtensorData<I,J,K,M,N,O>::SubtensorData( RSAs... args )
 //
 // \return The index of the first row.
 */
-template< size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t K            // Index of the first page
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , size_t O >          // Number of pages
-inline constexpr size_t SubtensorData<I,J,K,M,N,O>::row() noexcept
+template< size_t K    // Index of the first page
+        , size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t O    // Number of pages
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubtensorData<K,I,J,O,M,N>::row() noexcept
 {
    return I;
 }
@@ -362,13 +362,13 @@ inline constexpr size_t SubtensorData<I,J,K,M,N,O>::row() noexcept
 //
 // \return The index of the first column.
 */
-template< size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t K            // Index of the first page
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , size_t O >          // Number of pages
-inline constexpr size_t SubtensorData<I,J,K,M,N,O>::column() noexcept
+template< size_t K    // Index of the first page
+        , size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t O    // Number of pages
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubtensorData<K,I,J,O,M,N>::column() noexcept
 {
    return J;
 }
@@ -382,13 +382,13 @@ inline constexpr size_t SubtensorData<I,J,K,M,N,O>::column() noexcept
 //
 // \return The index of the first page.
 */
-template< size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t K            // Index of the first page
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , size_t O >          // Number of pages
-inline constexpr size_t SubtensorData<I,J,K,M,N,O>::page() noexcept
+template< size_t K    // Index of the first page
+        , size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t O    // Number of pages
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubtensorData<K,I,J,O,M,N>::page() noexcept
 {
    return K;
 }
@@ -402,13 +402,13 @@ inline constexpr size_t SubtensorData<I,J,K,M,N,O>::page() noexcept
 //
 // \return The number of rows of the subtensor.
 */
-template< size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t K            // Index of the first page
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , size_t O >          // Number of pages
-inline constexpr size_t SubtensorData<I,J,K,M,N,O>::rows() noexcept
+template< size_t K    // Index of the first page
+        , size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t O    // Number of pages
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubtensorData<K,I,J,O,M,N>::rows() noexcept
 {
    return M;
 }
@@ -422,13 +422,13 @@ inline constexpr size_t SubtensorData<I,J,K,M,N,O>::rows() noexcept
 //
 // \return The number of columns of the subtensor.
 */
-template< size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t K            // Index of the first page
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , size_t O >          // Number of pages
-inline constexpr size_t SubtensorData<I,J,K,M,N,O>::columns() noexcept
+template< size_t K    // Index of the first page
+        , size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t O    // Number of pages
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubtensorData<K,I,J,O,M,N>::columns() noexcept
 {
    return N;
 }
@@ -442,13 +442,13 @@ inline constexpr size_t SubtensorData<I,J,K,M,N,O>::columns() noexcept
 //
 // \return The number of columns of the subtensor.
 */
-template< size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t K            // Index of the first page
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , size_t O >          // Number of pages
-inline constexpr size_t SubtensorData<I,J,K,M,N,O>::pages() noexcept
+template< size_t K    // Index of the first page
+        , size_t I    // Index of the first row
+        , size_t J    // Index of the first column
+        , size_t O    // Number of pages
+        , size_t M    // Number of rows
+        , size_t N >  // Number of columns
+inline constexpr size_t SubtensorData<K,I,J,O,M,N>::pages() noexcept
 {
    return O;
 }

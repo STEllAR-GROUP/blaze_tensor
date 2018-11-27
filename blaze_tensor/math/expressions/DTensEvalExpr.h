@@ -107,7 +107,7 @@ class DTensEvalExpr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
    */
-   inline ReturnType operator()( size_t i, size_t j, size_t k ) const {
+   inline ReturnType operator()( size_t k, size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < dt_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dt_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( k < dt_.pages(),   "Invalid page access index"   );
@@ -123,7 +123,7 @@ class DTensEvalExpr
    // \return The resulting value.
    // \exception std::out_of_range Invalid tensor access index.
    */
-   inline ReturnType at( size_t i, size_t j, size_t k ) const {
+   inline ReturnType at( size_t k, size_t i, size_t j ) const {
       if( i >= dt_.rows() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
       }
@@ -133,7 +133,7 @@ class DTensEvalExpr
       if( k >= dt_.pages() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
       }
-      return (*this)(i,j,k);
+      return (*this)(k,i,j);
    }
    //**********************************************************************************************
 

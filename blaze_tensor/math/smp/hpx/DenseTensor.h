@@ -128,7 +128,7 @@ void hpxAssign( DenseTensor<TT1>& lhs, const DenseTensor<TT2>& rhs, OP op )
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
-   for_loop( par, size_t(0), threads, [&](int i)
+   for_loop( par, size_t(0), threads, [&](size_t i)
    {
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread  );
       const size_t column( ( i % threadmap.second ) * colsPerThread  );

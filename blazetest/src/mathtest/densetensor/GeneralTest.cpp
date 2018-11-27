@@ -140,7 +140,7 @@ void GeneralTest::testIsNan()
 
       // isnan with empty 3x5x7 tensor
       {
-         blaze::DynamicTensor<float> tens( 3UL, 5UL, 7UL, 0.0F );
+         blaze::DynamicTensor<float> tens( 7UL, 3UL, 5UL, 0.0F );
 
          checkRows    ( tens, 3UL );
          checkColumns ( tens, 5UL );
@@ -159,16 +159,16 @@ void GeneralTest::testIsNan()
 
       // isnan with filled 4x2x2 tensor
       {
-         blaze::DynamicTensor<float> tens( 4UL, 2UL, 2UL, 0.0F );
-         tens(1,1,0) =  1.0F;
-         tens(2,0,0) = -2.0F;
-         tens(2,1,0) =  3.0F;
-         tens(3,0,0) =  4.0F;
+         blaze::DynamicTensor<float> tens( 2UL, 4UL, 2UL, 0.0F );
+         tens(0,1,1) =  1.0F;
+         tens(0,2,0) = -2.0F;
+         tens(0,2,1) =  3.0F;
+         tens(0,3,0) =  4.0F;
 
          tens(1,1,1) = -1.0F;
-         tens(2,0,1) =  2.0F;
-         tens(2,1,1) = -3.0F;
-         tens(3,0,1) =  4.0F;
+         tens(1,2,0) =  2.0F;
+         tens(1,2,1) = -3.0F;
+         tens(1,3,0) =  4.0F;
 
          checkRows    ( tens, 4UL );
          checkColumns ( tens, 2UL );
@@ -2153,19 +2153,19 @@ void GeneralTest::testMinimum()
 
       // Attempt to find the minimum at the beginning in a fully filled tensor
       {
-         blaze::DynamicTensor<int> tens( 3UL, 2UL, 2UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 2UL, 0 );
          tens(0,0,0) = -1;
-         tens(0,1,0) =  2;
-         tens(1,0,0) =  3;
-         tens(1,1,0) =  4;
-         tens(2,0,0) =  5;
-         tens(2,1,0) =  6;
-         tens(0,0,1) = -1;
-         tens(0,1,1) =  2;
-         tens(1,0,1) =  3;
+         tens(0,0,1) =  2;
+         tens(0,1,0) =  3;
+         tens(0,1,1) =  4;
+         tens(0,2,0) =  5;
+         tens(0,2,1) =  6;
+         tens(1,0,0) = -1;
+         tens(1,0,1) =  2;
+         tens(1,1,0) =  3;
          tens(1,1,1) =  4;
-         tens(2,0,1) =  5;
-         tens(2,1,1) =  6;
+         tens(1,2,0) =  5;
+         tens(1,2,1) =  6;
 
          checkRows    ( tens,  3UL );
          checkColumns ( tens,  2UL );
@@ -2187,19 +2187,19 @@ void GeneralTest::testMinimum()
 
       // Attempt to find the minimum at the end in a fully filled tensor
       {
-         blaze::DynamicTensor<int> tens( 2UL, 3UL, 2UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 2UL, 3UL, 0 );
          tens(0,0,0) =  1;
-         tens(0,1,0) =  2;
-         tens(0,2,0) =  3;
-         tens(1,0,0) =  4;
-         tens(1,1,0) =  5;
-         tens(1,2,0) = -6;
-         tens(0,0,1) =  1;
-         tens(0,1,1) =  2;
-         tens(0,2,1) =  3;
-         tens(1,0,1) =  4;
+         tens(0,0,1) =  2;
+         tens(0,0,2) =  3;
+         tens(0,1,0) =  4;
+         tens(0,1,1) =  5;
+         tens(0,1,2) = -6;
+         tens(1,0,0) =  1;
+         tens(1,0,1) =  2;
+         tens(1,0,2) =  3;
+         tens(1,1,0) =  4;
          tens(1,1,1) =  5;
-         tens(1,2,1) = -6;
+         tens(1,1,2) = -6;
 
          checkRows    ( tens, 2UL );
          checkColumns ( tens, 3UL );
@@ -2221,17 +2221,17 @@ void GeneralTest::testMinimum()
 
       // Attempt to find the minimum at the beginning in a partially filled tensor
       {
-         blaze::DynamicTensor<int> tens( 5UL, 3UL, 2UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 5UL, 3UL, 0 );
          tens(0,0,0) = -1;
-         tens(0,2,0) =  2;
-         tens(2,1,0) =  3;
-         tens(4,0,0) =  4;
-         tens(4,2,0) =  5;
-         tens(0,0,1) = -1;
-         tens(0,2,1) =  2;
-         tens(2,1,1) =  3;
-         tens(4,0,1) =  4;
-         tens(4,2,1) =  5;
+         tens(0,0,2) =  2;
+         tens(0,2,1) =  3;
+         tens(0,4,0) =  4;
+         tens(0,4,2) =  5;
+         tens(1,0,0) = -1;
+         tens(1,0,2) =  2;
+         tens(1,2,1) =  3;
+         tens(1,4,0) =  4;
+         tens(1,4,2) =  5;
 
          checkRows    ( tens,  5UL );
          checkColumns ( tens,  3UL );
@@ -2253,17 +2253,17 @@ void GeneralTest::testMinimum()
 
       // Attempt to find the minimum at the end in a partially filled tensor
       {
-         blaze::DynamicTensor<int> tens( 3UL, 5UL, 2UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 5UL, 0 );
          tens(0,0,0) =  1;
-         tens(0,4,0) =  2;
-         tens(1,2,0) =  3;
-         tens(2,0,0) =  4;
-         tens(2,4,0) = -5;
-         tens(0,0,1) =  1;
-         tens(0,4,1) =  2;
-         tens(1,2,1) =  3;
-         tens(2,0,1) =  4;
-         tens(2,4,1) = -5;
+         tens(0,0,4) =  2;
+         tens(0,1,2) =  3;
+         tens(0,2,0) =  4;
+         tens(0,2,4) = -5;
+         tens(1,0,0) =  1;
+         tens(1,0,4) =  2;
+         tens(1,1,2) =  3;
+         tens(1,2,0) =  4;
+         tens(1,2,4) = -5;
 
          checkRows    ( tens,  3UL );
          checkColumns ( tens,  5UL );
@@ -2287,14 +2287,14 @@ void GeneralTest::testMinimum()
       {
          blaze::DynamicTensor<int> tens( 3UL, 3UL, 3UL, 0 );
          tens(0,0,0) = 1;
-         tens(0,2,0) = 2;
-         tens(1,1,0) = 3;
-         tens(2,0,0) = 4;
-         tens(2,2,0) = 5;
-         tens(0,0,2) = 1;
-         tens(0,2,2) = 2;
-         tens(1,1,2) = 3;
-         tens(2,0,2) = 4;
+         tens(0,0,2) = 2;
+         tens(0,1,1) = 3;
+         tens(0,2,0) = 4;
+         tens(0,2,2) = 5;
+         tens(2,0,0) = 1;
+         tens(2,0,2) = 2;
+         tens(2,1,1) = 3;
+         tens(2,2,0) = 4;
          tens(2,2,2) = 5;
 
          checkRows    ( tens,  3UL );
@@ -2339,19 +2339,19 @@ void GeneralTest::testMaximum()
 
       // Attempt to find the maximum at the beginning in a fully filled tensor
       {
-         blaze::DynamicTensor<int> tens( 3UL, 2UL, 2UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 2UL, 0 );
          tens(0,0,0) =  1;
-         tens(0,1,0) = -2;
-         tens(1,0,0) = -3;
-         tens(1,1,0) = -4;
-         tens(2,0,0) = -5;
-         tens(2,1,0) = -6;
-         tens(0,0,1) =  0;
-         tens(0,1,1) = -2;
-         tens(1,0,1) = -3;
+         tens(0,0,1) = -2;
+         tens(0,1,0) = -3;
+         tens(0,1,1) = -4;
+         tens(0,2,0) = -5;
+         tens(0,2,1) = -6;
+         tens(1,0,0) =  0;
+         tens(1,0,1) = -2;
+         tens(1,1,0) = -3;
          tens(1,1,1) = -4;
-         tens(2,0,1) = -5;
-         tens(2,1,1) = -6;
+         tens(1,2,0) = -5;
+         tens(1,2,1) = -6;
 
          checkRows    ( tens,  3UL );
          checkColumns ( tens,  2UL );
@@ -2373,19 +2373,19 @@ void GeneralTest::testMaximum()
 
       // Attempt to find the maximum at the end in a fully filled tensor
       {
-         blaze::DynamicTensor<int> tens( 2UL, 3UL, 2UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 2UL, 3UL, 0 );
          tens(0,0,0) = -1;
-         tens(0,1,0) = -2;
-         tens(0,2,0) = -3;
-         tens(1,0,0) = -4;
-         tens(1,1,0) = -5;
-         tens(1,2,0) = -6;
-         tens(0,0,1) = -1;
-         tens(0,1,1) = -2;
-         tens(0,2,1) = -3;
-         tens(1,0,1) = -4;
+         tens(0,0,1) = -2;
+         tens(0,0,2) = -3;
+         tens(0,1,0) = -4;
+         tens(0,1,1) = -5;
+         tens(0,1,2) = -6;
+         tens(1,0,0) = -1;
+         tens(1,0,1) = -2;
+         tens(1,0,2) = -3;
+         tens(1,1,0) = -4;
          tens(1,1,1) = -5;
-         tens(1,2,1) =  6;
+         tens(1,1,2) =  6;
 
          checkRows    ( tens,  2UL );
          checkColumns ( tens,  3UL );
@@ -2407,17 +2407,17 @@ void GeneralTest::testMaximum()
 
       // Attempt to find the maximum at the beginning in a partially filled tensor
       {
-         blaze::DynamicTensor<int> tens( 5UL, 3UL, 2UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 5UL, 3UL, 0 );
          tens(0,0,0) =  1;
-         tens(0,2,0) = -2;
-         tens(2,1,0) = -3;
-         tens(4,0,0) = -4;
-         tens(4,2,0) = -5;
-         tens(0,0,1) =  0;
-         tens(0,2,1) = -2;
-         tens(2,1,1) = -3;
-         tens(4,0,1) = -4;
-         tens(4,2,1) = -5;
+         tens(0,0,2) = -2;
+         tens(0,2,1) = -3;
+         tens(0,4,0) = -4;
+         tens(0,4,2) = -5;
+         tens(1,0,0) =  0;
+         tens(1,0,2) = -2;
+         tens(1,2,1) = -3;
+         tens(1,4,0) = -4;
+         tens(1,4,2) = -5;
 
          checkRows    ( tens, 5UL );
          checkColumns ( tens, 3UL );
@@ -2439,17 +2439,17 @@ void GeneralTest::testMaximum()
 
       // Attempt to find the maximum at the end in a partially filled tensor
       {
-         blaze::DynamicTensor<int> tens( 3UL, 5UL, 2UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 5UL, 0 );
          tens(0,0,0) = -1;
-         tens(0,4,0) = -2;
-         tens(1,2,0) = -3;
-         tens(2,0,0) = -4;
-         tens(2,4,0) = -5;
-         tens(0,0,1) = -1;
-         tens(0,4,1) = -2;
-         tens(1,2,1) = -3;
-         tens(2,0,1) = -4;
-         tens(2,4,1) =  5;
+         tens(0,0,4) = -2;
+         tens(0,1,2) = -3;
+         tens(0,2,0) = -4;
+         tens(0,2,4) = -5;
+         tens(1,0,0) = -1;
+         tens(1,0,4) = -2;
+         tens(1,1,2) = -3;
+         tens(1,2,0) = -4;
+         tens(1,2,4) =  5;
 
          checkRows    ( tens,  3UL );
          checkColumns ( tens,  5UL );
@@ -2473,14 +2473,14 @@ void GeneralTest::testMaximum()
       {
          blaze::DynamicTensor<int> tens( 3UL, 3UL, 3UL, 0 );
          tens(0,0,0) = -1;
-         tens(0,2,0) = -2;
-         tens(1,1,0) = -3;
-         tens(2,0,0) = -4;
-         tens(2,2,0) = -5;
-         tens(0,0,2) = -1;
-         tens(0,2,2) = -2;
-         tens(1,1,2) = -3;
-         tens(2,0,2) = -4;
+         tens(0,0,2) = -2;
+         tens(0,1,1) = -3;
+         tens(0,2,0) = -4;
+         tens(0,2,2) = -5;
+         tens(2,0,0) = -1;
+         tens(2,0,2) = -2;
+         tens(2,1,1) = -3;
+         tens(2,2,0) = -4;
          tens(2,2,2) = -5;
 
          checkRows    ( tens,  3UL );
@@ -2529,12 +2529,12 @@ void GeneralTest::testSoftmax()
       const auto B = softmax( A );
 
       if( B(0,0,0) <= 0.0 || B(0,0,0) > 1.0 ||
-          B(0,1,0) <= 0.0 || B(0,1,0) > 1.0 ||
-          B(1,0,0) <= 0.0 || B(1,0,0) > 1.0 ||
-          B(1,1,0) <= 0.0 || B(1,1,0) > 1.0 ||
           B(0,0,1) <= 0.0 || B(0,0,1) > 1.0 ||
+          B(0,1,0) <= 0.0 || B(0,1,0) > 1.0 ||
           B(0,1,1) <= 0.0 || B(0,1,1) > 1.0 ||
+          B(1,0,0) <= 0.0 || B(1,0,0) > 1.0 ||
           B(1,0,1) <= 0.0 || B(1,0,1) > 1.0 ||
+          B(1,1,0) <= 0.0 || B(1,1,0) > 1.0 ||
           B(1,1,1) <= 0.0 || B(1,1,1) > 1.0 ||
           !isEqual( sum( B ), 1.0 ) ) {
          std::ostringstream oss;

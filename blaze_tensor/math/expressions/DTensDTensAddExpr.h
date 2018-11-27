@@ -435,11 +435,11 @@ class DTensDTensAddExpr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
    */
-   inline ReturnType operator()( size_t i, size_t j, size_t k ) const {
+   inline ReturnType operator()( size_t k, size_t i, size_t j ) const {
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < lhs_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( k < lhs_.pages(),   "Invalid page access index"   );
-      return lhs_(i,j,k) + rhs_(i,j,k);
+      return lhs_(k,i,j) + rhs_(k,i,j);
    }
    //**********************************************************************************************
 
@@ -451,7 +451,7 @@ class DTensDTensAddExpr
    // \return The resulting value.
    // \exception std::out_of_range Invalid tensor access index.
    */
-   inline ReturnType at( size_t i, size_t j, size_t k ) const {
+   inline ReturnType at( size_t k, size_t i, size_t j ) const {
       if( i >= lhs_.rows() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
       }
@@ -461,7 +461,7 @@ class DTensDTensAddExpr
       if( k >= lhs_.pages() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
       }
-      return (*this)(i,j,k);
+      return (*this)(k,i,j);
    }
    //**********************************************************************************************
 
@@ -472,11 +472,11 @@ class DTensDTensAddExpr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE auto load( size_t i, size_t j, size_t k ) const noexcept {
+   BLAZE_ALWAYS_INLINE auto load( size_t k, size_t i, size_t j ) const noexcept {
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < lhs_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( k < lhs_.pages(),   "Invalid number of pages"     );
-      return lhs_.load(i,j,k) + rhs_.load(i,j,k);
+      return lhs_.load(k,i,j) + rhs_.load(k,i,j);
    }
    //**********************************************************************************************
 

@@ -63,22 +63,22 @@ namespace blaze {
 //
 //=================================================================================================
 
-// template< AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename TT, typename... RSAs >
+// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
 // decltype(auto) submatrix( Tensor<TT>&, RSAs... );
 //
-// template< AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename TT, typename... RSAs >
+// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
 // decltype(auto) submatrix( const Tensor<TT>&, RSAs... );
 //
-// template< AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename TT, typename... RSAs >
+// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
 // decltype(auto) submatrix( Tensor<TT>&&, RSAs... );
 //
-// template< AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename TT, typename... RSAs >
+// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
 // decltype(auto) submatrix( Tensor<TT>&, size_t, size_t, size_t, size_t, RSAs... );
 //
-// template< AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename TT, typename... RSAs >
+// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
 // decltype(auto) submatrix( const Tensor<TT>&, size_t, size_t, size_t, size_t, RSAs... );
 //
-// template< AlignmentFlag AF, size_t I, size_t J, size_t K, size_t M, size_t N, size_t O, typename TT, typename... RSAs >
+// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
 // decltype(auto) submatrix( Tensor<TT>&&, size_t, size_t, size_t, size_t, RSAs... );
 //
 // template< size_t I, size_t... Is, typename TT, typename... RRAs >

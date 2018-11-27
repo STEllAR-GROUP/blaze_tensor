@@ -2705,7 +2705,7 @@ inline auto dtensreduce( const DenseTensor<MT>& dm, OP op )
       {
          for( ; j<N; ++j )
          {
-            redux0 = op( redux0, tmp(0UL,j,k) );
+            redux0 = op( redux0, tmp(k,0UL,j) );
          }
          j = 0UL;
       }
@@ -2716,12 +2716,12 @@ inline auto dtensreduce( const DenseTensor<MT>& dm, OP op )
    {
       for( ; (i+2UL) <= M; i+=2UL )
       {
-         ET redux1( tmp(i    ,0UL,k) );
-         ET redux2( tmp(i+1UL,0UL,k) );
+         ET redux1( tmp(k,i    ,0UL) );
+         ET redux2( tmp(k,i+1UL,0UL) );
 
          for( size_t j=1UL; j<N; ++j ) {
-            redux1 = op( redux1, tmp(i    ,j,k) );
-            redux2 = op( redux2, tmp(i+1UL,j,k) );
+            redux1 = op( redux1, tmp(k,i    ,j) );
+            redux2 = op( redux2, tmp(k,i+1UL,j) );
          }
 
          redux1 = op( redux1, redux2 );
@@ -2730,10 +2730,10 @@ inline auto dtensreduce( const DenseTensor<MT>& dm, OP op )
 
       if( i < M )
       {
-         ET redux1( tmp(i,0UL,k) );
+         ET redux1( tmp(k,i,0UL) );
 
          for( size_t j=1UL; j<N; ++j ) {
-            redux1 = op( redux1, tmp(i,j,k) );
+            redux1 = op( redux1, tmp(k,i,j) );
          }
 
          redux0 = op( redux0, redux1 );

@@ -235,7 +235,7 @@ void ClassTest::testAlignment( const std::string& type )
    //=====================================================================================
 
    {
-      const RowMajorTensorType mat(7UL, 5UL, 2UL);
+      const RowMajorTensorType mat(2UL, 7UL, 5UL);
 
       const size_t rows(blaze::usePadding ? mat.rows() : 1UL);
 
@@ -265,7 +265,7 @@ void ClassTest::testAlignment( const std::string& type )
    //=====================================================================================
 
    {
-      const RowMajorTensorType init( 7UL, 5UL, 2UL );
+      const RowMajorTensorType init( 2UL, 7UL, 5UL );
       const std::array<RowMajorTensorType,7UL> mats{ init, init, init, init, init, init, init };
 
       for (size_t i=0UL; i<mats.size(); ++i)
@@ -298,7 +298,7 @@ void ClassTest::testAlignment( const std::string& type )
    //=====================================================================================
 
    {
-      const RowMajorTensorType init( 7UL, 5UL, 2UL );
+      const RowMajorTensorType init( 2UL, 7UL, 5UL );
       const std::vector<RowMajorTensorType> mats( 7UL, init );
 
       for (size_t i=0UL; i<mats.size(); ++i)
