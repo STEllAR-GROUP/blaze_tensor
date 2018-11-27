@@ -1,0 +1,52 @@
+# Copyright (c) 2018 Parsa Amini
+# Copyright (c) 2018 Hartmut Kaiser
+#
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+version: 2
+anchors:
+    - &docker_config
+        docker:
+            - image: stellargroup/hpx:dev
+              entrypoint: /bin/bash
+
+################################################################################
+jobs:
+    build_test:
+        <<: *docker_config
+        working_directory: /blaze_tensors
+        steps:
+            - checkout:
+                path:
+                    /blaze_tensors
+            # Blaze
+            - run:
+                name: Install Blaze
+                command: |
+                    git clone --depth=1 https://bitbucket.org/blaze-lib/blaze.git /blaze-src
+                    cmake -H/blaze-src -B/blaze-src/build -DBLAZE_SMP_THREADS=C++11
+                    cmake --build /blaze-src/build --target install
+                    rm -rf /blaze-src
+            # CMake
+            - run:
+                name: Run CMake
+                command: cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug
+            # Build all targets
+            - run:
+                name: Build all targets
+                command: cmake --build build -- -j2
+            # Run all tests
+            - run:
+                name: Run all the tests
+                command: cmake --build build --target tests -- -j2
+            - run:
+            name: Install
+            command: cmake --build build --target install -- -j2
+
+################################################################################
+workflows:
+    version: 2
+    build_and_test:
+        jobs:
+            - build_test
