@@ -44,17 +44,29 @@ function(add_blaze_tensor_test name)
    if(${name}_FOLDER)
       set_target_properties(${name} PROPERTIES FOLDER ${${name}_FOLDER})
    endif()
-   add_test(NAME ${category}${test} COMMAND ${category}${test})
 
    get_target_property(blaze_parallelization_mode blaze::blaze INTERFACE_COMPILE_DEFINITIONS)
    if(blaze_parallelization_mode AND "${blaze_parallelization_mode}" STREQUAL "BLAZE_USE_HPX_THREADS")
+      set(working_directory)
+      if(MSVC)
+         get_filename_component(__working_directory ${HPX_DIR} DIRECTORY)
+         get_filename_component(__working_directory ${__working_directory} DIRECTORY)
+         get_filename_component(__working_directory ${__working_directory} DIRECTORY)
+         set(working_directory WORKING_DIRECTORY ${__working_directory}/$<CONFIG>/bin)
+      endif()
+
+      add_test(
+         NAME ${category}${test}
+         COMMAND ${category}${test} $<$<CONFIG:DEBUG>:--hpx:threads=1>
+         ${working_directory})
+
       set(compile_flags)
       if(MSVC)
-         set(compile_flags COMPILE_FLAGS -wd4146)
+         set(compile_flags COMPILE_FLAGS -wd4146 -wd4244)
       endif()
-      hpx_setup_target(${name}
-         TYPE EXECUTABLE
-         ${compile_flags})
+      hpx_setup_target(${name} TYPE EXECUTABLE ${compile_flags})
+   else()
+      add_test(NAME ${category}${test} COMMAND ${category}${test})
    endif()
 endfunction()
 

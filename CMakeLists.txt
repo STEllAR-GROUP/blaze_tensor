@@ -68,19 +68,39 @@ if(blaze_parallelization_mode AND "${blaze_parallelization_mode}" STREQUAL "BLAZ
    target_link_libraries(BlazeTensor INTERFACE ${HPX_LIBRARIES})
 endif()
 
+install(TARGETS BlazeTensor EXPORT BlazeTensorTargets)
+
+export(
+   EXPORT BlazeTensorTargets
+   FILE "${CMAKE_CURRENT_BINARY_DIR}/cmake/BlazeTensorTargets.cmake"
+   NAMESPACE BlazeTensor::
+)
+
 export(PACKAGE BlazeTensor)
 
+configure_file(
+   "${CMAKE_CURRENT_SOURCE_DIR}/cmake/BlazeTensorConfig.cmake"
+   "${CMAKE_CURRENT_BINARY_DIR}/cmake/BlazeTensorConfig.cmake"
+   COPYONLY
+)
+
 # Install library
-install(TARGETS BlazeTensor EXPORT BlazeTensorConfig)
+install(
+   EXPORT BlazeTensorTargets
+   FILE BlazeTensorTargets.cmake
+   NAMESPACE BlazeTensor::
+   DESTINATION share/blaze_tensor/cmake
+)
+
 install(
   DIRECTORY blaze_tensor/
   DESTINATION blaze_tensor/
   FILES_MATCHING PATTERN "*.h")
 
 install(
-   EXPORT BlazeTensorConfig
-   DESTINATION share/BlazeTensor/cmake
-   NAMESPACE blazetensor::)
+   FILES "${CMAKE_CURRENT_BINARY_DIR}/cmake/BlazeTensorConfig.cmake"
+   DESTINATION share/blaze_tensor/cmake
+)
 
 # Optionally build tests (primarily for devs)
 option(BUILD_TESTS "Build BlazeTensor tests" OFF)
