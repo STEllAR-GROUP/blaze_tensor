@@ -33,7 +33,7 @@ jobs:
             # CMake
             - run:
                 name: Run CMake
-                command: cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DBLAZETENSOR_WITH_TESTS=ON -Dblazetest_DIR=/blaze-src
+                command: cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Debug -DBLAZETENSOR_WITH_TESTS=ON -Dblazetest_DIR=/blaze-src/blazetest
             # Build all targets
             - run:
                 name: Build all targets
