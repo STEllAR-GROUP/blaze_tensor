@@ -41,8 +41,8 @@ jobs:
                 name: Run all the tests
                 command: cmake --build build --target tests -- -j2
             - run:
-            name: Install
-            command: cmake --build build --target install -- -j2
+                name: Install
+                command: cmake --build build --target install -- -j2
 
 ################################################################################
 workflows:
