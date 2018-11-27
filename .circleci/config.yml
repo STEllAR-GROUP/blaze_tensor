@@ -22,9 +22,11 @@ jobs:
                     /blaze_tensors
             # Blaze
             - run:
+                name: Install Blaze Prerequisites
+                command: apt-get install --yes --no-install-recommends libblas-dev liblapack-dev
+            - run:
                 name: Install Blaze
                 command: |
-                    apt-get install --yes --no-install-recommends libblas-dev liblapack-dev
                     git clone --depth=1 https://bitbucket.org/blaze-lib/blaze.git /blaze-src
                     cmake -H/blaze-src -B/blaze-src/build -DBLAZE_SMP_THREADS=C++11
                     cmake --build /blaze-src/build --target install
