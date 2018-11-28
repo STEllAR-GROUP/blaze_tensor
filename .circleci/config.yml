@@ -28,7 +28,7 @@ jobs:
                 name: Install Blaze
                 command: |
                     git clone --depth=1 https://bitbucket.org/blaze-lib/blaze.git /blaze-src
-                    cmake -H/blaze-src -B/blaze-src/build -DBLAZE_SMP_THREADS=C++11
+                    cmake -H/blaze-src -B/blaze-src/build -DBLAZE_SMP_THREADS=HPX
                     cmake --build /blaze-src/build --target install
             # CMake
             - run:
