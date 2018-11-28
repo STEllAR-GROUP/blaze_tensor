@@ -186,13 +186,13 @@ inline EnableIf_t< DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
 
          for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
             if (!equal(A.load(k, i, j), B.load(k, i, j))) return false;
-            if (!equal(A.load(i, j+SIMDSIZE, k), B.load(i, j+SIMDSIZE, k))) return false;
-            if (!equal(A.load(i, j+SIMDSIZE*2UL, k), B.load(i, j+SIMDSIZE*2UL, k))) return false;
-            if (!equal(A.load(i, j+SIMDSIZE*3UL, k), B.load(i, j+SIMDSIZE*3UL, k))) return false;
+            if (!equal(A.load(k, i, j+SIMDSIZE), B.load(k, i, j+SIMDSIZE))) return false;
+            if (!equal(A.load(k, i, j+SIMDSIZE*2UL), B.load(k, i, j+SIMDSIZE*2UL))) return false;
+            if (!equal(A.load(k, i, j+SIMDSIZE*3UL), B.load(k, i, j+SIMDSIZE*3UL))) return false;
          }
          for (; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL) {
             if (!equal(A.load(k, i, j), B.load(k, i, j))) return false;
-            if (!equal(A.load(i, j+SIMDSIZE, k), B.load(i, j+SIMDSIZE, k))) return false;
+            if (!equal(A.load(k, i, j+SIMDSIZE), B.load(k, i, j+SIMDSIZE))) return false;
          }
          for (; j<jpos; j+=SIMDSIZE) {
             if (!equal(A.load(k, i, j), B.load(k, i, j))) return false;

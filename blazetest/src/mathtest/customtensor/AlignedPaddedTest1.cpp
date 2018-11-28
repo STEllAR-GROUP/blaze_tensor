@@ -126,7 +126,7 @@ void AlignedPaddedTest::testConstructors()
 
       // Constructor a 2x3 custom tensor
       {
-         std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
+         std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
          MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
 
          checkRows    ( mat,  2UL );
@@ -242,8 +242,8 @@ void AlignedPaddedTest::testConstructors()
    {
       test_ = "Row-major CustomTensor copy constructor (2x2x0)";
 
-      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 20UL ) );
-      MT mat1( memory.get(), 0UL, 2UL, 2UL, 0UL );
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
+      MT mat1( memory.get(), 0UL, 2UL, 2UL, 16UL );
       MT mat2( mat1 );
 
       checkRows    ( mat2, 2UL );
@@ -342,8 +342,8 @@ void AlignedPaddedTest::testConstructors()
    {
       test_ = "Row-major CustomTensor move constructor (2x2x0)";
 
-      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 20UL ) );
-      MT mat1( memory.get(), 0UL, 2UL, 2UL, 0UL );
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
+      MT mat1( memory.get(), 0UL, 2UL, 2UL, 16UL );
       MT mat2( std::move( mat1 ) );
 
       checkRows    ( mat2, 2UL );

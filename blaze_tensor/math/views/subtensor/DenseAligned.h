@@ -438,7 +438,7 @@ inline Subtensor<MT,aligned,CSAs...>::Subtensor( MT& tensor, RSAs... args )
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtensor specification" );
       }
       if( ( simdEnabled && tensor_.data() != nullptr && !checkAlignment( data() ) ) ||
-          ( rows() > 1UL && tensor_.spacing() % SIMDSIZE != 0UL ) ) {
+          ( ( pages() > 0 || rows() > 1UL ) && tensor_.spacing() % SIMDSIZE != 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtensor alignment" );
       }
    }
@@ -846,7 +846,7 @@ inline Subtensor<MT,aligned,CSAs...>&
           const size_t jend  ( column() + columns() );
 
           for( size_t j=jbegin; j<jend; ++j ) {
-             if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( tensor_, k, i, j, rhs ) )
+             if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( tensor_, i, j, k, rhs ) )
                 left(k,i,j) = rhs;
           }
        }
@@ -1823,7 +1823,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline bool Subtensor<MT,aligned,CSAs...>::canSMPAssign() const noexcept
 {
-   return ( rows() * columns() * page() >= SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() * pages() >= SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1885,7 +1885,7 @@ BLAZE_ALWAYS_INLINE typename Subtensor<MT,aligned,CSAs...>::SIMDType
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
-   return tensor_.loada( row()+i, column()+j, page()+k );
+   return tensor_.loada( page()+k, row()+i, column()+j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1920,7 +1920,7 @@ BLAZE_ALWAYS_INLINE typename Subtensor<MT,aligned,CSAs...>::SIMDType
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
-   return tensor_.loadu( row()+i, column()+j, page()+k );
+   return tensor_.loadu( page()+k, row()+i, column()+j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1984,7 +1984,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
-   return tensor_.storea( row()+i, column()+j, page()+k, value );
+   return tensor_.storea( page()+k, row()+i, column()+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2020,7 +2020,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
-   tensor_.storeu( row()+i, column()+j, page()+k, value );
+   tensor_.storeu( page()+k, row()+i, column()+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2057,7 +2057,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
 
-   tensor_.stream( row()+i, column()+j, page()+k, value );
+   tensor_.stream( page()+k, row()+i, column()+j, value );
 }
 /*! \endcond */
 //*************************************************************************************************

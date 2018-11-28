@@ -128,8 +128,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       sm1 *= 3;
       sm2 *= 3;
@@ -157,8 +157,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
 
       sm1 *= 3;
       sm2 *= 3;
@@ -191,8 +191,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       sm1 = sm1 * 3;
       sm2 = sm2 * 3;
@@ -220,8 +220,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
 
       sm1 = sm1 * 3;
       sm2 = sm2 * 3;
@@ -254,8 +254,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       sm1 = 3 * sm1;
       sm2 = 3 * sm2;
@@ -283,8 +283,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
 
       sm1 = 3 * sm1;
       sm2 = 3 * sm2;
@@ -317,8 +317,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       sm1 /= 0.5;
       sm2 /= 0.5;
@@ -346,8 +346,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
 
       sm1 /= 0.5;
       sm2 /= 0.5;
@@ -380,8 +380,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       sm1 = sm1 / 0.5;
       sm2 = sm2 / 0.5;
@@ -409,8 +409,8 @@ void DenseAlignedTest::testScaling()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
 
       sm1 = sm1 / 0.5;
       sm2 = sm2 / 0.5;
@@ -444,8 +444,8 @@ void DenseAlignedTest::testScaling()
       initialize();
 
       // Initialization check
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -526,8 +526,8 @@ void DenseAlignedTest::testFunctionCall()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       // Assignment to the element (1,4)
       {
@@ -749,7 +749,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major Iterator/ConstIterator conversion";
 
-         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          ASMT::ConstIterator it( begin( sm, 2UL, 2UL ) );
 
          if( it == end( sm, 2UL, 2UL ) || *it != sm(2,2,0) ) {
@@ -764,7 +764,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction (end-begin)";
 
-         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          const ptrdiff_t number( end( sm, 0UL, 1UL ) - begin( sm, 0UL, 1UL ) );
 
          if( number != 12L ) {
@@ -782,7 +782,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major Iterator subtraction (begin-end)";
 
-         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          const ptrdiff_t number( begin( sm, 0UL, 1UL ) - end( sm, 0UL, 1UL ) );
 
          if( number != -12L ) {
@@ -800,7 +800,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction (end-begin)";
 
-         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          const ptrdiff_t number( cend( sm, 0UL, 1UL ) - cbegin( sm, 0UL, 1UL ) );
 
          if( number != 12L ) {
@@ -818,7 +818,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major ConstIterator subtraction (begin-end)";
 
-         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          const ptrdiff_t number( cbegin( sm, 0UL, 1UL ) - cend( sm, 0UL, 1UL ) );
 
          if( number != -12L ) {
@@ -836,7 +836,7 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major read-only access via ConstIterator";
 
-         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          ASMT::ConstIterator it ( cbegin( sm, 2UL, 4UL ) );
          ASMT::ConstIterator end( cend( sm, 2UL, 4UL ) );
 
@@ -933,8 +933,8 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major assignment via Iterator";
 
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          int value = 7;
 
          ASMT::Iterator it1( begin( sm1, 2UL, 6UL ) );
@@ -961,8 +961,8 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major addition assignment via Iterator";
 
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          int value = 4;
 
          ASMT::Iterator it1( begin( sm1, 2UL, 6UL ) );
@@ -989,8 +989,8 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major subtraction assignment via Iterator";
 
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          int value = 4;
 
          ASMT::Iterator it1( begin( sm1, 2UL, 4UL ) );
@@ -1017,8 +1017,8 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major multiplication assignment via Iterator";
 
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
          int value = 2;
 
          ASMT::Iterator it1( begin( sm1, 3UL, 5UL ) );
@@ -1045,8 +1045,8 @@ void DenseAlignedTest::testIterator()
       {
          test_ = "Row-major division assignment via Iterator";
 
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
          ASMT::Iterator it1( begin( sm1, 2UL, 3UL ) );
          USMT::Iterator it2( begin( sm2, 2UL, 3UL ) );
@@ -1097,8 +1097,8 @@ void DenseAlignedTest::testNonZeros()
       initialize();
 
       // Initialization check
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       checkRows   ( sm1,  8UL );
       checkColumns( sm1, 12UL );
@@ -1165,8 +1165,8 @@ void DenseAlignedTest::testReset()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       reset( sm1(4,4,4) );
       reset( sm2(4,4,4) );
@@ -1199,8 +1199,8 @@ void DenseAlignedTest::testReset()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       reset( sm1 );
       reset( sm2 );
@@ -1228,8 +1228,8 @@ void DenseAlignedTest::testReset()
 
       initialize();
 
-      reset( subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL ) );
-      reset( subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL ) );
+      reset( subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL ) );
+      reset( subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL ) );
 
       if( mat1_ != mat2_ ) {
          std::ostringstream oss;
@@ -1252,8 +1252,8 @@ void DenseAlignedTest::testReset()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       for( size_t k=0UL; k<sm1.pages(); ++k )
       {
@@ -1304,8 +1304,8 @@ void DenseAlignedTest::testClear()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       clear( sm1(4,4,4) );
       clear( sm2(4,4,4) );
@@ -1338,8 +1338,8 @@ void DenseAlignedTest::testClear()
 
       initialize();
 
-      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
       clear( sm1 );
       clear( sm2 );
@@ -1367,8 +1367,8 @@ void DenseAlignedTest::testClear()
 
       initialize();
 
-      clear( subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL ) );
-      clear( subtensor<unaligned>( mat2_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL ) );
+      clear( subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL ) );
+      clear( subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL ) );
 
       if( mat1_ != mat2_ ) {
          std::ostringstream oss;
@@ -1568,7 +1568,7 @@ void DenseAlignedTest::testIsDefault()
       // isDefault with default subtensor
       {
          MT mat( 16UL, 16UL, 16UL, 0 );
-         ASMT sm = subtensor<aligned>  ( mat, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm = subtensor<aligned>  ( mat, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
          if( isDefault( sm(4,4,4) ) != true ) {
             std::ostringstream oss;
@@ -1591,7 +1591,7 @@ void DenseAlignedTest::testIsDefault()
 
       // isDefault with non-default subtensor
       {
-         ASMT sm = subtensor<aligned>  ( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );;
+         ASMT sm = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
          if( isDefault( sm ) != false ) {
             std::ostringstream oss;
@@ -1654,9 +1654,9 @@ void DenseAlignedTest::testIsSame()
          }
       }
 
-      // isSame with tensor and non-matching subtensor (different number of psumns/pages)
+      // isSame with tensor and non-matching subtensor (different number of pages/pages)
       {
-         ASMT sm = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+         ASMT sm = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
 
          if( blaze::isSame( sm, mat1_ ) == true ) {
             std::ostringstream oss;
@@ -1679,9 +1679,9 @@ void DenseAlignedTest::testIsSame()
          }
       }
 
-      // isSame with tensor and non-matching subtensor (different number of rows/psumns)
+      // isSame with tensor and non-matching subtensor (different number of rows/pages)
       {
-         ASMT sm = subtensor<aligned>  ( mat1_, 2UL, 4UL, 2UL, 8UL, 12UL, 8UL );
+         ASMT sm = subtensor<aligned>  ( mat1_, 2UL, 4UL, 0UL, 8UL, 12UL, 8UL );
 
          if( blaze::isSame( sm, mat1_ ) == true ) {
             std::ostringstream oss;
@@ -1706,7 +1706,7 @@ void DenseAlignedTest::testIsSame()
 
       // isSame with tensor and non-matching subtensor (different row index)
       {
-         ASMT sm = subtensor<aligned>  ( mat1_, 2UL, 4UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm = subtensor<aligned>  ( mat1_, 2UL, 4UL, 0UL, 8UL, 8UL, 12UL );
 
          if( blaze::isSame( sm, mat1_ ) == true ) {
             std::ostringstream oss;
@@ -1729,9 +1729,9 @@ void DenseAlignedTest::testIsSame()
          }
       }
 
-      // isSame with tensor and non-matching subtensor (different psumn index)
+      // isSame with tensor and non-matching subtensor (different page index)
       {
-         ASMT sm = subtensor<aligned>  ( mat1_, 2UL, 2UL, 3UL, 8UL, 8UL, 12UL );
+         ASMT sm = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
          if( blaze::isSame( sm, mat1_ ) == true ) {
             std::ostringstream oss;
@@ -1756,8 +1756,8 @@ void DenseAlignedTest::testIsSame()
 
       // isSame with matching subtensors
       {
-         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
          if( blaze::isSame( sm1, sm2 ) == false ) {
             std::ostringstream oss;
@@ -1772,24 +1772,8 @@ void DenseAlignedTest::testIsSame()
 
       // isSame with non-matching subtensors (different number of rows)
       {
-         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 12UL, 12UL );
-         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-
-         if( blaze::isSame( sm1, sm2 ) == true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSame evaluation\n"
-                << " Details:\n"
-                << "   First subtensor:\n" << sm1 << "\n"
-                << "   Second subtensor:\n" << sm2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // isSame with non-matching subtensors (different number of psumns)
-      {
-         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 8UL );
-         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 12UL, 12UL );
+         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
          if( blaze::isSame( sm1, sm2 ) == true ) {
             std::ostringstream oss;
@@ -1804,8 +1788,24 @@ void DenseAlignedTest::testIsSame()
 
       // isSame with non-matching subtensors (different number of pages)
       {
-         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 12UL, 8UL, 12UL );
-         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 8UL );
+         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+
+         if( blaze::isSame( sm1, sm2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subtensor:\n" << sm1 << "\n"
+                << "   Second subtensor:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching subtensors (different number of pages)
+      {
+         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 12UL, 8UL, 12UL );
+         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
          if( blaze::isSame( sm1, sm2 ) == true ) {
             std::ostringstream oss;
@@ -1820,24 +1820,8 @@ void DenseAlignedTest::testIsSame()
 
       // isSame with non-matching subtensors (different row index)
       {
-         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 4UL, 4UL, 8UL, 8UL, 12UL );
-         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-
-         if( blaze::isSame( sm1, sm2 ) == true ) {
-            std::ostringstream oss;
-            oss << " Test: " << test_ << "\n"
-                << " Error: Invalid isSame evaluation\n"
-                << " Details:\n"
-                << "   First subtensor:\n" << sm1 << "\n"
-                << "   Second subtensor:\n" << sm2 << "\n";
-            throw std::runtime_error( oss.str() );
-         }
-      }
-
-      // isSame with non-matching subtensors (different psumn index)
-      {
-         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 2UL, 8UL, 8UL, 12UL );
-         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 4UL, 0UL, 8UL, 8UL, 12UL );
+         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
          if( blaze::isSame( sm1, sm2 ) == true ) {
             std::ostringstream oss;
@@ -1852,8 +1836,24 @@ void DenseAlignedTest::testIsSame()
 
       // isSame with non-matching subtensors (different page index)
       {
-         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 4UL, 8UL, 8UL, 12UL );
-         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 4UL, 8UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL, 8UL, 8UL, 8UL, 8UL );
+         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 8UL );
+
+         if( blaze::isSame( sm1, sm2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First subtensor:\n" << sm1 << "\n"
+                << "   Second subtensor:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching subtensors (different page index)
+      {
+         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 0UL, 8UL, 8UL, 12UL );
+         ASMT sm2 = subtensor<aligned>( mat1_, 2UL, 2UL, 0UL, 8UL, 8UL, 12UL );
 
          if( blaze::isSame( sm1, sm2 ) == true ) {
             std::ostringstream oss;
@@ -1927,7 +1927,7 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with row selection and non-matching subtensor (different number of psumns)
+//       // isSame with row selection and non-matching subtensor (different number of pages)
 //       {
 //          auto rs = blaze::rows( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm = subtensor<aligned>( rs, 4UL, 0UL, 0UL, 32UL );
@@ -1979,7 +1979,7 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with row selection and non-matching subtensor (different psumn index)
+//       // isSame with row selection and non-matching subtensor (different page index)
 //       {
 //          auto rs = blaze::rows( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm = subtensor<aligned>( rs, 4UL, 0UL, 16UL, 48UL );
@@ -2039,7 +2039,7 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with non-matching subtensors (different number of psumns)
+//       // isSame with non-matching subtensors (different number of pages)
 //       {
 //          auto rs  = blaze::rows( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm1 = subtensor<aligned>( rs, 3UL, 0UL, 0UL, 32UL );
@@ -2073,7 +2073,7 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with non-matching subtensors (different psumn index)
+//       // isSame with non-matching subtensors (different page index)
 //       {
 //          auto rs  = blaze::rows( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm1 = subtensor<aligned>( rs, 0UL,  32UL, 0UL, 3UL );
@@ -2093,15 +2093,15 @@ void DenseAlignedTest::testIsSame()
 //
 //
 //    //=====================================================================================
-//    // Row-major psumns-based tests
+//    // Row-major pages-based tests
 //    //=====================================================================================
 //
 //    {
-//       test_ = "Row-major isSame() function (psumns-based)";
+//       test_ = "Row-major isSame() function (pages-based)";
 //
-//       // isSame with psumn selection and matching subtensor
+//       // isSame with page selection and matching subtensor
 //       {
-//          auto cs = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm = subtensor<aligned>( cs, 64UL, 0UL, 0UL, 4UL );
 //
 //          if( blaze::isSame( sm, cs ) == false ) {
@@ -2125,9 +2125,9 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with psumn selection and non-matching subtensor (different number of rows)
+//       // isSame with page selection and non-matching subtensor (different number of rows)
 //       {
-//          auto cs = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm = subtensor<aligned>( cs, 32UL, 0UL, 0UL, 4UL );
 //
 //          if( blaze::isSame( sm, cs ) == true ) {
@@ -2151,9 +2151,9 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with psumn selection and non-matching subtensor (different number of psumns)
+//       // isSame with page selection and non-matching subtensor (different number of pages)
 //       {
-//          auto cs = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm = subtensor<aligned>( cs, 64UL, 0UL, 0UL, 3UL );
 //
 //          if( blaze::isSame( sm, cs ) == true ) {
@@ -2177,9 +2177,9 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with psumn selection and non-matching subtensor (different row index)
+//       // isSame with page selection and non-matching subtensor (different row index)
 //       {
-//          auto cs = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm = subtensor<aligned>( cs, 48UL, 16UL, 0UL, 4UL );
 //
 //          if( blaze::isSame( sm, cs ) == true ) {
@@ -2203,9 +2203,9 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with psumn selection and non-matching subtensor (different psumn index)
+//       // isSame with page selection and non-matching subtensor (different page index)
 //       {
-//          auto cs = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm = subtensor<aligned>( cs, 64UL, 0UL, 1UL, 3UL );
 //
 //          if( blaze::isSame( sm, cs ) == true ) {
@@ -2231,7 +2231,7 @@ void DenseAlignedTest::testIsSame()
 //
 //       // isSame with matching subtensors
 //       {
-//          auto cs  = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs  = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm1 = subtensor<aligned>( cs, 32UL, 0UL, 0UL, 3UL );
 //          auto sm2 = subtensor<aligned>( cs, 32UL, 0UL, 0UL, 3UL );
 //
@@ -2248,7 +2248,7 @@ void DenseAlignedTest::testIsSame()
 //
 //       // isSame with non-matching subtensors (different number of rows)
 //       {
-//          auto cs  = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs  = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm1 = subtensor<aligned>( cs, 32UL, 0UL, 0UL, 3UL );
 //          auto sm2 = subtensor<aligned>( cs, 48UL, 0UL, 0UL, 3UL );
 //
@@ -2263,9 +2263,9 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with non-matching subtensors (different number of psumns)
+//       // isSame with non-matching subtensors (different number of pages)
 //       {
-//          auto cs  = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs  = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm1 = subtensor<aligned>( cs, 32UL, 0UL, 0UL, 3UL );
 //          auto sm2 = subtensor<aligned>( cs, 32UL, 0UL, 0UL, 2UL );
 //
@@ -2282,7 +2282,7 @@ void DenseAlignedTest::testIsSame()
 //
 //       // isSame with non-matching subtensors (different row index)
 //       {
-//          auto cs  = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs  = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm1 = subtensor<aligned>( cs,  32UL, 0UL, 0UL, 3UL );
 //          auto sm2 = subtensor<aligned>( cs, 32UL, 16UL, 0UL, 3UL );
 //
@@ -2297,9 +2297,9 @@ void DenseAlignedTest::testIsSame()
 //          }
 //       }
 //
-//       // isSame with non-matching subtensors (different psumn index)
+//       // isSame with non-matching subtensors (different page index)
 //       {
-//          auto cs  = blaze::psumns( mat1_, { 32UL, 0UL, 16UL, 48UL } );
+//          auto cs  = blaze::pages( mat1_, { 32UL, 0UL, 16UL, 48UL } );
 //          auto sm1 = subtensor<aligned>( cs, 32UL, 0UL, 0UL, 3UL );
 //          auto sm2 = subtensor<aligned>( cs, 32UL, 0UL, 1UL, 3UL );
 //
@@ -2344,10 +2344,10 @@ void DenseAlignedTest::testSubtensor()
       initialize();
 
       {
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-         ASMT sm2 = subtensor<aligned>  ( sm1  , 2UL, 2UL, 2UL, 4UL, 4UL,  4UL );
-         USMT sm3 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-         USMT sm4 = subtensor<unaligned>( sm3  , 2UL, 2UL, 2UL, 4UL, 4UL,  4UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+         ASMT sm2 = subtensor<aligned>  ( sm1  , 2UL, 2UL, 0UL, 4UL, 4UL,  4UL );
+         USMT sm3 = subtensor<unaligned>( mat2_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+         USMT sm4 = subtensor<unaligned>( sm3  , 2UL, 2UL, 0UL, 4UL, 4UL,  4UL );
 
          if( sm2 != sm4 || mat1_ != mat2_ ) {
             std::ostringstream oss;
@@ -2381,8 +2381,8 @@ void DenseAlignedTest::testSubtensor()
       }
 
       try {
-         ASMT sm1 = subtensor<aligned>( mat1_,  4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-         ASMT sm2 = subtensor<aligned>( sm1  , 2UL, 16UL, 2UL, 4UL, 4UL,  4UL );
+         ASMT sm1 = subtensor<aligned>( mat1_,  4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+         ASMT sm2 = subtensor<aligned>( sm1  , 2UL, 16UL, 0UL, 4UL, 4UL,  4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2394,7 +2394,7 @@ void DenseAlignedTest::testSubtensor()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = subtensor<aligned>( mat1_, 2UL,  8UL, 2UL, 4UL, 8UL, 12UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 2UL,  8UL, 0UL, 4UL, 8UL, 12UL );
          ASMT sm2 = subtensor<aligned>( sm1  , 2UL, 2UL, 16UL, 4UL, 4UL,  4UL );
 
          std::ostringstream oss;
@@ -2408,7 +2408,7 @@ void DenseAlignedTest::testSubtensor()
 
       try {
          ASMT sm1 = subtensor<aligned>( mat1_, 2UL, 2UL,  8UL, 4UL, 8UL, 12UL );
-         ASMT sm2 = subtensor<aligned>( sm1  , 16UL, 2UL, 2UL, 4UL, 4UL,  4UL );
+         ASMT sm2 = subtensor<aligned>( sm1  , 16UL, 2UL, 0UL, 4UL, 4UL,  4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2420,8 +2420,8 @@ void DenseAlignedTest::testSubtensor()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 2UL,  12UL, 8UL, 8UL );
-         ASMT sm2 = subtensor<aligned>( sm1  , 4UL, 2UL, 2UL, 16UL, 4UL,  4UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 0UL,  12UL, 8UL, 8UL );
+         ASMT sm2 = subtensor<aligned>( sm1  , 4UL, 2UL, 0UL, 16UL, 4UL,  4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2433,8 +2433,8 @@ void DenseAlignedTest::testSubtensor()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 2UL, 8UL,  8UL, 12UL );
-         ASMT sm2 = subtensor<aligned>( sm1  , 4UL, 2UL, 2UL, 4UL, 16UL,  4UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 0UL, 8UL,  8UL, 12UL );
+         ASMT sm2 = subtensor<aligned>( sm1  , 4UL, 2UL, 0UL, 4UL, 16UL,  4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2446,8 +2446,8 @@ void DenseAlignedTest::testSubtensor()
       catch( std::invalid_argument& ) {}
 
       try {
-         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-         ASMT sm2 = subtensor<aligned>( sm1  , 4UL, 2UL, 2UL, 16UL, 4UL, 4UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+         ASMT sm2 = subtensor<aligned>( sm1  , 4UL, 2UL, 0UL, 16UL, 4UL, 4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -2489,8 +2489,8 @@ void DenseAlignedTest::testRowSlice()
       initialize();
 
       {
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
 
          auto rowslice1 = rowslice( sm1, 1UL );
          auto rowslice2 = rowslice( sm2, 1UL );
@@ -2527,7 +2527,7 @@ void DenseAlignedTest::testRowSlice()
       }
 
       try {
-         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
          auto rowslice8 = rowslice( sm1, 8UL );
 
          std::ostringstream oss;
@@ -2650,8 +2650,8 @@ void DenseAlignedTest::testColumnSlice()
       initialize();
 
       {
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
 
          auto ps1 = columnslice( sm1, 1UL );
          auto ps2 = columnslice( sm2, 1UL );
@@ -2688,7 +2688,7 @@ void DenseAlignedTest::testColumnSlice()
       }
 
       try {
-         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
          auto ps16 = columnslice( sm1, 16UL );
 
          std::ostringstream oss;
@@ -2810,8 +2810,8 @@ void DenseAlignedTest::testPageSlice()
       initialize();
 
       {
-         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
-         USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+         ASMT sm1 = subtensor<aligned>  ( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
+         USMT sm2 = subtensor<unaligned>( mat2_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
 
          auto ps1 = pageslice( sm1, 1UL );
          auto ps2 = pageslice( sm2, 1UL );
@@ -2848,7 +2848,7 @@ void DenseAlignedTest::testPageSlice()
       }
 
       try {
-         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 2UL, 12UL, 8UL, 8UL );
+         ASMT sm1 = subtensor<aligned>( mat1_, 4UL, 2UL, 0UL, 12UL, 8UL, 8UL );
          auto ps16 = pageslice( sm1, 16UL );
 
          std::ostringstream oss;

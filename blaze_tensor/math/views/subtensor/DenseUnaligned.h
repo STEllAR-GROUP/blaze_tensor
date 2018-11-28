@@ -1259,7 +1259,7 @@ inline Subtensor<MT,unaligned,CSAs...>&
           const size_t jend  ( column() + columns() );
 
          for( size_t j=jbegin; j<jend; ++j ) {
-            if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( tensor_, k, i, j, rhs ) )
+            if( !IsRestricted_v<MT> || IsTriangular_v<MT> || trySet( tensor_, i, j, k, rhs ) )
                left(k,i,j) = rhs;
          }
       }
@@ -2238,7 +2238,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline bool Subtensor<MT,unaligned,CSAs...>::canSMPAssign() const noexcept
 {
-   return ( rows() * columns() * page() >= SMP_DMATASSIGN_THRESHOLD );
+   return ( rows() * columns() * pages() >= SMP_DMATASSIGN_THRESHOLD );
 }
 /*! \endcond */
 //*************************************************************************************************
