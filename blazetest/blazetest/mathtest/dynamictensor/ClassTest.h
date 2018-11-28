@@ -243,7 +243,7 @@ void ClassTest::testAlignment( const std::string& type )
       {
          for (size_t i=0UL; i<rows; ++i)
          {
-            const size_t deviation(reinterpret_cast<size_t>(&mat(i, 0UL, k)) % alignment);
+            const size_t deviation(reinterpret_cast<size_t>(&mat(k, i, 0UL)) % alignment);
 
             if (deviation != 0UL) {
                std::ostringstream oss;
@@ -276,7 +276,7 @@ void ClassTest::testAlignment( const std::string& type )
 
             for (size_t j=0UL; j<rows; ++j)
             {
-               const size_t deviation(reinterpret_cast<size_t>(&mats[i](j, 0UL, k)) % alignment);
+               const size_t deviation(reinterpret_cast<size_t>(&mats[i](k, j, 0UL)) % alignment);
 
                if (deviation != 0UL) {
                   std::ostringstream oss;
@@ -309,7 +309,7 @@ void ClassTest::testAlignment( const std::string& type )
 
             for (size_t j=0UL; j<rows; ++j)
             {
-               const size_t deviation(reinterpret_cast<size_t>(&mats[i](j, 0UL, k)) % alignment);
+               const size_t deviation(reinterpret_cast<size_t>(&mats[i](k, j, 0UL)) % alignment);
 
                if (deviation != 0UL) {
                   std::ostringstream oss;

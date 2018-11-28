@@ -761,9 +761,11 @@ inline CustomTensor<Type,AF,PF,RT>::CustomTensor( Type* ptr, size_t o, size_t m,
 
    if( PF && IsVectorizable_v<Type> ) {
       ClearFunctor clear;
-      for( size_t i=0UL; i<m_; ++i ) {
-         for( size_t j=n_; j<nn_; ++j )
-            clear( v_[i*nn_+j] );
+      for( size_t k=0UL; k<o_; ++k ) {
+         for( size_t i=0UL; i<m_; ++i ) {
+            for( size_t j=n_; j<nn_; ++j )
+               clear( v_[(k*m_+i)*nn_+j] );
+         }
       }
    }
 }
@@ -1633,7 +1635,7 @@ template< typename Type  // Data type of the tensor
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::capacity( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   UNUSED_PARAMETER( i, k );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index" );
    return nn_;

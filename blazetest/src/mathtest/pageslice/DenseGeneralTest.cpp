@@ -1440,7 +1440,7 @@ void DenseGeneralTest::testMultAssign()
                                      " (   4   5   6 )\n"
                                      " (   7   8   9 ))\n"
                                      "((  90 114 138 )\n"
-                                     " (  54  69  84 )\n";
+                                     " (  54  69  84 )\n"
                                      " (  18  24  30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1502,7 +1502,7 @@ void DenseGeneralTest::testMultAssign()
                                      " (   4   5   6 )\n"
                                      " (   7   8   9 ))\n"
                                      "((  90 114 138 )\n"
-                                     " (  54  69  84 )\n";
+                                     " (  54  69  84 )\n"
                                      " (  18  24  30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1572,7 +1572,7 @@ void DenseGeneralTest::testMultAssign()
                                      " (   4   5   6 )\n"
                                      " (   7   8   9 ))\n"
                                      "((  90 114 138 )\n"
-                                     " (  54  69  84 )\n";
+                                     " (  54  69  84 )\n"
                                      " (  18  24  30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1641,7 +1641,7 @@ void DenseGeneralTest::testMultAssign()
                                      " (   4   5   6 )\n"
                                      " (   7   8   9 ))\n"
                                      "((  90 114 138 )\n"
-                                     " (  54  69  84 )\n";
+                                     " (  54  69  84 )\n"
                                      " (  18  24  30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1710,7 +1710,7 @@ void DenseGeneralTest::testSchurAssign()
                                      " (  4  5  6 )\n"
                                      " (  7  8  9 ))\n"
                                      "((  9 16 21 )\n"
-                                     " ( 24 25 24 )\n";
+                                     " ( 24 25 24 )\n"
                                      " ( 21 16  9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1770,7 +1770,7 @@ void DenseGeneralTest::testSchurAssign()
                                      " (  4  5  6 )\n"
                                      " (  7  8  9 ))\n"
                                      "((  9 16 21 )\n"
-                                     " ( 24 25 24 )\n";
+                                     " ( 24 25 24 )\n"
                                      " ( 21 16  9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1839,7 +1839,7 @@ void DenseGeneralTest::testSchurAssign()
                                      " (  4  5  6 )\n"
                                      " (  7  8  9 ))\n"
                                      "((  9 16 21 )\n"
-                                     " ( 24 25 24 )\n";
+                                     " ( 24 25 24 )\n"
                                      " ( 21 16  9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1908,7 +1908,7 @@ void DenseGeneralTest::testSchurAssign()
                                      " (  4  5  6 )\n"
                                      " (  7  8  9 ))\n"
                                      "((  9 16 21 )\n"
-                                     " ( 24 25 24 )\n";
+                                     " ( 24 25 24 )\n"
                                      " ( 21 16  9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -4181,7 +4181,7 @@ void DenseGeneralTest::testIsSame()
       // isSame with pageslice and matching submatrix
       {
          RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sv   = blaze::submatrix( pageslice1, 5UL, 0UL, 0UL, 4UL );
+         auto sv   = blaze::submatrix( pageslice1, 0UL, 0UL, 5UL, 4UL );
 
          if( blaze::isSame( pageslice1, sv ) == false ) {
             std::ostringstream oss;
@@ -4207,7 +4207,7 @@ void DenseGeneralTest::testIsSame()
       // isSame with pageslice and non-matching submatrix (different size)
       {
          RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sv   = blaze::submatrix( pageslice1, 3UL, 0UL, 0UL, 3UL );
+         auto sv   = blaze::submatrix( pageslice1, 0UL, 0UL, 3UL, 3UL );
 
          if( blaze::isSame( pageslice1, sv ) == true ) {
             std::ostringstream oss;
@@ -4233,7 +4233,7 @@ void DenseGeneralTest::testIsSame()
       // isSame with pageslice and non-matching submatrix (different offset)
       {
          RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sv   = blaze::submatrix( pageslice1, 3UL, 1UL, 1UL, 3UL );
+         auto sv   = blaze::submatrix( pageslice1, 1UL, 1UL, 3UL, 3UL );
 
          if( blaze::isSame( pageslice1, sv ) == true ) {
             std::ostringstream oss;
@@ -4258,7 +4258,7 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with matching pageslices on a common submatrix
 //       {
-//          auto sm   = blaze::subtensor( mat_, 2UL, 1UL, 1UL, 3UL );
+//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( sm, 1UL );
 //          auto pageslice2 = blaze::pageslice( sm, 1UL );
 //
@@ -4275,7 +4275,7 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with non-matching pageslices on a common submatrix
 //       {
-//          auto sm   = blaze::subtensor( mat_, 2UL, 1UL, 1UL, 3UL );
+//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( sm, 0UL );
 //          auto pageslice2 = blaze::pageslice( sm, 1UL );
 //
@@ -4292,7 +4292,7 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with matching subtensor on matrix and submatrix
 //       {
-//          auto sm   = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 4UL );
+//          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
 //          auto pageslice1 = blaze::pageslice( mat_, 2UL );
 //          auto pageslice2 = blaze::pageslice( sm  , 1UL );
 //
@@ -4319,7 +4319,7 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with non-matching pageslices on tensor and subtensor (different pageslice)
 //       {
-//          auto sm   = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 4UL );
+//          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
 //          auto pageslice1 = blaze::pageslice( mat_, 1UL );
 //          auto pageslice2 = blaze::pageslice( sm  , 1UL );
 //
@@ -4346,7 +4346,7 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with non-matching pageslices on tensor and subtensor (different size)
 //       {
-//          auto sm   = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 3UL );
+//          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( mat_, 2UL );
 //          auto pageslice2 = blaze::pageslice( sm  , 1UL );
 //
@@ -4373,8 +4373,8 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with matching pageslices on two subtensors
 //       {
-//          auto sm1  = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 3UL, 2UL, 0UL, 4UL );
+//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
+//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
 //          auto pageslice1 = blaze::pageslice( sm1, 1UL );
 //          auto pageslice2 = blaze::pageslice( sm2, 0UL );
 //
@@ -4401,8 +4401,8 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with non-matching pageslices on two subtensors (different pageslice)
 //       {
-//          auto sm1  = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 3UL, 2UL, 0UL, 4UL );
+//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
+//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
 //          auto pageslice1 = blaze::pageslice( sm1, 1UL );
 //          auto pageslice2 = blaze::pageslice( sm2, 1UL );
 //
@@ -4429,8 +4429,8 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with non-matching pageslices on two subtensors (different size)
 //       {
-//          auto sm1  = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 3UL, 2UL, 0UL, 3UL );
+//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
+//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( sm1, 1UL );
 //          auto pageslice2 = blaze::pageslice( sm2, 0UL );
 //
@@ -4457,8 +4457,8 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with non-matching pageslices on two subtensors (different offset)
 //       {
-//          auto sm1  = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 3UL );
-//          auto sm2  = blaze::subtensor( mat_, 3UL, 2UL, 1UL, 3UL );
+//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 3UL );
+//          auto sm2  = blaze::subtensor( mat_, 2UL, 1UL, 3UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( sm1, 1UL );
 //          auto pageslice2 = blaze::pageslice( sm2, 0UL );
 //
@@ -4485,7 +4485,7 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with matching pageslice submatrices on a subtensor
 //       {
-//          auto sm   = blaze::subtensor( mat_, 2UL, 1UL, 1UL, 3UL );
+//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( sm, 1UL );
 //          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
 //          auto sv2  = blaze::submatrix( pageslice1, 0UL, 2UL );
@@ -4503,7 +4503,7 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with non-matching pageslice subtensors on a submatrix (different size)
 //       {
-//          auto sm   = blaze::subtensor( mat_, 2UL, 1UL, 1UL, 3UL );
+//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( sm, 1UL );
 //          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
 //          auto sv2  = blaze::submatrix( pageslice1, 0UL, 3UL );
@@ -4521,7 +4521,7 @@ void DenseGeneralTest::testIsSame()
 //
 //       // isSame with non-matching pageslice subtensors on a submatrix (different offset)
 //       {
-//          auto sm   = blaze::subtensor( mat_, 2UL, 1UL, 1UL, 3UL );
+//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( sm, 1UL );
 //          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
 //          auto sv2  = blaze::submatrix( pageslice1, 1UL, 2UL );
@@ -4539,8 +4539,8 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with matching pageslice subtensors on two subtensors
 //       {
-//          auto sm1  = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 3UL, 2UL, 0UL, 4UL );
+//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
+//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
 //          auto pageslice1 = blaze::pageslice( sm1, 1UL );
 //          auto pageslice2 = blaze::pageslice( sm2, 0UL );
 //          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
@@ -4559,8 +4559,8 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with non-matching pageslice subtensors on two subtensors (different size)
 //       {
-//          auto sm1  = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 3UL, 2UL, 0UL, 4UL );
+//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
+//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
 //          auto pageslice1 = blaze::pageslice( sm1, 1UL );
 //          auto pageslice2 = blaze::pageslice( sm2, 0UL );
 //          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
@@ -4579,8 +4579,8 @@ void DenseGeneralTest::testIsSame()
 
 //       // isSame with non-matching pageslice subtensors on two subtensors (different offset)
 //       {
-//          auto sm1  = blaze::subtensor( mat_, 3UL, 1UL, 0UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 3UL, 2UL, 0UL, 4UL );
+//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
+//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
 //          auto pageslice1 = blaze::pageslice( sm1, 1UL );
 //          auto pageslice2 = blaze::pageslice( sm2, 0UL );
 //          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
@@ -4623,7 +4623,7 @@ void DenseGeneralTest::testSubmatrix()
 
       {
          RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sm = blaze::submatrix( pageslice1, 2UL, 1UL, 1UL, 3UL );
+         auto sm = blaze::submatrix( pageslice1, 1UL, 1UL, 2UL, 3UL );
 
          if( sm(0,0) != 1 ) {
             std::ostringstream oss;
@@ -4648,7 +4648,7 @@ void DenseGeneralTest::testSubmatrix()
 
       try {
          RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sm = blaze::submatrix( pageslice1, 4UL, 4UL, 0UL, 4UL );
+         auto sm = blaze::submatrix( pageslice1, 4UL, 0UL, 4UL, 4UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4661,7 +4661,7 @@ void DenseGeneralTest::testSubmatrix()
 
       try {
          RT   pageslice1 = blaze::pageslice( mat_, 1UL );
-         auto sm = blaze::submatrix( pageslice1, 2UL, 0UL, 0UL, 6UL );
+         auto sm = blaze::submatrix( pageslice1, 0UL, 0UL, 2UL, 6UL );
 
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
@@ -4784,8 +4784,8 @@ void DenseGeneralTest::testRows()
       {
          RT pageslice1 = pageslice( mat_, 0UL );
          RT pageslice2 = pageslice( mat_, 1UL );
-         auto rs1 = rows( pageslice1, { 4UL, 0UL, 2UL, 3UL } );
-         auto rs2 = rows( pageslice2, { 4UL, 0UL, 2UL, 3UL } );
+         auto rs1 = rows( pageslice1, { 0UL, 2UL, 4UL, 3UL } );
+         auto rs2 = rows( pageslice2, { 0UL, 2UL, 4UL, 3UL } );
 
          if( rs1 != rs2 ) {
             std::ostringstream oss;
@@ -4944,8 +4944,8 @@ void DenseGeneralTest::testColumns()
       {
          RT pageslice1  = pageslice( mat_, 0UL );
          RT pageslice2  = pageslice( mat_, 1UL );
-         auto cs1 = columns( pageslice1, { 2UL, 0UL, 2UL, 3UL } );
-         auto cs2 = columns( pageslice2, { 2UL, 0UL, 2UL, 3UL } );
+         auto cs1 = columns( pageslice1, { 0UL, 2UL, 2UL, 3UL } );
+         auto cs2 = columns( pageslice2, { 0UL, 2UL, 2UL, 3UL } );
 
          if( cs1 != cs2 ) {
             std::ostringstream oss;

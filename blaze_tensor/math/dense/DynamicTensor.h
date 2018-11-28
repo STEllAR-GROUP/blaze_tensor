@@ -531,7 +531,7 @@ inline DynamicTensor<Type>::DynamicTensor( size_t o, size_t m, size_t n, const T
 */
 template< typename Type > // Data type of the tensor
 inline DynamicTensor<Type>::DynamicTensor( initializer_list< initializer_list< initializer_list<Type> > > list )
-   : DynamicTensor( determineRows( list ), determineColumns( list ), list.size() )
+   : DynamicTensor( list.size(), determineRows( list ), determineColumns( list ) )
 {
    size_t k( 0UL );
 
@@ -1152,7 +1152,7 @@ template< typename Type > // Data type of the tensor
 inline DynamicTensor<Type>&
    DynamicTensor<Type>::operator=( initializer_list< initializer_list<initializer_list<Type> > > list )
 {
-   resize( determineRows( list ), determineColumns( list ), list.size(), false );
+   resize( list.size(), determineRows( list ), determineColumns( list ), false );
 
    size_t k( 0UL );
 

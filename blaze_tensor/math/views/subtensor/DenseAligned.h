@@ -892,9 +892,9 @@ inline Subtensor<MT,aligned,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    size_t k( 0UL );
-   for( const auto& pageList : list ) {
+   for( const auto& colList : list ) {
       size_t i( 0UL );
-      for( const auto& rowList : pageList ) {
+      for( const auto& rowList : colList ) {
          std::fill( std::copy( rowList.begin(), rowList.end(), left.begin(i, k) ), left.end(i, k), ElementType() );
          ++i;
       }
@@ -1481,7 +1481,7 @@ inline size_t Subtensor<MT,aligned,CSAs...>::nonZeros( size_t i, size_t k ) cons
    size_t nonzeros( 0UL );
 
    for( size_t j=column(); j<jend; ++j )
-      if( !isDefault( tensor_(row()+page(),i,j+k) ) )
+      if( !isDefault( tensor_(page()+k,row()+i,j) ) )
          ++nonzeros;
 
    return nonzeros;

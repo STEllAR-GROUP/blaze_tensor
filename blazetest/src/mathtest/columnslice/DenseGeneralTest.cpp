@@ -1440,7 +1440,7 @@ void DenseGeneralTest::testMultAssign()
                                      " (   4   5   6 )\n"
                                      " (   7   8   9 ))\n"
                                      "((  90 114 138 )\n"
-                                     " (  54  69  84 )\n";
+                                     " (  54  69  84 )\n"
                                      " (  18  24  30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1502,7 +1502,7 @@ void DenseGeneralTest::testMultAssign()
                                      " (   4   5   6 )\n"
                                      " (   7   8   9 ))\n"
                                      "((  90 114 138 )\n"
-                                     " (  54  69  84 )\n";
+                                     " (  54  69  84 )\n"
                                      " (  18  24  30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1572,7 +1572,7 @@ void DenseGeneralTest::testMultAssign()
                                      " (   4   5   6 )\n"
                                      " (   7   8   9 ))\n"
                                      "((  90 114 138 )\n"
-                                     " (  54  69  84 )\n";
+                                     " (  54  69  84 )\n"
                                      " (  18  24  30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1641,7 +1641,7 @@ void DenseGeneralTest::testMultAssign()
                                      " (   4   5   6 )\n"
                                      " (   7   8   9 ))\n"
                                      "((  90 114 138 )\n"
-                                     " (  54  69  84 )\n";
+                                     " (  54  69  84 )\n"
                                      " (  18  24  30 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1710,7 +1710,7 @@ void DenseGeneralTest::testSchurAssign()
                                      " (  4  5  6 )\n"
                                      " (  7  8  9 ))\n"
                                      "((  9 16 21 )\n"
-                                     " ( 24 25 24 )\n";
+                                     " ( 24 25 24 )\n"
                                      " ( 21 16  9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1770,7 +1770,7 @@ void DenseGeneralTest::testSchurAssign()
                                      " (  4  5  6 )\n"
                                      " (  7  8  9 ))\n"
                                      "((  9 16 21 )\n"
-                                     " ( 24 25 24 )\n";
+                                     " ( 24 25 24 )\n"
                                      " ( 21 16  9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1839,7 +1839,7 @@ void DenseGeneralTest::testSchurAssign()
                                      " (  4  5  6 )\n"
                                      " (  7  8  9 ))\n"
                                      "((  9 16 21 )\n"
-                                     " ( 24 25 24 )\n";
+                                     " ( 24 25 24 )\n"
                                      " ( 21 16  9 ))\n";
          throw std::runtime_error( oss.str() );
       }
@@ -1908,7 +1908,7 @@ void DenseGeneralTest::testSchurAssign()
                                      " (  4  5  6 )\n"
                                      " (  7  8  9 ))\n"
                                      "((  9 16 21 )\n"
-                                     " ( 24 25 24 )\n";
+                                     " ( 24 25 24 )\n"
                                      " ( 21 16  9 ))\n";
          throw std::runtime_error( oss.str() );
       }

@@ -179,208 +179,207 @@ inline void Rand< Subtensor<MT,AF,SO,true,CSAs...> >::randomize( SMT&& subtensor
 //  RAND SPECIALIZATION FOR SPARSE SUBTENSORS
 //
 //=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Specialization of the Rand class template for sparse subtensors.
-// \ingroup random
 //
-// This specialization of the Rand class randomizes sparse subtensors.
-*/
-template< typename MT       // Type of the dense tensor
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , size_t... CSAs >  // Compile time subtensor arguments
-class Rand< Subtensor<MT,AF,SO,false,CSAs...> >
-{
- public:
-   //**Randomize functions*************************************************************************
-   /*!\name Randomize functions */
-   //@{
-   template< typename SMT >
-   inline void randomize( SMT&& subtensor ) const;
-
-   template< typename SMT >
-   inline void randomize( SMT&& subtensor, size_t nonzeros ) const;
-
-   template< typename SMT, typename Arg >
-   inline void randomize( SMT&& subtensor, const Arg& min, const Arg& max ) const;
-
-   template< typename SMT, typename Arg >
-   inline void randomize( SMT&& subtensor, size_t nonzeros, const Arg& min, const Arg& max ) const;
-   //@}
-   //**********************************************************************************************
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse subtensor.
+// //*************************************************************************************************
+// /*! \cond BLAZE_INTERNAL */
+// /*!\brief Specialization of the Rand class template for sparse subtensors.
+// // \ingroup random
+// //
+// // This specialization of the Rand class randomizes sparse subtensors.
+// */
+// template< typename MT       // Type of the dense tensor
+//         , AlignmentFlag AF  // Alignment flag
+//         , bool SO           // Storage order
+//         , size_t... CSAs >  // Compile time subtensor arguments
+// class Rand< Subtensor<MT,AF,SO,false,CSAs...> >
+// {
+//  public:
+//    //**Randomize functions*************************************************************************
+//    /*!\name Randomize functions */
+//    //@{
+//    template< typename SMT >
+//    inline void randomize( SMT&& subtensor ) const;
 //
-// \param subtensor The subtensor to be randomized.
-// \return void
-*/
-template< typename MT       // Type of the dense tensor
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , size_t... CSAs >  // Compile time subtensor arguments
-template< typename SMT >    // Type of the subtensor
-inline void Rand< Subtensor<MT,AF,SO,false,CSAs...> >::randomize( SMT&& subtensor ) const
-{
-   using SubtensorType = RemoveReference_t<SMT>;
-   using ElementType   = ElementType_t<SubtensorType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_TENSOR_TYPE( SubtensorType );
-
-   const size_t m( subtensor.rows()    );
-   const size_t n( subtensor.columns() );
-
-   if( m == 0UL || n == 0UL ) return;
-
-   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*m*n ) ) );
-
-   subtensor.reset();
-   subtensor.reserve( nonzeros );
-
-   while( subtensor.nonZeros() < nonzeros ) {
-      subtensor( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse subtensor.
+//    template< typename SMT >
+//    inline void randomize( SMT&& subtensor, size_t nonzeros ) const;
 //
-// \param subtensor The subtensor to be randomized.
-// \param nonzeros The number of non-zero elements of the random subtensor.
-// \return void
-// \exception std::invalid_argument Invalid number of non-zero elements.
-*/
-template< typename MT       // Type of the dense tensor
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , size_t... CSAs >  // Compile time subtensor arguments
-template< typename SMT >    // Type of the subtensor
-inline void Rand< Subtensor<MT,AF,SO,false,CSAs...> >::randomize( SMT&& subtensor, size_t nonzeros ) const
-{
-   using SubtensorType = RemoveReference_t<SMT>;
-   using ElementType   = ElementType_t<SubtensorType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_TENSOR_TYPE( SubtensorType );
-
-   const size_t m( subtensor.rows()    );
-   const size_t n( subtensor.columns() );
-
-   if( nonzeros > m*n ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
-   }
-
-   if( m == 0UL || n == 0UL ) return;
-
-   subtensor.reset();
-   subtensor.reserve( nonzeros );
-
-   while( subtensor.nonZeros() < nonzeros ) {
-      subtensor( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>();
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse subtensor.
+//    template< typename SMT, typename Arg >
+//    inline void randomize( SMT&& subtensor, const Arg& min, const Arg& max ) const;
 //
-// \param subtensor The subtensor to be randomized.
-// \param min The smallest possible value for a subtensor element.
-// \param max The largest possible value for a subtensor element.
-// \return void
-*/
-template< typename MT       // Type of the dense tensor
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , size_t... CSAs >  // Compile time subtensor arguments
-template< typename SMT      // Type of the subtensor
-        , typename Arg >    // Min/max argument type
-inline void Rand< Subtensor<MT,AF,SO,false,CSAs...> >::randomize( SMT&& subtensor,
-                                                                  const Arg& min, const Arg& max ) const
-{
-   using SubtensorType = RemoveReference_t<SMT>;
-   using ElementType   = ElementType_t<SubtensorType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_TENSOR_TYPE( SubtensorType );
-
-   const size_t m( subtensor.rows()    );
-   const size_t n( subtensor.columns() );
-
-   if( m == 0UL || n == 0UL ) return;
-
-   const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*m*n ) ) );
-
-   subtensor.reset();
-   subtensor.reserve( nonzeros );
-
-   while( subtensor.nonZeros() < nonzeros ) {
-      subtensor( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>( min, max );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Randomization of a sparse subtensor.
+//    template< typename SMT, typename Arg >
+//    inline void randomize( SMT&& subtensor, size_t nonzeros, const Arg& min, const Arg& max ) const;
+//    //@}
+//    //**********************************************************************************************
+// };
+// /*! \endcond */
+// //*************************************************************************************************
 //
-// \param subtensor The subtensor to be randomized.
-// \param nonzeros The number of non-zero elements of the random subtensor.
-// \param min The smallest possible value for a subtensor element.
-// \param max The largest possible value for a subtensor element.
-// \return void
-// \exception std::invalid_argument Invalid number of non-zero elements.
-*/
-template< typename MT       // Type of the dense tensor
-        , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
-        , size_t... CSAs >  // Compile time subtensor arguments
-template< typename SMT      // Type of the subtensor
-        , typename Arg >    // Min/max argument type
-inline void Rand< Subtensor<MT,AF,SO,false,CSAs...> >::randomize( SMT&& subtensor, size_t nonzeros,
-                                                                  const Arg& min, const Arg& max ) const
-{
-   using SubtensorType = RemoveReference_t<SMT>;
-   using ElementType   = ElementType_t<SubtensorType>;
-
-   BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
-   BLAZE_CONSTRAINT_MUST_BE_SPARSE_TENSOR_TYPE( SubtensorType );
-
-   const size_t m( subtensor.rows()    );
-   const size_t n( subtensor.columns() );
-
-   if( nonzeros > m*n ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
-   }
-
-   if( m == 0UL || n == 0UL ) return;
-
-   subtensor.reset();
-   subtensor.reserve( nonzeros );
-
-   while( subtensor.nonZeros() < nonzeros ) {
-      subtensor( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>( min, max );
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
+// //*************************************************************************************************
+// /*! \cond BLAZE_INTERNAL */
+// /*!\brief Randomization of a sparse subtensor.
+// //
+// // \param subtensor The subtensor to be randomized.
+// // \return void
+// */
+// template< typename MT       // Type of the dense tensor
+//         , AlignmentFlag AF  // Alignment flag
+//         , bool SO           // Storage order
+//         , size_t... CSAs >  // Compile time subtensor arguments
+// template< typename SMT >    // Type of the subtensor
+// inline void Rand< Subtensor<MT,AF,SO,false,CSAs...> >::randomize( SMT&& subtensor ) const
+// {
+//    using SubtensorType = RemoveReference_t<SMT>;
+//    using ElementType   = ElementType_t<SubtensorType>;
+//
+//    BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
+//    BLAZE_CONSTRAINT_MUST_BE_SPARSE_TENSOR_TYPE( SubtensorType );
+//
+//    const size_t m( subtensor.rows()    );
+//    const size_t n( subtensor.columns() );
+//
+//    if( m == 0UL || n == 0UL ) return;
+//
+//    const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*m*n ) ) );
+//
+//    subtensor.reset();
+//    subtensor.reserve( nonzeros );
+//
+//    while( subtensor.nonZeros() < nonzeros ) {
+//       subtensor( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>();
+//    }
+// }
+// /*! \endcond */
+// //*************************************************************************************************
+//
+//
+// //*************************************************************************************************
+// /*! \cond BLAZE_INTERNAL */
+// /*!\brief Randomization of a sparse subtensor.
+// //
+// // \param subtensor The subtensor to be randomized.
+// // \param nonzeros The number of non-zero elements of the random subtensor.
+// // \return void
+// // \exception std::invalid_argument Invalid number of non-zero elements.
+// */
+// template< typename MT       // Type of the dense tensor
+//         , AlignmentFlag AF  // Alignment flag
+//         , bool SO           // Storage order
+//         , size_t... CSAs >  // Compile time subtensor arguments
+// template< typename SMT >    // Type of the subtensor
+// inline void Rand< Subtensor<MT,AF,SO,false,CSAs...> >::randomize( SMT&& subtensor, size_t nonzeros ) const
+// {
+//    using SubtensorType = RemoveReference_t<SMT>;
+//    using ElementType   = ElementType_t<SubtensorType>;
+//
+//    BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
+//    BLAZE_CONSTRAINT_MUST_BE_SPARSE_TENSOR_TYPE( SubtensorType );
+//
+//    const size_t m( subtensor.rows()    );
+//    const size_t n( subtensor.columns() );
+//
+//    if( nonzeros > m*n ) {
+//       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+//    }
+//
+//    if( m == 0UL || n == 0UL ) return;
+//
+//    subtensor.reset();
+//    subtensor.reserve( nonzeros );
+//
+//    while( subtensor.nonZeros() < nonzeros ) {
+//       subtensor( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>();
+//    }
+// }
+// /*! \endcond */
+// //*************************************************************************************************
+//
+//
+// //*************************************************************************************************
+// /*! \cond BLAZE_INTERNAL */
+// /*!\brief Randomization of a sparse subtensor.
+// //
+// // \param subtensor The subtensor to be randomized.
+// // \param min The smallest possible value for a subtensor element.
+// // \param max The largest possible value for a subtensor element.
+// // \return void
+// */
+// template< typename MT       // Type of the dense tensor
+//         , AlignmentFlag AF  // Alignment flag
+//         , bool SO           // Storage order
+//         , size_t... CSAs >  // Compile time subtensor arguments
+// template< typename SMT      // Type of the subtensor
+//         , typename Arg >    // Min/max argument type
+// inline void Rand< Subtensor<MT,AF,SO,false,CSAs...> >::randomize( SMT&& subtensor,
+//                                                                   const Arg& min, const Arg& max ) const
+// {
+//    using SubtensorType = RemoveReference_t<SMT>;
+//    using ElementType   = ElementType_t<SubtensorType>;
+//
+//    BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
+//    BLAZE_CONSTRAINT_MUST_BE_SPARSE_TENSOR_TYPE( SubtensorType );
+//
+//    const size_t m( subtensor.rows()    );
+//    const size_t n( subtensor.columns() );
+//
+//    if( m == 0UL || n == 0UL ) return;
+//
+//    const size_t nonzeros( rand<size_t>( 1UL, std::ceil( 0.5*m*n ) ) );
+//
+//    subtensor.reset();
+//    subtensor.reserve( nonzeros );
+//
+//    while( subtensor.nonZeros() < nonzeros ) {
+//       subtensor( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>( min, max );
+//    }
+// }
+// /*! \endcond */
+// //*************************************************************************************************
+//
+//
+// //*************************************************************************************************
+// /*! \cond BLAZE_INTERNAL */
+// /*!\brief Randomization of a sparse subtensor.
+// //
+// // \param subtensor The subtensor to be randomized.
+// // \param nonzeros The number of non-zero elements of the random subtensor.
+// // \param min The smallest possible value for a subtensor element.
+// // \param max The largest possible value for a subtensor element.
+// // \return void
+// // \exception std::invalid_argument Invalid number of non-zero elements.
+// */
+// template< typename MT       // Type of the dense tensor
+//         , AlignmentFlag AF  // Alignment flag
+//         , bool SO           // Storage order
+//         , size_t... CSAs >  // Compile time subtensor arguments
+// template< typename SMT      // Type of the subtensor
+//         , typename Arg >    // Min/max argument type
+// inline void Rand< Subtensor<MT,AF,SO,false,CSAs...> >::randomize( SMT&& subtensor, size_t nonzeros,
+//                                                                   const Arg& min, const Arg& max ) const
+// {
+//    using SubtensorType = RemoveReference_t<SMT>;
+//    using ElementType   = ElementType_t<SubtensorType>;
+//
+//    BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
+//    BLAZE_CONSTRAINT_MUST_BE_SPARSE_TENSOR_TYPE( SubtensorType );
+//
+//    const size_t m( subtensor.rows()    );
+//    const size_t n( subtensor.columns() );
+//
+//    if( nonzeros > m*n ) {
+//       BLAZE_THROW_INVALID_ARGUMENT( "Invalid number of non-zero elements" );
+//    }
+//
+//    if( m == 0UL || n == 0UL ) return;
+//
+//    subtensor.reset();
+//    subtensor.reserve( nonzeros );
+//
+//    while( subtensor.nonZeros() < nonzeros ) {
+//       subtensor( rand<size_t>( 0UL, m-1UL ), rand<size_t>( 0UL, n-1UL ) ) = rand<ElementType>( min, max );
+//    }
+// }
+// /*! \endcond */
+// //*************************************************************************************************
 
 } // namespace blaze
 

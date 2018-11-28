@@ -2795,134 +2795,147 @@ inline auto dtensreduce( const DenseTensor<MT>& dm, OP op )
       const size_t jpos( N & size_t(-SIMDSIZE) );
       BLAZE_INTERNAL_ASSERT( ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
-      SIMDTrait_t<ET> xmm1;
+      SIMDTrait_t<ET> xmm1 = tmp.load(0UL,0UL,0UL);
 
+      for( size_t k=0UL; k<O; ++k )
       {
-         xmm1 = tmp.load(0UL,0UL);
-         size_t j( SIMDSIZE );
-
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            xmm1 = op( xmm1, tmp.load(0UL,j) );
-         }
-
-         if( jpos < N )
          {
-            storea( array1, xmm1 );
-
-            for( ; j<N; ++j ) {
-               array1[0UL] = op( array1[0UL], tmp(0UL,j) );
+            if ( k != 0UL ) {
+               xmm1 = op( xmm1, tmp.load(k,0UL,0UL) );
             }
 
-            xmm1 = loada( array1 );
-         }
-      }
+            size_t j( SIMDSIZE );
 
-      size_t i( 1UL );
-
-      for( ; (i+4UL) <= M; i+=4UL )
-      {
-         xmm1 = op( xmm1, tmp.load(i,0UL) );
-         SIMDTrait_t<ET> xmm2( tmp.load(i+1UL,0UL) );
-         SIMDTrait_t<ET> xmm3( tmp.load(i+2UL,0UL) );
-         SIMDTrait_t<ET> xmm4( tmp.load(i+3UL,0UL) );
-         size_t j( SIMDSIZE );
-
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            xmm1 = op( xmm1, tmp.load(i    ,j) );
-            xmm2 = op( xmm2, tmp.load(i+1UL,j) );
-            xmm3 = op( xmm3, tmp.load(i+2UL,j) );
-            xmm4 = op( xmm4, tmp.load(i+3UL,j) );
-         }
-
-         if( jpos < N )
-         {
-            storea( array1, xmm1 );
-            storea( array2, xmm2 );
-            storea( array3, xmm3 );
-            storea( array4, xmm4 );
-
-            for( ; j<N; ++j ) {
-               array1[0UL] = op( array1[0UL], tmp(i    ,j) );
-               array2[0UL] = op( array2[0UL], tmp(i+1UL,j) );
-               array3[0UL] = op( array3[0UL], tmp(i+2UL,j) );
-               array4[0UL] = op( array4[0UL], tmp(i+3UL,j) );
+            for( ; j<jpos; j+=SIMDSIZE ) {
+               xmm1 = op( xmm1, tmp.load(k,0UL,j) );
             }
 
-            xmm1 = loada( array1 );
-            xmm2 = loada( array2 );
-            xmm3 = loada( array3 );
-            xmm4 = loada( array4 );
+            if( jpos < N )
+            {
+               storea( array1, xmm1 );
+
+               for( ; j<N; ++j ) {
+                  array1[0UL] = op( array1[0UL], tmp(k,0UL,j) );
+               }
+
+               xmm1 = loada( array1 );
+            }
          }
 
-         xmm1 = op( xmm1, xmm2 );
-         xmm3 = op( xmm3, xmm4 );
-         xmm1 = op( xmm1, xmm3 );
-      }
+         size_t i( 1UL );
 
-      if( i+2UL <= M )
-      {
-         xmm1 = op( xmm1, tmp.load(i,0UL) );
-         SIMDTrait_t<ET> xmm2( tmp.load(i+1UL,0UL) );
-         size_t j( SIMDSIZE );
-
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            xmm1 = op( xmm1, tmp.load(i    ,j) );
-            xmm2 = op( xmm2, tmp.load(i+1UL,j) );
-         }
-
-         if( jpos < N )
+         for( ; (i+4UL) <= M; i+=4UL )
          {
-            storea( array1, xmm1 );
-            storea( array2, xmm2 );
+            xmm1 = op( xmm1, tmp.load(k,i,0UL) );
+            SIMDTrait_t<ET> xmm2( tmp.load(k,i+1UL,0UL) );
+            SIMDTrait_t<ET> xmm3( tmp.load(k,i+2UL,0UL) );
+            SIMDTrait_t<ET> xmm4( tmp.load(k,i+3UL,0UL) );
+            size_t j( SIMDSIZE );
 
-            for( ; j<N; ++j ) {
-               array1[0UL] = op( array1[0UL], tmp(i    ,j) );
-               array2[0UL] = op( array2[0UL], tmp(i+1UL,j) );
+            for( ; j<jpos; j+=SIMDSIZE ) {
+               xmm1 = op( xmm1, tmp.load(k,i    ,j) );
+               xmm2 = op( xmm2, tmp.load(k,i+1UL,j) );
+               xmm3 = op( xmm3, tmp.load(k,i+2UL,j) );
+               xmm4 = op( xmm4, tmp.load(k,i+3UL,j) );
             }
 
-            xmm1 = loada( array1 );
-            xmm2 = loada( array2 );
-         }
+            if( jpos < N )
+            {
+               storea( array1, xmm1 );
+               storea( array2, xmm2 );
+               storea( array3, xmm3 );
+               storea( array4, xmm4 );
 
-         xmm1 = op( xmm1, xmm2 );
+               for( ; j<N; ++j ) {
+                  array1[0UL] = op( array1[0UL], tmp(k,i    ,j) );
+                  array2[0UL] = op( array2[0UL], tmp(k,i+1UL,j) );
+                  array3[0UL] = op( array3[0UL], tmp(k,i+2UL,j) );
+                  array4[0UL] = op( array4[0UL], tmp(k,i+3UL,j) );
+               }
 
-         i += 2UL;
-      }
-
-      if( i < M )
-      {
-         xmm1 = op( xmm1, tmp.load(i,0UL) );
-         size_t j( SIMDSIZE );
-
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            xmm1 = op( xmm1, tmp.load(i,j) );
-         }
-
-         if( jpos < N )
-         {
-            storea( array1, xmm1 );
-
-            for( ; j<N; ++j ) {
-               array1[0] = op( array1[0], tmp(i,j) );
+               xmm1 = loada( array1 );
+               xmm2 = loada( array2 );
+               xmm3 = loada( array3 );
+               xmm4 = loada( array4 );
             }
 
-            xmm1 = loada( array1 );
+            xmm1 = op( xmm1, xmm2 );
+            xmm3 = op( xmm3, xmm4 );
+            xmm1 = op( xmm1, xmm3 );
          }
-      }
 
-      redux = reduce( xmm1, op );
+         if( i+2UL <= M )
+         {
+            xmm1 = op( xmm1, tmp.load(k,i,0UL) );
+            SIMDTrait_t<ET> xmm2( tmp.load(k,i+1UL,0UL) );
+            size_t j( SIMDSIZE );
+
+            for( ; j<jpos; j+=SIMDSIZE ) {
+               xmm1 = op( xmm1, tmp.load(k,i    ,j) );
+               xmm2 = op( xmm2, tmp.load(k,i+1UL,j) );
+            }
+
+            if( jpos < N )
+            {
+               storea( array1, xmm1 );
+               storea( array2, xmm2 );
+
+               for( ; j<N; ++j ) {
+                  array1[0UL] = op( array1[0UL], tmp(k,i    ,j) );
+                  array2[0UL] = op( array2[0UL], tmp(k,i+1UL,j) );
+               }
+
+               xmm1 = loada( array1 );
+               xmm2 = loada( array2 );
+            }
+
+            xmm1 = op( xmm1, xmm2 );
+
+            i += 2UL;
+         }
+
+         if( i < M )
+         {
+            xmm1 = op( xmm1, tmp.load(k,i,0UL) );
+            size_t j( SIMDSIZE );
+
+            for( ; j<jpos; j+=SIMDSIZE ) {
+               xmm1 = op( xmm1, tmp.load(k,i,j) );
+            }
+
+            if( jpos < N )
+            {
+               storea( array1, xmm1 );
+
+               for( ; j<N; ++j ) {
+                  array1[0] = op( array1[0], tmp(k,i,j) );
+               }
+
+               xmm1 = loada( array1 );
+            }
+         }
+
+         redux = reduce( xmm1, op );
+      }
    }
    else
    {
+      for( size_t k=0UL; k<O; ++k )
       {
-         redux = tmp(0UL,0UL);
-         for( size_t j=1UL; j<N; ++j ) {
-            redux = op( redux, tmp(0UL,j) );
+         if ( k == 0UL ) {
+            redux = tmp(k,0UL,0UL);
          }
-      }
-      for( size_t i=1UL; i<M; ++i ) {
-         for( size_t j=0UL; j<N; ++j ) {
-            redux = op( redux, tmp(i,j) );
+         else {
+            redux = op( redux, tmp(k,0UL,0UL) );
+         }
+         for( size_t j=1UL; j<N; ++j ) {
+            redux = op( redux, tmp(k,0UL,j) );
+         }
+
+         for( size_t i=1UL; i<M; ++i ) {
+            for( size_t j=0UL; j<N; ++j ) {
+               redux = op( redux, tmp(k,i,j) );
+            }
          }
       }
    }
@@ -2975,74 +2988,79 @@ inline auto dtensreduce( const DenseTensor<MT>& dm, Add /*op*/ )
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
       SIMDTrait_t<ET> xmm1;
-      size_t i( 0UL );
 
-      for( ; (i+4UL) <= M; i+=4UL )
+      for( size_t k=0UL; k<O; ++k )
       {
-         xmm1 += tmp.load(i,0UL);
-         SIMDTrait_t<ET> xmm2( tmp.load(i+1UL,0UL) );
-         SIMDTrait_t<ET> xmm3( tmp.load(i+2UL,0UL) );
-         SIMDTrait_t<ET> xmm4( tmp.load(i+3UL,0UL) );
-         size_t j( SIMDSIZE );
+         size_t i( 0UL );
+         for( ; (i+4UL) <= M; i+=4UL )
+         {
+            xmm1 += tmp.load(k,i,0UL);
+            SIMDTrait_t<ET> xmm2( tmp.load(k,i+1UL,0UL) );
+            SIMDTrait_t<ET> xmm3( tmp.load(k,i+2UL,0UL) );
+            SIMDTrait_t<ET> xmm4( tmp.load(k,i+3UL,0UL) );
+            size_t j( SIMDSIZE );
 
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            xmm1 += tmp.load(i    ,j);
-            xmm2 += tmp.load(i+1UL,j);
-            xmm3 += tmp.load(i+2UL,j);
-            xmm4 += tmp.load(i+3UL,j);
-         }
-         for( ; remainder && j<N; ++j ) {
-            redux += tmp(i    ,j);
-            redux += tmp(i+1UL,j);
-            redux += tmp(i+2UL,j);
-            redux += tmp(i+3UL,j);
+            for( ; j<jpos; j+=SIMDSIZE ) {
+               xmm1 += tmp.load(k,i    ,j);
+               xmm2 += tmp.load(k,i+1UL,j);
+               xmm3 += tmp.load(k,i+2UL,j);
+               xmm4 += tmp.load(k,i+3UL,j);
+            }
+            for( ; remainder && j<N; ++j ) {
+               redux += tmp(k,i    ,j);
+               redux += tmp(k,i+1UL,j);
+               redux += tmp(k,i+2UL,j);
+               redux += tmp(k,i+3UL,j);
+            }
+
+            xmm1 += xmm2;
+            xmm3 += xmm4;
+            xmm1 += xmm3;
          }
 
-         xmm1 += xmm2;
-         xmm3 += xmm4;
-         xmm1 += xmm3;
+         if( i+2UL <= M )
+         {
+            xmm1 += tmp.load(k,i,0UL);
+            SIMDTrait_t<ET> xmm2( tmp.load(k,i+1UL,0UL) );
+            size_t j( SIMDSIZE );
+
+            for( ; j<jpos; j+=SIMDSIZE ) {
+               xmm1 += tmp.load(k,i    ,j);
+               xmm2 += tmp.load(k,i+1UL,j);
+            }
+            for( ; remainder && j<N; ++j ) {
+               redux += tmp(k,i    ,j);
+               redux += tmp(k,i+1UL,j);
+            }
+
+            xmm1 += xmm2;
+
+            i += 2UL;
+         }
+
+         if( i < M )
+         {
+            xmm1 += tmp.load(k,i,0UL);
+            size_t j( SIMDSIZE );
+
+            for( ; j<jpos; j+=SIMDSIZE ) {
+               xmm1 += tmp.load(k,i,j);
+            }
+            for( ; remainder && j<N; ++j ) {
+               redux += tmp(k,i,j);
+            }
+         }
+
+         redux += sum( xmm1 );
       }
-
-      if( i+2UL <= M )
-      {
-         xmm1 += tmp.load(i,0UL);
-         SIMDTrait_t<ET> xmm2( tmp.load(i+1UL,0UL) );
-         size_t j( SIMDSIZE );
-
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            xmm1 += tmp.load(i    ,j);
-            xmm2 += tmp.load(i+1UL,j);
-         }
-         for( ; remainder && j<N; ++j ) {
-            redux += tmp(i    ,j);
-            redux += tmp(i+1UL,j);
-         }
-
-         xmm1 += xmm2;
-
-         i += 2UL;
-      }
-
-      if( i < M )
-      {
-         xmm1 += tmp.load(i,0UL);
-         size_t j( SIMDSIZE );
-
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            xmm1 += tmp.load(i,j);
-         }
-         for( ; remainder && j<N; ++j ) {
-            redux += tmp(i,j);
-         }
-      }
-
-      redux += sum( xmm1 );
    }
    else
    {
-      for( size_t i=0UL; i<M; ++i ) {
-         for( size_t j=0UL; j<N; ++j ) {
-            redux += tmp(i,j);
+      for( size_t k=0UL; k<O; ++k ) {
+         for( size_t i=0UL; i<M; ++i ) {
+            for( size_t j=0UL; j<N; ++j ) {
+               redux += tmp(k,i,j);
+            }
          }
       }
    }

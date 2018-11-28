@@ -132,9 +132,9 @@ void ClassTest::testSchurAssign()
       checkPages   ( mat2,  2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2,  4UL );
-      checkNonZeros( mat2, 1UL, 0UL, 0UL );
-      checkNonZeros( mat2, 1UL, 1UL, 0UL );
+      checkNonZeros( mat2, 0UL, 0UL, 1UL );
       checkNonZeros( mat2, 1UL, 0UL, 1UL );
+      checkNonZeros( mat2, 0UL, 1UL, 1UL );
       checkNonZeros( mat2, 1UL, 1UL, 1UL );
 
       if( mat2(0,0,0) !=   0 || mat2(0,0,1) != -4 || mat2(0,0,2) != 0 ||
@@ -180,9 +180,9 @@ void ClassTest::testSchurAssign()
       checkPages   ( mat2,  2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2,  4UL );
-      checkNonZeros( mat2, 1UL, 0UL, 0UL );
-      checkNonZeros( mat2, 1UL, 1UL, 0UL );
+      checkNonZeros( mat2, 0UL, 0UL, 1UL );
       checkNonZeros( mat2, 1UL, 0UL, 1UL );
+      checkNonZeros( mat2, 0UL, 1UL, 1UL );
       checkNonZeros( mat2, 1UL, 1UL, 1UL );
 
       if( mat2(0,0,0) !=   0 || mat2(0,0,1) != -4 || mat2(0,0,2) != 0 ||
@@ -228,9 +228,9 @@ void ClassTest::testSchurAssign()
       checkPages   ( mat2,  2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2,  4UL );
-      checkNonZeros( mat2, 1UL, 0UL, 0UL );
-      checkNonZeros( mat2, 1UL, 1UL, 0UL );
+      checkNonZeros( mat2, 0UL, 0UL, 1UL );
       checkNonZeros( mat2, 1UL, 0UL, 1UL );
+      checkNonZeros( mat2, 0UL, 1UL, 1UL );
       checkNonZeros( mat2, 1UL, 1UL, 1UL );
 
       if( mat2(0,0,0) !=   0 || mat2(0,0,1) != -4 || mat2(0,0,2) != 0 ||
@@ -1658,9 +1658,9 @@ void ClassTest::testNonZeros()
          checkPages(mat, 2UL);
          checkCapacity(mat, 12UL);
          checkNonZeros(mat, 6UL);
-         checkNonZeros(mat, 2UL, 0UL, 0UL);
-         checkNonZeros(mat, 1UL, 1UL, 0UL);
-         checkNonZeros(mat, 2UL, 0UL, 1UL);
+         checkNonZeros(mat, 0UL, 0UL, 2UL);
+         checkNonZeros(mat, 1UL, 0UL, 1UL);
+         checkNonZeros(mat, 0UL, 1UL, 2UL);
          checkNonZeros(mat, 1UL, 1UL, 1UL);
 
          if (mat(0,0,0) != 0 || mat(0,0,1) != 1 || mat(0,0,2) != 2 ||
@@ -1888,7 +1888,7 @@ void ClassTest::testClear()
          }
 
          // Clearing a single element
-         clear( mat(0,2, 0) );
+         clear( mat(0, 0, 2) );
 
          checkRows    ( mat, 2UL );
          checkColumns ( mat, 3UL );
@@ -2294,12 +2294,12 @@ void ClassTest::testSwap()
       checkPages   ( mat1, 3UL );
       checkCapacity( mat1, 18UL );
       checkNonZeros( mat1, 18UL );
-      checkNonZeros( mat1, 3UL, 0UL, 0UL );
-      checkNonZeros( mat1, 3UL, 1UL, 0UL );
-      checkNonZeros( mat1, 3UL, 0UL, 1UL );
-      checkNonZeros( mat1, 3UL, 1UL, 1UL );
-      checkNonZeros( mat1, 3UL, 0UL, 2UL );
-      checkNonZeros( mat1, 3UL, 1UL, 2UL );
+      checkNonZeros( mat1, 0UL, 0UL, 3UL );
+      checkNonZeros( mat1, 1UL, 0UL, 3UL );
+      checkNonZeros( mat1, 0UL, 1UL, 3UL );
+      checkNonZeros( mat1, 1UL, 1UL, 3UL );
+      checkNonZeros( mat1, 0UL, 2UL, 3UL );
+      checkNonZeros( mat1, 1UL, 2UL, 3UL );
 
       if( mat1(0,0,0) != 6 || mat1(0,0,1) != 5 || mat1(0,0,2) != 4 ||
           mat1(0,1,0) != 3 || mat1(0,1,1) != 2 || mat1(0,1,2) != 1 ||
@@ -2321,12 +2321,12 @@ void ClassTest::testSwap()
       checkPages   ( mat2, 2UL );
       checkCapacity( mat2, 12UL );
       checkNonZeros( mat2, 8UL );
-      checkNonZeros( mat2, 2UL, 0UL, 0UL );
-      checkNonZeros( mat2, 1UL, 1UL, 0UL );
-      checkNonZeros( mat2, 1UL, 2UL, 0UL );
+      checkNonZeros( mat2, 0UL, 0UL, 2UL );
+      checkNonZeros( mat2, 1UL, 0UL, 1UL );
       checkNonZeros( mat2, 2UL, 0UL, 1UL );
+      checkNonZeros( mat2, 0UL, 1UL, 2UL );
       checkNonZeros( mat2, 1UL, 1UL, 1UL );
-      checkNonZeros( mat2, 1UL, 2UL, 1UL );
+      checkNonZeros( mat2, 2UL, 1UL, 1UL );
 
       if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 ||
           mat2(0,1,0) != 0 || mat2(0,1,1) != 3 ||
