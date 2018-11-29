@@ -41,7 +41,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Typetraits.h>
+#include <blaze/math/TypeTraits.h>
 
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
 #include <blaze_tensor/math/typetraits/IsNumericTensor.h>

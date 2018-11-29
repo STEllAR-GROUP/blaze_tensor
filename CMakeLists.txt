@@ -54,7 +54,7 @@ target_include_directories(
    BlazeTensor
       INTERFACE
          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
-         $<INSTALL_INTERFACE:blaze_tensor/>)
+         $<INSTALL_INTERFACE:include>)
 
 # Import Blaze and "link" to BlazeTensor
 find_package(blaze REQUIRED NO_CMAKE_PACKAGE_REGISTRY)
@@ -94,7 +94,7 @@ install(
 
 install(
   DIRECTORY blaze_tensor/
-  DESTINATION blaze_tensor/
+  DESTINATION include/blaze_tensor
   FILES_MATCHING PATTERN "*.h")
 
 install(
