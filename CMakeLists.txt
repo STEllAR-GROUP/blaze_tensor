@@ -89,7 +89,7 @@ install(
    EXPORT BlazeTensorTargets
    FILE BlazeTensorTargets.cmake
    NAMESPACE BlazeTensor::
-   DESTINATION share/blaze_tensor/cmake
+   DESTINATION share/BlazeTensor/cmake
 )
 
 install(
@@ -99,7 +99,7 @@ install(
 
 install(
    FILES "${CMAKE_CURRENT_BINARY_DIR}/cmake/BlazeTensorConfig.cmake"
-   DESTINATION share/blaze_tensor/cmake
+   DESTINATION share/BlazeTensor/cmake
 )
 
 # Optionally build tests (primarily for devs)
