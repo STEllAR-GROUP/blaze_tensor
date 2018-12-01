@@ -68,9 +68,8 @@ namespace blaze {
 */
 template< typename MT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
         , size_t... CSAs >  // Compile time subtensor arguments
-class Rand< Subtensor<MT,AF,SO,true,CSAs...> >
+class Rand< Subtensor<MT,AF,true,CSAs...> >
 {
  public:
    //**Randomize functions*************************************************************************
@@ -97,10 +96,9 @@ class Rand< Subtensor<MT,AF,SO,true,CSAs...> >
 */
 template< typename MT       // Type of the dense tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
         , size_t... CSAs >  // Compile time subtensor arguments
 template< typename SMT >    // Type of the subtensor
-inline void Rand< Subtensor<MT,AF,SO,true,CSAs...> >::randomize( SMT&& subtensor ) const
+inline void Rand< Subtensor<MT,AF,true,CSAs...> >::randomize( SMT&& subtensor ) const
 {
    using blaze::randomize;
 
@@ -109,18 +107,9 @@ inline void Rand< Subtensor<MT,AF,SO,true,CSAs...> >::randomize( SMT&& subtensor
    BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( SubtensorType );
 
-   if( SO == rowMajor ) {
-      for( size_t i=0UL; i<subtensor.rows(); ++i ) {
-         for( size_t j=0UL; j<subtensor.columns(); ++j ) {
-            randomize( subtensor(i,j) );
-         }
-      }
-   }
-   else {
+   for( size_t i=0UL; i<subtensor.rows(); ++i ) {
       for( size_t j=0UL; j<subtensor.columns(); ++j ) {
-         for( size_t i=0UL; i<subtensor.rows(); ++i ) {
-            randomize( subtensor(i,j) );
-         }
+         randomize( subtensor(i,j) );
       }
    }
 }
@@ -139,12 +128,11 @@ inline void Rand< Subtensor<MT,AF,SO,true,CSAs...> >::randomize( SMT&& subtensor
 */
 template< typename MT       // Type of the dense tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
         , size_t... CSAs >  // Compile time subtensor arguments
 template< typename SMT      // Type of the subtensor
         , typename Arg >    // Min/max argument type
-inline void Rand< Subtensor<MT,AF,SO,true,CSAs...> >::randomize( SMT&& subtensor,
-                                                                 const Arg& min, const Arg& max ) const
+inline void Rand< Subtensor<MT,AF,true,CSAs...> >::randomize( SMT&& subtensor,
+                                                              const Arg& min, const Arg& max ) const
 {
    using blaze::randomize;
 
@@ -153,18 +141,9 @@ inline void Rand< Subtensor<MT,AF,SO,true,CSAs...> >::randomize( SMT&& subtensor
    BLAZE_CONSTRAINT_MUST_BE_SUBTENSOR_TYPE( SubtensorType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( SubtensorType );
 
-   if( SO == rowMajor ) {
-      for( size_t i=0UL; i<subtensor.rows(); ++i ) {
-         for( size_t j=0UL; j<subtensor.columns(); ++j ) {
-            randomize( subtensor(i,j), min, max );
-         }
-      }
-   }
-   else {
+   for( size_t i=0UL; i<subtensor.rows(); ++i ) {
       for( size_t j=0UL; j<subtensor.columns(); ++j ) {
-         for( size_t i=0UL; i<subtensor.rows(); ++i ) {
-            randomize( subtensor(i,j), min, max );
-         }
+         randomize( subtensor(i,j), min, max );
       }
    }
 }
