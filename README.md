@@ -2,6 +2,16 @@
 
 This project implements 3D datastructures (tensors) that integrate well with the [Blaze library](https://bitbucket.org/blaze-lib/blaze/src). 
 
+All the highlights listed for Blaze apply to BlazeTensor as well:
+
+- high performance through the integration of BLAS libraries and manually tuned HPC math kernels
+- vectorization by SSE, SSE2, SSE3, SSSE3, SSE4, AVX, AVX2, AVX-512, FMA, and SVML
+- parallel execution by OpenMP, HPX, C++11 threads and Boost threads
+- the intuitive and easy to use API of a domain specific language
+- unified arithmetic with dense 3D tensors
+- thoroughly tested 3D tensor arithmetic
+- completely portable, high quality C++ source code
+
 The implemented facilities are verified using a thorough testing environment. The [CircleCI](https://circleci.com/gh/STEllAR-GROUP/blaze_tensor) contiguous integration service tracks the current build status for the master branch:
 [![CircleCI](https://circleci.com/gh/STEllAR-GROUP/blaze_tensor.svg?style=svg)](https://circleci.com/gh/STEllAR-GROUP/blaze_tensor).
 
