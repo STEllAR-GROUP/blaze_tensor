@@ -45,6 +45,7 @@
 #include <blaze/math/views/Submatrix.h>
 
 #include <blaze_tensor/math/Aliases.h>
+#include <blaze_tensor/math/ReductionFlag.h>
 #include <blaze_tensor/math/expressions/Forward.h>
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
@@ -55,9 +56,12 @@
 #include <blaze_tensor/math/expressions/TensTensMapExpr.h>
 #include <blaze_tensor/math/expressions/TensTensMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
+#include <blaze_tensor/math/views/columnslice/ColumnSliceData.h>
+#include <blaze_tensor/math/views/pageslice/PageSliceData.h>
+#include <blaze_tensor/math/views/rowslice/RowSliceData.h>
+#include <blaze_tensor/math/views/subtensor/BaseTemplate.h>
 #include <blaze_tensor/math/views/subtensor/DenseAligned.h>
 #include <blaze_tensor/math/views/subtensor/DenseUnaligned.h>
-
 
 namespace blaze {
 
@@ -1746,60 +1750,90 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given column-wise tensor reduction operation.
+/*!\brief Creating a view on a specific submatrix of the given column-wise tensor reduction operation.
 // \ingroup subtensor
 //
-// \param vector The constant column-wise tensor reduction operation.
+// \param matrix The constant column-wise tensor reduction operation.
 // \param args The runtime subvector arguments.
-// \return View on the specified subvector of the reduction operation.
+// \return View on the specified submatrix of the reduction operation.
 //
-// This function returns an expression representing the specified subvector of the given
+// This function returns an expression representing the specified submatrix of the given
 // column-wise tensor reduction operation.
 */
-// template< AlignmentFlag AF    // Alignment flag
-//         , size_t... CSAs      // Compile time subvector arguments
-//         , typename VT         // Vector base type of the expression
-//         , typename... RSAs >  // Runtime subvector arguments
-// inline decltype(auto) subvector( const MatReduceExpr<VT,columnwise>& vector, RSAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    const SubvectorData<CSAs...> sd( args... );
-//    const size_t M( (~vector).operand().rows() );
-//
-//    decltype(auto) sm( subtensor<AF>( (~vector).operand(), 0UL, sd.offset(), M, sd.size() ) );
-//    return reduce<columnwise>( sm, (~vector).operation() );
-// }
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename MT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const TensReduceExpr<MT,columnwise>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const SubmatrixData<CSAs...> sm( args... );
+   const size_t O( (~matrix).operand().rows() );
+
+   decltype(auto) st( subtensor<AF>( (~matrix).operand(), 0UL, sm.row(), sm.column(), O, sm.rows(), sm.columns() ) );
+   return reduce<columnwise>( st, (~matrix).operation() );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given row-wise tensor reduction operation.
+/*!\brief Creating a view on a specific submatrix of the given row-wise tensor reduction operation.
 // \ingroup subtensor
 //
-// \param vector The constant row-wise tensor reduction operation.
+// \param matrix The constant row-wise tensor reduction operation.
 // \param args The runtime subvector arguments.
-// \return View on the specified subvector of the reduction operation.
+// \return View on the specified submatrix of the reduction operation.
 //
-// This function returns an expression representing the specified subvector of the given row-wise
+// This function returns an expression representing the specified submatrix of the given row-wise
 // tensor reduction operation.
 */
-// template< AlignmentFlag AF    // Alignment flag
-//         , size_t... CSAs      // Compile time subvector arguments
-//         , typename VT         // Vector base type of the expression
-//         , typename... RSAs >  // Runtime subvector arguments
-// inline decltype(auto) subvector( const MatReduceExpr<VT,rowwise>& vector, RSAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename MT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const TensReduceExpr<MT,rowwise>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const SubmatrixData<CSAs...> sm( args... );
+   const size_t N( (~matrix).operand().rows() );
+
+   decltype(auto) st( subtensor<AF>( (~matrix).operand(), sm.row(), sm.column(), 0UL, sm.rows(), sm.columns(), N ) );
+   return reduce<rowwise>( st, (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given page-wise tensor reduction operation.
+// \ingroup subtensor
 //
-//    const SubvectorData<CSAs...> sd( args... );
-//    const size_t N( (~vector).operand().columns() );
+// \param matrix The constant page-wise tensor reduction operation.
+// \param args The runtime subvector arguments.
+// \return View on the specified submatrix of the reduction operation.
 //
-//    decltype(auto) sm( subtensor<AF>( (~vector).operand(), sd.offset(), 0UL, sd.size(), N ) );
-//    return reduce<rowwise>( sm, (~vector).operation() );
-// }
+// This function returns an expression representing the specified submatrix of the given page-wise
+// tensor reduction operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subvector arguments
+        , typename MT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const TensReduceExpr<MT,pagewise>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const SubmatrixData<CSAs...> sm( args... );
+   const size_t M( (~matrix).operand().rows() );
+
+   decltype(auto) st( subtensor<AF>( (~matrix).operand(), sm.row(), 0UL, sm.column(), sm.rows(), M, sm.columns() ) );
+   return reduce<pagewise>( st, (~matrix).operation() );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1808,371 +1842,360 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS (ROW)
+//  GLOBAL RESTRUCTURING FUNCTIONS (ROWSLICE)
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given subtensor.
+/*!\brief Creating a view on a specific rowslice of the given subtensor.
 // \ingroup subtensor
 //
 // \param sm The subtensor containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the subtensor.
+// \param args The optional rowslice arguments.
+// \return View on the specified rowslice of the subtensor.
 //
-// This function returns an expression representing the specified row of the given subtensor.
+// This function returns an expression representing the specified rowslice of the given subtensor.
 */
-// template< size_t I1           // Row index
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I2           // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t K            // Index of the first page
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , size_t O            // Number of pages
-//         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) row( Subtensor<TT,AF,I2,J,K,o,m,n>& sm, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
-//
-//    return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
-// }
+template< size_t I1           // RowSlice index
+        , typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I2           // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) rowslice( Subtensor<TT,AF,K,I2,J,O,M,N>& sm, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
+
+   return submatrix<J,K,N,O>( rowslice<I1+I2>( sm.operand(), args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given constant subtensor.
+/*!\brief Creating a view on a specific rowslice of the given constant subtensor.
 // \ingroup subtensor
 //
 // \param sm The constant subtensor containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the subtensor.
+// \param args The optional rowslice arguments.
+// \return View on the specified rowslice of the subtensor.
 //
-// This function returns an expression representing the specified row of the given constant
+// This function returns an expression representing the specified rowslice of the given constant
 // subtensor.
 */
-// template< size_t I1           // Row index
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I2           // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) row( const Subtensor<TT,AF,I2,J,M,N>& sm, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
-//
-//    return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
-// }
+template< size_t I1           // RowSlice index
+        , typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I2           // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) rowslice( const Subtensor<TT,AF,K,I2,J,O,M,N>& sm, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
+
+   return submatrix<J,K,N,O>( rowslice<I1+I2>( sm.operand(), args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given temporary subtensor.
+/*!\brief Creating a view on a specific rowslice of the given temporary subtensor.
 // \ingroup subtensor
 //
 // \param sm The temporary subtensor containing the row.
-// \param args The optional row arguments.
+// \param args The optional rowslice arguments.
 // \return View on the specified row of the subtensor.
 //
-// This function returns an expression representing the specified row of the given temporary
+// This function returns an expression representing the specified rowslice of the given temporary
 // subtensor.
 */
-// template< size_t I1           // Row index
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I2           // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) row( Subtensor<TT,AF,I2,J,M,N>&& sm, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
-//
-//    return subvector<J,N>( row<I1+I2>( sm.operand(), args... ), unchecked );
-// }
+template< size_t I1           // RowSlice index
+        , typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t I2           // Index of the first row
+        , size_t K            // Index of the first page
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) rowslice( Subtensor<TT,AF,K,I2,J,O,M,N>&& sm, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
+
+   return submatrix<J,K,N,O>( rowslice<I1+I2>( sm.operand(), args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given subtensor.
+/*!\brief Creating a view on a specific rowslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The subtensor containing the row.
-// \param index The index of the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the subtensor.
+// \param sm The subtensor containing the rowslice.
+// \param index The index of the rowslice.
+// \param args The optional rowslice arguments.
+// \return View on the specified rowslice of the subtensor.
 // \exception std::invalid_argument Invalid row access index.
 //
-// This function returns an expression representing the specified row of the given subtensor.
+// This function returns an expression representing the specified rowslice of the given subtensor.
 */
-// template< typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I            // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) row( Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( index >= M ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
-//    }
-//
-//    return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
-// }
+template< typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) rowslice( Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( index >= M ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
+   }
+
+   return submatrix<J,K,N,O>( rowslice( sm.operand(), I+index, args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given constant subtensor.
+/*!\brief Creating a view on a specific rowslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The constant subtensor containing the row.
-// \param index The index of the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the subtensor.
+// \param sm The subtensor containing the rowslice.
+// \param index The index of the rowslice.
+// \param args The optional rowslice arguments.
+// \return View on the specified rowslice of the subtensor.
 // \exception std::invalid_argument Invalid row access index.
 //
-// This function returns an expression representing the specified row of the given constant
-// subtensor.
+// This function returns an expression representing the specified rowslice of the given subtensor.
 */
-// template< typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I            // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) row( const Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( index >= M ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
-//    }
-//
-//    return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
-// }
+template< typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) rowslice( const Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( index >= M ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
+   }
+
+   return submatrix<J,K,N,O>( rowslice( sm.operand(), I+index, args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given temporary subtensor.
+/*!\brief Creating a view on a specific rowslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The temporary subtensor containing the row.
-// \param index The index of the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the subtensor.
+// \param sm The subtensor containing the rowslice.
+// \param index The index of the rowslice.
+// \param args The optional rowslice arguments.
+// \return View on the specified rowslice of the subtensor.
 // \exception std::invalid_argument Invalid row access index.
 //
-// This function returns an expression representing the specified row of the given temporary
-// subtensor.
+// This function returns an expression representing the specified rowslice of the given subtensor.
 */
-// template< typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I            // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) row( Subtensor<TT,AF,K,I,J,O,M,N>&& sm, size_t index, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( index >= M ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
-//    }
-//
-//    return subvector<J,N>( row( sm.operand(), I+index, args... ), unchecked );
-// }
+template< typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RRAs >  // Optional row arguments
+inline decltype(auto) rowslice( Subtensor<TT,AF,K,I,J,O,M,N>&& sm, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( index >= M ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
+   }
+
+   return submatrix<J,K,N,O>( rowslice( sm.operand(), I+index, args... ), unchecked );
+
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given subtensor.
+/*!\brief Creating a view on a specific rowslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The subtensor containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the subtensor.
+// \param sm The subtensor containing the rowslice.
+// \param args The optional rowslice arguments.
+// \return View on the specified rowslice of the subtensor.
 // \exception std::invalid_argument Invalid row access index.
 //
-// This function returns an expression representing the specified row of the given subtensor.
+// This function returns an expression representing the specified rowslice of the given subtensor.
 */
-// template< size_t... CRAs      // Compile time row arguments
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , typename... RRAs >  // Runtime row arguments
-// inline decltype(auto) row( Subtensor<TT,AF>& sm, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    const RowData<CRAs...> rd( args... );
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( rd.row() >= sm.rows() ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
-//    }
-//
-//    const size_t index( rd.row() + sm.row() );
-//
-//    return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
-// }
+template< size_t... CRAs      // Compile time row arguments
+        , typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) rowslice( Subtensor<TT,AF>& sm, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const RowSliceData<CRAs...> rd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( rd.row() >= sm.rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
+   }
+
+   const size_t index( rd.row() + sm.row() );
+
+   return submatrix( rowslice( sm.operand(), index, args... ), sm.column(), sm.page(), sm.columns(), sm.pages(), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given constant subtensor.
+/*!\brief Creating a view on a specific rowslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The constant subtensor containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the subtensor.
+// \param sm The subtensor containing the rowslice.
+// \param args The optional rowslice arguments.
+// \return View on the specified rowslice of the subtensor.
 // \exception std::invalid_argument Invalid row access index.
 //
-// This function returns an expression representing the specified row of the given constant
-// subtensor.
+// This function returns an expression representing the specified rowslice of the given subtensor.
 */
-// template< size_t... CRAs      // Compile time row arguments
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , typename... RRAs >  // Runtime row arguments
-// inline decltype(auto) row( const Subtensor<TT,AF>& sm, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    const RowData<CRAs...> rd( args... );
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( rd.row() >= sm.rows() ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
-//    }
-//
-//    const size_t index( rd.row() + sm.row() );
-//
-//    return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
-// }
+template< size_t... CRAs      // Compile time row arguments
+        , typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) rowslice( const Subtensor<TT,AF>& sm, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const RowSliceData<CRAs...> rd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( rd.row() >= sm.rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
+   }
+
+   const size_t index( rd.row() + sm.row() );
+
+   return submatrix( rowslice( sm.operand(), index, args... ), sm.column(), sm.page(), sm.columns(), sm.pages(), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific row of the given temporary subtensor.
+/*!\brief Creating a view on a specific rowslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The temporary subtensor containing the row.
-// \param args The optional row arguments.
-// \return View on the specified row of the subtensor.
+// \param sm The subtensor containing the rowslice.
+// \param args The optional rowslice arguments.
+// \return View on the specified rowslice of the subtensor.
 // \exception std::invalid_argument Invalid row access index.
 //
-// This function returns an expression representing the specified row of the given temporary
-// subtensor.
+// This function returns an expression representing the specified rowslice of the given subtensor.
 */
-// template< size_t... CRAs      // Compile time row arguments
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , typename... RRAs >  // Runtime row arguments
-// inline decltype(auto) row( Subtensor<TT,AF>&& sm, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    const RowData<CRAs...> rd( args... );
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( rd.row() >= sm.rows() ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
-//    }
-//
-//    const size_t index( rd.row() + sm.row() );
-//
-//    return subvector( row( sm.operand(), index, args... ), sm.column(), sm.columns(), unchecked );
-// }
+template< size_t... CRAs      // Compile time row arguments
+        , typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) rowslice( Subtensor<TT,AF>&& sm, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const RowSliceData<CRAs...> rd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( rd.row() >= sm.rows() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
+   }
+
+   const size_t index( rd.row() + sm.row() );
+
+   return submatrix( rowslice( sm.operand(), index, args... ), sm.column(), sm.page(), sm.columns(), sm.pages(), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2181,7 +2204,7 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS (ROWS)
+//  GLOBAL RESTRUCTURING FUNCTIONS (ROWSLICES)
 //
 //=================================================================================================
 
@@ -2207,7 +2230,7 @@ inline decltype(auto)
 //         , size_t M            // Number of rows
 //         , size_t N            // Number of columns
 //         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) rows( Subtensor<TT,AF,I2,J,M,N>& sm, RRAs... args )
+// inline decltype(auto) rowslices( Subtensor<TT,AF,I2,J,M,N>& sm, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2241,7 +2264,7 @@ inline decltype(auto)
 //         , size_t M            // Number of rows
 //         , size_t N            // Number of columns
 //         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) rows( const Subtensor<TT,AF,I2,J,M,N>& sm, RRAs... args )
+// inline decltype(auto) rowslices( const Subtensor<TT,AF,I2,J,M,N>& sm, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2275,7 +2298,7 @@ inline decltype(auto)
 //         , size_t M            // Number of rows
 //         , size_t N            // Number of columns
 //         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) rows( Subtensor<TT,AF,I2,J,M,N>&& sm, RRAs... args )
+// inline decltype(auto) rowslices( Subtensor<TT,AF,I2,J,M,N>&& sm, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2305,7 +2328,7 @@ inline decltype(auto)
 //         , bool SO             // Storage order
 //         , bool DF             // Density flag
 //         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) rows( Subtensor<TT,AF>& sm, RRAs... args )
+// inline decltype(auto) rowslices( Subtensor<TT,AF>& sm, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2347,7 +2370,7 @@ inline decltype(auto)
 //         , bool SO             // Storage order
 //         , bool DF             // Density flag
 //         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) rows( const Subtensor<TT,AF>& sm, RRAs... args )
+// inline decltype(auto) rowslices( const Subtensor<TT,AF>& sm, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2389,7 +2412,7 @@ inline decltype(auto)
 //         , bool SO             // Storage order
 //         , bool DF             // Density flag
 //         , typename... RRAs >  // Optional row arguments
-// inline decltype(auto) rows( Subtensor<TT,AF>&& sm, RRAs... args )
+// inline decltype(auto) rowslices( Subtensor<TT,AF>&& sm, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2433,7 +2456,7 @@ inline decltype(auto)
 //         , typename T          // Type of the row indices
 //         , typename... RRAs >  // Optional row arguments
 // inline decltype(auto)
-//    rows( Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RRAs... args )
+//    rowslices( Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2481,7 +2504,7 @@ inline decltype(auto)
 //         , typename T          // Type of the row indices
 //         , typename... RRAs >  // Optional row arguments
 // inline decltype(auto)
-//    rows( const Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RRAs... args )
+//    rowslices( const Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2529,7 +2552,7 @@ inline decltype(auto)
 //         , typename T          // Type of the row indices
 //         , typename... RRAs >  // Optional row arguments
 // inline decltype(auto)
-//    rows( Subtensor<TT,AF,CSAs...>&& sm, const T* indices, size_t n, RRAs... args )
+//    rowslices( Subtensor<TT,AF,CSAs...>&& sm, const T* indices, size_t n, RRAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2558,369 +2581,357 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS (COLUMN)
+//  GLOBAL RESTRUCTURING FUNCTIONS (COLUMNSLICE)
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given subtensor.
+/*!\brief Creating a view on a specific columnslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The subtensor containing the column.
-// \param args The optional column arguments.
+// \param sm The subtensor containing the columnslice.
+// \param args The optional columnslice arguments.
 // \return View on the specified column of the subtensor.
 //
-// This function returns an expression representing the specified column of the given subtensor.
+// This function returns an expression representing the specified columnslice of the given subtensor.
 */
-// template< size_t I1           // Column index
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I2           // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) column( Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
-//
-//    return subvector<I2,M>( column<I1+J>( sm.operand(), args... ), unchecked );
-// }
+template< size_t J1           // ColumnSlice index
+        , typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J2           // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RCAs >  // Optional row arguments
+inline decltype(auto) columnslice( Subtensor<TT,AF,K,I,J2,O,M,N>& sm, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( J1 < N, "Invalid column access index" );
+
+   return submatrix<K,I,O,M>( columnslice<J1+J2>( sm.operand(), args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given constant subtensor.
+/*!\brief Creating a view on a specific columnslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The constant subtensor containing the column.
-// \param args The optional column arguments.
+// \param sm The subtensor containing the columnslice.
+// \param args The optional columnslice arguments.
 // \return View on the specified column of the subtensor.
 //
-// This function returns an expression representing the specified column of the given constant
-// subtensor.
+// This function returns an expression representing the specified columnslice of the given subtensor.
 */
-// template< size_t I1           // Column index
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I2           // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) column( const Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
-//
-//    return subvector<I2,M>( column<I1+J>( sm.operand(), args... ), unchecked );
-// }
+template< size_t J1           // ColumnSlice index
+        , typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J2           // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RCAs >  // Optional row arguments
+inline decltype(auto) columnslice( const Subtensor<TT,AF,K,I,J2,O,M,N>& sm, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( J1 < N, "Invalid column access index" );
+
+   return submatrix<K,I,O,M>( columnslice<J1+J2>( sm.operand(), args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given temporary subtensor.
+/*!\brief Creating a view on a specific columnslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The temporary subtensor containing the column.
-// \param args The optional column arguments.
+// \param sm The subtensor containing the columnslice.
+// \param args The optional columnslice arguments.
 // \return View on the specified column of the subtensor.
 //
-// This function returns an expression representing the specified column of the given temporary
-// subtensor.
+// This function returns an expression representing the specified columnslice of the given subtensor.
 */
-// template< size_t I1           // Column index
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I2           // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) column( Subtensor<TT,AF,I2,J,M,N>&& sm, RCAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
-//
-//    return subvector<I2,M>( column<I1+J>( sm.operand(), args... ), unchecked );
-// }
+template< size_t J1           // ColumnSlice index
+        , typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J2           // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RCAs >  // Optional row arguments
+inline decltype(auto) columnslice( Subtensor<TT,AF,K,I,J2,O,M,N>&& sm, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( J1 < N, "Invalid column access index" );
+
+   return submatrix<K,I,O,M>( columnslice<J1+J2>( sm.operand(), args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given subtensor.
+/*!\brief Creating a view on a specific columnslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The subtensor containing the column.
-// \param index The index of the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the subtensor.
-// \exception std::invalid_argument Invalid column access index.
+// \param sm The subtensor containing the columnslice.
+// \param index The index of the columnslice.
+// \param args The optional columnslice arguments.
+// \return View on the specified columnslice of the subtensor.
+// \exception std::invalid_argument Invalid columnslice access index.
 //
-// This function returns an expression representing the specified column of the given subtensor.
+// This function returns an expression representing the specified columnslice of the given subtensor.
 */
-// template< typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I            // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) column( Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RCAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( index >= N ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
-//    }
-//
-//    return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
-// }
+template< typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) columnslice( Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( index >= N ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
+   }
+
+   return submatrix<K,I,O,M>( columnslice( sm.operand(), J+index, args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given constant subtensor.
+/*!\brief Creating a view on a specific columnslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The constant subtensor containing the column.
-// \param index The index of the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the subtensor.
-// \exception std::invalid_argument Invalid column access index.
+// \param sm The subtensor containing the columnslice.
+// \param index The index of the columnslice.
+// \param args The optional columnslice arguments.
+// \return View on the specified columnslice of the subtensor.
+// \exception std::invalid_argument Invalid columnslice access index.
 //
-// This function returns an expression representing the specified column of the given constant
-// subtensor.
+// This function returns an expression representing the specified columnslice of the given subtensor.
 */
-// template< typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I            // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) column( const Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RCAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( index >= N ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
-//    }
-//
-//    return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
-// }
+template< typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) columnslice( const Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( index >= N ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
+   }
+
+   return submatrix<K,I,O,M>( columnslice( sm.operand(), J+index, args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given temporary subtensor.
+/*!\brief Creating a view on a specific columnslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The temporary subtensor containing the column.
-// \param index The index of the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the subtensor.
-// \exception std::invalid_argument Invalid column access index.
+// \param sm The subtensor containing the columnslice.
+// \param index The index of the columnslice.
+// \param args The optional columnslice arguments.
+// \return View on the specified columnslice of the subtensor.
+// \exception std::invalid_argument Invalid columnslice access index.
 //
-// This function returns an expression representing the specified column of the given temporary
-// subtensor.
+// This function returns an expression representing the specified columnslice of the given subtensor.
 */
-// template< typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , size_t I            // Index of the first row
-//         , size_t J            // Index of the first column
-//         , size_t M            // Number of rows
-//         , size_t N            // Number of columns
-//         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) column( Subtensor<TT,AF,K,I,J,O,M,N>&& sm, size_t index, RCAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( index >= N ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
-//    }
-//
-//    return subvector<I,M>( column( sm.operand(), J+index, args... ), unchecked );
-// }
+template< typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RCAs >  // Optional column arguments
+inline decltype(auto) columnslice( Subtensor<TT,AF,K,I,J,O,M,N>&& sm, size_t index, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( index >= N ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
+   }
+
+   return submatrix<K,I,O,M>( columnslice( sm.operand(), J+index, args... ), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given subtensor.
+/*!\brief Creating a view on a specific columnslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The subtensor containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the subtensor.
-// \exception std::invalid_argument Invalid column access index.
+// \param sm The subtensor containing the columnslice.
+// \param args The optional columnslice arguments.
+// \return View on the specified columnslice of the subtensor.
+// \exception std::invalid_argument Invalid columnslice access index.
 //
-// This function returns an expression representing the specified column of the given subtensor.
+// This function returns an expression representing the specified columnslice of the given subtensor.
 */
-// template< size_t... CCAs      // Compile time column arguments
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , typename... RCAs >  // Runtime column arguments
-// inline decltype(auto) column( Subtensor<TT,AF>& sm, RCAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    const ColumnData<CCAs...> cd( args... );
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( cd.column() >= sm.columns() ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
-//    }
-//
-//    const size_t index( cd.column() + sm.column() );
-//
-//    return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
-// }
+template< size_t... CCAs      // Compile time column arguments
+        , typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) columnslice( Subtensor<TT,AF>& sm, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const ColumnSliceData<CCAs...> cd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( cd.column() >= sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
+   }
+
+   const size_t index( cd.column() + sm.column() );
+
+   return submatrix( columnslice( sm.operand(), index, args... ), sm.page(), sm.row(), sm.pages(), sm.rows(), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given constant subtensor.
+/*!\brief Creating a view on a specific columnslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The constant subtensor containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the subtensor.
-// \exception std::invalid_argument Invalid column access index.
+// \param sm The subtensor containing the columnslice.
+// \param args The optional columnslice arguments.
+// \return View on the specified columnslice of the subtensor.
+// \exception std::invalid_argument Invalid columnslice access index.
 //
-// This function returns an expression representing the specified column of the given constant
-// subtensor.
+// This function returns an expression representing the specified columnslice of the given subtensor.
 */
-// template< size_t... CCAs      // Compile time column arguments
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , typename... RCAs >  // Runtime column arguments
-// inline decltype(auto) column( const Subtensor<TT,AF>& sm, RCAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    const ColumnData<CCAs...> cd( args... );
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( cd.column() >= sm.columns() ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
-//    }
-//
-//    const size_t index( cd.column() + sm.column() );
-//
-//    return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
-// }
+template< size_t... CCAs      // Compile time column arguments
+        , typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) columnslice( const Subtensor<TT,AF>& sm, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const ColumnSliceData<CCAs...> cd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( cd.column() >= sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
+   }
+
+   const size_t index( cd.column() + sm.column() );
+
+   return submatrix( columnslice( sm.operand(), index, args... ), sm.page(), sm.row(), sm.pages(), sm.rows(), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific column of the given temporary subtensor.
+/*!\brief Creating a view on a specific columnslice of the given subtensor.
 // \ingroup subtensor
 //
-// \param sm The temporary subtensor containing the column.
-// \param args The optional column arguments.
-// \return View on the specified column of the subtensor.
-// \exception std::invalid_argument Invalid column access index.
+// \param sm The subtensor containing the columnslice.
+// \param args The optional columnslice arguments.
+// \return View on the specified columnslice of the subtensor.
+// \exception std::invalid_argument Invalid columnslice access index.
 //
-// This function returns an expression representing the specified column of the given temporary
-// subtensor.
+// This function returns an expression representing the specified columnslice of the given subtensor.
 */
-// template< size_t... CCAs      // Compile time column arguments
-//         , typename TT         // Type of the sparse subtensor
-//         , AlignmentFlag AF    // Alignment flag
-//         , bool SO             // Storage order
-//         , bool DF             // Density flag
-//         , typename... RCAs >  // Runtime column arguments
-// inline decltype(auto) column( Subtensor<TT,AF>&& sm, RCAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    const ColumnData<CCAs...> cd( args... );
-//
-//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
-//
-//    if( isChecked ) {
-//       if( ( cd.column() >= sm.columns() ) ) {
-//          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
-//       }
-//    }
-//    else {
-//       BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
-//    }
-//
-//    const size_t index( cd.column() + sm.column() );
-//
-//    return subvector( column( sm.operand(), index, args... ), sm.row(), sm.rows(), unchecked );
-// }
+template< size_t... CCAs      // Compile time column arguments
+        , typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) columnslice( Subtensor<TT,AF>&& sm, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const ColumnSliceData<CCAs...> cd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( cd.column() >= sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
+   }
+
+   const size_t index( cd.column() + sm.column() );
+
+   return submatrix( columnslice( sm.operand(), index, args... ), sm.page(), sm.row(), sm.pages(), sm.rows(), unchecked );
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2929,7 +2940,7 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS (COLUMNS)
+//  GLOBAL RESTRUCTURING FUNCTIONS (COLUMNSLICES)
 //
 //=================================================================================================
 
@@ -2955,7 +2966,7 @@ inline decltype(auto)
 //         , size_t M            // Number of rows
 //         , size_t N            // Number of columns
 //         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) columns( Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
+// inline decltype(auto) columnslices( Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -2989,7 +3000,7 @@ inline decltype(auto)
 //         , size_t M            // Number of rows
 //         , size_t N            // Number of columns
 //         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) columns( const Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
+// inline decltype(auto) columnslices( const Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -3023,7 +3034,7 @@ inline decltype(auto)
 //         , size_t M            // Number of rows
 //         , size_t N            // Number of columns
 //         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) columns( Subtensor<TT,AF,I2,J,M,N>&& sm, RCAs... args )
+// inline decltype(auto) columnslices( Subtensor<TT,AF,I2,J,M,N>&& sm, RCAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -3053,7 +3064,7 @@ inline decltype(auto)
 //         , bool SO             // Storage order
 //         , bool DF             // Density flag
 //         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) columns( Subtensor<TT,AF>& sm, RCAs... args )
+// inline decltype(auto) columnslices( Subtensor<TT,AF>& sm, RCAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -3095,7 +3106,7 @@ inline decltype(auto)
 //         , bool SO             // Storage order
 //         , bool DF             // Density flag
 //         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) columns( const Subtensor<TT,AF>& sm, RCAs... args )
+// inline decltype(auto) columnslices( const Subtensor<TT,AF>& sm, RCAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -3137,7 +3148,7 @@ inline decltype(auto)
 //         , bool SO             // Storage order
 //         , bool DF             // Density flag
 //         , typename... RCAs >  // Optional column arguments
-// inline decltype(auto) columns( Subtensor<TT,AF>&& sm, RCAs... args )
+// inline decltype(auto) columnslices( Subtensor<TT,AF>&& sm, RCAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -3181,7 +3192,7 @@ inline decltype(auto)
 //         , typename T          // Type of the column indices
 //         , typename... RCAs >  // Optional column arguments
 // inline decltype(auto)
-//    columns( Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
+//    columnslices( Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -3229,7 +3240,7 @@ inline decltype(auto)
 //         , typename T          // Type of the column indices
 //         , typename... RCAs >  // Optional column arguments
 // inline decltype(auto)
-//    columns( const Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
+//    columnslices( const Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -3277,7 +3288,7 @@ inline decltype(auto)
 //         , typename T          // Type of the column indices
 //         , typename... RCAs >  // Optional column arguments
 // inline decltype(auto)
-//    columns( Subtensor<TT,AF,CSAs...>&& sm, const T* indices, size_t n, RCAs... args )
+//    columnslices( Subtensor<TT,AF,CSAs...>&& sm, const T* indices, size_t n, RCAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -3306,7 +3317,743 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  SUBMATRIX OPERATORS
+//  GLOBAL RESTRUCTURING FUNCTIONS (PAGESLICE)
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the pageslice.
+// \param args The optional pageslice arguments.
+// \return View on the specified pageslice of the subtensor.
+//
+// This function returns an expression representing the specified pageslice of the given subtensor.
+*/
+template< size_t K1           // PageSlice index
+        , typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K2           // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RPAs >  // Optional row arguments
+inline decltype(auto) pageslice( Subtensor<TT,AF,K2,I,J,O,M,N>& sm, RPAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( K1 < O, "Invalid page access index" );
+
+   return submatrix<I,J,M,N>( pageslice<K1+K2>( sm.operand(), args... ), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the pageslice.
+// \param args The optional pageslice arguments.
+// \return View on the specified pageslice of the subtensor.
+//
+// This function returns an expression representing the specified pageslice of the given subtensor.
+*/
+template< size_t K1           // PageSlice index
+        , typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K2           // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RPAs >  // Optional row arguments
+inline decltype(auto) pageslice( const Subtensor<TT,AF,K2,I,J,O,M,N>& sm, RPAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( K1 < O, "Invalid page access index" );
+
+   return submatrix<I,J,M,N>( pageslice<K1+K2>( sm.operand(), args... ), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the pageslice.
+// \param args The optional pageslice arguments.
+// \return View on the specified pageslice of the subtensor.
+//
+// This function returns an expression representing the specified pageslice of the given subtensor.
+*/
+template< size_t K1           // PageSlice index
+        , typename TT         // Type of the subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K2           // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RPAs >  // Optional row arguments
+inline decltype(auto) pageslice( Subtensor<TT,AF,K2,I,J,O,M,N>&& sm, RPAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   BLAZE_STATIC_ASSERT_MSG( K1 < O, "Invalid page access index" );
+
+   return submatrix<I,J,M,N>( pageslice<K1+K2>( sm.operand(), args... ), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the pageslice.
+// \param index The index of the pageslice.
+// \param args The optional pageslice arguments.
+// \return View on the specified pageslice of the subtensor.
+// \exception std::invalid_argument Invalid pageslice access index.
+//
+// This function returns an expression representing the specified pageslice of the given subtensor.
+*/
+template< typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RPAs >  // Optional column arguments
+inline decltype(auto) pageslice( Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RPAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RPAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( index >= O ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid page access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < O, "Invalid page access index" );
+   }
+
+   return submatrix<I,J,M,N>( pageslice( sm.operand(), K+index, args... ), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the pageslice.
+// \param index The index of the pageslice.
+// \param args The optional pageslice arguments.
+// \return View on the specified pageslice of the subtensor.
+// \exception std::invalid_argument Invalid pageslice access index.
+//
+// This function returns an expression representing the specified pageslice of the given subtensor.
+*/
+template< typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RPAs >  // Optional column arguments
+inline decltype(auto) pageslice( const Subtensor<TT,AF,K,I,J,O,M,N>& sm, size_t index, RPAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RPAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( index >= O ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid page access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < O, "Invalid page access index" );
+   }
+
+   return submatrix<I,J,M,N>( pageslice( sm.operand(), K+index, args... ), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the pageslice.
+// \param index The index of the pageslice.
+// \param args The optional pageslice arguments.
+// \return View on the specified pageslice of the subtensor.
+// \exception std::invalid_argument Invalid pageslice access index.
+//
+// This function returns an expression representing the specified pageslice of the given subtensor.
+*/
+template< typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename... RPAs >  // Optional column arguments
+inline decltype(auto) pageslice( Subtensor<TT,AF,K,I,J,O,M,N>&& sm, size_t index, RPAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RPAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( index >= O ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid page access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index < O, "Invalid page access index" );
+   }
+
+   return submatrix<I,J,M,N>( pageslice( sm.operand(), K+index, args... ), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the pageslice.
+// \param args The optional pageslice arguments.
+// \return View on the specified pageslice of the subtensor.
+// \exception std::invalid_argument Invalid pageslice access index.
+//
+// This function returns an expression representing the specified pageslice of the given subtensor.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) pageslice( Subtensor<TT,AF>& sm, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const PageSliceData<CCAs...> cd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( cd.page() >= sm.pages() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid page access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( cd.page() < sm.pages(), "Invalid page access index" );
+   }
+
+   const size_t index( cd.page() + sm.page() );
+
+   return submatrix( pageslice( sm.operand(), index, args... ), sm.row(), sm.column(), sm.rows(), sm.columns(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the pageslice.
+// \param args The optional pageslice arguments.
+// \return View on the specified pageslice of the subtensor.
+// \exception std::invalid_argument Invalid pageslice access index.
+//
+// This function returns an expression representing the specified pageslice of the given subtensor.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) pageslice( const Subtensor<TT,AF>& sm, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const PageSliceData<CCAs...> cd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( cd.page() >= sm.pages() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid page access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( cd.page() < sm.pages(), "Invalid page access index" );
+   }
+
+   const size_t index( cd.page() + sm.page() );
+
+   return submatrix( pageslice( sm.operand(), index, args... ), sm.row(), sm.column(), sm.rows(), sm.columns(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the pageslice.
+// \param args The optional pageslice arguments.
+// \return View on the specified pageslice of the subtensor.
+// \exception std::invalid_argument Invalid pageslice access index.
+//
+// This function returns an expression representing the specified pageslice of the given subtensor.
+*/
+template< size_t... CCAs      // Compile time column arguments
+        , typename TT         // Type of the sparse subtensor
+        , AlignmentFlag AF    // Alignment flag
+        , typename... RCAs >  // Runtime column arguments
+inline decltype(auto) pageslice( Subtensor<TT,AF>&& sm, RCAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const PageSliceData<CCAs...> cd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( cd.page() >= sm.pages() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid page access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( cd.page() < sm.pages(), "Invalid page access index" );
+   }
+
+   const size_t index( cd.page() + sm.page() );
+
+   return submatrix( pageslice( sm.operand(), index, args... ), sm.row(), sm.column(), sm.rows(), sm.columns(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS (PAGESLICES)
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the columns.
+// \param args The optional column arguments.
+// \return View on the specified columns of the subtensor.
+//
+// This function returns an expression representing the specified columns of the given subtensor.
+*/
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) pageslices( Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subtensor<I2,0UL,M,sizeof...(Is)+1UL>(
+//       columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
+// }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given constant subtensor.
+// \ingroup subtensor
+//
+// \param sm The constant subtensor containing the columns.
+// \param args The optional column arguments.
+// \return View on the specified columns of the subtensor.
+//
+// This function returns an expression representing the specified columns of the given constant
+// subtensor.
+*/
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) pageslices( const Subtensor<TT,AF,I2,J,M,N>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subtensor<I2,0UL,M,sizeof...(Is)+1UL>(
+//       columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
+// }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given temporary subtensor.
+// \ingroup subtensor
+//
+// \param sm The temporary subtensor containing the columns.
+// \param args The optional column arguments.
+// \return View on the specified columns of the subtensor.
+//
+// This function returns an expression representing the specified columns of the given temporary
+// subtensor.
+*/
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t I2           // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) pageslices( Subtensor<TT,AF,I2,J,M,N>&& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return subtensor<I2,0UL,M,sizeof...(Is)+1UL>(
+//       columns( sm.operand(), make_shifted_index_subsequence<J,N,I1,Is...>(), args... ), unchecked );
+// }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the columns.
+// \param args The optional column arguments.
+// \return View on the specified columns of the subtensor.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified columns of the given subtensor.
+*/
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) pageslices( Subtensor<TT,AF>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       static constexpr size_t indices[] = { I1, Is... };
+//       for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//          }
+//       }
+//    }
+//
+//    return subtensor( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
+//                      sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
+// }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given constant subtensor.
+// \ingroup subtensor
+//
+// \param sm The constant subtensor containing the columns.
+// \param args The optional column arguments.
+// \return View on the specified columns of the subtensor.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified columns of the given constant
+// subtensor.
+*/
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) pageslices( const Subtensor<TT,AF>& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       static constexpr size_t indices[] = { I1, Is... };
+//       for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//          }
+//       }
+//    }
+//
+//    return subtensor( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
+//                      sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
+// }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given temporary subtensor.
+// \ingroup subtensor
+//
+// \param sm The temporary subtensor containing the columns.
+// \param args The optional column arguments.
+// \return View on the specified columns of the subtensor.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified columns of the given temporary
+// subtensor.
+*/
+// template< size_t I1           // First column index
+//         , size_t... Is        // Remaining column indices
+//         , typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto) pageslices( Subtensor<TT,AF>&& sm, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       static constexpr size_t indices[] = { I1, Is... };
+//       for( size_t j=0UL; j<sizeof...(Is)+1UL; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
+//          }
+//       }
+//    }
+//
+//    return subtensor( columns( sm.operand(), { I1+sm.column(), Is+sm.column()... }, args... ),
+//                      sm.row(), 0UL, sm.rows(), sizeof...(Is)+1UL, unchecked );
+// }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given subtensor.
+// \ingroup subtensor
+//
+// \param sm The subtensor containing the columns.
+// \param indices Pointer to the first index of the selected columns.
+// \param n The total number of indices.
+// \param args The optional column arguments.
+// \return View on the specified columns of the subtensor.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified columns of the given subtensor.
+*/
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename T          // Type of the column indices
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto)
+//    pageslices( Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       for( size_t j=0UL; j<n; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
+//          }
+//       }
+//    }
+//
+//    SmallArray<size_t,128UL> newIndices( indices, indices+n );
+//    std::for_each( newIndices.begin(), newIndices.end(),
+//                   [column=sm.column()]( size_t& index ){ index += column; } );
+//
+//    return subtensor( columns( sm.operand(), newIndices.data(), n, args... ),
+//                      sm.row(), 0UL, sm.rows(), n, unchecked );
+// }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given constant subtensor.
+// \ingroup subtensor
+//
+// \param sm The constant subtensor containing the columns.
+// \param indices Pointer to the first index of the selected columns.
+// \param n The total number of indices.
+// \param args The optional column arguments.
+// \return View on the specified columns of the subtensor.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified columns of the given constant
+// subtensor.
+*/
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename T          // Type of the column indices
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto)
+//    pageslices( const Subtensor<TT,AF,CSAs...>& sm, const T* indices, size_t n, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       for( size_t j=0UL; j<n; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
+//          }
+//       }
+//    }
+//
+//    SmallArray<size_t,128UL> newIndices( indices, indices+n );
+//    std::for_each( newIndices.begin(), newIndices.end(),
+//                   [column=sm.column()]( size_t& index ){ index += column; } );
+//
+//    return subtensor( columns( sm.operand(), newIndices.data(), n, args... ),
+//                      sm.row(), 0UL, sm.rows(), n, unchecked );
+// }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on specific columns of the given temporary subtensor.
+// \ingroup subtensor
+//
+// \param sm The temporary subtensor containing the columns.
+// \param indices Pointer to the first index of the selected columns.
+// \param n The total number of indices.
+// \param args The optional column arguments.
+// \return View on the specified columns of the subtensor.
+// \exception std::invalid_argument Invalid column access index.
+//
+// This function returns an expression representing the specified columns of the given temporary
+// subtensor.
+*/
+// template< typename TT         // Type of the sparse subtensor
+//         , AlignmentFlag AF    // Alignment flag
+//         , bool SO             // Storage order
+//         , bool DF             // Density flag
+//         , size_t... CSAs      // Compile time subtensor arguments
+//         , typename T          // Type of the column indices
+//         , typename... RCAs >  // Optional column arguments
+// inline decltype(auto)
+//    pageslices( Subtensor<TT,AF,CSAs...>&& sm, const T* indices, size_t n, RCAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
+//
+//    if( isChecked ) {
+//       for( size_t j=0UL; j<n; ++j ) {
+//          if( sm.columns() <= indices[j] ) {
+//             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
+//          }
+//       }
+//    }
+//
+//    SmallArray<size_t,128UL> newIndices( indices, indices+n );
+//    std::for_each( newIndices.begin(), newIndices.end(),
+//                   [column=sm.column()]( size_t& index ){ index += column; } );
+//
+//    return subtensor( columns( sm.operand(), newIndices.data(), n, args... ),
+//                      sm.row(), 0UL, sm.rows(), n, unchecked );
+// }
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  SUBTENSOR OPERATORS
 //
 //=================================================================================================
 
@@ -3872,7 +4619,7 @@ inline bool isSame( const Tensor<TT>& a, const Subtensor<TT,AF,CSAs...>& b ) noe
    return ( isSame( ~a, b.operand() ) &&
             ( (~a).rows() == b.rows() ) &&
             ( (~a).columns() == b.columns() ) &&
-            ( (~a).pages() == (~b).pages() ) );
+            ( (~a).pages() == b.pages() ) );
 }
 /*! \endcond */
 //*************************************************************************************************

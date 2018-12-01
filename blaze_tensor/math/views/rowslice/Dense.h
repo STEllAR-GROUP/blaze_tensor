@@ -1069,7 +1069,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 inline size_t RowSlice<MT,CRAs...>::rows() const noexcept
 {
-   return tensor_.pages();
+   return tensor_.columns();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1085,7 +1085,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 inline size_t RowSlice<MT,CRAs...>::columns() const noexcept
 {
-   return tensor_.columns();
+   return tensor_.pages();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1120,7 +1120,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 inline size_t RowSlice<MT,CRAs...>::capacity() const noexcept
 {
-   return tensor_.capacity( row(), 0UL ) * tensor_.pages();
+   return tensor_.columns() * tensor_.pages();
 }
 /*! \endcond */
 //*************************************************************************************************

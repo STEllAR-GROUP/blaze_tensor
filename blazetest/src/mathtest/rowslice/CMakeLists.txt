@@ -33,7 +33,7 @@
 set(category RowSlice)
 
 set(tests
-    DenseGeneralTest
+#    DenseGeneralTest
     IncludeTest
 )
 

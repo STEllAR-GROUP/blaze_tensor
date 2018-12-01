@@ -105,16 +105,372 @@ class ColumnSlice
    //! Pointer to a non-constant columnslice value.
    using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
+   //**RowIterator class definition*************************************************************
+   /*!\brief Iterator over the elements of the dense column.
+   */
+   template< typename TensorType      // Type of the dense tensor
+           , typename IteratorType >  // Type of the dense tensor iterator
+   class RowIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      //! The iterator category.
+      using IteratorCategory = typename std::iterator_traits<IteratorType>::iterator_category;
+
+      //! Type of the underlying elements.
+      using ValueType = typename std::iterator_traits<IteratorType>::value_type;
+
+      //! Pointer return type.
+      using PointerType = typename std::iterator_traits<IteratorType>::pointer;
+
+      //! Reference return type.
+      using ReferenceType = typename std::iterator_traits<IteratorType>::reference;
+
+      //! Difference between two iterators.
+      using DifferenceType = typename std::iterator_traits<IteratorType>::difference_type;
+
+      // STL iterator requirements
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Default constructor of the RowIterator class.
+      */
+      inline RowIterator() noexcept
+         : tensor_( nullptr )  // The dense tensor containing the column
+         , page_  ( 0UL )      // The current page index
+         , row_   ( 0UL )      // The current row index
+         , column_( 0UL )      // The current column index
+         , pos_   (     )      // Iterator to the current dense element
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor of the RowIterator class.
+      //
+      // \param tensor The tensor containing the column.
+      // \param page The page index.
+      // \param row The row index.
+      // \param column The column index.
+      */
+      inline RowIterator( TensorType& tensor, size_t page, size_t row, size_t column ) noexcept
+         : tensor_( &tensor )  // The dense tensor containing the column
+         , page_  ( page    )  // The current page index
+         , row_   ( row     )  // The current row index
+         , column_( column  )  // The current column index
+         , pos_   (         )  // Iterator to the current dense element
+      {
+         if( page_ != tensor_->pages() && row_ != tensor_->rows() )
+            pos_ = tensor_->begin( row_, page_ ) + column_;
+      }
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Conversion constructor from different RowIterator instances.
+      //
+      // \param it The column iterator to be copied.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline RowIterator( const RowIterator<TensorType2,IteratorType2>& it ) noexcept
+         : tensor_( it.tensor_ )  // The dense tensor containing the column
+         , page_  ( it.page_   )  // The current page index
+         , row_   ( it.row_    )  // The current row index
+         , column_( it.column_ )  // The current column index
+         , pos_   ( it.pos_    )  // Iterator to the current dense element
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline RowIterator& operator+=( size_t inc ) noexcept {
+         using blaze::reset;
+         row_ += inc;
+         if( row_ >= tensor_->rows() || page_ == tensor_->pages() )
+         {
+            reset( pos_ );
+         }
+         else
+         {
+            pos_ = tensor_->begin( row_, page_ ) + column_;
+         }
+
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline RowIterator& operator-=( size_t dec ) noexcept {
+         using blaze::reset;
+         if( row_ < dec )
+         {
+            pos_ = tensor_->begin( 0, page_ ) + column_;
+         }
+         else
+         {
+            row_ -= dec;
+            pos_ = tensor_->begin( row_, page_ ) + column_;
+         }
+
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline RowIterator& operator++() noexcept {
+         using blaze::reset;
+         ++row_;
+         if( row_ == tensor_->rows() || page_ == tensor_->pages() )
+         {
+            reset( pos_ );
+         }
+         else
+         {
+            pos_ = tensor_->begin( row_, page_ ) + column_;
+         }
+
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const RowIterator operator++( int ) noexcept {
+         const RowIterator tmp( *this );
+         ++(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline RowIterator& operator--() noexcept {
+         using blaze::reset;
+         if( row_ == 0 )
+         {
+            pos_ = tensor_->begin( 0, page_ ) + column_;
+         }
+         else
+         {
+            pos_ = tensor_->begin( --row_, page_ ) + column_;
+         }
+
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const RowIterator operator--( int ) noexcept {
+         const RowIterator tmp( *this );
+         --(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Subscript operator***********************************************************************
+      /*!\brief Direct access to the dense column elements.
+      //
+      // \param index Access index.
+      // \return Reference to the accessed value.
+      */
+      inline ReferenceType operator[]( size_t index ) const {
+         BLAZE_USER_ASSERT( row_+index < tensor_->rows(), "Invalid access index detected" );
+         BLAZE_USER_ASSERT( page_ < tensor_->pages(), "Invalid access index detected" );
+         const IteratorType pos( tensor_->begin( row_+index, page_ ) + column_ );
+         return *pos;
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the dense vector element at the current iterator position.
+      //
+      // \return The current value of the dense element.
+      */
+      inline ReferenceType operator*() const {
+         return *pos_;
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the dense vector element at the current iterator position.
+      //
+      // \return Reference to the dense vector element at the current iterator position.
+      */
+      inline PointerType operator->() const {
+         return pos_;
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side row iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator==( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return pos_ == rhs.pos_ || (page_ == rhs.page_ && row_ == rhs.row_ && column_ == rhs.column_);
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator!=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return !( *this == rhs );
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator<( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return page_ < rhs.page_ ? true : row_ < rhs.row_ ? true : column_ < rhs.column_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator>( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return !( *this >= rhs );
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator<=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return page_ <= rhs.page_ ? true : row_ <= rhs.row_ ? true : column_ <= rhs.column_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator>=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return !( *this < rhs );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two column iterators.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return The number of elements between the two column iterators.
+      */
+      inline DifferenceType operator-( const RowIterator& rhs ) const noexcept {
+         return row_ - rhs.row_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a RowIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const RowIterator operator+( const RowIterator& it, size_t inc ) noexcept {
+         return RowIterator( *it.tensor_, it.page_, it.row_+inc, it.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a RowIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const RowIterator operator+( size_t inc, const RowIterator& it ) noexcept {
+         return RowIterator( *it.tensor_, it.page_, it.row_+inc, it.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a RowIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param inc The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const RowIterator operator-( const RowIterator& it, size_t dec ) noexcept {
+         return RowIterator( *it.tensor_, it.page_, it.row_-dec, it.column_ );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      TensorType*  tensor_;  //!< The dense tensor containing the column.
+      size_t       page_;    //!< The current page index.
+      size_t       row_;     //!< The current row index.
+      size_t       column_;  //!< The current column index.
+      IteratorType pos_;     //!< Iterator to the current dense element.
+      //*******************************************************************************************
+
+      //**Friend declarations**********************************************************************
+      template< typename TensorType2, typename IteratorType2 > friend class RowIterator;
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_t<MT>;
+   using ConstIterator = RowIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, RowIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   static constexpr bool simdEnabled = MT::simdEnabled;
+   static constexpr bool simdEnabled = false;
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
@@ -198,51 +554,6 @@ class ColumnSlice
    //@}
    //**********************************************************************************************
 
- private:
-   //**********************************************************************************************
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT >
-   static constexpr bool VectorizedAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > );
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT >
-   static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-        HasSIMDAdd_v< ElementType, ElementType_t<VT> > );
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT >
-   static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-        HasSIMDSub_v< ElementType, ElementType_t<VT> > );
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT >
-   static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-        HasSIMDMult_v< ElementType, ElementType_t<VT> > );
-   //**********************************************************************************************
-
-   //**SIMD properties*****************************************************************************
-   //! The number of elements packed within a single SIMD element.
-   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
-   //**********************************************************************************************
-
  public:
    //**Expression template evaluation functions****************************************************
    /*!\name Expression template evaluation functions */
@@ -261,15 +572,6 @@ class ColumnSlice
 
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
-
-   BLAZE_ALWAYS_INLINE SIMDType load ( size_t i, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loada( size_t i, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t i, size_t k ) const noexcept;
-
-   BLAZE_ALWAYS_INLINE void store ( size_t i, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t i, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t i, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t i, size_t k, const SIMDType& value ) noexcept;
 
    template< typename VT >
    inline auto assign( const DenseMatrix<VT,false>& rhs );
@@ -376,7 +678,7 @@ inline typename ColumnSlice<MT,CRAs...>::Reference
 {
    BLAZE_USER_ASSERT( i < rows(),    "Invalid row access index" );
    BLAZE_USER_ASSERT( k < columns(), "Invalid columns access index" );
-   return tensor_(k, i, column());
+   return tensor_(i, k, column());
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -397,7 +699,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::ConstReference
    ColumnSlice<MT,CRAs...>::operator()( size_t i, size_t k ) const
 {
-   return const_cast<const MT&>( tensor_ )(k, i, column());
+   return const_cast<const MT&>( tensor_ )(i, k, column());
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -473,7 +775,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::Pointer
    ColumnSlice<MT,CRAs...>::data() noexcept
 {
-   return tensor_.data( 0, column(), 0 );
+   return tensor_.data() + column();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -493,7 +795,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::ConstPointer
    ColumnSlice<MT,CRAs...>::data() const noexcept
 {
-   return tensor_.data( 0, column(), 0 );
+   return tensor_.data() + column();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -513,7 +815,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::Pointer
    ColumnSlice<MT,CRAs...>::data( size_t i ) noexcept
 {
-   return tensor_.data( i, column(), 0 );
+   return tensor_.data() + column() + i * tensor_.capacity( 0, i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -533,7 +835,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::ConstPointer
    ColumnSlice<MT,CRAs...>::data( size_t i ) const noexcept
 {
-   return tensor_.data( i, column(), 0 );
+   return tensor_.data() + column() + i * tensor_.capacity( 0, i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -553,7 +855,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::Iterator
    ColumnSlice<MT,CRAs...>::begin( size_t i )
 {
-   return tensor_.begin( i, column() );   // #FIXME
+   return Iterator( tensor_, i, 0UL, column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -573,7 +875,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::ConstIterator
    ColumnSlice<MT,CRAs...>::begin( size_t i ) const
 {
-   return tensor_.cbegin( i, column() );   // #FIXME
+   return ConstIterator( tensor_, i, 0UL, column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -593,7 +895,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::ConstIterator
    ColumnSlice<MT,CRAs...>::cbegin( size_t i ) const
 {
-   return tensor_.cbegin( i, column() );   // #FIXME
+   return ConstIterator( tensor_, i, 0UL, column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -613,7 +915,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::Iterator
    ColumnSlice<MT,CRAs...>::end( size_t i )
 {
-   return tensor_.end( i, column() );   // #FIXME
+   return Iterator( tensor_, i, columns(), column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -633,7 +935,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::ConstIterator
    ColumnSlice<MT,CRAs...>::end( size_t i ) const
 {
-   return tensor_.cend( i, column() );   // #FIXME
+   return ConstIterator( tensor_, i, columns(), column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -653,7 +955,7 @@ template< typename MT       // Type of the dense tensor
 inline typename ColumnSlice<MT,CRAs...>::ConstIterator
    ColumnSlice<MT,CRAs...>::cend( size_t i ) const
 {
-   return tensor_.cend( i, column() );   // #FIXME
+   return ConstIterator( tensor_, i, columns(), column() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -691,7 +993,7 @@ inline ColumnSlice<MT,CRAs...>&
       {
          if (!IsRestricted_v<MT> || trySet(*this, k, j, rhs))
          {
-            left(j, column(), k) = rhs;
+            left(k, j, column()) = rhs;
          }
       }
    }
@@ -727,7 +1029,7 @@ inline ColumnSlice<MT,CRAs...>&
 
    if( IsRestricted_v<MT> ) {
       const InitializerMatrix<ElementType> tmp( list );
-      if( !tryAssign( tensor_, tmp,0UL, column(), 0UL ) ) {
+      if( !tryAssign( tensor_, tmp, 0UL, column(), 0UL ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
       }
    }
@@ -826,7 +1128,7 @@ inline ColumnSlice<MT,CRAs...>&
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
-   if( !tryAssign( tensor_, right,0UL, column(), 0UL ) ) {
+   if( !tryAssign( tensor_, right, 0UL, column(), 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -837,8 +1139,6 @@ inline ColumnSlice<MT,CRAs...>&
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseMatrix_v<VT> )
-         reset();
       smpAssign( left, right );
    }
 
@@ -880,7 +1180,7 @@ inline ColumnSlice<MT,CRAs...>&
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
-   if( !tryAddAssign( tensor_, right,0UL, column(), 0UL ) ) {
+   if( !tryAddAssign( tensor_, right, 0UL, column(), 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -920,7 +1220,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 template< typename VT >     // Type of the right-hand side matrix
 inline ColumnSlice<MT,CRAs...>&
-   ColumnSlice<MT,CRAs...>::operator-=( const Matrix<VT,false>& rhs )
+   ColumnSlice<MT,CRAs...>::operator-=( const Matrix<VT,rowMajor>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
@@ -932,7 +1232,7 @@ inline ColumnSlice<MT,CRAs...>&
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
    Right right( ~rhs );
 
-   if( !trySubAssign( tensor_, right,0UL, column(), 0UL ) ) {
+   if( !trySubAssign( tensor_, right, 0UL, column(), 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -985,7 +1285,7 @@ inline ColumnSlice<MT,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySchurAssign( tensor_, (~rhs),0UL, column(), 0UL ) ) {
+   if( !trySchurAssign( tensor_, (~rhs), 0UL, column(), 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1057,7 +1357,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 inline size_t ColumnSlice<MT,CRAs...>::rows() const noexcept
 {
-   return tensor_.rows();
+   return tensor_.pages();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1073,7 +1373,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 inline size_t ColumnSlice<MT,CRAs...>::columns() const noexcept
 {
-   return tensor_.pages();
+   return tensor_.rows();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1092,7 +1392,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 inline size_t ColumnSlice<MT,CRAs...>::spacing() const noexcept
 {
-   return tensor_.spacing();
+   return tensor_.pages();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1144,9 +1444,9 @@ template< typename MT       // Type of the dense tensor
 inline size_t ColumnSlice<MT,CRAs...>::nonZeros() const
 {
    size_t count ( 0 );
-//    for ( size_t i = 0; i < rows(); ++i ) {
-//       count += tensor_.nonZeros( i, page() );
-//    }
+   for ( size_t i = 0; i < rows(); ++i ) {
+      count += nonZeros( i );
+   }
    return count;
 }
 /*! \endcond */
@@ -1167,9 +1467,10 @@ template< typename MT       // Type of the dense tensor
 inline size_t ColumnSlice<MT,CRAs...>::nonZeros( size_t i ) const
 {
    size_t count ( 0 );
-//    for ( size_t i = 0; i < rows(); ++i ) {
-//       count += tensor_.nonZeros( i, page() );
-//    }
+   for( ConstIterator it = begin( i ); it != end( i ); ++it ) {
+      if(!isDefault(*it))
+         ++count;
+   }
    return count;
 }
 /*! \endcond */
@@ -1186,9 +1487,9 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 inline void ColumnSlice<MT,CRAs...>::reset()
 {
-//    for ( size_t i = 0; i < rows(); ++i ) {
-//       tensor_.reset( i, page() );
-//    }
+   for( size_t i = 0; i < rows(); ++i ) {
+      reset( i );
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1204,9 +1505,9 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 inline void ColumnSlice<MT,CRAs...>::reset( size_t i )
 {
-//    for ( size_t i = 0; i < rows(); ++i ) {
-//       tensor_.reset( i, page() );
-//    }
+   for( Iterator it = begin( i ); it != end( i ); ++it ) {
+      clear(*it);
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1385,179 +1686,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 inline bool ColumnSlice<MT,CRAs...>::canSMPAssign() const noexcept
 {
-   return ( rows() * columns() > SMP_DVECASSIGN_THRESHOLD );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Load of a SIMD element of the dense columnslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \return The loaded SIMD element.
-//
-// This function performs a load of a specific SIMD element of the dense columnslice. The index
-// must be smaller than the number of tensor columns. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-BLAZE_ALWAYS_INLINE typename ColumnSlice<MT,CRAs...>::SIMDType
-   ColumnSlice<MT,CRAs...>::load( size_t i, size_t k ) const noexcept
-{
-   return tensor_.load( k, i, column() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned load of a SIMD element of the dense columnslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \return The loaded SIMD element.
-//
-// This function performs an aligned load of a specific SIMD element of the dense columnslice.
-// The index must be smaller than the number of tensor columns. This function must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-BLAZE_ALWAYS_INLINE typename ColumnSlice<MT,CRAs...>::SIMDType
-   ColumnSlice<MT,CRAs...>::loada( size_t i, size_t k ) const noexcept
-{
-   return tensor_.loada( k, i, column() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned load of a SIMD element of the dense columnslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \return The loaded SIMD element.
-//
-// This function performs an unaligned load of a specific SIMD element of the dense columnslice.
-// The index must be smaller than the number of tensor columns. This function must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-BLAZE_ALWAYS_INLINE typename ColumnSlice<MT,CRAs...>::SIMDType
-   ColumnSlice<MT,CRAs...>::loadu( size_t i, size_t k ) const noexcept
-{
-   return tensor_.loadu( k, i, column() );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Store of a SIMD element of the dense columnslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \param value The SIMD element to be stored.
-// \return void
-//
-// This function performs a store a specific SIMD element of the dense columnslice. The index
-// must be smaller than the number of tensor columns. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-BLAZE_ALWAYS_INLINE void
-   ColumnSlice<MT,CRAs...>::store( size_t i, size_t k, const SIMDType& value ) noexcept
-{
-   tensor_.store( k, i, column(), value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned store of a SIMD element of the dense columnslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \param value The SIMD element to be stored.
-// \return void
-//
-// This function performs an aligned store a specific SIMD element of the dense columnslice. The
-// index must be smaller than the number of tensor columns. This function must \b NOT be
-// called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-BLAZE_ALWAYS_INLINE void
-   ColumnSlice<MT,CRAs...>::storea( size_t i, size_t k, const SIMDType& value ) noexcept
-{
-   tensor_.storea( k, i, column(), value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Unligned store of a SIMD element of the dense columnslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \param value The SIMD element to be stored.
-// \return void
-//
-// This function performs an unaligned store a specific SIMD element of the dense columnslice.
-// The index must be smaller than the number of tensor columns. This function must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-BLAZE_ALWAYS_INLINE void
-   ColumnSlice<MT,CRAs...>::storeu( size_t i, size_t k, const SIMDType& value ) noexcept
-{
-   tensor_.storeu( k, i, column(), value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned, non-temporal store of a SIMD element of the dense columnslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \param value The SIMD element to be stored.
-// \return void
-//
-// This function performs an aligned, non-temporal store a specific SIMD element of the dense
-// columnslice. The index must be smaller than the number of tensor columns. This function must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-BLAZE_ALWAYS_INLINE void
-   ColumnSlice<MT,CRAs...>::stream( size_t i, size_t k, const SIMDType& value ) noexcept
-{
-   tensor_.stream( k, i, column(), value );
+   return false;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1583,7 +1712,7 @@ inline auto ColumnSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
    BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid matrix sizes" );
 
-   for (size_t k = 0UL; k < (~rhs).rows(); ++k ) {
+   for( size_t k = 0UL; k < (~rhs).rows(); ++k ) {
       for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
          tensor_(k,i,column()) = (~rhs)(k,i);
       }
@@ -1613,7 +1742,7 @@ inline auto ColumnSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   for (size_t k = 0UL; k < (~rhs).rows(); ++k ) {
+   for( size_t k = 0UL; k < (~rhs).rows(); ++k ) {
       for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
          tensor_(k,i,column()) += (~rhs)(k,i);
       }
@@ -1643,7 +1772,7 @@ inline auto ColumnSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   for (size_t k = 0UL; k < (~rhs).rows(); ++k ) {
+   for( size_t k = 0UL; k < (~rhs).rows(); ++k ) {
       for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
          tensor_(k,i,column()) -= (~rhs)(k,i);
       }
@@ -1673,7 +1802,7 @@ inline auto ColumnSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& 
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
 
-   for (size_t k = 0UL; k < (~rhs).rows(); ++k ) {
+   for( size_t k = 0UL; k < (~rhs).rows(); ++k ) {
       for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
          tensor_(k,i,column()) *= (~rhs)(k,i);
       }

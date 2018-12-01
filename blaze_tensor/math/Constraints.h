@@ -43,9 +43,11 @@
 
 #include <blaze/math/Constraints.h>
 
+#include <blaze_tensor/math/constraints/ColumnSlice.h>
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/constraints/NumericTensor.h>
 #include <blaze_tensor/math/constraints/PageSlice.h>
+#include <blaze_tensor/math/constraints/RowSlice.h>
 #include <blaze_tensor/math/constraints/Subtensor.h>
 #include <blaze_tensor/math/constraints/TensMapExpr.h>
 #include <blaze_tensor/math/constraints/TensScalarDivExpr.h>

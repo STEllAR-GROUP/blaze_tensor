@@ -115,7 +115,7 @@ class DTensReduceExpr
 // This specialization of the DTensReduceExpr class template represents the compile time expression
 // for column-wise reduction operations of dense matrices.
 */
-template< typename MT    // Type of the dense tensor
+template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
 class DTensReduceExpr<MT,OP,columnwise>
    : public TensReduceExpr< DenseMatrix< DTensReduceExpr<MT,OP,columnwise>, rowMajor >, columnwise >
@@ -1049,7 +1049,7 @@ class DTensReduceExpr<MT,OP,columnwise>
 // This specialization of the DTensReduceExpr class template represents the compile time expression
 // for row-wise reduction operations of dense matrices.
 */
-template< typename MT    // Type of the dense tensor
+template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
 class DTensReduceExpr<MT,OP,rowwise>
    : public TensReduceExpr< DenseMatrix< DTensReduceExpr<MT,OP,rowwise>, rowMajor >, rowwise >
@@ -1836,7 +1836,7 @@ class DTensReduceExpr<MT,OP,rowwise>
 // This specialization of the DTensReduceExpr class template represents the compile time expression
 // for row-wise reduction operations of dense matrices.
 */
-template< typename MT    // Type of the dense tensor
+template< typename MT    // Type of the dense matrix
         , typename OP >  // Type of the reduction operation
 class DTensReduceExpr<MT,OP,pagewise>
    : public TensReduceExpr< DenseMatrix< DTensReduceExpr<MT,OP,pagewise>, true >, pagewise >

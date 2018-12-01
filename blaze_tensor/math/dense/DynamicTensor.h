@@ -214,8 +214,6 @@ class DynamicTensor
    inline ConstPointer   data  () const noexcept;
    inline Pointer        data  ( size_t i, size_t k ) noexcept;
    inline ConstPointer   data  ( size_t i, size_t k ) const noexcept;
-   inline Pointer        data  ( size_t k, size_t i, size_t j ) noexcept;
-   inline ConstPointer   data  ( size_t k, size_t i, size_t j ) const noexcept;
    inline Iterator       begin ( size_t i, size_t k ) noexcept;
    inline ConstIterator  begin ( size_t i, size_t k ) const noexcept;
    inline ConstIterator  cbegin( size_t i, size_t k ) const noexcept;
@@ -913,48 +911,6 @@ inline typename DynamicTensor<Type>::ConstPointer
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor row access index" );
    BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor page access index" );
    return v_ + (k*m_+i)*nn_;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Low-level data access to the tensor elements of row/column \a i.
-//
-// \param i The row/column index.
-// \param k The page index.
-// \return Pointer to the internal element storage.
-//
-// This function returns a pointer to the internal storage for the elements in row/column \a i.
-*/
-template< typename Type > // Data type of the tensor
-inline typename DynamicTensor<Type>::Pointer
-   DynamicTensor<Type>::data( size_t k, size_t i, size_t j ) noexcept
-{
-   BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor element access index" );
-   BLAZE_USER_ASSERT( j < n_, "Invalid dense tensor element access index" );
-   BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor element access index" );
-   return v_ + (k*m_+i)*nn_ + j;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Low-level data access to the tensor elements of row/column \a i.
-//
-// \param i The row/column index.
-// \param k The page index.
-// \return Pointer to the internal element storage.
-//
-// This function returns a pointer to the internal storage for the elements in row/column \a i.
-*/
-template< typename Type > // Data type of the tensor
-inline typename DynamicTensor<Type>::ConstPointer
-   DynamicTensor<Type>::data( size_t k, size_t i, size_t j ) const noexcept
-{
-   BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor element access index" );
-   BLAZE_USER_ASSERT( j < n_, "Invalid dense tensor element access index" );
-   BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor element access index" );
-   return v_ + (k*m_+i)*nn_ + j;
 }
 //*************************************************************************************************
 

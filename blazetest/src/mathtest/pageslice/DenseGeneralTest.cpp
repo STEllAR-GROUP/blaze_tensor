@@ -4256,7 +4256,7 @@ void DenseGeneralTest::testIsSame()
          }
       }
 
-//       // isSame with matching pageslices on a common submatrix
+//       // isSame with matching pageslices on a common subtensor
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( sm, 1UL );
@@ -4273,7 +4273,7 @@ void DenseGeneralTest::testIsSame()
 //          }
 //       }
 
-//       // isSame with non-matching pageslices on a common submatrix
+//       // isSame with non-matching pageslices on a common subtensor
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
 //          auto pageslice1 = blaze::pageslice( sm, 0UL );
@@ -4290,7 +4290,7 @@ void DenseGeneralTest::testIsSame()
 //          }
 //       }
 
-//       // isSame with matching subtensor on matrix and submatrix
+//       // isSame with matching subtensor on matrix and subtensor
 //       {
 //          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
 //          auto pageslice1 = blaze::pageslice( mat_, 2UL );

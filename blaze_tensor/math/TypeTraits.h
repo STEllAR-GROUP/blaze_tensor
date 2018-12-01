@@ -43,9 +43,11 @@
 
 #include <blaze/math/TypeTraits.h>
 
+#include <blaze_tensor/math/typetraits/IsColumnSlice.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
 #include <blaze_tensor/math/typetraits/IsNumericTensor.h>
 #include <blaze_tensor/math/typetraits/IsPageSlice.h>
+#include <blaze_tensor/math/typetraits/IsRowSlice.h>
 #include <blaze_tensor/math/typetraits/IsSubtensor.h>
 #include <blaze_tensor/math/typetraits/IsTensMapExpr.h>
 #include <blaze_tensor/math/typetraits/IsTensScalarDivExpr.h>
