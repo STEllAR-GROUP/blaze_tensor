@@ -25,7 +25,7 @@ Currently we have implemented:
 
 ## Building and installing BlazeTensor
 
-In order to use BlazeTensor you will need a proper installation of the [Blaze library](https://bitbucket.org/blaze-lib/blaze/src). Please see [here](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration%20and%20Installation) for instructions for installing it. If you want to run the BlazeTensor tests you will also need the Blaze source directory.
+In order to use BlazeTensor you will need a proper installation of the [Blaze library](https://bitbucket.org/blaze-lib/blaze/src). Please see [here](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration%20and%20Installation) for instructions on how to install it. If you want to run the BlazeTensor tests you will also need the Blaze source directory.
 
 1. Clone this repository
 2. Create a build directory
@@ -37,17 +37,16 @@ In order to use BlazeTensor you will need a proper installation of the [Blaze li
    ```
    $ cmake -DCMAKE_INSTALL_PREFIX=/opt/BlazeTensor -Dblaze_DIR=<blaze_dir> <srcdir>
    ```
-   here: `<blaze_dir>` should refer to the directory that contains the file `blaze-config.cmake` that was created during installation of Blaze. 
-   
-   If you want to build the tests, additionally specify `-DBLAZETENSOR_WITH_TESTS=ON` and `-Dblazetest_DIR=<blazesrc/blazetest>` 
-   on the `cmake` command line. Run the tests with `make tests`.
-   
+   here: `<blaze_dir>` should refer to the directory that contains the file `blaze-config.cmake` that 
+   was created during installation of Blaze.  
 4. Build and install:
    ```
    $ make
    $ make install
    ```
-
+5. If you want to build the tests, additionally specify `-DBLAZETENSOR_WITH_TESTS=ON` and `-Dblazetest_DIR=<blazesrc/blazetest>` 
+   on the `cmake` command line. Run the tests with `make tests`.
+   
 BlazeTensor is a header only C++ library. Projects depending on it should make sure the headers are being found by the compiler. If your depending project uses `cmake`, just add `find_package(BlazeTensor)` to your scripts and refer to the target named `BlazeTensor::BlazeTensor`.
 
 ## Communication
@@ -62,7 +61,7 @@ BlazeTensor is released under the terms of the [New (Revised) BSD license](https
 
 ## Acknowledgements
 
-We would like to acknowledge the NSF, DoD, the Center for Computation
+We would like to acknowledge the NSF, DoD, and the Center for Computation
 and Technology (CCT) at Louisiana State University (LSU).
 
 BlazeTensor is currently funded by:
