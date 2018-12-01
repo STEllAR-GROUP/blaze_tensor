@@ -105,8 +105,10 @@ inline void Rand< PageSlice<MT,CRAs...> >::randomize( RT&& pageslice ) const
    BLAZE_CONSTRAINT_MUST_BE_PAGESLICE_TYPE   ( PageSliceType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( PageSliceType );
 
-   for( size_t i=0UL; i<pageslice.size(); ++i ) {
-      randomize( pageslice[i] );
+   for( size_t i=0UL; i<pageslice.rows(); ++i ) {
+      for( size_t j=0UL; j<pageslice.columns(); ++j ) {
+         randomize( pageslice(i, j) );
+      }
    }
 }
 /*! \endcond */
@@ -135,8 +137,10 @@ inline void Rand< PageSlice<MT,CRAs...> >::randomize( RT&& pageslice, const Arg&
    BLAZE_CONSTRAINT_MUST_BE_PAGESLICE_TYPE   ( PageSliceType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( PageSliceType );
 
-   for( size_t i=0UL; i<pageslice.size(); ++i ) {
-      randomize( pageslice[i], min, max );
+   for( size_t i=0UL; i<pageslice.rows(); ++i ) {
+      for( size_t j=0UL; j<pageslice.columns(); ++j ) {
+         randomize( pageslice(i, j), min, max );
+      }
    }
 }
 /*! \endcond */

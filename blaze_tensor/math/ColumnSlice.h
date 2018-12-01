@@ -105,8 +105,10 @@ inline void Rand< ColumnSlice<MT,CRAs...> >::randomize( RT&& columnslice ) const
    BLAZE_CONSTRAINT_MUST_BE_COLUMNSLICE_TYPE ( ColumnSliceType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ColumnSliceType );
 
-   for( size_t i=0UL; i<columnslice.size(); ++i ) {
-      randomize( columnslice[i] );
+   for( size_t i=0UL; i<columnslice.rows(); ++i ) {
+      for( size_t j=0UL; j<columnslice.columns(); ++j ) {
+         randomize( columnslice(i, j) );
+      }
    }
 }
 /*! \endcond */
@@ -135,8 +137,10 @@ inline void Rand< ColumnSlice<MT,CRAs...> >::randomize( RT&& columnslice, const 
    BLAZE_CONSTRAINT_MUST_BE_COLUMNSLICE_TYPE ( ColumnSliceType );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ColumnSliceType );
 
-   for( size_t i=0UL; i<columnslice.size(); ++i ) {
-      randomize( columnslice[i], min, max );
+   for( size_t i=0UL; i<columnslice.rows(); ++i ) {
+      for( size_t j=0UL; j<columnslice.columns(); ++j ) {
+         randomize( columnslice(i, j), min, max );
+      }
    }
 }
 /*! \endcond */
