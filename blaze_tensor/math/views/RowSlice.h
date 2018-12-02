@@ -1371,12 +1371,12 @@ inline decltype(auto) derestrict( RowSlice<MT>&& r )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
 struct Size< RowSlice<MT,CRAs...>, 0UL >
-   : public Size<MT,0UL>
+   : public Size<MT,2UL>
 {};
 
 template< typename MT, size_t... CRAs >
 struct Size< RowSlice<MT,CRAs...>, 1UL >
-   : public Size<MT,1UL>
+   : public Size<MT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1394,7 +1394,11 @@ struct Size< RowSlice<MT,CRAs...>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
 struct MaxSize< RowSlice<MT,CRAs...>, 0UL >
-   : public MaxSize<MT,1UL>
+   : public MaxSize<MT,2UL>
+{};
+template< typename MT, size_t... CRAs >
+struct MaxSize< RowSlice<MT,CRAs...>, 1UL >
+   : public MaxSize<MT,0UL>
 {};
 /*! \endcond */
 //*************************************************************************************************

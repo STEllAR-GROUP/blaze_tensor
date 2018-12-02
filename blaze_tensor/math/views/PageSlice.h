@@ -841,7 +841,7 @@ template< typename MT       // Type of the tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 inline bool isIntact( const PageSlice<MT,CRAs...>& pageslice ) noexcept
 {
-   return ( pageslice.page() < pageslice.operand().pageslices() &&
+   return ( pageslice.page() < pageslice.operand().pages() &&
             isIntact( pageslice.operand() ) );
 }
 /*! \endcond */
@@ -1265,9 +1265,6 @@ inline bool tryDivAssign( const PageSlice<MT,CRAs...>& lhs,
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the tensor
-              // Storage order
-              // Density flag
-              // Symmetry flag
         , size_t I >   // PageSlice index
 inline decltype(auto) derestrict( PageSlice<MT,I>& r )
 {
@@ -1293,9 +1290,6 @@ inline decltype(auto) derestrict( PageSlice<MT,I>& r )
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
 template< typename MT  // Type of the tensor
-              // Storage order
-              // Density flag
-              // Symmetry flag
         , size_t I >   // PageSlice index
 inline decltype(auto) derestrict( PageSlice<MT,I>&& r )
 {
@@ -1320,10 +1314,7 @@ inline decltype(auto) derestrict( PageSlice<MT,I>&& r )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the tensor
-              // Storage order
-              // Density flag
-         >    // Symmetry flag
+template< typename MT > // Type of the tensor
 inline decltype(auto) derestrict( PageSlice<MT>& r )
 {
    return pageslice( derestrict( r.operand() ), r.page(), unchecked );
@@ -1347,10 +1338,7 @@ inline decltype(auto) derestrict( PageSlice<MT>& r )
 // optimized evaluation of expression templates. Calling this function explicitly might result
 // in the violation of invariants, erroneous results and/or in compilation errors.
 */
-template< typename MT  // Type of the tensor
-              // Storage order
-              // Density flag
-         >    // Symmetry flag
+template< typename MT > // Type of the tensor
 inline decltype(auto) derestrict( PageSlice<MT>&& r )
 {
    return pageslice( derestrict( r.operand() ), r.page(), unchecked );
@@ -1371,12 +1359,12 @@ inline decltype(auto) derestrict( PageSlice<MT>&& r )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
 struct Size< PageSlice<MT,CRAs...>, 0UL >
-   : public Size<MT,0UL>
+   : public Size<MT,1UL>
 {};
 
 template< typename MT, size_t... CRAs >
 struct Size< PageSlice<MT,CRAs...>, 1UL >
-   : public Size<MT,1UL>
+   : public Size<MT,2UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1395,6 +1383,10 @@ struct Size< PageSlice<MT,CRAs...>, 1UL >
 template< typename MT, size_t... CRAs >
 struct MaxSize< PageSlice<MT,CRAs...>, 0UL >
    : public MaxSize<MT,1UL>
+{};
+template< typename MT, size_t... CRAs >
+struct MaxSize< PageSlice<MT,CRAs...>, 1UL >
+   : public MaxSize<MT,2UL>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1503,24 +1495,6 @@ struct IsContiguous< PageSlice<MT,CRAs...> >
 template< typename MT, size_t... CRAs >
 struct IsPadded< PageSlice<MT,CRAs...> >
    : public BoolConstant< IsPadded_v<MT> >
-{};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  ISOPPOSEDVIEW SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t... CRAs >
-struct IsOpposedView< PageSlice<MT,CRAs...> >
-   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

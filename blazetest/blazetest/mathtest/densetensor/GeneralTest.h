@@ -207,15 +207,15 @@ void GeneralTest::checkColumns( const Type& tensor, size_t expectedColumns ) con
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of columns of the given dense tensor.
+/*!\brief Checking the number of pages of the given dense tensor.
 //
 // \param tensor The dense tensor to be checked.
-// \param expectedRows The expected number of columns of the dense tensor.
+// \param expectedRows The expected number of pages of the dense tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of columns of the given dense tensor. In case the
-// actual number of columns does not correspond to the given expected number of columns,
+// This function checks the number of pages of the given dense tensor. In case the
+// actual number of pages does not correspond to the given expected number of pages,
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense tensor

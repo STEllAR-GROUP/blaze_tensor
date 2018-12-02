@@ -841,7 +841,7 @@ template< typename MT       // Type of the tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 inline bool isIntact( const ColumnSlice<MT,CRAs...>& columnslice ) noexcept
 {
-   return ( columnslice.page() < columnslice.operand().columnslices() &&
+   return ( columnslice.page() < columnslice.operand().columns() &&
             isIntact( columnslice.operand() ) );
 }
 /*! \endcond */
@@ -1394,6 +1394,10 @@ struct Size< ColumnSlice<MT,CRAs...>, 1UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, size_t... CRAs >
 struct MaxSize< ColumnSlice<MT,CRAs...>, 0UL >
+   : public MaxSize<MT,0UL>
+{};
+template< typename MT, size_t... CRAs >
+struct MaxSize< ColumnSlice<MT,CRAs...>, 1UL >
    : public MaxSize<MT,1UL>
 {};
 /*! \endcond */

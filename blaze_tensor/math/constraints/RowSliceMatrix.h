@@ -60,7 +60,7 @@ namespace blaze {
 // whose transposition flag is set to blaze::rowMajor) a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ROWSLICE_MATRIX_TYPE(T) \
-   static_assert( ::blaze::IsRowSliceMatrix_v<T>, "Non-row-major matrix type detected" )
+   static_assert( ::blaze::IsRowSliceMatrix_v<T>, "Non-row-slice matrix type detected" )
 //*************************************************************************************************
 
 

@@ -84,12 +84,12 @@ struct IsRowSliceMatrixHelper
 
 
 //*************************************************************************************************
-/*!\brief Compile time check for pageslice matrix types.
+/*!\brief Compile time check for rowslice matrix types.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template argument is a pageslice dense or sparse
+// This type trait tests whether or not the given template argument is a rowslice dense or sparse
 // matrix type (i.e. a matrix whose transposition flag is set to blaze::rowMajor). In case
-// the type is a pageslice matrix type, the \a value member constant is set to \a true, the nested
+// the type is a rowslice matrix type, the \a value member constant is set to \a true, the nested
 // type definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
 // \a value is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 

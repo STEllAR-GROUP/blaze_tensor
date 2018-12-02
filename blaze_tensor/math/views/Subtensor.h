@@ -42,7 +42,45 @@
 //*************************************************************************************************
 
 #include <blaze/math/AlignmentFlag.h>
-#include <blaze/math/views/Submatrix.h>
+#include <blaze/math/Aliases.h>
+#include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/constraints/MutableDataAccess.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/expressions/DeclExpr.h>
+#include <blaze/math/expressions/SchurExpr.h>
+#include <blaze/math/InversionFlag.h>
+#include <blaze/math/ReductionFlag.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Serial.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
+#include <blaze/math/typetraits/IsHermitian.h>
+#include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/typetraits/Size.h>
+#include <blaze/math/views/Check.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/DecltypeAuto.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/mpl/PtrdiffT.h>
+#include <blaze/util/StaticAssert.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/TypeList.h>
+#include <blaze/util/Types.h>
+#include <blaze/util/typetraits/RemoveReference.h>
+#include <blaze/util/Unused.h>
 
 #include <blaze_tensor/math/Aliases.h>
 #include <blaze_tensor/math/ReductionFlag.h>

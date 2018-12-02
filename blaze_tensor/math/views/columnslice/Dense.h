@@ -69,7 +69,7 @@ namespace blaze {
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 class ColumnSlice
-   : public View< DenseMatrix< ColumnSlice<MT,CRAs...>, false > >
+   : public View< DenseMatrix< ColumnSlice<MT,CRAs...>, rowMajor > >
    , private ColumnSliceData<CRAs...>
 {
  private:
@@ -164,7 +164,7 @@ class ColumnSlice
          , column_( column  )  // The current column index
          , pos_   (         )  // Iterator to the current dense element
       {
-         if( page_ != tensor_->pages() && row_ != tensor_->rows() )
+         if( row_ != tensor_->rows() )
             pos_ = tensor_->begin( row_, page_ ) + column_;
       }
       //*******************************************************************************************
@@ -193,7 +193,7 @@ class ColumnSlice
       inline RowIterator& operator+=( size_t inc ) noexcept {
          using blaze::reset;
          row_ += inc;
-         if( row_ >= tensor_->rows() || page_ == tensor_->pages() )
+         if( row_ >= tensor_->rows() )
          {
             reset( pos_ );
          }
@@ -236,7 +236,7 @@ class ColumnSlice
       inline RowIterator& operator++() noexcept {
          using blaze::reset;
          ++row_;
-         if( row_ == tensor_->rows() || page_ == tensor_->pages() )
+         if( row_ == tensor_->rows() )
          {
             reset( pos_ );
          }
@@ -335,7 +335,7 @@ class ColumnSlice
       */
       template< typename TensorType2, typename IteratorType2 >
       inline bool operator==( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
-         return pos_ == rhs.pos_ || (page_ == rhs.page_ && row_ == rhs.row_ && column_ == rhs.column_);
+         return pos_ == IteratorType2() || row_ == rhs.row_;
       }
       //*******************************************************************************************
 
@@ -359,7 +359,7 @@ class ColumnSlice
       */
       template< typename TensorType2, typename IteratorType2 >
       inline bool operator<( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
-         return page_ < rhs.page_ ? true : row_ < rhs.row_ ? true : column_ < rhs.column_;
+         return row_ < rhs.row_;
       }
       //*******************************************************************************************
 
@@ -383,7 +383,7 @@ class ColumnSlice
       */
       template< typename TensorType2, typename IteratorType2 >
       inline bool operator<=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
-         return page_ <= rhs.page_ ? true : row_ <= rhs.row_ ? true : column_ <= rhs.column_;
+         return row_ <= rhs.row_;
       }
       //*******************************************************************************************
 
@@ -573,17 +573,17 @@ class ColumnSlice
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   template< typename VT >
-   inline auto assign( const DenseMatrix<VT,false>& rhs );
+   template< typename VT, bool SO >
+   inline auto assign( const DenseMatrix<VT,SO>& rhs );
 
-   template< typename VT >
-   inline auto addAssign( const DenseMatrix<VT,false>& rhs );
+   template< typename VT, bool SO >
+   inline auto addAssign( const DenseMatrix<VT,SO>& rhs );
 
-   template< typename VT >
-   inline auto subAssign( const DenseMatrix<VT,false>& rhs );
+   template< typename VT, bool SO >
+   inline auto subAssign( const DenseMatrix<VT,SO>& rhs );
 
-   template< typename VT >
-   inline auto schurAssign( const DenseMatrix<VT,false>& rhs );
+   template< typename VT, bool SO >
+   inline auto schurAssign( const DenseMatrix<VT,SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1705,9 +1705,10 @@ inline bool ColumnSlice<MT,CRAs...>::canSMPAssign() const noexcept
 // assignment operator.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto ColumnSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
+        , size_t... CRAs >  // Compile time rowslice arguments
+template< typename VT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order
+inline auto ColumnSlice<MT,CRAs...>::assign( const DenseMatrix<VT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid matrix sizes" );
@@ -1735,9 +1736,10 @@ inline auto ColumnSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
 // assignment operator.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto ColumnSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
+        , size_t... CRAs >  // Compile time rowslice arguments
+template< typename VT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order
+inline auto ColumnSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -1765,9 +1767,10 @@ inline auto ColumnSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs
 // assignment operator.
 */
 template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time columnslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto ColumnSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
+        , size_t... CRAs >  // Compile time rowslice arguments
+template< typename VT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order
+inline auto ColumnSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -1794,10 +1797,11 @@ inline auto ColumnSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the tensor
-        , size_t... CSAs >  // Compile time columnslice arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
-inline auto ColumnSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
+template< typename MT       // Type of the dense tensor
+        , size_t... CRAs >  // Compile time rowslice arguments
+template< typename MT2      // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order
+inline auto ColumnSlice<MT,CRAs...>::schurAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );

@@ -41,7 +41,55 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/views/row/Dense.h>
+#include <algorithm>
+#include <iterator>
+#include <blaze/math/Aliases.h>
+#include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/TransExpr.h>
+#include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/Exception.h>
+#include <blaze/math/expressions/View.h>
+#include <blaze/math/InitializerList.h>
+#include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Reset.h>
+#include <blaze/math/SIMD.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDDiv.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsTriangular.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/views/Check.h>
+#include <blaze/system/CacheSize.h>
+#include <blaze/system/Inline.h>
+#include <blaze/system/Optimizations.h>
+#include <blaze/system/Thresholds.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/constraints/Pointer.h>
+#include <blaze/util/constraints/Reference.h>
+#include <blaze/util/constraints/Vectorizable.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/TypeList.h>
+#include <blaze/util/Types.h>
+#include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/constraints/DenseTensor.h>
@@ -49,6 +97,7 @@
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
 #include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/pageslice/PageSliceData.h>
+
 
 namespace blaze {
 
@@ -69,7 +118,7 @@ namespace blaze {
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 class PageSlice
-   : public View< DenseMatrix< PageSlice<MT,CRAs...>, false > >
+   : public View< DenseMatrix< PageSlice<MT,CRAs...>, rowMajor > >
    , private PageSliceData<CRAs...>
 {
  private:
@@ -83,15 +132,15 @@ class PageSlice
    //! Type of this PageSlice instance.
    using This = PageSlice<MT,CRAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this PageSlice instance.
+   using BaseType      = DenseMatrix<This,rowMajor>;   //!< Base type of this PageSlice instance.
    using ViewedType    = MT;                           //!< The type viewed by this PageSlice instance.
-   using ResultType    = PageSliceTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using ResultType    = PageSliceTrait_t<MT,CRAs...>; //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the pageslice elements.
    using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the pageslice elements.
    using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const PageSlice&;                  //!< Data type for composite expression templates.
+   using CompositeType = const PageSlice&;             //!< Data type for composite expression templates.
 
    //! Reference to a constant pageslice value.
    using ConstReference = ConstReference_t<MT>;

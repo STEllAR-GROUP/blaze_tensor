@@ -41,13 +41,62 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/views/row/Dense.h>
+#include <blaze/math/Aliases.h>
+#include <blaze/math/Exception.h>
+#include <blaze/math/SIMD.h>
+#include <blaze/math/constraints/Computation.h>
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/math/constraints/Symmetric.h>
+#include <blaze/math/constraints/TransExpr.h>
+#include <blaze/math/constraints/UniTriangular.h>
+#include <blaze/math/dense/InitializerMatrix.h>
+#include <blaze/math/expressions/DenseMatrix.h>
+#include <blaze/math/expressions/View.h>
+#include <blaze/math/shims/Clear.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/shims/Reset.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/HasSIMDAdd.h>
+#include <blaze/math/typetraits/HasSIMDDiv.h>
+#include <blaze/math/typetraits/HasSIMDMult.h>
+#include <blaze/math/typetraits/HasSIMDSub.h>
+#include <blaze/math/typetraits/IsExpression.h>
+#include <blaze/math/typetraits/IsLower.h>
+#include <blaze/math/typetraits/IsPadded.h>
+#include <blaze/math/typetraits/IsRestricted.h>
+#include <blaze/math/typetraits/IsSIMDCombinable.h>
+#include <blaze/math/typetraits/IsSparseVector.h>
+#include <blaze/math/typetraits/IsStrictlyLower.h>
+#include <blaze/math/typetraits/IsStrictlyUpper.h>
+#include <blaze/math/typetraits/IsTriangular.h>
+#include <blaze/math/typetraits/IsUniLower.h>
+#include <blaze/math/typetraits/IsUniUpper.h>
+#include <blaze/math/typetraits/IsUpper.h>
+#include <blaze/math/views/Check.h>
+#include <blaze/system/CacheSize.h>
+#include <blaze/system/Inline.h>
+#include <blaze/system/Optimizations.h>
+#include <blaze/system/Thresholds.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/DisableIf.h>
+#include <blaze/util/EnableIf.h>
+#include <blaze/util/TypeList.h>
+#include <blaze/util/Types.h>
+#include <blaze/util/constraints/Pointer.h>
+#include <blaze/util/constraints/Reference.h>
+#include <blaze/util/constraints/Vectorizable.h>
+#include <blaze/util/mpl/If.h>
+#include <blaze/util/typetraits/IsConst.h>
+#include <blaze/util/typetraits/IsReference.h>
+#include <blaze/util/typetraits/RemoveReference.h>
 
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/constraints/Subtensor.h>
+#include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/RowSliceTrait.h>
 #include <blaze_tensor/math/views/rowslice/BaseTemplate.h>
+#include <blaze_tensor/math/views/rowslice/RowSlice.h>
 #include <blaze_tensor/math/views/rowslice/RowSliceData.h>
 
 namespace blaze {
@@ -69,7 +118,7 @@ namespace blaze {
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 class RowSlice
-   : public View< DenseMatrix< RowSlice<MT,CRAs...>, false > >
+   : public View< DenseMatrix< RowSlice<MT,CRAs...>, rowMajor > >
    , private RowSliceData<CRAs...>
 {
  private:
@@ -83,15 +132,15 @@ class RowSlice
    //! Type of this RowSlice instance.
    using This = RowSlice<MT,CRAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;      //!< Base type of this RowSlice instance.
+   using BaseType      = DenseMatrix<This,rowMajor>;   //!< Base type of this RowSlice instance.
    using ViewedType    = MT;                           //!< The type viewed by this RowSlice instance.
-   using ResultType    = RowSliceTrait_t<MT,CRAs...>;      //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
+   using ResultType    = RowSliceTrait_t<MT,CRAs...>;  //!< Result type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<MT>;            //!< Type of the rowslice elements.
    using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the rowslice elements.
    using ReturnType    = ReturnType_t<MT>;             //!< Return type for expression template evaluations
-   using CompositeType = const RowSlice&;                  //!< Data type for composite expression templates.
+   using CompositeType = const RowSlice&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant rowslice value.
    using ConstReference = ConstReference_t<MT>;
@@ -105,16 +154,372 @@ class RowSlice
    //! Pointer to a non-constant rowslice value.
    using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
+   //**RowIterator class definition*************************************************************
+   /*!\brief Iterator over the elements of the dense column.
+   */
+   template< typename TensorType      // Type of the dense tensor
+           , typename IteratorType >  // Type of the dense tensor iterator
+   class RowIterator
+   {
+    public:
+      //**Type definitions*************************************************************************
+      //! The iterator category.
+      using IteratorCategory = typename std::iterator_traits<IteratorType>::iterator_category;
+
+      //! Type of the underlying elements.
+      using ValueType = typename std::iterator_traits<IteratorType>::value_type;
+
+      //! Pointer return type.
+      using PointerType = typename std::iterator_traits<IteratorType>::pointer;
+
+      //! Reference return type.
+      using ReferenceType = typename std::iterator_traits<IteratorType>::reference;
+
+      //! Difference between two iterators.
+      using DifferenceType = typename std::iterator_traits<IteratorType>::difference_type;
+
+      // STL iterator requirements
+      using iterator_category = IteratorCategory;  //!< The iterator category.
+      using value_type        = ValueType;         //!< Type of the underlying elements.
+      using pointer           = PointerType;       //!< Pointer return type.
+      using reference         = ReferenceType;     //!< Reference return type.
+      using difference_type   = DifferenceType;    //!< Difference between two iterators.
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Default constructor of the RowIterator class.
+      */
+      inline RowIterator() noexcept
+         : tensor_( nullptr )  // The dense tensor containing the column
+         , page_  ( 0UL )      // The current page index
+         , row_   ( 0UL )      // The current row index
+         , column_( 0UL )      // The current column index
+         , pos_   (     )      // Iterator to the current dense element
+      {}
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Constructor of the RowIterator class.
+      //
+      // \param tensor The tensor containing the column.
+      // \param page The page index.
+      // \param row The row index.
+      // \param column The column index.
+      */
+      inline RowIterator( TensorType& tensor, size_t page, size_t row, size_t column ) noexcept
+         : tensor_( &tensor )  // The dense tensor containing the column
+         , page_  ( page    )  // The current page index
+         , row_   ( row     )  // The current row index
+         , column_( column  )  // The current column index
+         , pos_   (         )  // Iterator to the current dense element
+      {
+         if( page_ != tensor_->pages() )
+            pos_ = tensor_->begin( row_, page_ ) + column_;
+      }
+      //*******************************************************************************************
+
+      //**Constructor******************************************************************************
+      /*!\brief Conversion constructor from different RowIterator instances.
+      //
+      // \param it The column iterator to be copied.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline RowIterator( const RowIterator<TensorType2,IteratorType2>& it ) noexcept
+         : tensor_( it.tensor_ )  // The dense tensor containing the column
+         , page_  ( it.page_   )  // The current page index
+         , row_   ( it.row_    )  // The current row index
+         , column_( it.column_ )  // The current column index
+         , pos_   ( it.pos_    )  // Iterator to the current dense element
+      {}
+      //*******************************************************************************************
+
+      //**Addition assignment operator*************************************************************
+      /*!\brief Addition assignment operator.
+      //
+      // \param inc The increment of the iterator.
+      // \return The incremented iterator.
+      */
+      inline RowIterator& operator+=( size_t inc ) noexcept {
+         using blaze::reset;
+         page_ += inc;
+         if( page_ >= tensor_->pages() )
+         {
+            reset( pos_ );
+         }
+         else
+         {
+            pos_ = tensor_->begin( row_, page_ ) + column_;
+         }
+
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Subtraction assignment operator**********************************************************
+      /*!\brief Subtraction assignment operator.
+      //
+      // \param dec The decrement of the iterator.
+      // \return The decremented iterator.
+      */
+      inline RowIterator& operator-=( size_t dec ) noexcept {
+         using blaze::reset;
+         if( page_ < dec )
+         {
+            pos_ = tensor_->begin( row_, 0UL ) + column_;
+         }
+         else
+         {
+            page_ -= dec;
+            pos_ = tensor_->begin( row_, page_ ) + column_;
+         }
+
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Prefix increment operator****************************************************************
+      /*!\brief Pre-increment operator.
+      //
+      // \return Reference to the incremented iterator.
+      */
+      inline RowIterator& operator++() noexcept {
+         using blaze::reset;
+         ++page_;
+         if( page_ == tensor_->rows() )
+         {
+            reset( pos_ );
+         }
+         else
+         {
+            pos_ = tensor_->begin( row_, page_ ) + column_;
+         }
+
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix increment operator***************************************************************
+      /*!\brief Post-increment operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const RowIterator operator++( int ) noexcept {
+         const RowIterator tmp( *this );
+         ++(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Prefix decrement operator****************************************************************
+      /*!\brief Pre-decrement operator.
+      //
+      // \return Reference to the decremented iterator.
+      */
+      inline RowIterator& operator--() noexcept {
+         using blaze::reset;
+         if( page_ == 0 )
+         {
+            pos_ = tensor_->begin( row_, 0UL ) + column_;
+         }
+         else
+         {
+            pos_ = tensor_->begin( --row_, page_ ) + column_;
+         }
+
+         return *this;
+      }
+      //*******************************************************************************************
+
+      //**Postfix decrement operator***************************************************************
+      /*!\brief Post-decrement operator.
+      //
+      // \return The previous position of the iterator.
+      */
+      inline const RowIterator operator--( int ) noexcept {
+         const RowIterator tmp( *this );
+         --(*this);
+         return tmp;
+      }
+      //*******************************************************************************************
+
+      //**Subscript operator***********************************************************************
+      /*!\brief Direct access to the dense column elements.
+      //
+      // \param index Access index.
+      // \return Reference to the accessed value.
+      */
+      inline ReferenceType operator[]( size_t index ) const {
+         BLAZE_USER_ASSERT( row_ < tensor_->rows(), "Invalid access index detected" );
+         BLAZE_USER_ASSERT( page_+index < tensor_->pages(), "Invalid access index detected" );
+         const IteratorType pos( tensor_->begin( row_, page_+index ) + column_ );
+         return *pos;
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the dense vector element at the current iterator position.
+      //
+      // \return The current value of the dense element.
+      */
+      inline ReferenceType operator*() const {
+         return *pos_;
+      }
+      //*******************************************************************************************
+
+      //**Element access operator******************************************************************
+      /*!\brief Direct access to the dense vector element at the current iterator position.
+      //
+      // \return Reference to the dense vector element at the current iterator position.
+      */
+      inline PointerType operator->() const {
+         return pos_;
+      }
+      //*******************************************************************************************
+
+      //**Equality operator************************************************************************
+      /*!\brief Equality comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side row iterator.
+      // \return \a true if the iterators refer to the same element, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator==( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return pos_ == IteratorType2() || page_ == rhs.page_;
+      }
+      //*******************************************************************************************
+
+      //**Inequality operator**********************************************************************
+      /*!\brief Inequality comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the iterators don't refer to the same element, \a false if they do.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator!=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return !( *this == rhs );
+      }
+      //*******************************************************************************************
+
+      //**Less-than operator***********************************************************************
+      /*!\brief Less-than comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is smaller, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator<( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return page_ < rhs.page_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-than operator********************************************************************
+      /*!\brief Greater-than comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is greater, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator>( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return !( *this >= rhs );
+      }
+      //*******************************************************************************************
+
+      //**Less-or-equal-than operator**************************************************************
+      /*!\brief Less-than comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator<=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return page_ <= rhs.page_;
+      }
+      //*******************************************************************************************
+
+      //**Greater-or-equal-than operator***********************************************************
+      /*!\brief Greater-than comparison between two RowIterator objects.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
+      */
+      template< typename TensorType2, typename IteratorType2 >
+      inline bool operator>=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+         return !( *this < rhs );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Calculating the number of elements between two column iterators.
+      //
+      // \param rhs The right-hand side column iterator.
+      // \return The number of elements between the two column iterators.
+      */
+      inline DifferenceType operator-( const RowIterator& rhs ) const noexcept {
+         return page_ - rhs.page_;
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between a RowIterator and an integral value.
+      //
+      // \param it The iterator to be incremented.
+      // \param inc The number of elements the iterator is incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const RowIterator operator+( const RowIterator& it, size_t inc ) noexcept {
+         return RowIterator( *it.tensor_, it.page_+inc, it.row_, it.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Addition operator************************************************************************
+      /*!\brief Addition between an integral value and a RowIterator.
+      //
+      // \param inc The number of elements the iterator is incremented.
+      // \param it The iterator to be incremented.
+      // \return The incremented iterator.
+      */
+      friend inline const RowIterator operator+( size_t inc, const RowIterator& it ) noexcept {
+         return RowIterator( *it.tensor_, it.page_+inc, it.row_, it.column_ );
+      }
+      //*******************************************************************************************
+
+      //**Subtraction operator*********************************************************************
+      /*!\brief Subtraction between a RowIterator and an integral value.
+      //
+      // \param it The iterator to be decremented.
+      // \param inc The number of elements the iterator is decremented.
+      // \return The decremented iterator.
+      */
+      friend inline const RowIterator operator-( const RowIterator& it, size_t dec ) noexcept {
+         return RowIterator( *it.tensor_, it.page_-dec, it.row_, it.column_ );
+      }
+      //*******************************************************************************************
+
+    private:
+      //**Member variables*************************************************************************
+      TensorType*  tensor_;  //!< The dense tensor containing the column.
+      size_t       page_;    //!< The current page index.
+      size_t       row_;     //!< The current row index.
+      size_t       column_;  //!< The current column index.
+      IteratorType pos_;     //!< Iterator to the current dense element.
+      //*******************************************************************************************
+
+      //**Friend declarations**********************************************************************
+      template< typename TensorType2, typename IteratorType2 > friend class RowIterator;
+      //*******************************************************************************************
+   };
+   //**********************************************************************************************
+
    //! Iterator over constant elements.
-   using ConstIterator = ConstIterator_t<MT>;
+   using ConstIterator = RowIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, RowIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   static constexpr bool simdEnabled = MT::simdEnabled;
+   static constexpr bool simdEnabled = false;
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
@@ -140,10 +545,10 @@ class RowSlice
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t j, size_t k );
-   inline ConstReference operator()( size_t j, size_t k ) const;
-   inline Reference      at( size_t j, size_t k );
-   inline ConstReference at( size_t j, size_t k ) const;
+   inline Reference      operator()( size_t i, size_t j );
+   inline ConstReference operator()( size_t i, size_t j ) const;
+   inline Reference      at( size_t i, size_t j );
+   inline ConstReference at( size_t i, size_t j ) const;
    inline Pointer        data  () noexcept;
    inline ConstPointer   data  () const noexcept;
    inline Pointer        data  ( size_t i ) noexcept;
@@ -198,46 +603,6 @@ class RowSlice
    //@}
    //**********************************************************************************************
 
- private:
-   //**********************************************************************************************
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT >
-   static constexpr bool VectorizedAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > );
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT >
-   static constexpr bool VectorizedAddAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-        HasSIMDAdd_v< ElementType, ElementType_t<VT> > );
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT >
-   static constexpr bool VectorizedSubAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-        HasSIMDSub_v< ElementType, ElementType_t<VT> > );
-   //**********************************************************************************************
-
-   //**********************************************************************************************
-   //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename VT >
-   static constexpr bool VectorizedSchurAssign_v =
-      ( useOptimizedKernels &&
-        simdEnabled && VT::simdEnabled &&
-        IsSIMDCombinable_v< ElementType, ElementType_t<VT> > &&
-        HasSIMDMult_v< ElementType, ElementType_t<VT> > );
-   //**********************************************************************************************
-
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
    static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
@@ -262,38 +627,17 @@ class RowSlice
    inline bool isAligned   () const noexcept;
    inline bool canSMPAssign() const noexcept;
 
-   BLAZE_ALWAYS_INLINE SIMDType load ( size_t j, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loada( size_t j, size_t k ) const noexcept;
-   BLAZE_ALWAYS_INLINE SIMDType loadu( size_t j, size_t k ) const noexcept;
+   template< typename VT, bool SO >
+   inline void assign( const DenseMatrix<VT,SO>& rhs );
 
-   BLAZE_ALWAYS_INLINE void store ( size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storea( size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void storeu( size_t j, size_t k, const SIMDType& value ) noexcept;
-   BLAZE_ALWAYS_INLINE void stream( size_t j, size_t k, const SIMDType& value ) noexcept;
+   template< typename VT, bool SO >
+   inline void addAssign( const DenseMatrix<VT, SO>& rhs );
 
-   template< typename VT >
-   inline auto assign( const DenseMatrix<VT,false>& rhs ) -> DisableIf_t< VectorizedAssign_v<VT> >;
+   template< typename VT, bool SO >
+   inline void subAssign( const DenseMatrix<VT,SO>& rhs );
 
-   template< typename VT >
-   inline auto assign( const DenseMatrix<VT,false>& rhs ) -> EnableIf_t< VectorizedAssign_v<VT> >;
-
-   template< typename VT >
-   inline auto addAssign( const DenseMatrix<VT,false>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<VT> >;
-
-   template< typename VT >
-   inline auto addAssign( const DenseMatrix<VT,false>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<VT> >;
-
-   template< typename VT >
-   inline auto subAssign( const DenseMatrix<VT,false>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<VT> >;
-
-   template< typename VT >
-   inline auto subAssign( const DenseMatrix<VT,false>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<VT> >;
-
-   template< typename VT >
-   inline auto schurAssign( const DenseMatrix<VT,false>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<VT> >;
-
-   template< typename VT >
-   inline auto schurAssign( const DenseMatrix<VT,false>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<VT> >;
+   template< typename VT, bool SO >
+   inline void schurAssign( const DenseMatrix<VT,SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -384,11 +728,11 @@ inline RowSlice<MT,CRAs...>::RowSlice( MT& tensor, RRAs... args )
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 inline typename RowSlice<MT,CRAs...>::Reference
-   RowSlice<MT,CRAs...>::operator()( size_t j, size_t k )
+   RowSlice<MT,CRAs...>::operator()( size_t i, size_t j )
 {
-   BLAZE_USER_ASSERT( j < columns(), "Invalid row access index" );
-   BLAZE_USER_ASSERT( k < rows()  , "Invalid columns access index" );
-   return tensor_(k, row(), j);
+   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index" );
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+   return tensor_(j, row(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -407,9 +751,11 @@ inline typename RowSlice<MT,CRAs...>::Reference
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 inline typename RowSlice<MT,CRAs...>::ConstReference
-   RowSlice<MT,CRAs...>::operator()( size_t j, size_t k ) const
+   RowSlice<MT,CRAs...>::operator()( size_t i, size_t j ) const
 {
-   return const_cast<const MT&>( tensor_ )(k, row(), j);
+   BLAZE_USER_ASSERT( i < rows()   , "Invalid row access index" );
+   BLAZE_USER_ASSERT( j < columns(), "Invalid column access index" );
+   return const_cast<const MT&>( tensor_ )(j, row(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -429,15 +775,15 @@ inline typename RowSlice<MT,CRAs...>::ConstReference
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 inline typename RowSlice<MT,CRAs...>::Reference
-   RowSlice<MT,CRAs...>::at( size_t j, size_t k )
+   RowSlice<MT,CRAs...>::at( size_t i, size_t j )
 {
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
    if( j >= columns() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
    }
-   if( k >= rows() ) {
-      BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
-   }
-   return (*this)(j, k);
+   return (*this)(i, j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -457,15 +803,15 @@ inline typename RowSlice<MT,CRAs...>::Reference
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 inline typename RowSlice<MT,CRAs...>::ConstReference
-   RowSlice<MT,CRAs...>::at( size_t j, size_t k ) const
+   RowSlice<MT,CRAs...>::at( size_t i, size_t j ) const
 {
+   if( i >= rows() ) {
+      BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+   }
    if( j >= columns() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
    }
-   if( k >= rows() ) {
-      BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
-   }
-   return (*this)(j, k);
+   return (*this)(i, j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -523,9 +869,9 @@ inline typename RowSlice<MT,CRAs...>::ConstPointer
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 inline typename RowSlice<MT,CRAs...>::Pointer
-   RowSlice<MT,CRAs...>::data( size_t k ) noexcept
+   RowSlice<MT,CRAs...>::data( size_t i ) noexcept
 {
-   return tensor_.data( row(), k );
+   return tensor_.data( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -565,7 +911,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::Iterator
    RowSlice<MT,CRAs...>::begin( size_t i )
 {
-   return tensor_.begin( row(), i );
+   return Iterator( tensor_, 0UL, row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -585,7 +931,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::ConstIterator
    RowSlice<MT,CRAs...>::begin( size_t i ) const
 {
-   return tensor_.cbegin( row(), i );
+   return ConstIterator( tensor_, 0UL, row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -605,7 +951,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::ConstIterator
    RowSlice<MT,CRAs...>::cbegin( size_t i ) const
 {
-   return tensor_.cbegin( row(), i );
+   return ConstIterator( tensor_, 0UL, row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -625,7 +971,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::Iterator
    RowSlice<MT,CRAs...>::end( size_t i )
 {
-   return tensor_.end( row(), i );
+   return Iterator( tensor_, columns(), row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -645,7 +991,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::ConstIterator
    RowSlice<MT,CRAs...>::end( size_t i ) const
 {
-   return tensor_.cend( row(), i );
+   return ConstIterator( tensor_, columns(), row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -665,7 +1011,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::ConstIterator
    RowSlice<MT,CRAs...>::cend( size_t i ) const
 {
-   return tensor_.cend( row(), i );
+   return ConstIterator( tensor_, columns(), row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -697,13 +1043,13 @@ inline RowSlice<MT,CRAs...>&
 {
    decltype(auto) left( derestrict( tensor_ ) );
 
-   for (size_t k=0UL; k<rows(); ++k)
+   for (size_t i=0UL; i<rows(); ++i)
    {
       for (size_t j=0UL; j<columns(); ++j)
       {
-         if (!IsRestricted_v<MT> || trySet(*this, k, j, rhs))
+         if (!IsRestricted_v<MT> || trySet(*this, i, j, rhs))
          {
-            left(k, row(), j) = rhs;
+            left(i, row(), j) = rhs;
          }
       }
    }
@@ -849,8 +1195,6 @@ inline RowSlice<MT,CRAs...>&
       smpAssign( left, tmp );
    }
    else {
-      if( IsSparseMatrix_v<VT> )
-         reset();
       smpAssign( left, right );
    }
 
@@ -1245,9 +1589,9 @@ template< typename Other >  // Data type of the scalar value
 inline RowSlice<MT,CRAs...>&
    RowSlice<MT,CRAs...>::scale( const Other& scalar )
 {
-   for ( size_t k = 0; k < rows(); ++k ) {
+   for ( size_t i=0UL; i<rows(); ++i ) {
       for ( size_t j = 0; j < columns(); ++j ) {
-         tensor_(k, row(), j) *= scalar;
+         tensor_(i, row(), j) *= scalar;
       }
    }
    return *this;
@@ -1399,178 +1743,6 @@ inline bool RowSlice<MT,CRAs...>::canSMPAssign() const noexcept
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Load of a SIMD element of the dense rowslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \return The loaded SIMD element.
-//
-// This function performs a load of a specific SIMD element of the dense rowslice. The index
-// must be smaller than the number of tensor columns. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-BLAZE_ALWAYS_INLINE typename RowSlice<MT,CRAs...>::SIMDType
-   RowSlice<MT,CRAs...>::load( size_t j, size_t k ) const noexcept
-{
-   return tensor_.load( k, row(), j );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned load of a SIMD element of the dense rowslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \return The loaded SIMD element.
-//
-// This function performs an aligned load of a specific SIMD element of the dense rowslice.
-// The index must be smaller than the number of tensor columns. This function must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-BLAZE_ALWAYS_INLINE typename RowSlice<MT,CRAs...>::SIMDType
-   RowSlice<MT,CRAs...>::loada( size_t j, size_t k ) const noexcept
-{
-   return tensor_.loada( k, row(), j );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Unaligned load of a SIMD element of the dense rowslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \return The loaded SIMD element.
-//
-// This function performs an unaligned load of a specific SIMD element of the dense rowslice.
-// The index must be smaller than the number of tensor columns. This function must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-BLAZE_ALWAYS_INLINE typename RowSlice<MT,CRAs...>::SIMDType
-   RowSlice<MT,CRAs...>::loadu( size_t j, size_t k ) const noexcept
-{
-   return tensor_.loadu( k, row(), j );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Store of a SIMD element of the dense rowslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \param value The SIMD element to be stored.
-// \return void
-//
-// This function performs a store a specific SIMD element of the dense rowslice. The index
-// must be smaller than the number of tensor columns. This function must \b NOT be called
-// explicitly! It is used internally for the performance optimized evaluation of expression
-// templates. Calling this function explicitly might result in erroneous results and/or in
-// compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-BLAZE_ALWAYS_INLINE void
-   RowSlice<MT,CRAs...>::store( size_t j, size_t k, const SIMDType& value ) noexcept
-{
-   tensor_.store( k, row(), j, value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned store of a SIMD element of the dense rowslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \param value The SIMD element to be stored.
-// \return void
-//
-// This function performs an aligned store a specific SIMD element of the dense rowslice. The
-// index must be smaller than the number of tensor columns. This function must \b NOT be
-// called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-BLAZE_ALWAYS_INLINE void
-   RowSlice<MT,CRAs...>::storea( size_t j, size_t k, const SIMDType& value ) noexcept
-{
-   tensor_.storea( k, row(), j, value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Unligned store of a SIMD element of the dense rowslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \param value The SIMD element to be stored.
-// \return void
-//
-// This function performs an unaligned store a specific SIMD element of the dense rowslice.
-// The index must be smaller than the number of tensor columns. This function must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-BLAZE_ALWAYS_INLINE void
-   RowSlice<MT,CRAs...>::storeu( size_t j, size_t k, const SIMDType& value ) noexcept
-{
-   tensor_.storeu( k, row(), j, value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Aligned, non-temporal store of a SIMD element of the dense rowslice.
-//
-// \param index Access index. The index must be smaller than the number of tensor columns.
-// \param value The SIMD element to be stored.
-// \return void
-//
-// This function performs an aligned, non-temporal store a specific SIMD element of the dense
-// rowslice. The index must be smaller than the number of tensor columns. This function must \b NOT
-// be called explicitly! It is used internally for the performance optimized evaluation of
-// expression templates. Calling this function explicitly might result in erroneous results
-// and/or in compilation errors.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-BLAZE_ALWAYS_INLINE void
-   RowSlice<MT,CRAs...>::stream( size_t j, size_t k, const SIMDType& value ) noexcept
-{
-   tensor_.stream( k, row(), j, value );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
 /*!\brief Default implementation of the assignment of a dense matrix.
 //
 // \param rhs The right-hand side dense matrix to be assigned.
@@ -1583,9 +1755,9 @@ BLAZE_ALWAYS_INLINE void
 */
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto RowSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
-   -> DisableIf_t< VectorizedAssign_v<VT> >
+template< typename VT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order
+inline void RowSlice<MT,CRAs...>::assign( const DenseMatrix<VT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid matrix sizes" );
@@ -1593,76 +1765,11 @@ inline auto RowSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(row(),j,i) = (~rhs)(i,j);
-         tensor_(row(),j+1UL,i) = (~rhs)(i,j+1UL);
+         tensor_(i,row(),j) = (~rhs)(i,j);
+         tensor_(i,row(),j+1UL) = (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(row(),jpos,i) = (~rhs)(i,jpos);
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief SIMD optimized implementation of the assignment of a dense matrix.
-//
-// \param rhs The right-hand side dense matrix to be assigned.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto RowSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
-   -> EnableIf_t< VectorizedAssign_v<VT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
-
-   const size_t cols( columns() );
-
-   for (size_t i = 0; i < (~rhs).rows(); ++i) {
-      const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
-
-      size_t j( 0UL );
-      Iterator left( begin(i) );
-      ConstIterator_t<VT> right( (~rhs).begin(i) );
-
-      if( useStreaming && cols > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &tensor_ ) )
-      {
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         }
-         for( ; remainder && j<cols; ++j ) {
-            *left = *right; ++left; ++right;
-         }
-      }
-      else
-      {
-         for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         }
-         for( ; j<jpos; j+=SIMDSIZE ) {
-            left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         }
-         for( ; remainder && j<cols; ++j ) {
-            *left = *right; ++left; ++right;
-         }
-      }
+         tensor_(i,row(),jpos) = (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1683,9 +1790,9 @@ inline auto RowSlice<MT,CRAs...>::assign( const DenseMatrix<VT,false>& rhs )
 */
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto RowSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
-   -> DisableIf_t< VectorizedAddAssign_v<VT> >
+template< typename VT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order
+inline void RowSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -1693,64 +1800,11 @@ inline auto RowSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(row(),j,i    ) += (~rhs)(i,j);
-         tensor_(row(),j+1UL,i) += (~rhs)(i,j+1UL);
+         tensor_(i,row(),j    ) += (~rhs)(i,j);
+         tensor_(i,row(),j+1UL) += (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(row(),jpos,i) += (~rhs)(i,jpos);
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief SIMD optimized implementation of the addition assignment of a dense matrix.
-//
-// \param rhs The right-hand side dense matrix to be added.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto RowSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
-   -> EnableIf_t< VectorizedAddAssign_v<VT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
-
-   const size_t cols( columns() );
-
-   for (size_t i = 0; i < (~rhs).rows(); ++i) {
-      const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
-
-      size_t j( 0UL );
-      Iterator left( begin(i) );
-      ConstIterator_t<VT> right( (~rhs).begin(i) );
-
-      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      }
-      for( ; j<jpos; j+=SIMDSIZE ) {
-         left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      }
-      for( ; remainder && j<cols; ++j ) {
-         *left += *right; ++left; ++right;
-      }
+         tensor_(i,row(),jpos) += (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1771,9 +1825,9 @@ inline auto RowSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,false>& rhs )
 */
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto RowSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
-   -> DisableIf_t< VectorizedSubAssign_v<VT> >
+template< typename VT       // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order
+inline void RowSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -1781,64 +1835,11 @@ inline auto RowSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(row(),j,i    ) -= (~rhs)(i,j);
-         tensor_(row(),j+1UL,i) -= (~rhs)(i,j+1UL);
+         tensor_(i,row(),j    ) -= (~rhs)(i,j);
+         tensor_(i,row(),j+1UL) -= (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(row(),jpos,i) -= (~rhs)(i,jpos);
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief SIMD optimized implementation of the subtraction assignment of a dense matrix.
-//
-// \param rhs The right-hand side dense matrix to be subtracted.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT       // Type of the dense tensor
-        , size_t... CRAs >  // Compile time rowslice arguments
-template< typename VT >     // Type of the right-hand side dense matrix
-inline auto RowSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
-   -> EnableIf_t< VectorizedSubAssign_v<VT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<VT> );
-
-   const size_t cols( columns() );
-
-   for (size_t i = 0; i < (~rhs).rows(); ++i) {
-      const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
-
-      size_t j( 0UL );
-      Iterator left( begin(i) );
-      ConstIterator_t<VT> right( (~rhs).begin(i) );
-
-      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      }
-      for( ; j<jpos; j+=SIMDSIZE ) {
-         left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      }
-      for( ; remainder && j<cols; ++j ) {
-         *left -= *right; ++left; ++right;
-      }
+         tensor_(i,row(),jpos) -= (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1857,11 +1858,11 @@ inline auto RowSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,false>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< typename MT       // Type of the tensor
-        , size_t... CSAs >  // Compile time rowslice arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
-inline auto RowSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
-   -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
+template< typename MT       // Type of the dense tensor
+        , size_t... CRAs >  // Compile time rowslice arguments
+template< typename MT2      // Type of the right-hand side dense matrix
+        , bool SO >         // Storage order
+inline void RowSlice<MT,CRAs...>::schurAssign( const DenseMatrix<MT2,SO>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -1871,65 +1872,11 @@ inline auto RowSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(row(),j,i    ) *= (~rhs)(i,j    );
-         tensor_(row(),j+1UL,i) *= (~rhs)(i,j+1UL);
+         tensor_(i,row(),j    ) *= (~rhs)(i,j    );
+         tensor_(i,row(),j+1UL) *= (~rhs)(i,j+1UL);
       }
       if( jpos < columns() ) {
-         tensor_(row(),jpos,i) *= (~rhs)(i,jpos);
-      }
-   }
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief SIMD optimized implementation of the Schur product assignment of a row-major dense matrix.
-//
-// \param rhs The right-hand side dense matrix for the Schur product.
-// \return void
-//
-// This function must \b NOT be called explicitly! It is used internally for the performance
-// optimized evaluation of expression templates. Calling this function explicitly might result
-// in erroneous results and/or in compilation errors. Instead of using this function use the
-// assignment operator.
-*/
-template< typename MT       // Type of the tensor
-        , size_t... CSAs >  // Compile time rowslice arguments
-template< typename MT2 >    // Type of the right-hand side dense matrix
-inline auto RowSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
-   -> EnableIf_t< VectorizedSchurAssign_v<MT2> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
-
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-
-   constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<MT2> );
-
-   const size_t cols( columns() );
-
-   for( size_t i=0UL; i<rows(); ++i )
-   {
-      const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
-      BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
-
-      size_t j( 0UL );
-      Iterator left( begin(i) );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) );
-
-      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      }
-      for( ; j<jpos; j+=SIMDSIZE ) {
-         left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
-      }
-      for( ; remainder && j<cols; ++j ) {
-         *left *= *right; ++left; ++right;
+         tensor_(i,row(),jpos) *= (~rhs)(i,jpos);
       }
    }
 }

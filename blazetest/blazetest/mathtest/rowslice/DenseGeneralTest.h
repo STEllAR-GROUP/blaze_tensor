@@ -158,7 +158,7 @@ class DenseGeneralTest
    /*! \cond BLAZE_INTERNAL */
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE    ( MT  );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( RT  );
-   BLAZE_CONSTRAINT_MUST_BE_ROWSLICE_MATRIX_TYPE( RT  );
+   BLAZE_CONSTRAINT_MUST_BE_ROWSLICE_MATRIX_TYPE ( RT  );
    /*! \endcond */
    //**********************************************************************************************
 };

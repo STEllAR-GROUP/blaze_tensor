@@ -41,8 +41,37 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/views/Row.h>
+#include <blaze/math/expressions/DeclExpr.h>
+#include <blaze/math/expressions/SchurExpr.h>
+#include <blaze/math/shims/IsDefault.h>
+#include <blaze/math/typetraits/HasConstDataAccess.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
+#include <blaze/math/typetraits/IsAligned.h>
+#include <blaze/math/typetraits/IsContiguous.h>
+#include <blaze/math/typetraits/IsOpposedView.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsSymmetric.h>
+#include <blaze/math/typetraits/MaxSize.h>
+#include <blaze/math/typetraits/Size.h>
+#include <blaze/math/views/Check.h>
+#include <blaze/util/Assert.h>
+#include <blaze/util/FunctionTrace.h>
+#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/TrueType.h>
+#include <blaze/util/TypeList.h>
+#include <blaze/util/Types.h>
+#include <blaze/util/Unused.h>
 
+#include <blaze_tensor/math/expressions/TensEvalExpr.h>
+// #include <blaze_tensor/math/expressions/TensTensExpr.h>
+#include <blaze_tensor/math/expressions/TensTensAddExpr.h>
+#include <blaze_tensor/math/expressions/TensTensMapExpr.h>
+#include <blaze_tensor/math/expressions/TensTensMultExpr.h>
+#include <blaze_tensor/math/expressions/TensTensSubExpr.h>
+#include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
+#include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
+#include <blaze_tensor/math/expressions/TensSerialExpr.h>
+// #include <blaze_tensor/math/expressions/TensTransExpr.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
 
 
