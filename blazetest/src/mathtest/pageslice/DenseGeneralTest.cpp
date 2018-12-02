@@ -50,6 +50,7 @@
 
 #include <blaze_tensor/math/CustomTensor.h>
 #include <blaze_tensor/math/DynamicTensor.h>
+#include <blaze_tensor/math/Views.h>
 
 #include <blazetest/mathtest/pageslice/DenseGeneralTest.h>
 
@@ -4256,346 +4257,346 @@ void DenseGeneralTest::testIsSame()
          }
       }
 
-//       // isSame with matching pageslices on a common subtensor
-//       {
-//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm, 1UL );
-//
-//          if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+      // isSame with matching pageslices on a common subtensor
+      {
+         auto sm   = blaze::subtensor( mat_, 0UL, 1UL, 1UL, 2UL, 3UL, 2UL );
+         auto pageslice1 = blaze::pageslice( sm, 1UL );
+         auto pageslice2 = blaze::pageslice( sm, 1UL );
 
-//       // isSame with non-matching pageslices on a common subtensor
-//       {
-//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 0UL );
-//          auto pageslice2 = blaze::pageslice( sm, 1UL );
-//
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+         if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
-//       // isSame with matching subtensor on matrix and subtensor
-//       {
-//          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( mat_, 2UL );
-//          auto pageslice2 = blaze::pageslice( sm  , 1UL );
-//
-//          if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//
-//          if( blaze::isSame( pageslice2, pageslice1 ) == false ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+      // isSame with non-matching pageslices on a common subtensor
+      {
+         auto sm   = blaze::subtensor( mat_, 0UL, 1UL, 1UL, 2UL, 3UL, 2UL );
+         auto pageslice1 = blaze::pageslice( sm, 0UL );
+         auto pageslice2 = blaze::pageslice( sm, 1UL );
 
-//       // isSame with non-matching pageslices on tensor and subtensor (different pageslice)
-//       {
-//          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( mat_, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm  , 1UL );
-//
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+         if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
-//       // isSame with non-matching pageslices on tensor and subtensor (different size)
-//       {
-//          auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( mat_, 2UL );
-//          auto pageslice2 = blaze::pageslice( sm  , 1UL );
-//
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+      // isSame with matching subtensor on matrix and subtensor
+      {
+         auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 5UL, 4UL );
+         auto pageslice1 = blaze::pageslice( mat_, 1UL );
+         auto pageslice2 = blaze::pageslice( sm  , 0UL );
 
-//       // isSame with matching pageslices on two subtensors
-//       {
-//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
-//
-//          if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//
-//          if( blaze::isSame( pageslice2, pageslice1 ) == false ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+         if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
-//       // isSame with non-matching pageslices on two subtensors (different pageslice)
-//       {
-//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 1UL );
-//
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+         if( blaze::isSame( pageslice2, pageslice1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
-//       // isSame with non-matching pageslices on two subtensors (different size)
-//       {
-//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
-//
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+      // isSame with non-matching pageslices on tensor and subtensor (different pageslice)
+      {
+         auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 5UL, 4UL );
+         auto pageslice1 = blaze::pageslice( mat_, 0UL );
+         auto pageslice2 = blaze::pageslice( sm  , 0UL );
 
-//       // isSame with non-matching pageslices on two subtensors (different offset)
-//       {
-//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 3UL );
-//          auto sm2  = blaze::subtensor( mat_, 2UL, 1UL, 3UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
-//
-//          if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//
-//          if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First pageslice:\n" << pageslice1 << "\n"
-//                 << "   Second pageslice:\n" << pageslice2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+         if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
-//       // isSame with matching pageslice submatrices on a subtensor
-//       {
-//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 1UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//
-//          if( blaze::isSame( sv1, sv2 ) == false ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First submatrix:\n" << sv1 << "\n"
-//                 << "   Second submatrix:\n" << sv2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+         if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
-//       // isSame with non-matching pageslice subtensors on a submatrix (different size)
-//       {
-//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 1UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice1, 0UL, 3UL );
-//
-//          if( blaze::isSame( sv1, sv2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First submatrix:\n" << sv1 << "\n"
-//                 << "   Second submatrix:\n" << sv2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//
-//       // isSame with non-matching pageslice subtensors on a submatrix (different offset)
-//       {
-//          auto sm   = blaze::subtensor( mat_, 1UL, 1UL, 2UL, 3UL );
-//          auto pageslice1 = blaze::pageslice( sm, 1UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice1, 1UL, 2UL );
-//
-//          if( blaze::isSame( sv1, sv2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First submatrix:\n" << sv1 << "\n"
-//                 << "   Second submatrix:\n" << sv2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+      // isSame with non-matching pageslices on tensor and subtensor (different size)
+      {
+         auto sm   = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 4UL, 3UL );
+         auto pageslice1 = blaze::pageslice( mat_, 1UL );
+         auto pageslice2 = blaze::pageslice( sm  , 0UL );
 
-//       // isSame with matching pageslice subtensors on two subtensors
-//       {
-//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice2, 0UL, 2UL );
-//
-//          if( blaze::isSame( sv1, sv2 ) == false ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First submatrix:\n" << sv1 << "\n"
-//                 << "   Second submatrix:\n" << sv2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+         if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
-//       // isSame with non-matching pageslice subtensors on two subtensors (different size)
-//       {
-//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice2, 0UL, 3UL );
-//
-//          if( blaze::isSame( sv1, sv2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First submatrix:\n" << sv1 << "\n"
-//                 << "   Second submatrix:\n" << sv2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+         if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
-//       // isSame with non-matching pageslice subtensors on two subtensors (different offset)
-//       {
-//          auto sm1  = blaze::subtensor( mat_, 1UL, 0UL, 3UL, 4UL );
-//          auto sm2  = blaze::subtensor( mat_, 2UL, 0UL, 3UL, 4UL );
-//          auto pageslice1 = blaze::pageslice( sm1, 1UL );
-//          auto pageslice2 = blaze::pageslice( sm2, 0UL );
-//          auto sv1  = blaze::submatrix( pageslice1, 0UL, 2UL );
-//          auto sv2  = blaze::submatrix( pageslice2, 1UL, 2UL );
-//
-//          if( blaze::isSame( sv1, sv2 ) == true ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Invalid isSame evaluation\n"
-//                 << " Details:\n"
-//                 << "   First submatrix:\n" << sv1 << "\n"
-//                 << "   Second submatrix:\n" << sv2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
+      // isSame with matching pageslices on two subtensors
+      {
+         auto sm1  = blaze::subtensor( mat_, 0UL, 0UL, 0UL, 2UL, 5UL, 4UL );
+         auto sm2  = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 5UL, 4UL );
+         auto pageslice1 = blaze::pageslice( sm1, 1UL );
+         auto pageslice2 = blaze::pageslice( sm2, 0UL );
+
+         if( blaze::isSame( pageslice1, pageslice2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( pageslice2, pageslice1 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching pageslices on two subtensors (different pageslice)
+      {
+         auto sm1  = blaze::subtensor( mat_, 0UL, 0UL, 0UL, 2UL, 5UL, 4UL );
+         auto sm2  = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 5UL, 4UL );
+         auto pageslice1 = blaze::pageslice( sm1, 0UL );
+         auto pageslice2 = blaze::pageslice( sm2, 0UL );
+
+         if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching pageslices on two subtensors (different size)
+      {
+         auto sm1  = blaze::subtensor( mat_, 0UL, 0UL, 0UL, 2UL, 4UL, 3UL );
+         auto sm2  = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 5UL, 4UL );
+         auto pageslice1 = blaze::pageslice( sm1, 1UL );
+         auto pageslice2 = blaze::pageslice( sm2, 0UL );
+
+         if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching pageslices on two subtensors (different offset)
+      {
+         auto sm1  = blaze::subtensor( mat_, 0UL, 1UL, 2UL, 2UL, 4UL, 2UL );
+         auto sm2  = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 4UL, 2UL );
+         auto pageslice1 = blaze::pageslice( sm1, 1UL );
+         auto pageslice2 = blaze::pageslice( sm2, 0UL );
+
+         if( blaze::isSame( pageslice1, pageslice2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( blaze::isSame( pageslice2, pageslice1 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First pageslice:\n" << pageslice1 << "\n"
+                << "   Second pageslice:\n" << pageslice2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching pageslice submatrices on a subtensor
+      {
+         auto sm   = blaze::subtensor( mat_, 0UL, 1UL, 2UL, 2UL, 4UL, 2UL );
+         auto pageslice1 = blaze::pageslice( sm, 1UL );
+         auto sv1  = blaze::submatrix( pageslice1, 0UL, 0UL, 2UL, 1UL );
+         auto sv2  = blaze::submatrix( pageslice1, 0UL, 0UL, 2UL, 1UL );
+
+         if( blaze::isSame( sv1, sv2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First submatrix:\n" << sv1 << "\n"
+                << "   Second submatrix:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching pageslice subtensors on a submatrix (different size)
+      {
+         auto sm   = blaze::subtensor( mat_, 0UL, 1UL, 1UL, 2UL, 4UL, 3UL );
+         auto pageslice1 = blaze::pageslice( sm, 1UL );
+         auto sv1  = blaze::submatrix( pageslice1, 0UL, 0UL, 2UL, 1UL );
+         auto sv2  = blaze::submatrix( pageslice1, 0UL, 0UL, 2UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First submatrix:\n" << sv1 << "\n"
+                << "   Second submatrix:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching pageslice subtensors on a submatrix (different offset)
+      {
+         auto sm   = blaze::subtensor( mat_, 0UL, 1UL, 1UL, 2UL, 4UL, 3UL );
+         auto pageslice1 = blaze::pageslice( sm, 1UL );
+         auto sv1  = blaze::submatrix( pageslice1, 0UL, 0UL, 2UL, 1UL );
+         auto sv2  = blaze::submatrix( pageslice1, 0UL, 1UL, 2UL, 1UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First submatrix:\n" << sv1 << "\n"
+                << "   Second submatrix:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with matching pageslice subtensors on two subtensors
+      {
+         auto sm1  = blaze::subtensor( mat_, 0UL, 0UL, 0UL, 2UL, 5UL, 4UL );
+         auto sm2  = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 5UL, 4UL );
+         auto pageslice1 = blaze::pageslice( sm1, 1UL );
+         auto pageslice2 = blaze::pageslice( sm2, 0UL );
+         auto sv1  = blaze::submatrix( pageslice1, 0UL, 0UL, 3UL, 2UL );
+         auto sv2  = blaze::submatrix( pageslice2, 0UL, 0UL, 3UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == false ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First submatrix:\n" << sv1 << "\n"
+                << "   Second submatrix:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching pageslice subtensors on two subtensors (different size)
+      {
+         auto sm1  = blaze::subtensor( mat_, 0UL, 0UL, 0UL, 2UL, 5UL, 4UL );
+         auto sm2  = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 5UL, 4UL );
+         auto pageslice1 = blaze::pageslice( sm1, 1UL );
+         auto pageslice2 = blaze::pageslice( sm2, 0UL );
+         auto sv1  = blaze::submatrix( pageslice1, 0UL, 0UL, 3UL, 2UL );
+         auto sv2  = blaze::submatrix( pageslice2, 0UL, 0UL, 2UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First submatrix:\n" << sv1 << "\n"
+                << "   Second submatrix:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // isSame with non-matching pageslice subtensors on two subtensors (different offset)
+      {
+         auto sm1  = blaze::subtensor( mat_, 0UL, 0UL, 0UL, 2UL, 5UL, 4UL );
+         auto sm2  = blaze::subtensor( mat_, 1UL, 0UL, 0UL, 1UL, 5UL, 4UL );
+         auto pageslice1 = blaze::pageslice( sm1, 1UL );
+         auto pageslice2 = blaze::pageslice( sm2, 0UL );
+         auto sv1  = blaze::submatrix( pageslice1, 0UL, 0UL, 3UL, 2UL );
+         auto sv2  = blaze::submatrix( pageslice2, 0UL, 1UL, 3UL, 2UL );
+
+         if( blaze::isSame( sv1, sv2 ) == true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isSame evaluation\n"
+                << " Details:\n"
+                << "   First submatrix:\n" << sv1 << "\n"
+                << "   Second submatrix:\n" << sv2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
    }
 }
 //*************************************************************************************************
