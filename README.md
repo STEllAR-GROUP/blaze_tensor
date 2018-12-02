@@ -32,6 +32,7 @@ The implemented facilities are verified using a thorough testing environment. Th
 ### Arithmetic Operations
 
 - All element-wise arithmetic operations that are supported by the Blaze library: element-wise addition, subtraction, division, Schur-multiplication, scalar multiplication, boolean comparison operations, and many mathematical operations like `sqrt`, `cqrt`, `abs`, `sign`, `floor`, etc.
+- Reduction operations like `min` and `max`, also unary and binary overloads for `blaze::map`.
 
 ## Building and installing BlazeTensor
 
