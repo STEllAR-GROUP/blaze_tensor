@@ -33,6 +33,7 @@
 set(category DTensDTensAdd)
 
 set(tests
+    AliasingTest
     TDaTDa
     TDaTDb
 )
