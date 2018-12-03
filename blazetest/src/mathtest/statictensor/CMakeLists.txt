@@ -34,7 +34,7 @@ set(category StaticTensor)
 
 set(tests
     ClassTest1
-#    ClassTest2
+    ClassTest2
     IncludeTest
 )
 
