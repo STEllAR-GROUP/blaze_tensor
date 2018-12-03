@@ -64,6 +64,62 @@ set(tests
     TDbT5x5x5b
     TDbT6x6x6a
     TDbT6x6x6b
+    T12x16x8aT12x16x8a
+    T12x16x8aT12x16x8b
+    T12x16x8aTDa
+    T12x16x8aTDb
+    T12x16x8bT12x16x8a
+    T12x16x8bT12x16x8b
+    T12x16x8bTDa
+    T12x16x8bTDb
+    T2x2x2aT2x2x2a
+    T2x2x2aT2x2x2b
+    T2x2x2aTDa
+    T2x2x2aTDb
+    T2x2x2bT2x2x2a
+    T2x2x2bT2x2x2b
+    T2x2x2bTDa
+    T2x2x2bTDb
+    T3x3x3aT3x3x3a
+    T3x3x3aT3x3x3b
+    T3x3x3aTDa
+    T3x3x3aTDb
+    T3x3x3bT3x3x3a
+    T3x3x3bT3x3x3b
+    T3x3x3bTDa
+    T3x3x3bTDb
+    T3x7x13aT3x7x13a
+    T3x7x13aT3x7x13b
+    T3x7x13aTDa
+    T3x7x13aTDb
+    T3x7x13bT3x7x13a
+    T3x7x13bT3x7x13b
+    T3x7x13bTDa
+    T3x7x13bTDb
+    T4x4x4aT4x4x4a
+    T4x4x4aT4x4x4b
+    T4x4x4aTDa
+    T4x4x4aTDb
+    T4x4x4bT4x4x4a
+    T4x4x4bT4x4x4b
+    T4x4x4bTDa
+    T4x4x4bTDb
+    T5x5x5aT5x5x5a
+    T5x5x5aT5x5x5b
+    T5x5x5aTDa
+    T5x5x5aTDb
+    T5x5x5bT5x5x5a
+    T5x5x5bT5x5x5b
+    T5x5x5bTDa
+    T5x5x5bTDb
+    T6x6x6aT6x6x6a
+    T6x6x6aT6x6x6b
+    T6x6x6aTDa
+    T6x6x6aTDb
+    T6x6x6bT6x6x6a
+    T6x6x6bT6x6x6b
+    T6x6x6bTDa
+    T6x6x6bTDb
 )
 
 foreach(test ${tests})
