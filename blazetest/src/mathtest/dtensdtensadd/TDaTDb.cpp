@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -58,6 +59,10 @@
 #include <hpx/hpx_main.hpp>
 #endif
 
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
+#endif
+
 //*************************************************************************************************
 int main()
 {
@@ -69,27 +74,27 @@ int main()
    try
    {
       // tensor type definitions
-      using MDa = blaze::DynamicTensor<TypeA>;
-      using MDb = blaze::DynamicTensor<TypeB>;
+      using TDa = blaze::DynamicTensor<TypeA>;
+      using TDb = blaze::DynamicTensor<TypeB>;
 
       // Creator type definitions
-      using CMDa = blazetest::Creator<MDa>;
-      using CMDb = blazetest::Creator<MDb>;
+      using CTDa = blazetest::Creator<TDa>;
+      using CTDb = blazetest::Creator<TDb>;
 
       // Running tests with small matrices
       for( size_t k=0UL; k<=5UL; ++k ) {
          for( size_t i=0UL; i<=5UL; ++i ) {
             for( size_t j=0UL; j<=5UL; ++j ) {
-               RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( k, i, j ), CMDb( k, i, j ) );
+               RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( k, i, j ), CTDb( k, i, j ) );
             }
          }
       }
 
       // Running tests with large matrices
-      RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( 3UL,  67UL,  67UL ), CMDb( 3UL,  67UL,  67UL ) );
-      RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( 3UL,  67UL, 127UL ), CMDb( 3UL,  67UL, 127UL ) );
-      RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( 8UL, 128UL,  64UL ), CMDb( 8UL, 128UL,  64UL ) );
-      RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( 8UL, 128UL, 128UL ), CMDb( 8UL, 128UL, 128UL ) );
+      RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( 3UL,  67UL,  67UL ), CTDb( 3UL,  67UL,  67UL ) );
+      RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( 3UL,  67UL, 127UL ), CTDb( 3UL,  67UL, 127UL ) );
+      RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( 8UL, 128UL,  64UL ), CTDb( 8UL, 128UL,  64UL ) );
+      RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( 8UL, 128UL, 128UL ), CTDb( 8UL, 128UL, 128UL ) );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense tensor/dense tensor addition:\n"

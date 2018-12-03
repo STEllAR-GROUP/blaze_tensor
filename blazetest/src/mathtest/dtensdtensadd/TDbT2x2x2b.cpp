@@ -1,10 +1,9 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dtensdtensadd/TDaTDa.cpp
-//  \brief Source file for the TDaTDa dense tensor/dense tensor addition math test
+//  \file src/mathtest/dtensdtensadd/TDbT2x2b.cpp
+//  \brief Source file for the TDbT2x2b dense tensor/dense tensor addition math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
@@ -41,12 +40,13 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <blaze_tensor/math/DynamicTensor.h>
+#include <blaze_tensor/math/StaticTensor.h>
+#include <blazetest/mathtest/creator/DynamicTensor.h>
+#include <blazetest/mathtest/creator/StaticTensor.h>
+#include <blazetest/mathtest/dtensdtensadd/OperationTest.h>
 #include <blazetest/system/MathTest.h>
 
-#include <blaze_tensor/math/DynamicTensor.h>
-
-#include <blazetest/mathtest/creator/DynamicTensor.h>
-#include <blazetest/mathtest/dtensdtensadd/OperationTest.h>
 
 //=================================================================================================
 //
@@ -58,39 +58,25 @@
 #include <hpx/hpx_main.hpp>
 #endif
 
-#if defined(BLAZE_USE_HPX_THREADS)
-#include <hpx/hpx_main.hpp>
-#endif
-
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'TDaTDa'..." << std::endl;
+   std::cout << "   Running 'TDbT2x2x2b'..." << std::endl;
 
-   using blazetest::mathtest::TypeA;
+   using blazetest::mathtest::TypeB;
 
    try
    {
       // Tensor type definitions
-      using TDa = blaze::DynamicTensor<TypeA>;
+      using TDb = blaze::DynamicTensor<TypeB>;
+      using T2x2b = blaze::StaticTensor<TypeB,2UL,2UL,2UL>;
 
       // Creator type definitions
-      using CTDa = blazetest::Creator<TDa>;
+      using CTDb = blazetest::Creator<TDb>;
+      using CT2x2b = blazetest::Creator<T2x2b>;
 
-      // Running tests with small matrices
-      for( size_t k=0UL; k<=5UL; ++k ) {
-         for( size_t i=0UL; i<=5UL; ++i ) {
-            for( size_t j=0UL; j<=5UL; ++j ) {
-               RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( k, i, j ), CTDa( k, i, j ) );
-            }
-         }
-      }
-
-      // Running tests with large matrices
-      RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( 3UL,  67UL,  67UL ), CTDa( 3UL,  67UL,  67UL ) );
-      RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( 3UL,  67UL, 127UL ), CTDa( 3UL,  67UL, 127UL ) );
-      RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( 8UL, 128UL,  64UL ), CTDa( 8UL, 128UL,  64UL ) );
-      RUN_DTENSDTENSADD_OPERATION_TEST( CTDa( 8UL, 128UL, 128UL ), CTDa( 8UL, 128UL, 128UL ) );
+      // Running the tests
+      RUN_DTENSDTENSADD_OPERATION_TEST( CTDb( 2UL, 2UL, 2UL ), CT2x2b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense tensor/dense tensor addition:\n"

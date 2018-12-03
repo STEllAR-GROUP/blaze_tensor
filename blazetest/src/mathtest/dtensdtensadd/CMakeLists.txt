@@ -34,12 +34,40 @@ set(category DTensDTensAdd)
 
 set(tests
     AliasingTest
+    TDaT12x16x8a
+    TDaT12x16x8b
+    TDaT2x2x2a
+    TDaT2x2x2b
+    TDaT3x3x3a
+    TDaT3x3x3b
+    TDaT3x7x13a
+    TDaT3x7x13b
+    TDaT4x4x4a
+    TDaT4x4x4b
+    TDaT5x5x5a
+    TDaT5x5x5b
+    TDaT6x6x6a
+    TDaT6x6x6b
     TDaTDa
     TDaTDb
+    TDbT12x16x8a
+    TDbT12x16x8b
+    TDbT2x2x2a
+    TDbT2x2x2b
+    TDbT3x3x3a
+    TDbT3x3x3b
+    TDbT3x7x13a
+    TDbT3x7x13b
+    TDbT4x4x4a
+    TDbT4x4x4b
+    TDbT5x5x5a
+    TDbT5x5x5b
+    TDbT6x6x6a
+    TDbT6x6x6b
 )
 
 foreach(test ${tests})
    add_blaze_tensor_test(${category}${test}
-      SOURCES ${test}.cpp
+      SOURCES ${test}
       FOLDER "Tests/${category}")
 endforeach()

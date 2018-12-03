@@ -109,7 +109,7 @@ namespace blaze {
                     ( ::blaze::Size_v<T1,0UL> == ::blaze::Size_v<T2,0UL> ) ) && \
                   ( ( ::blaze::Size_v<T1,1UL> == -1L ) || \
                     ( ::blaze::Size_v<T2,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,1UL> ) ) && \
+                    ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,1UL> ) ) && \
                   ( ( ::blaze::Size_v<T1,2UL> == -1L ) || \
                     ( ::blaze::Size_v<T2,2UL> == -1L ) || \
                     ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,2UL> ) ) \

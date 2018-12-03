@@ -47,6 +47,7 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
+#include <blaze/math/StaticMatrix.h>
 #include <blaze/math/SIMD.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
@@ -118,7 +119,11 @@
 // #include <blaze_tensor/math/traits/RowSlicesTrait.h>
 // #include <blaze_tensor/math/typetraits/IsSparseTensor.h>
 #include <blaze_tensor/math/InitializerList.h>
+#include <blaze_tensor/math/dense/Forward.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
+#include <blaze_tensor/math/traits/ColumnSliceTrait.h>
+#include <blaze_tensor/math/traits/PageSliceTrait.h>
+#include <blaze_tensor/math/traits/RowSliceTrait.h>
 #include <blaze_tensor/math/traits/SubtensorTrait.h>
 #include <blaze_tensor/math/typetraits/IsColumnMajorTensor.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
@@ -3625,6 +3630,78 @@ struct LowType< StaticTensor<T1,O,M,N>, StaticTensor<T2,O,M,N> >
 
 //=================================================================================================
 //
+//  COLUMNSLICETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template <typename MT, size_t M>
+struct ColumnSliceTraitEval2<
+   MT, M,
+   EnableIf_t< IsDenseTensor_v<MT> &&
+               M != 0UL && Size_v< MT,0UL > != DefaultSize_v &&
+                           Size_v< MT,1UL > != DefaultSize_v &&
+                           Size_v< MT,2UL > != DefaultSize_v > >
+{
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,0UL >, Size_v< MT,1UL >, false >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  PAGESLICETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template <typename MT, size_t M>
+struct PageSliceTraitEval2<
+   MT, M,
+   EnableIf_t< IsDenseTensor_v<MT> &&
+               M != 0UL && Size_v< MT,0UL > != DefaultSize_v &&
+                           Size_v< MT,1UL > != DefaultSize_v &&
+                           Size_v< MT,2UL > != DefaultSize_v > >
+{
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,1UL >, Size_v< MT,2UL >, false >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ROWSLICETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template <typename MT, size_t M>
+struct RowSliceTraitEval2<
+   MT, M,
+   EnableIf_t< IsDenseTensor_v<MT> &&
+               M != 0UL && Size_v< MT,0UL > != DefaultSize_v &&
+                           Size_v< MT,1UL > != DefaultSize_v &&
+                           Size_v< MT,2UL > != DefaultSize_v > >
+{
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,2UL >, Size_v< MT,0UL >, false >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  SUBTENSORTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -3641,6 +3718,27 @@ struct SubtensorTraitEval2< MT, K, I, J, O, M, N
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct SubtensorTraitEval2< MT, inf, inf, inf, inf, inf, inf,
+   EnableIf_t< IsDenseTensor_v<MT> && (
+               ( Size_v< MT,0UL > != DefaultSize_v &&
+                 Size_v< MT,1UL > != DefaultSize_v &&
+                 Size_v< MT,2UL > != DefaultSize_v ) ||
+               ( MaxSize_v< MT,0UL > != DefaultMaxSize_v &&
+                 MaxSize_v< MT,1UL > != DefaultMaxSize_v &&
+                 MaxSize_v< MT,2UL > != DefaultMaxSize_v ) ) > >
+{
+//    static constexpr size_t O = max( Size_v<MT,0UL>, MaxSize_v<MT,0UL> );
+//    static constexpr size_t M = max( Size_v<MT,1UL>, MaxSize_v<MT,1UL> );
+//    static constexpr size_t N = max( Size_v<MT,2UL>, MaxSize_v<MT,2UL> );
+
+   using Type = DynamicTensor< RemoveConst_t< ElementType_t<MT> > >;
+};
+/*! \endcond */
+//*************************************************************************************************
 
 
 

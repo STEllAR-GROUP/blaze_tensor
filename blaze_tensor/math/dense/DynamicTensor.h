@@ -3242,32 +3242,6 @@ struct LowType< DynamicTensor<T1>, DynamicTensor<T2> >
 
 //=================================================================================================
 //
-//  SUBTENSORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-// template< typename MT >
-// struct SubtensorTraitEval2< MT, inf, inf, inf, inf
-//                           , EnableIf_t< IsDenseTensor_v<MT> &&
-//                                         ( Size_v<MT,0UL> == DefaultSize_v ||
-//                                           Size_v<MT,1UL> == DefaultSize_v ||
-//                                           Size_v<MT,2UL> == DefaultSize_v ) &&
-//                                         ( MaxSize_v<MT,0UL> == DefaultMaxSize_v ||
-//                                           MaxSize_v<MT,1UL> == DefaultMaxSize_v ||
-//                                           MaxSize_v<MT,2UL> == DefaultMaxSize_v ) > >
-// {
-//    using Type = DynamicTensor< RemoveConst_t< ElementType_t<MT> > >;
-// };
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  COLUMNSLICETRAIT SPECIALIZATIONS
 //
 //=================================================================================================
