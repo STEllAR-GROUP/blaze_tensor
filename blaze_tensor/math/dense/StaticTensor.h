@@ -116,13 +116,13 @@
 
 // #include <blaze_tensor/math/traits/ColumnSlicesTrait.h>
 // #include <blaze_tensor/math/traits/RowSlicesTrait.h>
-// #include <blaze_tensor/math/typetraits/IsColumnMajorTensor.h>
-// #include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
 // #include <blaze_tensor/math/typetraits/IsSparseTensor.h>
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/SubtensorTrait.h>
+#include <blaze_tensor/math/typetraits/IsColumnMajorTensor.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
+#include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
 #include <blaze_tensor/math/typetraits/IsTensor.h>
 #include <blaze_tensor/math/typetraits/StorageOrder.h>
 
@@ -405,7 +405,8 @@ class StaticTensor
    static constexpr bool VectorizedAssign_v =
       ( useOptimizedKernels &&
         simdEnabled && MT::simdEnabled &&
-        IsSIMDCombinable_v< Type, ElementType_t<MT> >  );
+        IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
+        IsRowMajorTensor_v< MT >);
    /*! \endcond */
    //**********************************************************************************************
 
@@ -418,7 +419,8 @@ class StaticTensor
         simdEnabled && MT::simdEnabled &&
         IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
         HasSIMDAdd_v< Type, ElementType_t<MT> > &&
-        !IsDiagonal_v<MT> );
+        !IsDiagonal_v<MT> &&
+        IsRowMajorTensor_v< MT >);
    /*! \endcond */
    //**********************************************************************************************
 
@@ -431,7 +433,8 @@ class StaticTensor
         simdEnabled && MT::simdEnabled &&
         IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
         HasSIMDSub_v< Type, ElementType_t<MT> > &&
-        !IsDiagonal_v<MT> );
+        !IsDiagonal_v<MT> &&
+        IsRowMajorTensor_v< MT >);
    /*! \endcond */
    //**********************************************************************************************
 
@@ -443,7 +446,8 @@ class StaticTensor
       ( useOptimizedKernels &&
         simdEnabled && MT::simdEnabled &&
         IsSIMDCombinable_v< Type, ElementType_t<MT> > &&
-        HasSIMDMult_v< Type, ElementType_t<MT> > );
+        HasSIMDMult_v< Type, ElementType_t<MT> > &&
+        IsRowMajorTensor_v< MT >);
    /*! \endcond */
    //**********************************************************************************************
 
@@ -526,7 +530,7 @@ class StaticTensor
       ( align ? AlignmentOf_v<Type> : std::alignment_of<Type>::value );
 
    //! Type of the aligned storage.
-   using AlignedStorage = AlignedArray<Type,M*NN,Alignment>;
+   using AlignedStorage = AlignedArray<Type,O*M*NN,Alignment>;
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -655,7 +659,7 @@ inline StaticTensor<Type,O,M,N>::StaticTensor( initializer_list< initializer_lis
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static tensor" );
    }
 
-   size_t i( 0UL );
+   size_t k( 0UL );
 
    for (const auto& page : list) {
       size_t i( 0UL );
@@ -702,12 +706,12 @@ template< typename Type  // Data type of the tensor
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 template< typename Other >  // Data type of the initialization array
-inline StaticTensor<Type,O,M,N>::StaticTensor( size_t k, size_t m, size_t n, const Other* array )
+inline StaticTensor<Type,O,M,N>::StaticTensor( size_t o, size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated tensor elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
-   if( k > O || m > M || n > N ) {
+   if( o > O || m > M || n > N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static tensor" );
    }
 
@@ -725,9 +729,19 @@ inline StaticTensor<Type,O,M,N>::StaticTensor( size_t k, size_t m, size_t n, con
 
    if( IsNumeric_v<Type> ) {
       for (size_t k=0UL; k<O; ++k) {
-         for( size_t i=m; i<M; ++i ) {
-            for( size_t j=0UL; j<NN; ++j )
-               v_[(k*M+i)*NN+j] = Type();
+         if( k < o )
+         {
+            for( size_t i=m; i<M; ++i ) {
+               for( size_t j=0UL; j<NN; ++j )
+                  v_[(k*M+i)*NN+j] = Type();
+            }
+         }
+         else
+         {
+            for( size_t i=0UL; i<M; ++i ) {
+               for( size_t j=0UL; j<NN; ++j )
+                  v_[(k*M+i)*NN+j] = Type();
+            }
          }
       }
    }
@@ -1310,7 +1324,7 @@ inline StaticTensor<Type,O,M,N>&
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static tensor" );
    }
 
-   size_t i( 0UL );
+   size_t k( 0UL );
 
    for (const auto& page : list) {
       size_t i( 0UL );
@@ -3430,69 +3444,57 @@ struct SchurTraitEval2< T1, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-// template< typename T1, typename T2 >
-// struct MultTraitEval2< T1, T2
-//                      , EnableIf_t< IsTensor_v<T1> &&
-//                                    IsNumeric_v<T2> &&
-//                                    ( Size_v<T1,0UL> != DefaultSize_v ) &&
-//                                    ( Size_v<T1,1UL> != DefaultSize_v ) > >
-// {
-//    using ET1 = ElementType_t<T1>;
-//
-//    static constexpr size_t M = Size_v<T1,0UL>;
-//    static constexpr size_t N = Size_v<T1,1UL>;
-//
-//    using Type = StaticTensor< MultTrait_t<ET1,T2>, M, N, StorageOrder_v<T1> >;
-// };
-//
-// template< typename T1, typename T2 >
-// struct MultTraitEval2< T1, T2
-//                      , EnableIf_t< IsNumeric_v<T1> &&
-//                                    IsTensor_v<T2> &&
-//                                    ( Size_v<T2,0UL> != DefaultSize_v ) &&
-//                                    ( Size_v<T2,1UL> != DefaultSize_v ) > >
-// {
-//    using ET2 = ElementType_t<T2>;
-//
-//    static constexpr size_t M = Size_v<T2,0UL>;
-//    static constexpr size_t N = Size_v<T2,1UL>;
-//
-//    using Type = StaticTensor< MultTrait_t<T1,ET2>, M, N, StorageOrder_v<T2> >;
-// };
-//
-// template< typename T1, typename T2 >
-// struct MultTraitEval2< T1, T2
-//                      , EnableIf_t< IsColumnVector_v<T1> &&
-//                                    IsRowVector_v<T2> &&
-//                                    ( Size_v<T1,0UL> != DefaultSize_v ) &&
-//                                    ( Size_v<T2,0UL> != DefaultSize_v ) > >
-// {
-//    using ET1 = ElementType_t<T1>;
-//    using ET2 = ElementType_t<T2>;
-//
-//    static constexpr size_t M = Size_v<T1,0UL>;
-//    static constexpr size_t N = Size_v<T2,0UL>;
-//
-//    using Type = StaticTensor< MultTrait_t<ET1,ET2>, M, N, false >;
-// };
-//
-// template< typename T1, typename T2 >
-// struct MultTraitEval2< T1, T2
-//                      , EnableIf_t< IsTensor_v<T1> &&
-//                                    IsTensor_v<T2> &&
-//                                    ( Size_v<T1,0UL> != DefaultSize_v ||
-//                                      ( IsSquare_v<T1> && Size_v<T2,0UL> != DefaultSize_v ) ) &&
-//                                    ( Size_v<T2,1UL> != DefaultSize_v ||
-//                                      ( IsSquare_v<T2> && Size_v<T1,1UL> != DefaultSize_v ) ) > >
-// {
-//    using ET1 = ElementType_t<T1>;
-//    using ET2 = ElementType_t<T2>;
-//
-//    static constexpr size_t M = ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> );
-//    static constexpr size_t N = ( Size_v<T2,1UL> != DefaultSize_v ? Size_v<T2,1UL> : Size_v<T1,1UL> );
-//
-//    using Type = StaticTensor< MultTrait_t<ET1,ET2>, M, N, StorageOrder_v<T1> >;
-// };
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsTensor_v<T1> &&
+                                   IsNumeric_v<T2> &&
+                                   ( Size_v<T1,0UL> != DefaultSize_v ) &&
+                                   ( Size_v<T1,1UL> != DefaultSize_v ) &&
+                                   ( Size_v<T1,2UL> != DefaultSize_v ) > >
+{
+   using ET1 = ElementType_t<T1>;
+
+   static constexpr size_t O = Size_v<T1,0UL>;
+   static constexpr size_t M = Size_v<T1,1UL>;
+   static constexpr size_t N = Size_v<T1,2UL>;
+
+   using Type = StaticTensor< MultTrait_t<ET1,T2>, O, M, N >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsNumeric_v<T1> &&
+                                   IsTensor_v<T2> &&
+                                   ( Size_v<T2,0UL> != DefaultSize_v ) &&
+                                   ( Size_v<T2,1UL> != DefaultSize_v ) &&
+                                   ( Size_v<T2,2UL> != DefaultSize_v ) > >
+{
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t O = Size_v<T2,0UL>;
+   static constexpr size_t M = Size_v<T2,0UL>;
+   static constexpr size_t N = Size_v<T2,1UL>;
+
+   using Type = StaticTensor< MultTrait_t<T1,ET2>, O, M, N >;
+};
+
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsTensor_v<T1> &&
+                                   IsTensor_v<T2> &&
+                                   ( Size_v<T1,0UL> != DefaultSize_v ||
+                                     ( IsSquare_v<T1> && Size_v<T2,1UL> != DefaultSize_v ) ) &&
+                                   ( Size_v<T2,1UL> != DefaultSize_v ||
+                                     ( IsSquare_v<T2> && Size_v<T1,2UL> != DefaultSize_v ) ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t M = ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,1UL> : Size_v<T2,1UL> );
+   static constexpr size_t N = ( Size_v<T2,1UL> != DefaultSize_v ? Size_v<T2,2UL> : Size_v<T1,2UL> );
+
+   using Type = StaticTensor< MultTrait_t<ET1,ET2>, Size_v<T1,0UL>, M, N >;
+};
 /*! \endcond */
 //*************************************************************************************************
 

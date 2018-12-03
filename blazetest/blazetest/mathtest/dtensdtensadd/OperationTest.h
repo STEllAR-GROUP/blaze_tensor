@@ -775,7 +775,7 @@ void OperationTest<MT1,MT2>::testAssignment()
 //*************************************************************************************************
 
 template <typename MT>
-using IsRowMajorTensor = blaze::IsTensor<MT>;
+using IsRowMajorTensor = blaze::IsRowMajorTensor<MT>;
 
 
 //*************************************************************************************************

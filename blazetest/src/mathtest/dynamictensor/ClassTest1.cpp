@@ -42,9 +42,6 @@
 #include <iostream>
 #include <memory>
 
-#include <blaze_tensor/math/CustomTensor.h>
-#include <blaze_tensor/math/DynamicTensor.h>
-
 #include <blaze/system/Platform.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Memory.h>
@@ -52,6 +49,9 @@
 #include <blaze/util/Random.h>
 #include <blazetest/mathtest/RandomMaximum.h>
 #include <blazetest/mathtest/RandomMinimum.h>
+
+#include <blaze_tensor/math/CustomTensor.h>
+#include <blaze_tensor/math/DynamicTensor.h>
 
 #include <blazetest/mathtest/dynamictensor/ClassTest.h>
 
@@ -137,6 +137,7 @@ void ClassTest::testConstructors()
 
       checkRows    ( tens, 0UL );
       checkColumns ( tens, 0UL );
+      checkPages   ( tens, 0UL );
       checkNonZeros( tens, 0UL );
    }
 
