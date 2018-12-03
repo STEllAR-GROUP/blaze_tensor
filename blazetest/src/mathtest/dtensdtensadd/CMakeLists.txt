@@ -30,19 +30,15 @@
 #
 # =================================================================================================
 
-set(subdirs
-   columnslice
-   customtensor
-   densetensor
-   dtensdtensadd
-   dynamictensor
-   initializertensor
-   pageslice
-   rowslice
-   subtensor
+set(category DTensDTensAdd)
+
+set(tests
+    TDaTDa
+    TDaTDb
 )
 
-foreach(dir ${subdirs})
-   add_subdirectory(${dir})
+foreach(test ${tests})
+   add_blaze_tensor_test(${category}${test}
+      SOURCES ${test}.cpp
+      FOLDER "Tests/${category}")
 endforeach()
-

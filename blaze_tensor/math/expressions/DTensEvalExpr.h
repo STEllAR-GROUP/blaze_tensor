@@ -111,7 +111,7 @@ class DTensEvalExpr
       BLAZE_INTERNAL_ASSERT( i < dt_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dt_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( k < dt_.pages(),   "Invalid page access index"   );
-      return dt_(i,j);
+      return dt_(k,i,j);
    }
    //**********************************************************************************************
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/TypeTraits.h
-//  \brief Header file for all type traits
+//  \file src/mathtest/dtensdtensadd/TDaTDa.cpp
+//  \brief Source file for the TDaTDa dense tensor/dense tensor addition math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,31 +33,66 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/TypeTraits.h>
+#include <cstdlib>
+#include <iostream>
+#include <blazetest/system/MathTest.h>
 
-#include <blaze_tensor/math/typetraits/IsColumnSlice.h>
-#include <blaze_tensor/math/typetraits/IsDenseTensor.h>
-#include <blaze_tensor/math/typetraits/IsNumericTensor.h>
-#include <blaze_tensor/math/typetraits/IsPageSlice.h>
-#include <blaze_tensor/math/typetraits/IsRowSlice.h>
-#include <blaze_tensor/math/typetraits/IsSubtensor.h>
-#include <blaze_tensor/math/typetraits/IsTensMapExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensScalarDivExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensScalarMultExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensSerialExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensAddExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensMapExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensMultExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensSubExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensor.h>
-#include <blaze_tensor/math/typetraits/StorageOrder.h>
+#include <blaze_tensor/math/DynamicTensor.h>
 
+#include <blazetest/mathtest/creator/DynamicTensor.h>
+#include <blazetest/mathtest/dtensdtensadd/OperationTest.h>
+
+//=================================================================================================
+//
+//  MAIN FUNCTION
+//
+//=================================================================================================
+
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
 #endif
+
+//*************************************************************************************************
+int main()
+{
+   std::cout << "   Running 'TDaTDa'..." << std::endl;
+
+   using blazetest::mathtest::TypeA;
+
+   try
+   {
+      // Tensor type definitions
+      using MDa = blaze::DynamicTensor<TypeA>;
+
+      // Creator type definitions
+      using CMDa = blazetest::Creator<MDa>;
+
+      // Running tests with small matrices
+      for( size_t k=0UL; k<=5UL; ++k ) {
+         for( size_t i=0UL; i<=5UL; ++i ) {
+            for( size_t j=0UL; j<=5UL; ++j ) {
+               RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( k, i, j ), CMDa( k, i, j ) );
+            }
+         }
+      }
+
+      // Running tests with large matrices
+      RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( 3UL,  67UL,  67UL ), CMDa( 3UL,  67UL,  67UL ) );
+      RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( 3UL,  67UL, 127UL ), CMDa( 3UL,  67UL, 127UL ) );
+      RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( 8UL, 128UL,  64UL ), CMDa( 8UL, 128UL,  64UL ) );
+      RUN_DTENSDTENSADD_OPERATION_TEST( CMDa( 8UL, 128UL, 128UL ), CMDa( 8UL, 128UL, 128UL ) );
+   }
+   catch( std::exception& ex ) {
+      std::cerr << "\n\n ERROR DETECTED during dense tensor/dense tensor addition:\n"
+                << ex.what() << "\n";
+      return EXIT_FAILURE;
+   }
+
+   return EXIT_SUCCESS;
+}
+//*************************************************************************************************
