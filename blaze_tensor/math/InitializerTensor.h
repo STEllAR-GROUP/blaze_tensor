@@ -44,5 +44,6 @@
 #include <blaze_tensor/math/DenseTensor.h>
 #include <blaze_tensor/math/dense/DynamicTensor.h>
 #include <blaze_tensor/math/dense/InitializerTensor.h>
+#include <blaze_tensor/math/dense/StaticTensor.h>
 
 #endif

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/Forward.h
-//  \brief Header file for all forward declarations for dense vectors and matrices
+//  \file src/mathtest/statictensor/IncludeTest.cpp
+//  \brief Source file for the StaticTensor include test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,29 +33,29 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_FORWARD_H_
-#define _BLAZE_TENSOR_MATH_DENSE_FORWARD_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Types.h>
+#include <blaze_tensor/math/StaticTensor.h>
 
 
-namespace blaze {
+
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  MAIN FUNCTION
 //
 //=================================================================================================
 
-template< typename, bool, bool, typename > class CustomTensor;
-template< typename > class DynamicTensor;
-template< typename, size_t, size_t, size_t > class StaticTensor;
-
-} // namespace blaze
-
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
 #endif
+
+//*************************************************************************************************
+int main()
+{
+   return EXIT_SUCCESS;
+}
+//*************************************************************************************************

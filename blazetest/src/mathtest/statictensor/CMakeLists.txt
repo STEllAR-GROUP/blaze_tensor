@@ -30,20 +30,16 @@
 #
 # =================================================================================================
 
-set(subdirs
-   columnslice
-   customtensor
-   densetensor
-   dtensdtensadd
-   dynamictensor
-   initializertensor
-   pageslice
-   rowslice
-   statictensor
-   subtensor
+set(category StaticTensor)
+
+set(tests
+#    ClassTest1
+#    ClassTest2
+    IncludeTest
 )
 
-foreach(dir ${subdirs})
-   add_subdirectory(${dir})
+foreach(test ${tests})
+   add_blaze_tensor_test(${category}${test}
+      SOURCES ${test}.cpp
+      FOLDER "Tests/${category}")
 endforeach()
-
