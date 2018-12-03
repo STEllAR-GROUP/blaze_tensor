@@ -707,7 +707,13 @@ inline size_t InitializerTensor<Type>::nonZeros( size_t i, size_t k ) const
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index" );
 
-   return nonZeros( list_.begin()[k].begin()[i] );
+   if( k >= list_.size() ) return 0UL;
+
+   auto& rowList = list_.begin()[k];
+
+   if( i >= rowList.size() ) return 0UL;
+
+   return nonZeros( rowList.begin()[i] );
 }
 //*************************************************************************************************
 
