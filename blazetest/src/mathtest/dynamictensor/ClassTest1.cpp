@@ -393,7 +393,7 @@ void ClassTest::testConstructors()
              << " Error: Construction failed\n"
              << " Details:\n"
              << "   Result:\n" << tens << "\n"
-             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 ))\n";
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n( 1 2 3 )\n( 4 5 6 ))\n";
          throw std::runtime_error( oss.str() );
       }
    }

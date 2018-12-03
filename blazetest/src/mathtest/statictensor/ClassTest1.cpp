@@ -392,283 +392,169 @@ void ClassTest::testConstructors()
       }
    }
 
-//    {
-//       test_ = "Row-major StaticTensor static array initialization constructor";
-//
-//       const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat( array );
-//
-//       checkRows    ( mat, 2UL );
-//       checkColumns ( mat, 3UL );
-//       checkCapacity( mat, 6UL );
-//       checkNonZeros( mat, 6UL );
-//       checkNonZeros( mat, 0UL, 3UL );
-//       checkNonZeros( mat, 1UL, 3UL );
-//
-//       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
-//           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Construction failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major copy constructor
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major StaticTensor copy constructor";
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat1{ { 1, 2, 3 },
-//                                                              { 4, 5, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Construction failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major dense tensor constructor
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor constructor (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::rowMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,rowMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       const blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Construction failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor constructor (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::rowMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,rowMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       const blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Construction failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor constructor (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::columnMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,columnMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       const blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Construction failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor constructor (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::columnMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,columnMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       const blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Construction failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major sparse tensor constructor
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor constructor";
-//
-//       blaze::CompressedTensor<int> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(1,0) = 3;
-//       mat1(1,2) = 4;
-//
-//       const blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
-//           mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Construction failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor constructor";
-//
-//       blaze::CompressedTensor<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(1,0) = 3;
-//       mat1(1,2) = 4;
-//
-//       const blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
-//           mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Construction failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
+   {
+      test_ = "Row-major StaticTensor static array initialization constructor";
+
+      const int array[1][2][3] = {{{1, 2, 3}, {4, 5, 6}}};
+      blaze::StaticTensor<int, 1UL, 2UL, 3UL> mat( array );
+
+      checkRows    ( mat, 2UL );
+      checkColumns ( mat, 3UL );
+      checkPages   ( mat, 1UL );
+      checkCapacity( mat, 6UL );
+      checkNonZeros( mat, 6UL );
+      checkNonZeros( mat, 0UL, 0UL, 3UL );
+      checkNonZeros( mat, 1UL, 0UL, 3UL );
+
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n( 1 2 3 )\n( 4 5 6 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major copy constructor
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticTensor copy constructor";
+
+      blaze::StaticTensor<int, 2UL, 2UL, 3UL> mat1{{{1, 2, 3}, {4, 5, 6}},
+                                                   {{1, 2, 3}, {4, 5, 6}}};
+
+      blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2, 12UL );
+      checkNonZeros( mat2, 0UL, 0UL, 3UL );
+      checkNonZeros( mat2, 1UL, 0UL, 3UL );
+      checkNonZeros( mat2, 0UL, 1UL, 3UL );
+      checkNonZeros( mat2, 1UL, 1UL, 3UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n( 1 2 3 )\n( 4 5 6 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense tensor constructor
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor constructor (aligned/padded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+
+      using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
+      UnalignedUnpadded mat1( memory.get(), 2UL, 2UL, 3UL );
+      mat1(0,0,0) = 1;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
+      mat1(1,1,1) = 5;
+      mat1(1,1,2) = 6;
+
+      const blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2, 12UL );
+      checkNonZeros( mat2,  0UL, 0UL, 3UL );
+      checkNonZeros( mat2,  1UL, 0UL, 3UL );
+      checkNonZeros( mat2,  0UL, 1UL, 3UL );
+      checkNonZeros( mat2,  1UL, 1UL, 3UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n)(( 1 2 3 )\n( 4 5 6 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor constructor (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+
+      using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
+      std::unique_ptr<int[]> memory( new int[13UL] );
+      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 2UL, 3UL );
+      mat1(0,0,0) = 1;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
+      mat1(1,1,1) = 5;
+      mat1(1,1,2) = 6;
+
+      const blaze::StaticTensor<int,2UL,2UL,3UL> mat2( mat1 );
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2, 12UL );
+      checkNonZeros( mat2,  0UL, 0UL, 3UL );
+      checkNonZeros( mat2,  1UL, 0UL, 3UL );
+      checkNonZeros( mat2,  0UL, 1UL, 3UL );
+      checkNonZeros( mat2,  1UL, 1UL, 3UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Construction failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n)(( 1 2 3 )\n( 4 5 6 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -684,1675 +570,372 @@ void ClassTest::testConstructors()
 */
 void ClassTest::testAssignment()
 {
-//    //=====================================================================================
-//    // Row-major homogeneous assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major StaticTensor homogeneous assignment";
-//
-//       blaze::StaticTensor<int,2UL,3UL,4UL> mat;
-//       mat = 2;
-//
-//       checkRows    ( mat,  3UL );
-//       checkColumns ( mat,  4UL );
-//       checkCapacity( mat, 12UL );
-//       checkNonZeros( mat, 12UL );
-//       checkNonZeros( mat,  0UL, 4UL );
-//       checkNonZeros( mat,  1UL, 4UL );
-//       checkNonZeros( mat,  2UL, 4UL );
-//
-//       if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
-//           mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
-//           mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major list assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major StaticTensor initializer list assignment (complete list)";
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat;
-//       mat = { { 1, 2, 3 }, { 4, 5, 6 } };
-//
-//       checkRows    ( mat, 2UL );
-//       checkColumns ( mat, 3UL );
-//       checkCapacity( mat, 6UL );
-//       checkNonZeros( mat, 6UL );
-//       checkNonZeros( mat, 0UL, 3UL );
-//       checkNonZeros( mat, 1UL, 3UL );
-//
-//       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
-//           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major StaticTensor initializer list assignment (incomplete list)";
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat;
-//       mat = { { 1 }, { 4, 5, 6 } };
-//
-//       checkRows    ( mat, 2UL );
-//       checkColumns ( mat, 3UL );
-//       checkCapacity( mat, 6UL );
-//       checkNonZeros( mat, 4UL );
-//       checkNonZeros( mat, 0UL, 1UL );
-//       checkNonZeros( mat, 1UL, 3UL );
-//
-//       if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 0 ||
-//           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 1 0 0 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major array assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major StaticTensor array assignment";
-//
-//       const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat;
-//       mat = array;
-//
-//       checkRows    ( mat, 2UL );
-//       checkColumns ( mat, 3UL );
-//       checkCapacity( mat, 6UL );
-//       checkNonZeros( mat, 6UL );
-//       checkNonZeros( mat, 0UL, 3UL );
-//       checkNonZeros( mat, 1UL, 3UL );
-//
-//       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
-//           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major copy assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major StaticTensor copy assignment";
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat1{ { 1, 2, 3 },
-//                                                              { 4, 5, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major StaticTensor copy assignment stress test";
-//
-//       using RandomTensorType = blaze::StaticTensor<int,2UL,4UL,3UL>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major dense tensor assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL> mat1{ { 1, 2, 3 }, { 4, 5, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::rowMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,rowMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::rowMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,rowMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor assignment stress test";
-//
-//       using RandomTensorType = blaze::DynamicTensor<int>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( 4UL, 3UL, min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL,blaze::columnMajor> mat1{ { 1, 2, 3 }, { 4, 5, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::columnMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,columnMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::columnMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,columnMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 3UL );
-//       checkNonZeros( mat2, 1UL, 3UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor assignment stress test";
-//
-//       using RandomTensorType = blaze::DynamicTensor<int,blaze::columnMajor>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( 4UL, 3UL, min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major sparse tensor assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor assignment";
-//
-//       blaze::CompressedTensor<int> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(1,0) = 3;
-//       mat1(1,2) = 4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
-//           mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor assignment stress test";
-//
-//       using RandomTensorType = blaze::CompressedTensor<int>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( 4UL, 3UL, min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor assignment";
-//
-//       blaze::CompressedTensor<int,blaze::columnMajor> mat1( 2UL, 3UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(1,0) = 3;
-//       mat1(1,2) = 4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
-//           mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor assignment stress test";
-//
-//       using RandomTensorType = blaze::CompressedTensor<int,blaze::columnMajor>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( 4UL, 3UL, min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major homogeneous assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major StaticTensor homogeneous assignment";
-//
-//       blaze::StaticTensor<int,2UL,3UL,4UL,blaze::columnMajor> mat;
-//       mat = 2;
-//
-//       checkRows    ( mat,  3UL );
-//       checkColumns ( mat,  4UL );
-//       checkCapacity( mat, 12UL );
-//       checkNonZeros( mat, 12UL );
-//       checkNonZeros( mat,  0UL, 3UL );
-//       checkNonZeros( mat,  1UL, 3UL );
-//       checkNonZeros( mat,  2UL, 3UL );
-//       checkNonZeros( mat,  3UL, 3UL );
-//
-//       if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 ||
-//           mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 ||
-//           mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major list assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major StaticTensor initializer list assignment (complete list)";
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat;
-//       mat = { { 1, 2, 3 }, { 4, 5, 6 } };
-//
-//       checkRows    ( mat, 2UL );
-//       checkColumns ( mat, 3UL );
-//       checkCapacity( mat, 6UL );
-//       checkNonZeros( mat, 6UL );
-//       checkNonZeros( mat, 0UL, 2UL );
-//       checkNonZeros( mat, 1UL, 2UL );
-//       checkNonZeros( mat, 2UL, 2UL );
-//
-//       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
-//           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major StaticTensor initializer list assignment (incomplete list)";
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat;
-//       mat = { { 1 }, { 4, 5, 6 } };
-//
-//       checkRows    ( mat, 2UL );
-//       checkColumns ( mat, 3UL );
-//       checkCapacity( mat, 6UL );
-//       checkNonZeros( mat, 4UL );
-//       checkNonZeros( mat, 0UL, 2UL );
-//       checkNonZeros( mat, 1UL, 1UL );
-//       checkNonZeros( mat, 2UL, 1UL );
-//
-//       if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 0 ||
-//           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 1 0 0 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major array assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major StaticTensor array assignment";
-//
-//       const int array[2][3] = { { 1, 2, 3 }, { 4, 5, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat;
-//       mat = array;
-//
-//       checkRows    ( mat, 2UL );
-//       checkColumns ( mat, 3UL );
-//       checkCapacity( mat, 6UL );
-//       checkNonZeros( mat, 6UL );
-//       checkNonZeros( mat, 0UL, 2UL );
-//       checkNonZeros( mat, 1UL, 2UL );
-//       checkNonZeros( mat, 2UL, 2UL );
-//
-//       if( mat(0,0) != 1 || mat(0,1) != 2 || mat(0,2) != 3 ||
-//           mat(1,0) != 4 || mat(1,1) != 5 || mat(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major copy assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major StaticTensor copy assignment";
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat1{ { 1, 3, 5 },
-//                                                                 { 2, 4, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 3 || mat2(0,2) != 5 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 4 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 3 5 )\n( 2 4 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major StaticTensor copy assignment stress test";
-//
-//       using RandomTensorType = blaze::StaticTensor<int,2UL,4UL,3UL,blaze::columnMajor>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL,blaze::columnMajor> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major dense tensor assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL> mat1{ { 1, 2, 3 }, { 4, 5, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::rowMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,rowMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::rowMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,rowMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor assignment stress test";
-//
-//       using RandomTensorType = blaze::DynamicTensor<int>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL,blaze::columnMajor> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( 4UL, 3UL, min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL,blaze::columnMajor> mat1{ { 1, 2, 3 }, { 4, 5, 6 } };
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::columnMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,columnMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::columnMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,columnMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(0,2) = 3;
-//       mat1(1,0) = 4;
-//       mat1(1,1) = 5;
-//       mat1(1,2) = 6;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 6UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 3 ||
-//           mat2(1,0) != 4 || mat2(1,1) != 5 || mat2(1,2) != 6 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 3 )\n( 4 5 6 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor assignment stress test";
-//
-//       using RandomTensorType = blaze::DynamicTensor<int,blaze::columnMajor>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL,blaze::columnMajor> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( 4UL, 3UL, min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major sparse tensor assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor assignment";
-//
-//       blaze::CompressedTensor<int> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(1,0) = 3;
-//       mat1(1,2) = 4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 1UL );
-//       checkNonZeros( mat2, 2UL, 1UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
-//           mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor assignment stress test";
-//
-//       using RandomTensorType = blaze::CompressedTensor<int>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL,blaze::columnMajor> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( 4UL, 3UL, min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor assignment";
-//
-//       blaze::CompressedTensor<int,blaze::columnMajor> mat1( 2UL, 3UL );
-//       mat1(0,0) = 1;
-//       mat1(0,1) = 2;
-//       mat1(1,0) = 3;
-//       mat1(1,2) = 4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2;
-//       mat2 = mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 1UL );
-//       checkNonZeros( mat2, 2UL, 1UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 2 || mat2(0,2) != 0 ||
-//           mat2(1,0) != 3 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 2 0 )\n( 3 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor assignment stress test";
-//
-//       using RandomTensorType = blaze::CompressedTensor<int,blaze::columnMajor>;
-//
-//       blaze::StaticTensor<int,2UL,4UL,3UL,blaze::columnMajor> mat1;
-//       const int min( randmin );
-//       const int max( randmax );
-//
-//       for( size_t i=0UL; i<100UL; ++i )
-//       {
-//          const RandomTensorType mat2( blaze::rand<RandomTensorType>( 4UL, 3UL, min, max ) );
-//
-//          mat1 = mat2;
-//
-//          if( mat1 != mat2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Assignment failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat1 << "\n"
-//                 << "   Expected result:\n" << mat2 << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//       randomize( mat2 );
-//
-//       mat2 = mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
+   //=====================================================================================
+   // Row-major homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticTensor homogeneous assignment";
+
+      blaze::StaticTensor<int,2UL,3UL,4UL> mat;
+      mat = 2;
+
+      checkRows    ( mat,  3UL );
+      checkColumns ( mat,  4UL );
+      checkPages   ( mat,  2UL );
+      checkCapacity( mat, 24UL );
+      checkNonZeros( mat, 24UL );
+      checkNonZeros( mat,  0UL, 0UL, 4UL );
+      checkNonZeros( mat,  1UL, 0UL, 4UL );
+      checkNonZeros( mat,  2UL, 0UL, 4UL );
+      checkNonZeros( mat,  0UL, 1UL, 4UL );
+      checkNonZeros( mat,  1UL, 1UL, 4UL );
+      checkNonZeros( mat,  2UL, 1UL, 4UL );
+
+      if( mat(0,0,0) != 2 || mat(0,0,1) != 2 || mat(0,0,2) != 2 || mat(0,0,3) != 2 ||
+          mat(0,1,0) != 2 || mat(0,1,1) != 2 || mat(0,1,2) != 2 || mat(0,1,3) != 2 ||
+          mat(0,2,0) != 2 || mat(0,2,1) != 2 || mat(0,2,2) != 2 || mat(0,2,3) != 2 ||
+          mat(1,0,0) != 2 || mat(1,0,1) != 2 || mat(1,0,2) != 2 || mat(1,0,3) != 2 ||
+          mat(1,1,0) != 2 || mat(1,1,1) != 2 || mat(1,1,2) != 2 || mat(1,1,3) != 2 ||
+          mat(1,2,0) != 2 || mat(1,2,1) != 2 || mat(1,2,2) != 2 || mat(1,2,3) != 2 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n)(( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major list assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticTensor initializer list assignment (complete list)";
+
+      blaze::StaticTensor<int,2UL,2UL,3UL> mat;
+      mat = {{{1, 2, 3}, {4, 5, 6}}, {{1, 2, 3}, {4, 5, 6}}};
+
+      checkRows    ( mat,  2UL );
+      checkColumns ( mat,  3UL );
+      checkPages   ( mat,  2UL );
+      checkCapacity( mat, 12UL );
+      checkNonZeros( mat, 12UL );
+      checkNonZeros( mat,  0UL, 0UL, 3UL );
+      checkNonZeros( mat,  1UL, 0UL, 3UL );
+      checkNonZeros( mat,  0UL, 1UL, 3UL );
+      checkNonZeros( mat,  1UL, 1UL, 3UL );
+
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n)(( 1 2 3 )\n( 4 5 6 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major StaticTensor initializer list assignment (incomplete list)";
+
+      blaze::StaticTensor<int,2UL,2UL,3UL> mat;
+      mat = {{{1}, {4, 5, 6}}, {{1}, {4, 5, 6}}};
+
+      checkRows    ( mat,  2UL );
+      checkColumns ( mat,  3UL );
+      checkPages   ( mat,  2UL );
+      checkCapacity( mat, 12UL );
+      checkNonZeros( mat,  8UL );
+      checkNonZeros( mat, 0UL, 0UL, 1UL );
+      checkNonZeros( mat, 1UL, 0UL, 3UL );
+      checkNonZeros( mat, 0UL, 1UL, 1UL );
+      checkNonZeros( mat, 1UL, 1UL, 3UL );
+
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 0 || mat(0,0,2) != 0 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 0 || mat(1,0,2) != 0 ||
+          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(( 1 0 0 )\n( 4 5 6 ))\n(( 1 0 0 )\n( 4 5 6 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major array assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticTensor array assignment";
+
+      const int array[2][2][3] = {{{1, 2, 3}, {4, 5, 6}}, {{1, 2, 3}, {4, 5, 6}}};
+      blaze::StaticTensor<int,2UL,2UL,3UL> mat;
+      mat = array;
+
+      checkRows    ( mat,  2UL );
+      checkColumns ( mat,  3UL );
+      checkPages   ( mat,  2UL );
+      checkCapacity( mat, 12UL );
+      checkNonZeros( mat, 12UL );
+      checkNonZeros( mat,  0UL, 0UL, 3UL );
+      checkNonZeros( mat,  1UL, 0UL, 3UL );
+      checkNonZeros( mat,  0UL, 1UL, 3UL );
+      checkNonZeros( mat,  1UL, 1UL, 3UL );
+
+      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
+          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
+          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
+          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n)(( 1 2 3 )\n( 4 5 6 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major StaticTensor copy assignment";
+
+      blaze::StaticTensor<int, 2UL, 2UL, 3UL> mat1{{{1, 2, 3}, {4, 5, 6}},
+                                                   {{1, 2, 3}, {4, 5, 6}}};
+      blaze::StaticTensor<int, 2UL, 2UL, 3UL> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2, 12UL );
+      checkNonZeros( mat2,  0UL, 0UL, 3UL );
+      checkNonZeros( mat2,  1UL, 0UL, 3UL );
+      checkNonZeros( mat2,  0UL, 1UL, 3UL );
+      checkNonZeros( mat2,  1UL, 1UL, 3UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n)(( 1 2 3 )\n( 4 5 6 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major StaticTensor copy assignment stress test";
+
+      using RandomTensorType = blaze::StaticTensor<int,2UL,4UL,3UL>;
+
+      blaze::StaticTensor<int,2UL,4UL,3UL> mat1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const RandomTensorType mat2( blaze::rand<RandomTensorType>( min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+
+   //=====================================================================================
+   // Row-major dense tensor assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor assignment (mixed type)";
+
+      blaze::StaticTensor<short,2UL,2UL,3UL> mat1{{{1, 2, 3}, {4, 5, 6}},
+                                                {{1, 2, 3}, {4, 5, 6}}};
+      blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2, 12UL );
+      checkNonZeros( mat2,  0UL, 0UL, 3UL );
+      checkNonZeros( mat2,  1UL, 0UL, 3UL );
+      checkNonZeros( mat2,  0UL, 1UL, 3UL );
+      checkNonZeros( mat2,  1UL, 1UL, 3UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n)(( 1 2 3 )\n( 4 5 6 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowMajor;
+
+      using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
+      AlignedPadded mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
+      mat1(0,0,0) = 1;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
+      mat1(1,1,1) = 5;
+      mat1(1,1,2) = 6;
+
+      blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2, 12UL );
+      checkNonZeros( mat2,  0UL, 0UL, 3UL );
+      checkNonZeros( mat2,  1UL, 0UL, 3UL );
+      checkNonZeros( mat2,  0UL, 1UL, 3UL );
+      checkNonZeros( mat2,  1UL, 1UL, 3UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n)(( 1 2 3 )\n( 4 5 6 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
+      std::unique_ptr<int[]> memory( new int[13UL] );
+      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 2UL, 3UL );
+      mat1(0,0,0) = 1;
+      mat1(0,0,1) = 2;
+      mat1(0,0,2) = 3;
+      mat1(0,1,0) = 4;
+      mat1(0,1,1) = 5;
+      mat1(0,1,2) = 6;
+      mat1(1,0,0) = 1;
+      mat1(1,0,1) = 2;
+      mat1(1,0,2) = 3;
+      mat1(1,1,0) = 4;
+      mat1(1,1,1) = 5;
+      mat1(1,1,2) = 6;
+
+      blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
+      mat2 = mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2, 12UL );
+      checkNonZeros( mat2,  0UL, 0UL, 3UL );
+      checkNonZeros( mat2,  1UL, 0UL, 3UL );
+      checkNonZeros( mat2,  0UL, 1UL, 3UL );
+      checkNonZeros( mat2,  1UL, 1UL, 3UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 2 || mat2(0,0,2) != 3 ||
+          mat2(0,1,0) != 4 || mat2(0,1,1) != 5 || mat2(0,1,2) != 6 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 2 || mat2(1,0,2) != 3 ||
+          mat2(1,1,0) != 4 || mat2(1,1,1) != 5 || mat2(1,1,2) != 6 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 2 3 )\n( 4 5 6 )\n)(( 1 2 3 )\n( 4 5 6 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor assignment stress test";
+
+      using RandomTensorType = blaze::DynamicTensor<int>;
+
+      blaze::StaticTensor<int,2UL,4UL,3UL> mat1;
+      const int min( randmin );
+      const int max( randmax );
+
+      for( size_t i=0UL; i<100UL; ++i )
+      {
+         const RandomTensorType mat2( blaze::rand<RandomTensorType>( 2UL, 4UL, 3UL, min, max ) );
+
+         mat1 = mat2;
+
+         if( mat1 != mat2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat1 << "\n"
+                << "   Expected result:\n" << mat2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -2368,1150 +951,142 @@ void ClassTest::testAssignment()
 */
 void ClassTest::testAddAssign()
 {
-//    //=====================================================================================
-//    // Row-major dense tensor addition assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor addition assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL> mat1{ {  1, 2, 0 },
-//                                                                { -3, 0, 4 } };
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor addition assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::rowMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,rowMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1 = 0;
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor addition assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::rowMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,rowMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1 = 0;
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor addition assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL,blaze::columnMajor> mat1{ {  1, 2, 0 },
-//                                                                   { -3, 0, 4 } };
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor addition assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::columnMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,columnMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1 = 0;
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor addition assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::columnMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,columnMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1 = 0;
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor addition assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor addition assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor addition assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor addition assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major sparse tensor addition assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor addition assignment";
-//
-//       blaze::CompressedTensor<int> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor addition assignment";
-//
-//       blaze::CompressedTensor<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor addition assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor addition assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor addition assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor addition assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major dense tensor addition assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor addition assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL> mat1{ {  1, 2, 0 },
-//                                                                { -3, 0, 4 } };
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor addition assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::rowMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,rowMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1 = 0;
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor addition assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::rowMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,rowMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1 = 0;
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor addition assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL,blaze::columnMajor> mat1{ {  1, 2, 0 },
-//                                                                   { -3, 0, 4 } };
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor addition assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::columnMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,columnMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1 = 0;
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor addition assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::columnMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,columnMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1 = 0;
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor addition assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor addition assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor addition assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor addition assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major sparse tensor addition assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor addition assignment";
-//
-//       blaze::CompressedTensor<int> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor addition assignment";
-//
-//       blaze::CompressedTensor<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) =  1;
-//       mat1(0,1) =  2;
-//       mat1(1,0) = -3;
-//       mat1(1,2) =  4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 += mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor addition assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor addition assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor addition assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor addition assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor addition assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 += mat1;
-//
-//       if( mat1 != mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Addition assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
+   //=====================================================================================
+   // Row-major dense tensor addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor addition assignment (mixed type)";
+
+      blaze::StaticTensor<short,2UL,2UL,3UL> mat1{{{1, 2, 0}, {-3, 0, 4}},
+                                                  {{1, 2, 0}, {-3, 0, 4}}};
+
+      blaze::StaticTensor<int,2UL,2UL,3UL> mat2{{{0, -2, 6}, {5, 0, 0}},
+                                                {{0, -2, 6}, {5, 0, 0}}};
+
+      mat2 += mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2,  8UL );
+      checkNonZeros( mat2,  0UL, 0UL, 2UL );
+      checkNonZeros( mat2,  1UL, 0UL, 2UL );
+      checkNonZeros( mat2,  0UL, 1UL, 2UL );
+      checkNonZeros( mat2,  1UL, 1UL, 2UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 0 6 )\n( 2 0 4 ))\n(( 1 0 6 )\n( 2 0 4 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor addition assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowMajor;
+
+      using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
+      AlignedPadded mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
+      mat1 = 0;
+      mat1(0,0,0) =  1;
+      mat1(0,0,1) =  2;
+      mat1(0,1,0) = -3;
+      mat1(0,1,2) =  4;
+      mat1(1,0,0) =  1;
+      mat1(1,0,1) =  2;
+      mat1(1,1,0) = -3;
+      mat1(1,1,2) =  4;
+
+      blaze::StaticTensor<int, 2UL, 2UL, 3UL> mat2{{{0, -2, 6}, {5, 0, 0}},
+                                                   {{0, -2, 6}, {5, 0, 0}}};
+
+      mat2 += mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2,  8UL );
+      checkNonZeros( mat2,  0UL, 0UL, 2UL );
+      checkNonZeros( mat2,  1UL, 0UL, 2UL );
+      checkNonZeros( mat2,  0UL, 1UL, 2UL );
+      checkNonZeros( mat2,  1UL, 1UL, 2UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 0 6 )\n( 2 0 4 ))\n(( 1 0 6 )\n( 2 0 4 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor addition assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+      using blaze::rowMajor;
+
+      using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
+      std::unique_ptr<int[]> memory( new int[13UL] );
+      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 2UL, 3UL );
+      mat1 = 0;
+      mat1(0,0,0) =  1;
+      mat1(0,0,1) =  2;
+      mat1(0,1,0) = -3;
+      mat1(0,1,2) =  4;
+      mat1(1,0,0) =  1;
+      mat1(1,0,1) =  2;
+      mat1(1,1,0) = -3;
+      mat1(1,1,2) =  4;
+
+      blaze::StaticTensor<int, 2UL, 2UL, 3UL> mat2{{{0, -2, 6}, {5, 0, 0}},
+                                                   {{0, -2, 6}, {5, 0, 0}}};
+
+      mat2 += mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2,  8UL );
+      checkNonZeros( mat2,  0UL, 0UL, 2UL );
+      checkNonZeros( mat2,  1UL, 0UL, 2UL );
+      checkNonZeros( mat2,  0UL, 1UL, 2UL );
+      checkNonZeros( mat2,  1UL, 1UL, 2UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 0 6 )\n( 2 0 4 ))\n(( 1 0 6 )\n( 2 0 4 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
@@ -3527,1108 +1102,152 @@ void ClassTest::testAddAssign()
 */
 void ClassTest::testSubAssign()
 {
-//    //=====================================================================================
-//    // Row-major dense tensor subtraction assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor subtraction assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL> mat1{ { -1, -2,  0 },
-//                                                                {  3,  0, -4 } };
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor subtraction assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::rowMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,rowMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1 = 0;
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor subtraction assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::rowMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,rowMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1 = 0;
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor subtraction assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL,blaze::columnMajor> mat1{ { -1, -2,  0 },
-//                                                                   {  3,  0, -4 } };
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor subtraction assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::columnMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,columnMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1 = 0;
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor subtraction assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::columnMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,columnMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1 = 0;
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor subtraction assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor subtraction assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor subtraction assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor subtraction assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor dense tensor subtraction assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor dense tensor subtraction assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Row-major sparse tensor subtraction assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor subtraction assignment";
-//
-//       blaze::CompressedTensor<int> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor subtraction assignment";
-//
-//       blaze::CompressedTensor<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL> mat2{ { 0, -2, 6 },
-//                                                              { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor subtraction assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor subtraction assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor subtraction assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor subtraction assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/row-major StaticTensor sparse tensor subtraction assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major/column-major StaticTensor sparse tensor subtraction assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major dense tensor subtraction assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor subtraction assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL> mat1{ { -1, -2,  0 },
-//                                                                {  3,  0, -4 } };
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor subtraction assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::rowMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,rowMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 32UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1 = 0;
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor subtraction assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::rowMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,rowMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1 = 0;
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor subtraction assignment (mixed type)";
-//
-//       blaze::StaticTensor<short,2UL,3UL,blaze::columnMajor> mat1{ { -1, -2,  0 },
-//                                                                   {  3,  0, -4 } };
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor subtraction assignment (aligned/padded)";
-//
-//       using blaze::aligned;
-//       using blaze::padded;
-//       using blaze::columnMajor;
-//
-//       using AlignedPadded = blaze::CustomTensor<int,aligned,padded,columnMajor>;
-//       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//       AlignedPadded mat1( memory.get(), 2UL, 3UL, 16UL );
-//       mat1 = 0;
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor subtraction assignment (unaligned/unpadded)";
-//
-//       using blaze::unaligned;
-//       using blaze::unpadded;
-//       using blaze::columnMajor;
-//
-//       using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded,columnMajor>;
-//       std::unique_ptr<int[]> memory( new int[7UL] );
-//       UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 3UL );
-//       mat1 = 0;
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor subtraction assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor subtraction assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor subtraction assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor subtraction assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor dense tensor subtraction assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor dense tensor subtraction assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> > mat1;
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major sparse tensor subtraction assignment
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor subtraction assignment";
-//
-//       blaze::CompressedTensor<int> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor subtraction assignment";
-//
-//       blaze::CompressedTensor<int,blaze::columnMajor> mat1( 2UL, 3UL, 4UL );
-//       mat1(0,0) = -1;
-//       mat1(0,1) = -2;
-//       mat1(1,0) =  3;
-//       mat1(1,2) = -4;
-//
-//       blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor> mat2{ { 0, -2, 6 },
-//                                                                 { 5,  0, 0 } };
-//
-//       mat2 -= mat1;
-//
-//       checkRows    ( mat2, 2UL );
-//       checkColumns ( mat2, 3UL );
-//       checkCapacity( mat2, 6UL );
-//       checkNonZeros( mat2, 4UL );
-//       checkNonZeros( mat2, 0UL, 2UL );
-//       checkNonZeros( mat2, 1UL, 0UL );
-//       checkNonZeros( mat2, 2UL, 2UL );
-//
-//       if( mat2(0,0) != 1 || mat2(0,1) != 0 || mat2(0,2) != 6 ||
-//           mat2(1,0) != 2 || mat2(1,1) != 0 || mat2(1,2) != 4 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat2 << "\n"
-//              << "   Expected result:\n( 1 0 6 )\n( 2 0 4 )\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor subtraction assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor subtraction assignment (lower)";
-//
-//       blaze::LowerTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor subtraction assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor subtraction assignment (upper)";
-//
-//       blaze::UpperTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/row-major StaticTensor sparse tensor subtraction assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major/column-major StaticTensor sparse tensor subtraction assignment (diagonal)";
-//
-//       blaze::DiagonalTensor< blaze::CompressedTensor<int,blaze::columnMajor> > mat1( 3UL );
-//       randomize( mat1 );
-//
-//       blaze::StaticTensor<int,2UL,3UL,3UL,blaze::columnMajor> mat2;
-//
-//       mat2 -= mat1;
-//
-//       if( mat1 != -mat2 ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Subtraction assignment failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << mat2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
+   //=====================================================================================
+   // Row-major dense tensor subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor subtraction assignment (mixed type)";
+
+      blaze::StaticTensor<short,2UL,2UL,3UL> mat1{{{-1, -2, 0}, {3, 0, -4}},
+                                                  {{-1, -2, 0}, {3, 0, -4}}};
+
+      blaze::StaticTensor<int, 2UL, 2UL, 3UL> mat2{{{0, -2, 6}, {5, 0, 0}},
+                                                   {{0, -2, 6}, {5, 0, 0}}};
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2,  8UL );
+      checkNonZeros( mat2,  0UL, 0UL, 2UL );
+      checkNonZeros( mat2,  1UL, 0UL, 2UL );
+      checkNonZeros( mat2,  0UL, 1UL, 2UL );
+      checkNonZeros( mat2,  1UL, 1UL, 2UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 0 6 )\n( 2 0 4 ))\n(( 1 0 6 )\n( 2 0 4 )\n)\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor subtraction assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+      using blaze::rowMajor;
+
+      using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
+      AlignedPadded mat1( memory.get(), 2UL, 2UL, 3UL, 16UL );
+      mat1 = 0;
+      mat1(0,0,0) = -1;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
+
+
+      blaze::StaticTensor<int, 2UL, 2UL, 3UL> mat2;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2,  8UL );
+      checkNonZeros( mat2,  0UL, 0UL, 2UL );
+      checkNonZeros( mat2,  1UL, 0UL, 2UL );
+      checkNonZeros( mat2,  0UL, 1UL, 2UL );
+      checkNonZeros( mat2,  1UL, 1UL, 2UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 0 6 )\n( 2 0 4 ))\n(( 1 0 6 )\n( 2 0 4 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major/row-major StaticTensor dense tensor subtraction assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+
+      using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
+      std::unique_ptr<int[]> memory( new int[13UL] );
+      UnalignedUnpadded mat1( memory.get()+1UL, 2UL, 2UL, 3UL );
+      mat1 = 0;
+      mat1(0,0,0) = -1;
+      mat1(0,0,1) = -2;
+      mat1(0,1,0) =  3;
+      mat1(0,1,2) = -4;
+      mat1(1,0,0) = -1;
+      mat1(1,0,1) = -2;
+      mat1(1,1,0) =  3;
+      mat1(1,1,2) = -4;
+
+      blaze::StaticTensor<int, 2UL, 2UL, 3UL> mat2;
+      mat2(0,0,1) = -2;
+      mat2(0,0,2) =  6;
+      mat2(0,1,0) =  5;
+      mat2(1,0,1) = -2;
+      mat2(1,0,2) =  6;
+      mat2(1,1,0) =  5;
+
+      mat2 -= mat1;
+
+      checkRows    ( mat2,  2UL );
+      checkColumns ( mat2,  3UL );
+      checkPages   ( mat2,  2UL );
+      checkCapacity( mat2, 12UL );
+      checkNonZeros( mat2,  8UL );
+      checkNonZeros( mat2,  0UL, 0UL, 2UL );
+      checkNonZeros( mat2,  1UL, 0UL, 2UL );
+      checkNonZeros( mat2,  0UL, 1UL, 2UL );
+      checkNonZeros( mat2,  1UL, 1UL, 2UL );
+
+      if( mat2(0,0,0) != 1 || mat2(0,0,1) != 0 || mat2(0,0,2) != 6 ||
+          mat2(0,1,0) != 2 || mat2(0,1,1) != 0 || mat2(0,1,2) != 4 ||
+          mat2(1,0,0) != 1 || mat2(1,0,1) != 0 || mat2(1,0,2) != 6 ||
+          mat2(1,1,0) != 2 || mat2(1,1,1) != 0 || mat2(1,1,2) != 4 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat2 << "\n"
+             << "   Expected result:\n(( 1 0 6 )\n( 2 0 4 ))\n(( 1 0 6 )\n( 2 0 4 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 
