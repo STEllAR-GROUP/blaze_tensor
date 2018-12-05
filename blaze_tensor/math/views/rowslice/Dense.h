@@ -1049,7 +1049,7 @@ inline RowSlice<MT,CRAs...>&
       {
          if (!IsRestricted_v<MT> || trySet(*this, i, j, rhs))
          {
-            left(i, row(), j) = rhs;
+            left(j, row(), i) = rhs;
          }
       }
    }
@@ -1591,7 +1591,7 @@ inline RowSlice<MT,CRAs...>&
 {
    for ( size_t i=0UL; i<rows(); ++i ) {
       for ( size_t j = 0; j < columns(); ++j ) {
-         tensor_(i, row(), j) *= scalar;
+         tensor_(j, row(), i) *= scalar;
       }
    }
    return *this;
@@ -1765,11 +1765,11 @@ inline void RowSlice<MT,CRAs...>::assign( const DenseMatrix<VT,SO>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,row(),j) = (~rhs)(i,j);
-         tensor_(i,row(),j+1UL) = (~rhs)(i,j+1UL);
+         tensor_(j    ,row(),i) = (~rhs)(i,j);
+         tensor_(j+1UL,row(),i) = (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(i,row(),jpos) = (~rhs)(i,jpos);
+         tensor_(jpos,row(),i) = (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1800,11 +1800,11 @@ inline void RowSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,SO>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,row(),j    ) += (~rhs)(i,j);
-         tensor_(i,row(),j+1UL) += (~rhs)(i,j+1UL);
+         tensor_(j    ,row(),i) += (~rhs)(i,j);
+         tensor_(j+1UL,row(),i) += (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(i,row(),jpos) += (~rhs)(i,jpos);
+         tensor_(jpos,row(),i) += (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1835,11 +1835,11 @@ inline void RowSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,SO>& rhs )
    for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
       const size_t jpos( (~rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,row(),j    ) -= (~rhs)(i,j);
-         tensor_(i,row(),j+1UL) -= (~rhs)(i,j+1UL);
+         tensor_(j    ,row(),i) -= (~rhs)(i,j);
+         tensor_(j+1UL,row(),i) -= (~rhs)(i,j+1UL);
       }
       if( jpos < (~rhs).columns() )
-         tensor_(i,row(),jpos) -= (~rhs)(i,jpos);
+         tensor_(jpos,row(),i) -= (~rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1872,11 +1872,11 @@ inline void RowSlice<MT,CRAs...>::schurAssign( const DenseMatrix<MT2,SO>& rhs )
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(i,row(),j    ) *= (~rhs)(i,j    );
-         tensor_(i,row(),j+1UL) *= (~rhs)(i,j+1UL);
+         tensor_(j    ,row(),i) *= (~rhs)(i,j    );
+         tensor_(j+1UL,row(),i) *= (~rhs)(i,j+1UL);
       }
       if( jpos < columns() ) {
-         tensor_(i,row(),jpos) *= (~rhs)(i,jpos);
+         tensor_(jpos,row(),i) *= (~rhs)(i,jpos);
       }
    }
 }
