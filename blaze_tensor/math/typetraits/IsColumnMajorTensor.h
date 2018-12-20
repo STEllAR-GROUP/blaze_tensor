@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISCOLUMNMAJORMATRIX_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISCOLUMNMAJORMATRIX_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISCOLUMNMAJORTENSOR_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISCOLUMNMAJORTENSOR_H_
 
 
 //*************************************************************************************************

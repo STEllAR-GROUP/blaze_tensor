@@ -118,7 +118,7 @@ namespace blaze {
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 class RowSlice
-   : public View< DenseMatrix< RowSlice<MT,CRAs...>, rowMajor > >
+   : public View< DenseMatrix< RowSlice<MT,CRAs...>, columnMajor > >
    , private RowSliceData<CRAs...>
 {
  private:
@@ -132,7 +132,7 @@ class RowSlice
    //! Type of this RowSlice instance.
    using This = RowSlice<MT,CRAs...>;
 
-   using BaseType      = DenseMatrix<This,rowMajor>;   //!< Base type of this RowSlice instance.
+   using BaseType      = DenseMatrix<This,columnMajor>;//!< Base type of this RowSlice instance.
    using ViewedType    = MT;                           //!< The type viewed by this RowSlice instance.
    using ResultType    = RowSliceTrait_t<MT,CRAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
@@ -569,10 +569,10 @@ class RowSlice
    inline RowSlice& operator=( initializer_list<initializer_list<ElementType> > list );
    inline RowSlice& operator=( const RowSlice& rhs );
 
-   template< typename VT > inline RowSlice& operator= ( const Matrix<VT,false>& rhs );
-   template< typename VT > inline RowSlice& operator+=( const Matrix<VT,false>& rhs );
-   template< typename VT > inline RowSlice& operator-=( const Matrix<VT,false>& rhs );
-   template< typename VT > inline RowSlice& operator%=( const Matrix<VT,false>& rhs );
+   template< typename VT > inline RowSlice& operator= ( const Matrix<VT,columnMajor>& rhs );
+   template< typename VT > inline RowSlice& operator+=( const Matrix<VT,columnMajor>& rhs );
+   template< typename VT > inline RowSlice& operator-=( const Matrix<VT,columnMajor>& rhs );
+   template< typename VT > inline RowSlice& operator%=( const Matrix<VT,columnMajor>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -1172,9 +1172,9 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side matrix
 inline RowSlice<MT,CRAs...>&
-   RowSlice<MT,CRAs...>::operator=( const Matrix<VT,false>& rhs )
+   RowSlice<MT,CRAs...>::operator=( const Matrix<VT,columnMajor>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
@@ -1224,9 +1224,9 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side matrix
 inline RowSlice<MT,CRAs...>&
-   RowSlice<MT,CRAs...>::operator+=( const Matrix<VT,false>& rhs )
+   RowSlice<MT,CRAs...>::operator+=( const Matrix<VT,columnMajor>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
@@ -1276,9 +1276,9 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side matrix
 inline RowSlice<MT,CRAs...>&
-   RowSlice<MT,CRAs...>::operator-=( const Matrix<VT,false>& rhs )
+   RowSlice<MT,CRAs...>::operator-=( const Matrix<VT,columnMajor>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
@@ -1327,11 +1327,11 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 template< typename VT >     // Type of the right-hand side matrix
 inline RowSlice<MT,CRAs...>&
-   RowSlice<MT,CRAs...>::operator%=( const Matrix<VT,false>& rhs )
+   RowSlice<MT,CRAs...>::operator%=( const Matrix<VT,columnMajor>& rhs )
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 

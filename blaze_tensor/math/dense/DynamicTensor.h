@@ -3259,7 +3259,7 @@ struct ColumnSliceTraitEval2<
                              MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
                              MaxSize_v< MT,2UL > == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
+   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, rowMajor >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3286,7 +3286,7 @@ struct PageSliceTraitEval2<
                              MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
                              MaxSize_v< MT,2UL > == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
+   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, rowMajor >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3313,7 +3313,7 @@ struct RowSliceTraitEval2<
                              MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
                              MaxSize_v< MT,2UL > == DefaultMaxSize_v ) > >
 {
-   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, false >;
+   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, columnMajor >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -409,8 +409,9 @@ BLAZE_ALWAYS_INLINE bool
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool tryAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool tryAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                     size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
@@ -482,8 +483,9 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Tensor<TT1>& lhs, const Tensor<TT2>& r
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                        size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
@@ -519,8 +521,9 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,fa
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                        ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
@@ -591,8 +594,9 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<TT1>& lhs, const Tensor<TT2>
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                        size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
@@ -629,8 +633,9 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,fa
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                        ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
@@ -701,8 +706,9 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<TT1>& lhs, const Tensor<TT2>
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                         size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
@@ -739,8 +745,9 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,f
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                         ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
@@ -812,8 +819,9 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<TT1>& lhs, const Tensor<TT
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                         size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
@@ -848,8 +856,9 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<MT>& lhs, const Matrix<VT,
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                        size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
@@ -886,8 +895,9 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,fa
 // assignment operator.
 */
 template< typename MT  // Type of the left-hand side tensor
-        , typename VT > // Type of the right-hand side matrix
-BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,false>& rhs,
+        , typename VT  // Type of the right-hand side matrix
+        , bool SO >    // Storage order
+BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& rhs,
                                        ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= (~lhs).rows(), "Invalid row access index" );
