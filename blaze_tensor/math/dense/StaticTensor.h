@@ -299,15 +299,15 @@ class StaticTensor
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit inline StaticTensor();
-   explicit inline StaticTensor( const Type& init );
-   explicit inline StaticTensor( initializer_list< initializer_list< initializer_list<Type> > > list );
+   explicit inline           StaticTensor();
+   explicit inline           StaticTensor( const Type& init );
+   explicit inline constexpr StaticTensor( initializer_list< initializer_list< initializer_list<Type> > > list );
 
    template< typename Other >
-   explicit inline StaticTensor( size_t k, size_t m, size_t n, const Other* array );
+   explicit inline constexpr StaticTensor( size_t o, size_t m, size_t n, const Other* array );
 
    template< typename Other, size_t Pages, size_t Rows, size_t Cols >
-   explicit inline StaticTensor( const Other (&array)[Pages][Rows][Cols] );
+   explicit inline constexpr StaticTensor( const Other (&array)[Pages][Rows][Cols] );
 
                                         inline StaticTensor( const StaticTensor& m );
    template< typename Other > inline StaticTensor( const StaticTensor<Other,O,M,N>& m );
@@ -325,31 +325,31 @@ class StaticTensor
    //**Data access functions***********************************************************************
    /*!\name Data access functions */
    //@{
-   inline Reference      operator()( size_t k, size_t i, size_t j ) noexcept;
-   inline ConstReference operator()( size_t k, size_t i, size_t j ) const noexcept;
-   inline Reference      at( size_t k, size_t i, size_t j );
-   inline ConstReference at( size_t k, size_t i, size_t j ) const;
-   inline Pointer        data  () noexcept;
-   inline ConstPointer   data  () const noexcept;
-   inline Pointer        data  ( size_t i, size_t k ) noexcept;
-   inline ConstPointer   data  ( size_t i, size_t k ) const noexcept;
-   inline Iterator       begin ( size_t i, size_t k ) noexcept;
-   inline ConstIterator  begin ( size_t i, size_t k ) const noexcept;
-   inline ConstIterator  cbegin( size_t i, size_t k ) const noexcept;
-   inline Iterator       end   ( size_t i, size_t k ) noexcept;
-   inline ConstIterator  end   ( size_t i, size_t k ) const noexcept;
-   inline ConstIterator  cend  ( size_t i, size_t k ) const noexcept;
+   inline constexpr Reference      operator()( size_t k, size_t i, size_t j ) noexcept;
+   inline constexpr ConstReference operator()( size_t k, size_t i, size_t j ) const noexcept;
+   inline           Reference      at( size_t k, size_t i, size_t j );
+   inline           ConstReference at( size_t k, size_t i, size_t j ) const;
+   inline constexpr Pointer        data  () noexcept;
+   inline constexpr ConstPointer   data  () const noexcept;
+   inline constexpr Pointer        data  ( size_t i, size_t k ) noexcept;
+   inline constexpr ConstPointer   data  ( size_t i, size_t k ) const noexcept;
+   inline constexpr Iterator       begin ( size_t i, size_t k ) noexcept;
+   inline constexpr ConstIterator  begin ( size_t i, size_t k ) const noexcept;
+   inline constexpr ConstIterator  cbegin( size_t i, size_t k ) const noexcept;
+   inline constexpr Iterator       end   ( size_t i, size_t k ) noexcept;
+   inline constexpr ConstIterator  end   ( size_t i, size_t k ) const noexcept;
+   inline constexpr ConstIterator  cend  ( size_t i, size_t k ) const noexcept;
    //@}
    //**********************************************************************************************
 
    //**Assignment operators************************************************************************
    /*!\name Assignment operators */
    //@{
-   inline StaticTensor& operator=( const Type& set );
-   inline StaticTensor& operator=( initializer_list< initializer_list< initializer_list<Type> > > list );
+   inline constexpr StaticTensor& operator=( const Type& set );
+   inline constexpr StaticTensor& operator=( initializer_list< initializer_list< initializer_list<Type> > > list );
 
    template< typename Other, size_t Pages, size_t Rows, size_t Cols >
-   inline StaticTensor& operator=( const Other (&array)[Pages][Rows][Cols] );
+   inline constexpr StaticTensor& operator=( const Other (&array)[Pages][Rows][Cols] );
 
                               inline StaticTensor& operator= ( const StaticTensor& rhs );
    template< typename Other > inline StaticTensor& operator= ( const StaticTensor<Other,O,M,N>& rhs );
@@ -371,7 +371,7 @@ class StaticTensor
           inline           size_t capacity( size_t i, size_t k ) const noexcept;
           inline           size_t nonZeros() const;
           inline           size_t nonZeros( size_t i, size_t k ) const;
-          inline           void   reset();
+          inline constexpr void   reset();
           inline           void   reset( size_t i, size_t k );
           inline           void   swap( StaticTensor& m ) noexcept;
    //@}
@@ -460,7 +460,7 @@ class StaticTensor
    //**Debugging functions*************************************************************************
    /*!\name Debugging functions */
    //@{
-   inline bool isIntact() const noexcept;
+   inline constexpr bool isIntact() const noexcept;
    //@}
    //**********************************************************************************************
 
@@ -655,7 +655,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline StaticTensor<Type,O,M,N>::StaticTensor( initializer_list< initializer_list< initializer_list<Type> > > list )
+inline constexpr StaticTensor<Type,O,M,N>::StaticTensor( initializer_list< initializer_list< initializer_list<Type> > > list )
    : v_()  // The statically allocated tensor elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
@@ -711,7 +711,7 @@ template< typename Type  // Data type of the tensor
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
 template< typename Other >  // Data type of the initialization array
-inline StaticTensor<Type,O,M,N>::StaticTensor( size_t o, size_t m, size_t n, const Other* array )
+inline constexpr StaticTensor<Type,O,M,N>::StaticTensor( size_t o, size_t m, size_t n, const Other* array )
    : v_()  // The statically allocated tensor elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
@@ -784,7 +784,7 @@ template< typename Other  // Data type of the initialization array
         , size_t Pages    // Number of pages of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
-inline StaticTensor<Type,O,M,N>::StaticTensor( const Other (&array)[Pages][Rows][Cols] )
+inline constexpr StaticTensor<Type,O,M,N>::StaticTensor( const Other (&array)[Pages][Rows][Cols] )
    : v_()  // The statically allocated tensor elements
 {
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
@@ -922,7 +922,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::Reference
+inline constexpr typename StaticTensor<Type,O,M,N>::Reference
    StaticTensor<Type,O,M,N>::operator()( size_t k, size_t i, size_t j ) noexcept
 {
    BLAZE_USER_ASSERT( k<O, "Invalid page access index"   );
@@ -947,7 +947,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::ConstReference
+inline constexpr typename StaticTensor<Type,O,M,N>::ConstReference
    StaticTensor<Type,O,M,N>::operator()( size_t k, size_t i, size_t j ) const noexcept
 {
    BLAZE_USER_ASSERT( k<O, "Invalid page access index"   );
@@ -1038,7 +1038,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::Pointer
+inline constexpr typename StaticTensor<Type,O,M,N>::Pointer
    StaticTensor<Type,O,M,N>::data() noexcept
 {
    return v_;
@@ -1062,7 +1062,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::ConstPointer
+inline constexpr typename StaticTensor<Type,O,M,N>::ConstPointer
    StaticTensor<Type,O,M,N>::data() const noexcept
 {
    return v_;
@@ -1082,7 +1082,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::Pointer
+inline constexpr typename StaticTensor<Type,O,M,N>::Pointer
    StaticTensor<Type,O,M,N>::data( size_t i, size_t k ) noexcept
 {
    BLAZE_USER_ASSERT( k < O, "Invalid page access index"   );
@@ -1104,7 +1104,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::ConstPointer
+inline constexpr typename StaticTensor<Type,O,M,N>::ConstPointer
    StaticTensor<Type,O,M,N>::data( size_t i, size_t k ) const noexcept
 {
    BLAZE_USER_ASSERT( k < O, "Invalid page access index"   );
@@ -1129,7 +1129,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::Iterator
+inline constexpr typename StaticTensor<Type,O,M,N>::Iterator
    StaticTensor<Type,O,M,N>::begin( size_t i, size_t k ) noexcept
 {
    BLAZE_USER_ASSERT( k < O, "Invalid page access index"   );
@@ -1154,7 +1154,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::ConstIterator
+inline constexpr typename StaticTensor<Type,O,M,N>::ConstIterator
    StaticTensor<Type,O,M,N>::begin( size_t i, size_t k ) const noexcept
 {
    BLAZE_USER_ASSERT( k < O, "Invalid page access index"   );
@@ -1179,7 +1179,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::ConstIterator
+inline constexpr typename StaticTensor<Type,O,M,N>::ConstIterator
    StaticTensor<Type,O,M,N>::cbegin( size_t i, size_t k ) const noexcept
 {
    BLAZE_USER_ASSERT( k < O, "Invalid page access index"   );
@@ -1204,7 +1204,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::Iterator
+inline constexpr typename StaticTensor<Type,O,M,N>::Iterator
    StaticTensor<Type,O,M,N>::end( size_t i, size_t k ) noexcept
 {
    BLAZE_USER_ASSERT( k < O, "Invalid page access index"   );
@@ -1229,7 +1229,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::ConstIterator
+inline constexpr typename StaticTensor<Type,O,M,N>::ConstIterator
    StaticTensor<Type,O,M,N>::end( size_t i, size_t k ) const noexcept
 {
    BLAZE_USER_ASSERT( k < O, "Invalid page access index"   );
@@ -1254,7 +1254,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline typename StaticTensor<Type,O,M,N>::ConstIterator
+inline constexpr typename StaticTensor<Type,O,M,N>::ConstIterator
    StaticTensor<Type,O,M,N>::cend( size_t i, size_t k ) const noexcept
 {
    BLAZE_USER_ASSERT( k < O, "Invalid page access index"   );
@@ -1282,7 +1282,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::operator=( const Type& set )
+inline constexpr StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::operator=( const Type& set )
 {
    for (size_t k=0UL; k<O; ++k)
       for( size_t i=0UL; i<M; ++i )
@@ -1322,7 +1322,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline StaticTensor<Type,O,M,N>&
+inline constexpr StaticTensor<Type,O,M,N>&
    StaticTensor<Type,O,M,N>::operator=( initializer_list< initializer_list< initializer_list<Type> > > list )
 {
    if( list.size() != O || determineRows( list ) > M || determineColumns( list ) > N ) {
@@ -1374,7 +1374,7 @@ template< typename Other  // Data type of the initialization array
         , size_t Pages    // Number of pages of the initialization array
         , size_t Rows     // Number of rows of the initialization array
         , size_t Cols >   // Number of columns of the initialization array
-inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::operator=( const Other (&array)[Pages][Rows][Cols] )
+inline constexpr StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::operator=( const Other (&array)[Pages][Rows][Cols] )
 {
    BLAZE_STATIC_ASSERT( Pages == O && Rows == M && Cols == N );
 
@@ -1787,7 +1787,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline void StaticTensor<Type,O,M,N>::reset()
+inline constexpr void StaticTensor<Type,O,M,N>::reset()
 {
    using blaze::clear;
 
@@ -2242,7 +2242,7 @@ template< typename Type  // Data type of the tensor
         , size_t O       // Number of pages
         , size_t M       // Number of rows
         , size_t N >     // Number of columns
-inline bool StaticTensor<Type,O,M,N>::isIntact() const noexcept
+inline constexpr bool StaticTensor<Type,O,M,N>::isIntact() const noexcept
 {
    if( IsNumeric_v<Type> ) {
       for( size_t k=0UL; k<O; ++k ) {
