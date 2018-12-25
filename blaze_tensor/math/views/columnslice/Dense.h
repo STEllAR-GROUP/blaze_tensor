@@ -105,12 +105,12 @@ class ColumnSlice
    //! Pointer to a non-constant columnslice value.
    using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
-   //**RowIterator class definition*************************************************************
+   //**ColumnSliceIterator class definition*************************************************************
    /*!\brief Iterator over the elements of the dense column.
    */
    template< typename TensorType      // Type of the dense tensor
            , typename IteratorType >  // Type of the dense tensor iterator
-   class RowIterator
+   class ColumnSliceIterator
    {
     public:
       //**Type definitions*************************************************************************
@@ -138,9 +138,9 @@ class ColumnSlice
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Default constructor of the RowIterator class.
+      /*!\brief Default constructor of the ColumnSliceIterator class.
       */
-      inline RowIterator() noexcept
+      inline ColumnSliceIterator() noexcept
          : tensor_( nullptr )  // The dense tensor containing the column
          , page_  ( 0UL )      // The current page index
          , row_   ( 0UL )      // The current row index
@@ -150,14 +150,14 @@ class ColumnSlice
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Constructor of the RowIterator class.
+      /*!\brief Constructor of the ColumnSliceIterator class.
       //
       // \param tensor The tensor containing the column.
       // \param page The page index.
       // \param row The row index.
       // \param column The column index.
       */
-      inline RowIterator( TensorType& tensor, size_t page, size_t row, size_t column ) noexcept
+      inline ColumnSliceIterator( TensorType& tensor, size_t page, size_t row, size_t column ) noexcept
          : tensor_( &tensor )  // The dense tensor containing the column
          , page_  ( page    )  // The current page index
          , row_   ( row     )  // The current row index
@@ -170,12 +170,12 @@ class ColumnSlice
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
-      /*!\brief Conversion constructor from different RowIterator instances.
+      /*!\brief Conversion constructor from different ColumnSliceIterator instances.
       //
       // \param it The column iterator to be copied.
       */
       template< typename TensorType2, typename IteratorType2 >
-      inline RowIterator( const RowIterator<TensorType2,IteratorType2>& it ) noexcept
+      inline ColumnSliceIterator( const ColumnSliceIterator<TensorType2,IteratorType2>& it ) noexcept
          : tensor_( it.tensor_ )  // The dense tensor containing the column
          , page_  ( it.page_   )  // The current page index
          , row_   ( it.row_    )  // The current row index
@@ -190,7 +190,7 @@ class ColumnSlice
       // \param inc The increment of the iterator.
       // \return The incremented iterator.
       */
-      inline RowIterator& operator+=( size_t inc ) noexcept {
+      inline ColumnSliceIterator& operator+=( size_t inc ) noexcept {
          using blaze::reset;
          row_ += inc;
          if( row_ >= tensor_->rows() )
@@ -212,7 +212,7 @@ class ColumnSlice
       // \param dec The decrement of the iterator.
       // \return The decremented iterator.
       */
-      inline RowIterator& operator-=( size_t dec ) noexcept {
+      inline ColumnSliceIterator& operator-=( size_t dec ) noexcept {
          using blaze::reset;
          if( row_ < dec )
          {
@@ -233,7 +233,7 @@ class ColumnSlice
       //
       // \return Reference to the incremented iterator.
       */
-      inline RowIterator& operator++() noexcept {
+      inline ColumnSliceIterator& operator++() noexcept {
          using blaze::reset;
          ++row_;
          if( row_ == tensor_->rows() )
@@ -254,8 +254,8 @@ class ColumnSlice
       //
       // \return The previous position of the iterator.
       */
-      inline const RowIterator operator++( int ) noexcept {
-         const RowIterator tmp( *this );
+      inline const ColumnSliceIterator operator++( int ) noexcept {
+         const ColumnSliceIterator tmp( *this );
          ++(*this);
          return tmp;
       }
@@ -266,7 +266,7 @@ class ColumnSlice
       //
       // \return Reference to the decremented iterator.
       */
-      inline RowIterator& operator--() noexcept {
+      inline ColumnSliceIterator& operator--() noexcept {
          using blaze::reset;
          if( row_ == 0 )
          {
@@ -286,8 +286,8 @@ class ColumnSlice
       //
       // \return The previous position of the iterator.
       */
-      inline const RowIterator operator--( int ) noexcept {
-         const RowIterator tmp( *this );
+      inline const ColumnSliceIterator operator--( int ) noexcept {
+         const ColumnSliceIterator tmp( *this );
          --(*this);
          return tmp;
       }
@@ -328,73 +328,73 @@ class ColumnSlice
       //*******************************************************************************************
 
       //**Equality operator************************************************************************
-      /*!\brief Equality comparison between two RowIterator objects.
+      /*!\brief Equality comparison between two ColumnSliceIterator objects.
       //
       // \param rhs The right-hand side row iterator.
       // \return \a true if the iterators refer to the same element, \a false if not.
       */
       template< typename TensorType2, typename IteratorType2 >
-      inline bool operator==( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+      inline bool operator==( const ColumnSliceIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
          return pos_ == IteratorType2() || row_ == rhs.row_;
       }
       //*******************************************************************************************
 
       //**Inequality operator**********************************************************************
-      /*!\brief Inequality comparison between two RowIterator objects.
+      /*!\brief Inequality comparison between two ColumnSliceIterator objects.
       //
       // \param rhs The right-hand side column iterator.
       // \return \a true if the iterators don't refer to the same element, \a false if they do.
       */
       template< typename TensorType2, typename IteratorType2 >
-      inline bool operator!=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+      inline bool operator!=( const ColumnSliceIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
          return !( *this == rhs );
       }
       //*******************************************************************************************
 
       //**Less-than operator***********************************************************************
-      /*!\brief Less-than comparison between two RowIterator objects.
+      /*!\brief Less-than comparison between two ColumnSliceIterator objects.
       //
       // \param rhs The right-hand side column iterator.
       // \return \a true if the left-hand side iterator is smaller, \a false if not.
       */
       template< typename TensorType2, typename IteratorType2 >
-      inline bool operator<( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+      inline bool operator<( const ColumnSliceIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
          return row_ < rhs.row_;
       }
       //*******************************************************************************************
 
       //**Greater-than operator********************************************************************
-      /*!\brief Greater-than comparison between two RowIterator objects.
+      /*!\brief Greater-than comparison between two ColumnSliceIterator objects.
       //
       // \param rhs The right-hand side column iterator.
       // \return \a true if the left-hand side iterator is greater, \a false if not.
       */
       template< typename TensorType2, typename IteratorType2 >
-      inline bool operator>( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+      inline bool operator>( const ColumnSliceIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
          return !( *this >= rhs );
       }
       //*******************************************************************************************
 
       //**Less-or-equal-than operator**************************************************************
-      /*!\brief Less-than comparison between two RowIterator objects.
+      /*!\brief Less-than comparison between two ColumnSliceIterator objects.
       //
       // \param rhs The right-hand side column iterator.
       // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
       */
       template< typename TensorType2, typename IteratorType2 >
-      inline bool operator<=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+      inline bool operator<=( const ColumnSliceIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
          return row_ <= rhs.row_;
       }
       //*******************************************************************************************
 
       //**Greater-or-equal-than operator***********************************************************
-      /*!\brief Greater-than comparison between two RowIterator objects.
+      /*!\brief Greater-than comparison between two ColumnSliceIterator objects.
       //
       // \param rhs The right-hand side column iterator.
       // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
       */
       template< typename TensorType2, typename IteratorType2 >
-      inline bool operator>=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
+      inline bool operator>=( const ColumnSliceIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
          return !( *this < rhs );
       }
       //*******************************************************************************************
@@ -405,44 +405,44 @@ class ColumnSlice
       // \param rhs The right-hand side column iterator.
       // \return The number of elements between the two column iterators.
       */
-      inline DifferenceType operator-( const RowIterator& rhs ) const noexcept {
+      inline DifferenceType operator-( const ColumnSliceIterator& rhs ) const noexcept {
          return row_ - rhs.row_;
       }
       //*******************************************************************************************
 
       //**Addition operator************************************************************************
-      /*!\brief Addition between a RowIterator and an integral value.
+      /*!\brief Addition between a ColumnSliceIterator and an integral value.
       //
       // \param it The iterator to be incremented.
       // \param inc The number of elements the iterator is incremented.
       // \return The incremented iterator.
       */
-      friend inline const RowIterator operator+( const RowIterator& it, size_t inc ) noexcept {
-         return RowIterator( *it.tensor_, it.page_, it.row_+inc, it.column_ );
+      friend inline const ColumnSliceIterator operator+( const ColumnSliceIterator& it, size_t inc ) noexcept {
+         return ColumnSliceIterator( *it.tensor_, it.page_, it.row_+inc, it.column_ );
       }
       //*******************************************************************************************
 
       //**Addition operator************************************************************************
-      /*!\brief Addition between an integral value and a RowIterator.
+      /*!\brief Addition between an integral value and a ColumnSliceIterator.
       //
       // \param inc The number of elements the iterator is incremented.
       // \param it The iterator to be incremented.
       // \return The incremented iterator.
       */
-      friend inline const RowIterator operator+( size_t inc, const RowIterator& it ) noexcept {
-         return RowIterator( *it.tensor_, it.page_, it.row_+inc, it.column_ );
+      friend inline const ColumnSliceIterator operator+( size_t inc, const ColumnSliceIterator& it ) noexcept {
+         return ColumnSliceIterator( *it.tensor_, it.page_, it.row_+inc, it.column_ );
       }
       //*******************************************************************************************
 
       //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between a RowIterator and an integral value.
+      /*!\brief Subtraction between a ColumnSliceIterator and an integral value.
       //
       // \param it The iterator to be decremented.
       // \param inc The number of elements the iterator is decremented.
       // \return The decremented iterator.
       */
-      friend inline const RowIterator operator-( const RowIterator& it, size_t dec ) noexcept {
-         return RowIterator( *it.tensor_, it.page_, it.row_-dec, it.column_ );
+      friend inline const ColumnSliceIterator operator-( const ColumnSliceIterator& it, size_t dec ) noexcept {
+         return ColumnSliceIterator( *it.tensor_, it.page_, it.row_-dec, it.column_ );
       }
       //*******************************************************************************************
 
@@ -456,16 +456,16 @@ class ColumnSlice
       //*******************************************************************************************
 
       //**Friend declarations**********************************************************************
-      template< typename TensorType2, typename IteratorType2 > friend class RowIterator;
+      template< typename TensorType2, typename IteratorType2 > friend class ColumnSliceIterator;
       //*******************************************************************************************
    };
    //**********************************************************************************************
 
    //! Iterator over constant elements.
-   using ConstIterator = RowIterator< const MT, ConstIterator_t<MT> >;
+   using ConstIterator = ColumnSliceIterator< const MT, ConstIterator_t<MT> >;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_t< IsConst_v<MT>, ConstIterator, RowIterator< MT, Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, ColumnSliceIterator< MT, Iterator_t<MT> > >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************

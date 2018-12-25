@@ -154,367 +154,11 @@ class RowSlice
    //! Pointer to a non-constant rowslice value.
    using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
-   //**RowIterator class definition*************************************************************
-   /*!\brief Iterator over the elements of the dense column.
-   */
-   template< typename TensorType      // Type of the dense tensor
-           , typename IteratorType >  // Type of the dense tensor iterator
-   class RowIterator
-   {
-    public:
-      //**Type definitions*************************************************************************
-      //! The iterator category.
-      using IteratorCategory = typename std::iterator_traits<IteratorType>::iterator_category;
-
-      //! Type of the underlying elements.
-      using ValueType = typename std::iterator_traits<IteratorType>::value_type;
-
-      //! Pointer return type.
-      using PointerType = typename std::iterator_traits<IteratorType>::pointer;
-
-      //! Reference return type.
-      using ReferenceType = typename std::iterator_traits<IteratorType>::reference;
-
-      //! Difference between two iterators.
-      using DifferenceType = typename std::iterator_traits<IteratorType>::difference_type;
-
-      // STL iterator requirements
-      using iterator_category = IteratorCategory;  //!< The iterator category.
-      using value_type        = ValueType;         //!< Type of the underlying elements.
-      using pointer           = PointerType;       //!< Pointer return type.
-      using reference         = ReferenceType;     //!< Reference return type.
-      using difference_type   = DifferenceType;    //!< Difference between two iterators.
-      //*******************************************************************************************
-
-      //**Constructor******************************************************************************
-      /*!\brief Default constructor of the RowIterator class.
-      */
-      inline RowIterator() noexcept
-         : tensor_( nullptr )  // The dense tensor containing the column
-         , page_  ( 0UL )      // The current page index
-         , row_   ( 0UL )      // The current row index
-         , column_( 0UL )      // The current column index
-         , pos_   (     )      // Iterator to the current dense element
-      {}
-      //*******************************************************************************************
-
-      //**Constructor******************************************************************************
-      /*!\brief Constructor of the RowIterator class.
-      //
-      // \param tensor The tensor containing the column.
-      // \param page The page index.
-      // \param row The row index.
-      // \param column The column index.
-      */
-      inline RowIterator( TensorType& tensor, size_t page, size_t row, size_t column ) noexcept
-         : tensor_( &tensor )  // The dense tensor containing the column
-         , page_  ( page    )  // The current page index
-         , row_   ( row     )  // The current row index
-         , column_( column  )  // The current column index
-         , pos_   (         )  // Iterator to the current dense element
-      {
-         if( page_ != tensor_->pages() )
-            pos_ = tensor_->begin( row_, page_ ) + column_;
-      }
-      //*******************************************************************************************
-
-      //**Constructor******************************************************************************
-      /*!\brief Conversion constructor from different RowIterator instances.
-      //
-      // \param it The column iterator to be copied.
-      */
-      template< typename TensorType2, typename IteratorType2 >
-      inline RowIterator( const RowIterator<TensorType2,IteratorType2>& it ) noexcept
-         : tensor_( it.tensor_ )  // The dense tensor containing the column
-         , page_  ( it.page_   )  // The current page index
-         , row_   ( it.row_    )  // The current row index
-         , column_( it.column_ )  // The current column index
-         , pos_   ( it.pos_    )  // Iterator to the current dense element
-      {}
-      //*******************************************************************************************
-
-      //**Addition assignment operator*************************************************************
-      /*!\brief Addition assignment operator.
-      //
-      // \param inc The increment of the iterator.
-      // \return The incremented iterator.
-      */
-      inline RowIterator& operator+=( size_t inc ) noexcept {
-         using blaze::reset;
-         page_ += inc;
-         if( page_ >= tensor_->pages() )
-         {
-            reset( pos_ );
-         }
-         else
-         {
-            pos_ = tensor_->begin( row_, page_ ) + column_;
-         }
-
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Subtraction assignment operator**********************************************************
-      /*!\brief Subtraction assignment operator.
-      //
-      // \param dec The decrement of the iterator.
-      // \return The decremented iterator.
-      */
-      inline RowIterator& operator-=( size_t dec ) noexcept {
-         using blaze::reset;
-         if( page_ < dec )
-         {
-            pos_ = tensor_->begin( row_, 0UL ) + column_;
-         }
-         else
-         {
-            page_ -= dec;
-            pos_ = tensor_->begin( row_, page_ ) + column_;
-         }
-
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Prefix increment operator****************************************************************
-      /*!\brief Pre-increment operator.
-      //
-      // \return Reference to the incremented iterator.
-      */
-      inline RowIterator& operator++() noexcept {
-         using blaze::reset;
-         ++page_;
-         if( page_ == tensor_->rows() )
-         {
-            reset( pos_ );
-         }
-         else
-         {
-            pos_ = tensor_->begin( row_, page_ ) + column_;
-         }
-
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Postfix increment operator***************************************************************
-      /*!\brief Post-increment operator.
-      //
-      // \return The previous position of the iterator.
-      */
-      inline const RowIterator operator++( int ) noexcept {
-         const RowIterator tmp( *this );
-         ++(*this);
-         return tmp;
-      }
-      //*******************************************************************************************
-
-      //**Prefix decrement operator****************************************************************
-      /*!\brief Pre-decrement operator.
-      //
-      // \return Reference to the decremented iterator.
-      */
-      inline RowIterator& operator--() noexcept {
-         using blaze::reset;
-         if( page_ == 0 )
-         {
-            pos_ = tensor_->begin( row_, 0UL ) + column_;
-         }
-         else
-         {
-            pos_ = tensor_->begin( --row_, page_ ) + column_;
-         }
-
-         return *this;
-      }
-      //*******************************************************************************************
-
-      //**Postfix decrement operator***************************************************************
-      /*!\brief Post-decrement operator.
-      //
-      // \return The previous position of the iterator.
-      */
-      inline const RowIterator operator--( int ) noexcept {
-         const RowIterator tmp( *this );
-         --(*this);
-         return tmp;
-      }
-      //*******************************************************************************************
-
-      //**Subscript operator***********************************************************************
-      /*!\brief Direct access to the dense column elements.
-      //
-      // \param index Access index.
-      // \return Reference to the accessed value.
-      */
-      inline ReferenceType operator[]( size_t index ) const {
-         BLAZE_USER_ASSERT( row_ < tensor_->rows(), "Invalid access index detected" );
-         BLAZE_USER_ASSERT( page_+index < tensor_->pages(), "Invalid access index detected" );
-         const IteratorType pos( tensor_->begin( row_, page_+index ) + column_ );
-         return *pos;
-      }
-      //*******************************************************************************************
-
-      //**Element access operator******************************************************************
-      /*!\brief Direct access to the dense vector element at the current iterator position.
-      //
-      // \return The current value of the dense element.
-      */
-      inline ReferenceType operator*() const {
-         return *pos_;
-      }
-      //*******************************************************************************************
-
-      //**Element access operator******************************************************************
-      /*!\brief Direct access to the dense vector element at the current iterator position.
-      //
-      // \return Reference to the dense vector element at the current iterator position.
-      */
-      inline PointerType operator->() const {
-         return pos_;
-      }
-      //*******************************************************************************************
-
-      //**Equality operator************************************************************************
-      /*!\brief Equality comparison between two RowIterator objects.
-      //
-      // \param rhs The right-hand side row iterator.
-      // \return \a true if the iterators refer to the same element, \a false if not.
-      */
-      template< typename TensorType2, typename IteratorType2 >
-      inline bool operator==( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
-         return pos_ == IteratorType2() || page_ == rhs.page_;
-      }
-      //*******************************************************************************************
-
-      //**Inequality operator**********************************************************************
-      /*!\brief Inequality comparison between two RowIterator objects.
-      //
-      // \param rhs The right-hand side column iterator.
-      // \return \a true if the iterators don't refer to the same element, \a false if they do.
-      */
-      template< typename TensorType2, typename IteratorType2 >
-      inline bool operator!=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
-         return !( *this == rhs );
-      }
-      //*******************************************************************************************
-
-      //**Less-than operator***********************************************************************
-      /*!\brief Less-than comparison between two RowIterator objects.
-      //
-      // \param rhs The right-hand side column iterator.
-      // \return \a true if the left-hand side iterator is smaller, \a false if not.
-      */
-      template< typename TensorType2, typename IteratorType2 >
-      inline bool operator<( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
-         return page_ < rhs.page_;
-      }
-      //*******************************************************************************************
-
-      //**Greater-than operator********************************************************************
-      /*!\brief Greater-than comparison between two RowIterator objects.
-      //
-      // \param rhs The right-hand side column iterator.
-      // \return \a true if the left-hand side iterator is greater, \a false if not.
-      */
-      template< typename TensorType2, typename IteratorType2 >
-      inline bool operator>( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
-         return !( *this >= rhs );
-      }
-      //*******************************************************************************************
-
-      //**Less-or-equal-than operator**************************************************************
-      /*!\brief Less-than comparison between two RowIterator objects.
-      //
-      // \param rhs The right-hand side column iterator.
-      // \return \a true if the left-hand side iterator is smaller or equal, \a false if not.
-      */
-      template< typename TensorType2, typename IteratorType2 >
-      inline bool operator<=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
-         return page_ <= rhs.page_;
-      }
-      //*******************************************************************************************
-
-      //**Greater-or-equal-than operator***********************************************************
-      /*!\brief Greater-than comparison between two RowIterator objects.
-      //
-      // \param rhs The right-hand side column iterator.
-      // \return \a true if the left-hand side iterator is greater or equal, \a false if not.
-      */
-      template< typename TensorType2, typename IteratorType2 >
-      inline bool operator>=( const RowIterator<TensorType2,IteratorType2>& rhs ) const noexcept {
-         return !( *this < rhs );
-      }
-      //*******************************************************************************************
-
-      //**Subtraction operator*********************************************************************
-      /*!\brief Calculating the number of elements between two column iterators.
-      //
-      // \param rhs The right-hand side column iterator.
-      // \return The number of elements between the two column iterators.
-      */
-      inline DifferenceType operator-( const RowIterator& rhs ) const noexcept {
-         return page_ - rhs.page_;
-      }
-      //*******************************************************************************************
-
-      //**Addition operator************************************************************************
-      /*!\brief Addition between a RowIterator and an integral value.
-      //
-      // \param it The iterator to be incremented.
-      // \param inc The number of elements the iterator is incremented.
-      // \return The incremented iterator.
-      */
-      friend inline const RowIterator operator+( const RowIterator& it, size_t inc ) noexcept {
-         return RowIterator( *it.tensor_, it.page_+inc, it.row_, it.column_ );
-      }
-      //*******************************************************************************************
-
-      //**Addition operator************************************************************************
-      /*!\brief Addition between an integral value and a RowIterator.
-      //
-      // \param inc The number of elements the iterator is incremented.
-      // \param it The iterator to be incremented.
-      // \return The incremented iterator.
-      */
-      friend inline const RowIterator operator+( size_t inc, const RowIterator& it ) noexcept {
-         return RowIterator( *it.tensor_, it.page_+inc, it.row_, it.column_ );
-      }
-      //*******************************************************************************************
-
-      //**Subtraction operator*********************************************************************
-      /*!\brief Subtraction between a RowIterator and an integral value.
-      //
-      // \param it The iterator to be decremented.
-      // \param inc The number of elements the iterator is decremented.
-      // \return The decremented iterator.
-      */
-      friend inline const RowIterator operator-( const RowIterator& it, size_t dec ) noexcept {
-         return RowIterator( *it.tensor_, it.page_-dec, it.row_, it.column_ );
-      }
-      //*******************************************************************************************
-
-    private:
-      //**Member variables*************************************************************************
-      TensorType*  tensor_;  //!< The dense tensor containing the column.
-      size_t       page_;    //!< The current page index.
-      size_t       row_;     //!< The current row index.
-      size_t       column_;  //!< The current column index.
-      IteratorType pos_;     //!< Iterator to the current dense element.
-      //*******************************************************************************************
-
-      //**Friend declarations**********************************************************************
-      template< typename TensorType2, typename IteratorType2 > friend class RowIterator;
-      //*******************************************************************************************
-   };
-   //**********************************************************************************************
-
    //! Iterator over constant elements.
-   using ConstIterator = RowIterator< const MT, ConstIterator_t<MT> >;
+   using ConstIterator = ConstIterator_t<MT>;
 
    //! Iterator over non-constant elements.
-   using Iterator = If_t< IsConst_v<MT>, ConstIterator, RowIterator< MT, Iterator_t<MT> > >;
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, Iterator_t<MT> >;
    //**********************************************************************************************
 
    //**Compilation flags***************************************************************************
@@ -911,7 +555,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::Iterator
    RowSlice<MT,CRAs...>::begin( size_t i )
 {
-   return Iterator( tensor_, 0UL, row(), i );
+   return tensor_.begin( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -931,7 +575,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::ConstIterator
    RowSlice<MT,CRAs...>::begin( size_t i ) const
 {
-   return ConstIterator( tensor_, 0UL, row(), i );
+   return tensor_.cbegin( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -951,7 +595,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::ConstIterator
    RowSlice<MT,CRAs...>::cbegin( size_t i ) const
 {
-   return ConstIterator( tensor_, 0UL, row(), i );
+   return tensor_.cbegin( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -971,7 +615,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::Iterator
    RowSlice<MT,CRAs...>::end( size_t i )
 {
-   return Iterator( tensor_, columns(), row(), i );
+   return tensor_.end( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -991,7 +635,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::ConstIterator
    RowSlice<MT,CRAs...>::end( size_t i ) const
 {
-   return ConstIterator( tensor_, columns(), row(), i );
+   return tensor_.cend( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1011,7 +655,7 @@ template< typename MT       // Type of the dense tensor
 inline typename RowSlice<MT,CRAs...>::ConstIterator
    RowSlice<MT,CRAs...>::cend( size_t i ) const
 {
-   return ConstIterator( tensor_, columns(), row(), i );
+   return tensor_.cend( row(), i );
 }
 /*! \endcond */
 //*************************************************************************************************
