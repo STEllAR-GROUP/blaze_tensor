@@ -46,6 +46,7 @@
 #include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/UniformMatrix.h>
 #include <blaze/math/dense/UniformIterator.h>
 #include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/shims/Clear.h>
@@ -1882,7 +1883,7 @@ template <typename MT, size_t M>
 struct ColumnSliceTraitEval2< MT, M
                             , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
-   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, rowMajor >;
+   using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, rowMajor >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1902,7 +1903,7 @@ template <typename MT, size_t M>
 struct PageSliceTraitEval2< MT, M
                           , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
-   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, rowMajor >;
+   using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, rowMajor >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -1922,7 +1923,7 @@ template <typename MT, size_t M>
 struct RowSliceTraitEval2< MT, M
                          , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
-   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, columnMajor >;
+   using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, columnMajor >;
 };
 /*! \endcond */
 //*************************************************************************************************

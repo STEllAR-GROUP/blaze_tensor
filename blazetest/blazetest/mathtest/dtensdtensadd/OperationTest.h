@@ -208,7 +208,8 @@ class OperationTest
 //                           void testDeclUppOperation  ( blaze::FalseType );
 //                           void testDeclDiagOperation ( blaze::TrueType  );
 //                           void testDeclDiagOperation ( blaze::FalseType );
-                          void testSubtensorOperation();
+                          void testSubtensorOperation( blaze::TrueType );
+                          void testSubtensorOperation( blaze::FalseType );
                           void testRowSliceOperation      ();
 //                           void testRowSlicesOperation     ( blaze::TrueType  );
 //                           void testRowSlicesOperation     ( blaze::FalseType );
@@ -418,8 +419,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
 //    testDeclLowOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
 //    testDeclUppOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
 //    testDeclDiagOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testSubtensorOperation();
-#if 0
+   testSubtensorOperation( blaze::Not< blaze::IsUniform<DRE> >() );
    testRowSliceOperation();
 //    testRowSlicesOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
    testColumnSliceOperation();
@@ -427,7 +427,6 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testPageSliceOperation();
 //    testPageSlicesOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
 //    testBandOperation();
-#endif
 }
 //*************************************************************************************************
 
@@ -7664,7 +7663,7 @@ void OperationTest<MT1,MT2>::testSerialOperation()
 */
 template< typename MT1    // Type of the left-hand side dense tensor
         , typename MT2 >  // Type of the right-hand side dense tensor
-void OperationTest<MT1,MT2>::testSubtensorOperation()
+void OperationTest<MT1,MT2>::testSubtensorOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_SUBTENSOR_OPERATION
    if( BLAZETEST_MATHTEST_TEST_SUBTENSOR_OPERATION > 1 )
@@ -8481,7 +8480,22 @@ void OperationTest<MT1,MT2>::testSubtensorOperation()
 //*************************************************************************************************
 
 
-#if 0
+//*************************************************************************************************
+/*!\brief Skipping the subtensor-wise dense tensor/dense tensor addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function is called in case the submatrix-wise tensor/tensor addition operation is not
+// available for the given tensor types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testSubtensorOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
 //*************************************************************************************************
 /*!\brief Testing the row-wise dense tensor/dense tensor addition.
 //
@@ -8505,22 +8519,22 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 
 
       //=====================================================================================
-      // Row-wise addition
+      // RowSlice-wise addition
       //=====================================================================================
 
-      // Row-wise addition with the given tensors
+      // RowSlice-wise addition with the given tensors
       {
-         test_  = "Row-wise addition with the given tensors";
+         test_  = "RowSlice-wise addition with the given tensors";
          error_ = "Failed addition operation";
 
          try {
             initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) = row( lhs_ + rhs_, i );
-               row( odres_ , i ) = row( lhs_ + rhs_, i );
-               row( sres_  , i ) = row( lhs_ + rhs_, i );
-               row( osres_ , i ) = row( lhs_ + rhs_, i );
-               row( refres_, i ) = row( reflhs_ + refrhs_, i );
+               rowslice( dres_  , i ) = rowslice( lhs_ + rhs_, i );
+//                rowslice( odres_ , i ) = rowslice( lhs_ + rhs_, i );
+//                rowslice( sres_  , i ) = rowslice( lhs_ + rhs_, i );
+//                rowslice( osres_ , i ) = rowslice( lhs_ + rhs_, i );
+               rowslice( refres_, i ) = rowslice( reflhs_ + refrhs_, i );
             }
          }
          catch( std::exception& ex ) {
@@ -8529,68 +8543,68 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 
          checkResults<MT1,MT2>();
 
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) = row( lhs_ + orhs_, i );
-               row( odres_ , i ) = row( lhs_ + orhs_, i );
-               row( sres_  , i ) = row( lhs_ + orhs_, i );
-               row( osres_ , i ) = row( lhs_ + orhs_, i );
-               row( refres_, i ) = row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) = row( olhs_ + rhs_, i );
-               row( odres_ , i ) = row( olhs_ + rhs_, i );
-               row( sres_  , i ) = row( olhs_ + rhs_, i );
-               row( osres_ , i ) = row( olhs_ + rhs_, i );
-               row( refres_, i ) = row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) = row( olhs_ + orhs_, i );
-               row( odres_ , i ) = row( olhs_ + orhs_, i );
-               row( sres_  , i ) = row( olhs_ + orhs_, i );
-               row( osres_ , i ) = row( olhs_ + orhs_, i );
-               row( refres_, i ) = row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) = rowslice( lhs_ + orhs_, i );
+//                rowslice( odres_ , i ) = rowslice( lhs_ + orhs_, i );
+//                rowslice( sres_  , i ) = rowslice( lhs_ + orhs_, i );
+//                rowslice( osres_ , i ) = rowslice( lhs_ + orhs_, i );
+//                rowslice( refres_, i ) = rowslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) = rowslice( olhs_ + rhs_, i );
+//                rowslice( odres_ , i ) = rowslice( olhs_ + rhs_, i );
+//                rowslice( sres_  , i ) = rowslice( olhs_ + rhs_, i );
+//                rowslice( osres_ , i ) = rowslice( olhs_ + rhs_, i );
+//                rowslice( refres_, i ) = rowslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) = rowslice( olhs_ + orhs_, i );
+//                rowslice( odres_ , i ) = rowslice( olhs_ + orhs_, i );
+//                rowslice( sres_  , i ) = rowslice( olhs_ + orhs_, i );
+//                rowslice( osres_ , i ) = rowslice( olhs_ + orhs_, i );
+//                rowslice( refres_, i ) = rowslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
       }
 
-      // Row-wise addition with evaluated tensors
+      // RowSlice-wise addition with evaluated tensors
       {
-         test_  = "Row-wise addition with evaluated tensors";
+         test_  = "RowSlice-wise addition with evaluated tensors";
          error_ = "Failed addition operation";
 
          try {
             initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( odres_ , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( sres_  , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( osres_ , i ) = row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( refres_, i ) = row( eval( reflhs_ ) + eval( refrhs_ ), i );
+               rowslice( dres_  , i ) = rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                rowslice( odres_ , i ) = rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                rowslice( sres_  , i ) = rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                rowslice( osres_ , i ) = rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+               rowslice( refres_, i ) = rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
             }
          }
          catch( std::exception& ex ) {
@@ -8599,73 +8613,73 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 
          checkResults<MT1,MT2>();
 
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( odres_ , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( sres_  , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( osres_ , i ) = row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( refres_, i ) = row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( odres_ , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( sres_  , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( osres_ , i ) = row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( refres_, i ) = row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( odres_ , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( sres_  , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( osres_ , i ) = row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( refres_, i ) = row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) = rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( odres_ , i ) = rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( sres_  , i ) = rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( osres_ , i ) = rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( refres_, i ) = rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) = rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( odres_ , i ) = rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( sres_  , i ) = rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( osres_ , i ) = rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( refres_, i ) = rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) = rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( odres_ , i ) = rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( sres_  , i ) = rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( osres_ , i ) = rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( refres_, i ) = rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
       }
 
 
       //=====================================================================================
-      // Row-wise addition with addition assignment
+      // RowSlice-wise addition with addition assignment
       //=====================================================================================
 
-      // Row-wise addition with addition assignment with the given tensors
+      // RowSlice-wise addition with addition assignment with the given tensors
       {
-         test_  = "Row-wise addition with addition assignment with the given tensors";
+         test_  = "RowSlice-wise addition with addition assignment with the given tensors";
          error_ = "Failed addition assignment operation";
 
          try {
             initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) += row( lhs_ + rhs_, i );
-               row( odres_ , i ) += row( lhs_ + rhs_, i );
-               row( sres_  , i ) += row( lhs_ + rhs_, i );
-               row( osres_ , i ) += row( lhs_ + rhs_, i );
-               row( refres_, i ) += row( reflhs_ + refrhs_, i );
+               rowslice( dres_  , i ) += rowslice( lhs_ + rhs_, i );
+//                rowslice( odres_ , i ) += rowslice( lhs_ + rhs_, i );
+//                rowslice( sres_  , i ) += rowslice( lhs_ + rhs_, i );
+//                rowslice( osres_ , i ) += rowslice( lhs_ + rhs_, i );
+               rowslice( refres_, i ) += rowslice( reflhs_ + refrhs_, i );
             }
          }
          catch( std::exception& ex ) {
@@ -8674,68 +8688,68 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 
          checkResults<MT1,MT2>();
 
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) += row( lhs_ + orhs_, i );
-               row( odres_ , i ) += row( lhs_ + orhs_, i );
-               row( sres_  , i ) += row( lhs_ + orhs_, i );
-               row( osres_ , i ) += row( lhs_ + orhs_, i );
-               row( refres_, i ) += row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) += row( olhs_ + rhs_, i );
-               row( odres_ , i ) += row( olhs_ + rhs_, i );
-               row( sres_  , i ) += row( olhs_ + rhs_, i );
-               row( osres_ , i ) += row( olhs_ + rhs_, i );
-               row( refres_, i ) += row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) += row( olhs_ + orhs_, i );
-               row( odres_ , i ) += row( olhs_ + orhs_, i );
-               row( sres_  , i ) += row( olhs_ + orhs_, i );
-               row( osres_ , i ) += row( olhs_ + orhs_, i );
-               row( refres_, i ) += row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) += rowslice( lhs_ + orhs_, i );
+//                rowslice( odres_ , i ) += rowslice( lhs_ + orhs_, i );
+//                rowslice( sres_  , i ) += rowslice( lhs_ + orhs_, i );
+//                rowslice( osres_ , i ) += rowslice( lhs_ + orhs_, i );
+//                rowslice( refres_, i ) += rowslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) += rowslice( olhs_ + rhs_, i );
+//                rowslice( odres_ , i ) += rowslice( olhs_ + rhs_, i );
+//                rowslice( sres_  , i ) += rowslice( olhs_ + rhs_, i );
+//                rowslice( osres_ , i ) += rowslice( olhs_ + rhs_, i );
+//                rowslice( refres_, i ) += rowslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) += rowslice( olhs_ + orhs_, i );
+//                rowslice( odres_ , i ) += rowslice( olhs_ + orhs_, i );
+//                rowslice( sres_  , i ) += rowslice( olhs_ + orhs_, i );
+//                rowslice( osres_ , i ) += rowslice( olhs_ + orhs_, i );
+//                rowslice( refres_, i ) += rowslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
       }
 
-      // Row-wise addition with addition assignment with evaluated tensors
+      // RowSlice-wise addition with addition assignment with evaluated tensors
       {
-         test_  = "Row-wise addition with addition assignment with evaluated tensors";
+         test_  = "RowSlice-wise addition with addition assignment with evaluated tensors";
          error_ = "Failed addition assignment operation";
 
          try {
             initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( odres_ , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( sres_  , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( osres_ , i ) += row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( refres_, i ) += row( eval( reflhs_ ) + eval( refrhs_ ), i );
+               rowslice( dres_  , i ) += rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                rowslice( odres_ , i ) += rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                rowslice( sres_  , i ) += rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                rowslice( osres_ , i ) += rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+               rowslice( refres_, i ) += rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
             }
          }
          catch( std::exception& ex ) {
@@ -8744,73 +8758,73 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 
          checkResults<MT1,MT2>();
 
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( odres_ , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( sres_  , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( osres_ , i ) += row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( refres_, i ) += row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( odres_ , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( sres_  , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( osres_ , i ) += row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( refres_, i ) += row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( odres_ , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( sres_  , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( osres_ , i ) += row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( refres_, i ) += row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) += rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( odres_ , i ) += rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( sres_  , i ) += rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( osres_ , i ) += rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( refres_, i ) += rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) += rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( odres_ , i ) += rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( sres_  , i ) += rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( osres_ , i ) += rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( refres_, i ) += rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) += rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( odres_ , i ) += rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( sres_  , i ) += rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( osres_ , i ) += rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( refres_, i ) += rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
       }
 
 
       //=====================================================================================
-      // Row-wise addition with subtraction assignment
+      // RowSlice-wise addition with subtraction assignment
       //=====================================================================================
 
-      // Row-wise addition with subtraction assignment with the given tensors
+      // RowSlice-wise addition with subtraction assignment with the given tensors
       {
-         test_  = "Row-wise addition with subtraction assignment with the given tensors";
+         test_  = "RowSlice-wise addition with subtraction assignment with the given tensors";
          error_ = "Failed subtraction assignment operation";
 
          try {
             initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) -= row( lhs_ + rhs_, i );
-               row( odres_ , i ) -= row( lhs_ + rhs_, i );
-               row( sres_  , i ) -= row( lhs_ + rhs_, i );
-               row( osres_ , i ) -= row( lhs_ + rhs_, i );
-               row( refres_, i ) -= row( reflhs_ + refrhs_, i );
+               rowslice( dres_  , i ) -= rowslice( lhs_ + rhs_, i );
+//                rowslice( odres_ , i ) -= rowslice( lhs_ + rhs_, i );
+//                rowslice( sres_  , i ) -= rowslice( lhs_ + rhs_, i );
+//                rowslice( osres_ , i ) -= rowslice( lhs_ + rhs_, i );
+               rowslice( refres_, i ) -= rowslice( reflhs_ + refrhs_, i );
             }
          }
          catch( std::exception& ex ) {
@@ -8819,68 +8833,68 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 
          checkResults<MT1,MT2>();
 
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) -= row( lhs_ + orhs_, i );
-               row( odres_ , i ) -= row( lhs_ + orhs_, i );
-               row( sres_  , i ) -= row( lhs_ + orhs_, i );
-               row( osres_ , i ) -= row( lhs_ + orhs_, i );
-               row( refres_, i ) -= row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) -= row( olhs_ + rhs_, i );
-               row( odres_ , i ) -= row( olhs_ + rhs_, i );
-               row( sres_  , i ) -= row( olhs_ + rhs_, i );
-               row( osres_ , i ) -= row( olhs_ + rhs_, i );
-               row( refres_, i ) -= row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) -= row( olhs_ + orhs_, i );
-               row( odres_ , i ) -= row( olhs_ + orhs_, i );
-               row( sres_  , i ) -= row( olhs_ + orhs_, i );
-               row( osres_ , i ) -= row( olhs_ + orhs_, i );
-               row( refres_, i ) -= row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) -= rowslice( lhs_ + orhs_, i );
+//                rowslice( odres_ , i ) -= rowslice( lhs_ + orhs_, i );
+//                rowslice( sres_  , i ) -= rowslice( lhs_ + orhs_, i );
+//                rowslice( osres_ , i ) -= rowslice( lhs_ + orhs_, i );
+//                rowslice( refres_, i ) -= rowslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) -= rowslice( olhs_ + rhs_, i );
+//                rowslice( odres_ , i ) -= rowslice( olhs_ + rhs_, i );
+//                rowslice( sres_  , i ) -= rowslice( olhs_ + rhs_, i );
+//                rowslice( osres_ , i ) -= rowslice( olhs_ + rhs_, i );
+//                rowslice( refres_, i ) -= rowslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) -= rowslice( olhs_ + orhs_, i );
+//                rowslice( odres_ , i ) -= rowslice( olhs_ + orhs_, i );
+//                rowslice( sres_  , i ) -= rowslice( olhs_ + orhs_, i );
+//                rowslice( osres_ , i ) -= rowslice( olhs_ + orhs_, i );
+//                rowslice( refres_, i ) -= rowslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
       }
 
-      // Row-wise addition with subtraction assignment with evaluated tensors
+      // RowSlice-wise addition with subtraction assignment with evaluated tensors
       {
-         test_  = "Row-wise addition with subtraction assignment with evaluated tensors";
+         test_  = "RowSlice-wise addition with subtraction assignment with evaluated tensors";
          error_ = "Failed subtraction assignment operation";
 
          try {
             initResults();
             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( odres_ , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( sres_  , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( osres_ , i ) -= row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( refres_, i ) -= row( eval( reflhs_ ) + eval( refrhs_ ), i );
+               rowslice( dres_  , i ) -= rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                rowslice( odres_ , i ) -= rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                rowslice( sres_  , i ) -= rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                rowslice( osres_ , i ) -= rowslice( eval( lhs_ ) + eval( rhs_ ), i );
+               rowslice( refres_, i ) -= rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
             }
          }
          catch( std::exception& ex ) {
@@ -8889,198 +8903,53 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 
          checkResults<MT1,MT2>();
 
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( odres_ , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( sres_  , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( osres_ , i ) -= row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( refres_, i ) -= row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( odres_ , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( sres_  , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( osres_ , i ) -= row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( refres_, i ) -= row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( odres_ , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( sres_  , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( osres_ , i ) -= row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( refres_, i ) -= row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
-      }
-
-
-      //=====================================================================================
-      // Row-wise addition with multiplication assignment
-      //=====================================================================================
-
-      // Row-wise addition with multiplication assignment with the given tensors
-      {
-         test_  = "Row-wise addition with multiplication assignment with the given tensors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) *= row( lhs_ + rhs_, i );
-               row( odres_ , i ) *= row( lhs_ + rhs_, i );
-               row( sres_  , i ) *= row( lhs_ + rhs_, i );
-               row( osres_ , i ) *= row( lhs_ + rhs_, i );
-               row( refres_, i ) *= row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,MT2>( ex );
-         }
-
-         checkResults<MT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) *= row( lhs_ + orhs_, i );
-               row( odres_ , i ) *= row( lhs_ + orhs_, i );
-               row( sres_  , i ) *= row( lhs_ + orhs_, i );
-               row( osres_ , i ) *= row( lhs_ + orhs_, i );
-               row( refres_, i ) *= row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) *= row( olhs_ + rhs_, i );
-               row( odres_ , i ) *= row( olhs_ + rhs_, i );
-               row( sres_  , i ) *= row( olhs_ + rhs_, i );
-               row( osres_ , i ) *= row( olhs_ + rhs_, i );
-               row( refres_, i ) *= row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) *= row( olhs_ + orhs_, i );
-               row( odres_ , i ) *= row( olhs_ + orhs_, i );
-               row( sres_  , i ) *= row( olhs_ + orhs_, i );
-               row( osres_ , i ) *= row( olhs_ + orhs_, i );
-               row( refres_, i ) *= row( reflhs_ + refrhs_, i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
-      }
-
-      // Row-wise addition with multiplication assignment with evaluated tensors
-      {
-         test_  = "Row-wise addition with multiplication assignment with evaluated tensors";
-         error_ = "Failed multiplication assignment operation";
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( odres_ , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( sres_  , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( osres_ , i ) *= row( eval( lhs_ ) + eval( rhs_ ), i );
-               row( refres_, i ) *= row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,MT2>( ex );
-         }
-
-         checkResults<MT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( odres_ , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( sres_  , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( osres_ , i ) *= row( eval( lhs_ ) + eval( orhs_ ), i );
-               row( refres_, i ) *= row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<MT1,OMT2>( ex );
-         }
-
-         checkResults<MT1,OMT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( odres_ , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( sres_  , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( osres_ , i ) *= row( eval( olhs_ ) + eval( rhs_ ), i );
-               row( refres_, i ) *= row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,MT2>( ex );
-         }
-
-         checkResults<OMT1,MT2>();
-
-         try {
-            initResults();
-            for( size_t i=0UL; i<lhs_.rows(); ++i ) {
-               row( dres_  , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( odres_ , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( sres_  , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( osres_ , i ) *= row( eval( olhs_ ) + eval( orhs_ ), i );
-               row( refres_, i ) *= row( eval( reflhs_ ) + eval( refrhs_ ), i );
-            }
-         }
-         catch( std::exception& ex ) {
-            convertException<OMT1,OMT2>( ex );
-         }
-
-         checkResults<OMT1,OMT2>();
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) -= rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( odres_ , i ) -= rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( sres_  , i ) -= rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( osres_ , i ) -= rowslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                rowslice( refres_, i ) -= rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) -= rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( odres_ , i ) -= rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( sres_  , i ) -= rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( osres_ , i ) -= rowslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                rowslice( refres_, i ) -= rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.rows(); ++i ) {
+//                rowslice( dres_  , i ) -= rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( odres_ , i ) -= rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( sres_  , i ) -= rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( osres_ , i ) -= rowslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                rowslice( refres_, i ) -= rowslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
       }
    }
 #endif
@@ -9088,6 +8957,7 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 //*************************************************************************************************
 
 
+#if 0
 //*************************************************************************************************
 /*!\brief Testing the rows-wise dense tensor/dense tensor addition.
 //
@@ -9744,8 +9614,933 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 // void OperationTest<MT1,MT2>::testRowSlicesOperation( blaze::FalseType )
 // {}
 //*************************************************************************************************
+#endif
 
 
+//*************************************************************************************************
+/*!\brief Testing the row-wise dense tensor/dense tensor addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the row-wise tensor addition with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// addition or the subsequent assignment is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense tensor
+        , typename MT2 >  // Type of the right-hand side dense tensor
+void OperationTest<MT1,MT2>::testColumnSliceOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_COLUMNSLICE_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_COLUMNSLICE_OPERATION > 1 )
+   {
+      if( lhs_.columns() == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // ColumnSlice-wise addition
+      //=====================================================================================
+
+      // ColumnSlice-wise addition with the given tensors
+      {
+         test_  = "ColumnSlice-wise addition with the given tensors";
+         error_ = "Failed addition operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+               columnslice( dres_  , i ) = columnslice( lhs_ + rhs_, i );
+//                columnslice( odres_ , i ) = columnslice( lhs_ + rhs_, i );
+//                columnslice( sres_  , i ) = columnslice( lhs_ + rhs_, i );
+//                columnslice( osres_ , i ) = columnslice( lhs_ + rhs_, i );
+               columnslice( refres_, i ) = columnslice( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) = columnslice( lhs_ + orhs_, i );
+//                columnslice( odres_ , i ) = columnslice( lhs_ + orhs_, i );
+//                columnslice( sres_  , i ) = columnslice( lhs_ + orhs_, i );
+//                columnslice( osres_ , i ) = columnslice( lhs_ + orhs_, i );
+//                columnslice( refres_, i ) = columnslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) = columnslice( olhs_ + rhs_, i );
+//                columnslice( odres_ , i ) = columnslice( olhs_ + rhs_, i );
+//                columnslice( sres_  , i ) = columnslice( olhs_ + rhs_, i );
+//                columnslice( osres_ , i ) = columnslice( olhs_ + rhs_, i );
+//                columnslice( refres_, i ) = columnslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) = columnslice( olhs_ + orhs_, i );
+//                columnslice( odres_ , i ) = columnslice( olhs_ + orhs_, i );
+//                columnslice( sres_  , i ) = columnslice( olhs_ + orhs_, i );
+//                columnslice( osres_ , i ) = columnslice( olhs_ + orhs_, i );
+//                columnslice( refres_, i ) = columnslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+      // ColumnSlice-wise addition with evaluated tensors
+      {
+         test_  = "ColumnSlice-wise addition with evaluated tensors";
+         error_ = "Failed addition operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+               columnslice( dres_  , i ) = columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                columnslice( odres_ , i ) = columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                columnslice( sres_  , i ) = columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                columnslice( osres_ , i ) = columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+               columnslice( refres_, i ) = columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) = columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( odres_ , i ) = columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( sres_  , i ) = columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( osres_ , i ) = columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( refres_, i ) = columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) = columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( odres_ , i ) = columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( sres_  , i ) = columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( osres_ , i ) = columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( refres_, i ) = columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) = columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( odres_ , i ) = columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( sres_  , i ) = columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( osres_ , i ) = columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( refres_, i ) = columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // ColumnSlice-wise addition with addition assignment
+      //=====================================================================================
+
+      // ColumnSlice-wise addition with addition assignment with the given tensors
+      {
+         test_  = "ColumnSlice-wise addition with addition assignment with the given tensors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+               columnslice( dres_  , i ) += columnslice( lhs_ + rhs_, i );
+//                columnslice( odres_ , i ) += columnslice( lhs_ + rhs_, i );
+//                columnslice( sres_  , i ) += columnslice( lhs_ + rhs_, i );
+//                columnslice( osres_ , i ) += columnslice( lhs_ + rhs_, i );
+               columnslice( refres_, i ) += columnslice( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) += columnslice( lhs_ + orhs_, i );
+//                columnslice( odres_ , i ) += columnslice( lhs_ + orhs_, i );
+//                columnslice( sres_  , i ) += columnslice( lhs_ + orhs_, i );
+//                columnslice( osres_ , i ) += columnslice( lhs_ + orhs_, i );
+//                columnslice( refres_, i ) += columnslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) += columnslice( olhs_ + rhs_, i );
+//                columnslice( odres_ , i ) += columnslice( olhs_ + rhs_, i );
+//                columnslice( sres_  , i ) += columnslice( olhs_ + rhs_, i );
+//                columnslice( osres_ , i ) += columnslice( olhs_ + rhs_, i );
+//                columnslice( refres_, i ) += columnslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) += columnslice( olhs_ + orhs_, i );
+//                columnslice( odres_ , i ) += columnslice( olhs_ + orhs_, i );
+//                columnslice( sres_  , i ) += columnslice( olhs_ + orhs_, i );
+//                columnslice( osres_ , i ) += columnslice( olhs_ + orhs_, i );
+//                columnslice( refres_, i ) += columnslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+      // ColumnSlice-wise addition with addition assignment with evaluated tensors
+      {
+         test_  = "ColumnSlice-wise addition with addition assignment with evaluated tensors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+               columnslice( dres_  , i ) += columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                columnslice( odres_ , i ) += columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                columnslice( sres_  , i ) += columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                columnslice( osres_ , i ) += columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+               columnslice( refres_, i ) += columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) += columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( odres_ , i ) += columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( sres_  , i ) += columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( osres_ , i ) += columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( refres_, i ) += columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) += columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( odres_ , i ) += columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( sres_  , i ) += columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( osres_ , i ) += columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( refres_, i ) += columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) += columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( odres_ , i ) += columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( sres_  , i ) += columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( osres_ , i ) += columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( refres_, i ) += columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // ColumnSlice-wise addition with subtraction assignment
+      //=====================================================================================
+
+      // ColumnSlice-wise addition with subtraction assignment with the given tensors
+      {
+         test_  = "ColumnSlice-wise addition with subtraction assignment with the given tensors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+               columnslice( dres_  , i ) -= columnslice( lhs_ + rhs_, i );
+//                columnslice( odres_ , i ) -= columnslice( lhs_ + rhs_, i );
+//                columnslice( sres_  , i ) -= columnslice( lhs_ + rhs_, i );
+//                columnslice( osres_ , i ) -= columnslice( lhs_ + rhs_, i );
+               columnslice( refres_, i ) -= columnslice( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) -= columnslice( lhs_ + orhs_, i );
+//                columnslice( odres_ , i ) -= columnslice( lhs_ + orhs_, i );
+//                columnslice( sres_  , i ) -= columnslice( lhs_ + orhs_, i );
+//                columnslice( osres_ , i ) -= columnslice( lhs_ + orhs_, i );
+//                columnslice( refres_, i ) -= columnslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) -= columnslice( olhs_ + rhs_, i );
+//                columnslice( odres_ , i ) -= columnslice( olhs_ + rhs_, i );
+//                columnslice( sres_  , i ) -= columnslice( olhs_ + rhs_, i );
+//                columnslice( osres_ , i ) -= columnslice( olhs_ + rhs_, i );
+//                columnslice( refres_, i ) -= columnslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) -= columnslice( olhs_ + orhs_, i );
+//                columnslice( odres_ , i ) -= columnslice( olhs_ + orhs_, i );
+//                columnslice( sres_  , i ) -= columnslice( olhs_ + orhs_, i );
+//                columnslice( osres_ , i ) -= columnslice( olhs_ + orhs_, i );
+//                columnslice( refres_, i ) -= columnslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+      // ColumnSlice-wise addition with subtraction assignment with evaluated tensors
+      {
+         test_  = "ColumnSlice-wise addition with subtraction assignment with evaluated tensors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+               columnslice( dres_  , i ) -= columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                columnslice( odres_ , i ) -= columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                columnslice( sres_  , i ) -= columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                columnslice( osres_ , i ) -= columnslice( eval( lhs_ ) + eval( rhs_ ), i );
+               columnslice( refres_, i ) -= columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) -= columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( odres_ , i ) -= columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( sres_  , i ) -= columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( osres_ , i ) -= columnslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                columnslice( refres_, i ) -= columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) -= columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( odres_ , i ) -= columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( sres_  , i ) -= columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( osres_ , i ) -= columnslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                columnslice( refres_, i ) -= columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.columns(); ++i ) {
+//                columnslice( dres_  , i ) -= columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( odres_ , i ) -= columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( sres_  , i ) -= columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( osres_ , i ) -= columnslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                columnslice( refres_, i ) -= columnslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+
+//*************************************************************************************************
+/*!\brief Testing the row-wise dense tensor/dense tensor addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function tests the row-wise tensor addition with plain assignment, addition assignment,
+// subtraction assignment, and multiplication assignment. In case any error resulting from the
+// addition or the subsequent assignment is detected, a \a std::runtime_error exception is
+// thrown.
+*/
+template< typename MT1    // Type of the left-hand side dense tensor
+        , typename MT2 >  // Type of the right-hand side dense tensor
+void OperationTest<MT1,MT2>::testPageSliceOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_PAGESLICE_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_PAGESLICE_OPERATION > 1 )
+   {
+      if( lhs_.pages() == 0UL )
+         return;
+
+
+      //=====================================================================================
+      // PageSlice-wise addition
+      //=====================================================================================
+
+      // PageSlice-wise addition with the given tensors
+      {
+         test_  = "PageSlice-wise addition with the given tensors";
+         error_ = "Failed addition operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+               pageslice( dres_  , i ) = pageslice( lhs_ + rhs_, i );
+//                pageslice( odres_ , i ) = pageslice( lhs_ + rhs_, i );
+//                pageslice( sres_  , i ) = pageslice( lhs_ + rhs_, i );
+//                pageslice( osres_ , i ) = pageslice( lhs_ + rhs_, i );
+               pageslice( refres_, i ) = pageslice( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) = pageslice( lhs_ + orhs_, i );
+//                pageslice( odres_ , i ) = pageslice( lhs_ + orhs_, i );
+//                pageslice( sres_  , i ) = pageslice( lhs_ + orhs_, i );
+//                pageslice( osres_ , i ) = pageslice( lhs_ + orhs_, i );
+//                pageslice( refres_, i ) = pageslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) = pageslice( olhs_ + rhs_, i );
+//                pageslice( odres_ , i ) = pageslice( olhs_ + rhs_, i );
+//                pageslice( sres_  , i ) = pageslice( olhs_ + rhs_, i );
+//                pageslice( osres_ , i ) = pageslice( olhs_ + rhs_, i );
+//                pageslice( refres_, i ) = pageslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) = pageslice( olhs_ + orhs_, i );
+//                pageslice( odres_ , i ) = pageslice( olhs_ + orhs_, i );
+//                pageslice( sres_  , i ) = pageslice( olhs_ + orhs_, i );
+//                pageslice( osres_ , i ) = pageslice( olhs_ + orhs_, i );
+//                pageslice( refres_, i ) = pageslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+      // PageSlice-wise addition with evaluated tensors
+      {
+         test_  = "PageSlice-wise addition with evaluated tensors";
+         error_ = "Failed addition operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+               pageslice( dres_  , i ) = pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                pageslice( odres_ , i ) = pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                pageslice( sres_  , i ) = pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                pageslice( osres_ , i ) = pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+               pageslice( refres_, i ) = pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) = pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( odres_ , i ) = pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( sres_  , i ) = pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( osres_ , i ) = pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( refres_, i ) = pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) = pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( odres_ , i ) = pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( sres_  , i ) = pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( osres_ , i ) = pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( refres_, i ) = pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) = pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( odres_ , i ) = pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( sres_  , i ) = pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( osres_ , i ) = pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( refres_, i ) = pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // PageSlice-wise addition with addition assignment
+      //=====================================================================================
+
+      // PageSlice-wise addition with addition assignment with the given tensors
+      {
+         test_  = "PageSlice-wise addition with addition assignment with the given tensors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+               pageslice( dres_  , i ) += pageslice( lhs_ + rhs_, i );
+//                pageslice( odres_ , i ) += pageslice( lhs_ + rhs_, i );
+//                pageslice( sres_  , i ) += pageslice( lhs_ + rhs_, i );
+//                pageslice( osres_ , i ) += pageslice( lhs_ + rhs_, i );
+               pageslice( refres_, i ) += pageslice( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) += pageslice( lhs_ + orhs_, i );
+//                pageslice( odres_ , i ) += pageslice( lhs_ + orhs_, i );
+//                pageslice( sres_  , i ) += pageslice( lhs_ + orhs_, i );
+//                pageslice( osres_ , i ) += pageslice( lhs_ + orhs_, i );
+//                pageslice( refres_, i ) += pageslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) += pageslice( olhs_ + rhs_, i );
+//                pageslice( odres_ , i ) += pageslice( olhs_ + rhs_, i );
+//                pageslice( sres_  , i ) += pageslice( olhs_ + rhs_, i );
+//                pageslice( osres_ , i ) += pageslice( olhs_ + rhs_, i );
+//                pageslice( refres_, i ) += pageslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) += pageslice( olhs_ + orhs_, i );
+//                pageslice( odres_ , i ) += pageslice( olhs_ + orhs_, i );
+//                pageslice( sres_  , i ) += pageslice( olhs_ + orhs_, i );
+//                pageslice( osres_ , i ) += pageslice( olhs_ + orhs_, i );
+//                pageslice( refres_, i ) += pageslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+// PageSlice-wise addition with addition assignment with evaluated tensors
+      {
+         test_  = "PageSlice-wise addition with addition assignment with evaluated tensors";
+         error_ = "Failed addition assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+               pageslice( dres_  , i ) += pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                pageslice( odres_ , i ) += pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                pageslice( sres_  , i ) += pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                pageslice( osres_ , i ) += pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+               pageslice( refres_, i ) += pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) += pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( odres_ , i ) += pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( sres_  , i ) += pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( osres_ , i ) += pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( refres_, i ) += pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) += pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( odres_ , i ) += pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( sres_  , i ) += pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( osres_ , i ) += pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( refres_, i ) += pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) += pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( odres_ , i ) += pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( sres_  , i ) += pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( osres_ , i ) += pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( refres_, i ) += pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+
+      //=====================================================================================
+      // PageSlice-wise addition with subtraction assignment
+      //=====================================================================================
+
+      // PageSlice-wise addition with subtraction assignment with the given tensors
+      {
+         test_  = "PageSlice-wise addition with subtraction assignment with the given tensors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+               pageslice( dres_  , i ) -= pageslice( lhs_ + rhs_, i );
+//                pageslice( odres_ , i ) -= pageslice( lhs_ + rhs_, i );
+//                pageslice( sres_  , i ) -= pageslice( lhs_ + rhs_, i );
+//                pageslice( osres_ , i ) -= pageslice( lhs_ + rhs_, i );
+               pageslice( refres_, i ) -= pageslice( reflhs_ + refrhs_, i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) -= pageslice( lhs_ + orhs_, i );
+//                pageslice( odres_ , i ) -= pageslice( lhs_ + orhs_, i );
+//                pageslice( sres_  , i ) -= pageslice( lhs_ + orhs_, i );
+//                pageslice( osres_ , i ) -= pageslice( lhs_ + orhs_, i );
+//                pageslice( refres_, i ) -= pageslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) -= pageslice( olhs_ + rhs_, i );
+//                pageslice( odres_ , i ) -= pageslice( olhs_ + rhs_, i );
+//                pageslice( sres_  , i ) -= pageslice( olhs_ + rhs_, i );
+//                pageslice( osres_ , i ) -= pageslice( olhs_ + rhs_, i );
+//                pageslice( refres_, i ) -= pageslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) -= pageslice( olhs_ + orhs_, i );
+//                pageslice( odres_ , i ) -= pageslice( olhs_ + orhs_, i );
+//                pageslice( sres_  , i ) -= pageslice( olhs_ + orhs_, i );
+//                pageslice( osres_ , i ) -= pageslice( olhs_ + orhs_, i );
+//                pageslice( refres_, i ) -= pageslice( reflhs_ + refrhs_, i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+
+      // PageSlice-wise addition with subtraction assignment with evaluated tensors
+      {
+         test_  = "PageSlice-wise addition with subtraction assignment with evaluated tensors";
+         error_ = "Failed subtraction assignment operation";
+
+         try {
+            initResults();
+            for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+               pageslice( dres_  , i ) -= pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                pageslice( odres_ , i ) -= pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                pageslice( sres_  , i ) -= pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+//                pageslice( osres_ , i ) -= pageslice( eval( lhs_ ) + eval( rhs_ ), i );
+               pageslice( refres_, i ) -= pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+            }
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkResults<MT1,MT2>();
+
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) -= pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( odres_ , i ) -= pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( sres_  , i ) -= pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( osres_ , i ) -= pageslice( eval( lhs_ ) + eval( orhs_ ), i );
+//                pageslice( refres_, i ) -= pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<MT1,OMT2>( ex );
+//          }
+//
+//          checkResults<MT1,OMT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) -= pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( odres_ , i ) -= pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( sres_  , i ) -= pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( osres_ , i ) -= pageslice( eval( olhs_ ) + eval( rhs_ ), i );
+//                pageslice( refres_, i ) -= pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,MT2>( ex );
+//          }
+//
+//          checkResults<OMT1,MT2>();
+//
+//          try {
+//             initResults();
+//             for( size_t i=0UL; i<lhs_.pages(); ++i ) {
+//                pageslice( dres_  , i ) -= pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( odres_ , i ) -= pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( sres_  , i ) -= pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( osres_ , i ) -= pageslice( eval( olhs_ ) + eval( orhs_ ), i );
+//                pageslice( refres_, i ) -= pageslice( eval( reflhs_ ) + eval( refrhs_ ), i );
+//             }
+//          }
+//          catch( std::exception& ex ) {
+//             convertException<OMT1,OMT2>( ex );
+//          }
+//
+//          checkResults<OMT1,OMT2>();
+      }
+   }
+#endif
+}
+//*************************************************************************************************
+
+
+#if 0
 //*************************************************************************************************
 /*!\brief Testing the column-wise dense tensor/dense tensor addition.
 //

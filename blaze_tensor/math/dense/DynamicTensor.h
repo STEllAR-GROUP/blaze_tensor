@@ -3277,13 +3277,11 @@ struct LowType< DynamicTensor<T1>, DynamicTensor<T2> >
 template <typename MT, size_t M>
 struct ColumnSliceTraitEval2<
    MT, M,
-   EnableIf_t< IsDenseTensor_v<MT> &&
+   EnableIf_t< IsDenseTensor_v<MT> && !IsUniform_v<MT> &&
                ( M == 0UL || Size_v< MT,0UL > == DefaultSize_v ||
-                             Size_v< MT,1UL > == DefaultSize_v ||
-                             Size_v< MT,2UL > == DefaultSize_v ) &&
+                             Size_v< MT,1UL > == DefaultSize_v ) &&
                ( M == 0UL || MaxSize_v< MT,0UL > == DefaultMaxSize_v ||
-                             MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
-                             MaxSize_v< MT,2UL > == DefaultMaxSize_v ) > >
+                             MaxSize_v< MT,1UL > == DefaultMaxSize_v ) > >
 {
    using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, rowMajor >;
 };
@@ -3304,12 +3302,10 @@ struct ColumnSliceTraitEval2<
 template <typename MT, size_t M>
 struct PageSliceTraitEval2<
    MT, M,
-   EnableIf_t< IsDenseTensor_v<MT> &&
-               ( M == 0UL || Size_v< MT,0UL > == DefaultSize_v ||
-                             Size_v< MT,1UL > == DefaultSize_v ||
+   EnableIf_t< IsDenseTensor_v<MT> && !IsUniform_v<MT> &&
+               ( M == 0UL || Size_v< MT,1UL > == DefaultSize_v ||
                              Size_v< MT,2UL > == DefaultSize_v ) &&
-               ( M == 0UL || MaxSize_v< MT,0UL > == DefaultMaxSize_v ||
-                             MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
+               ( M == 0UL || MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
                              MaxSize_v< MT,2UL > == DefaultMaxSize_v ) > >
 {
    using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, rowMajor >;
@@ -3331,12 +3327,10 @@ struct PageSliceTraitEval2<
 template <typename MT, size_t M>
 struct RowSliceTraitEval2<
    MT, M,
-   EnableIf_t< IsDenseTensor_v<MT> &&
+   EnableIf_t< IsDenseTensor_v<MT> && !IsUniform_v<MT> &&
                ( M == 0UL || Size_v< MT,0UL > == DefaultSize_v ||
-                             Size_v< MT,1UL > == DefaultSize_v ||
                              Size_v< MT,2UL > == DefaultSize_v ) &&
                ( M == 0UL || MaxSize_v< MT,0UL > == DefaultMaxSize_v ||
-                             MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
                              MaxSize_v< MT,2UL > == DefaultMaxSize_v ) > >
 {
    using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, columnMajor >;

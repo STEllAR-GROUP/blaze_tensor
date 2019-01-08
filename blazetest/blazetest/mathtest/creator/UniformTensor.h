@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/creator/StaticTensor.h
-//  \brief Specialization of the Creator class template for StaticTensor
+//  \file blazetest/mathtest/creator/UniformTensor.h
+//  \brief Specialization of the Creator class template for UniformTensor
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_CREATOR_STATICTENSOR_H_
-#define _BLAZETEST_MATHTEST_CREATOR_STATICTENSOR_H_
+#ifndef _BLAZETEST_MATHTEST_CREATOR_UNIFORMTENSOR_H_
+#define _BLAZETEST_MATHTEST_CREATOR_UNIFORMTENSOR_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 #include <blazetest/mathtest/creator/Policies.h>
 #include <blazetest/system/Types.h>
 
-#include <blaze_tensor/math/StaticTensor.h>
+#include <blaze_tensor/math/UniformTensor.h>
 
 namespace blazetest {
 
@@ -56,25 +56,23 @@ namespace blazetest {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Specialization of the Creator class template for static tensors.
+/*!\brief Specialization of the Creator class template for uniform tensors.
 //
-// This specialization of the Creator class template is able to create random static tensors.
+// This specialization of the Creator class template is able to create random static matrices.
 */
-template< typename T  // Element type of the static tensor
-        , size_t O    // Number of rows of the static tensor
-        , size_t M    // Number of rows of the static tensor
-        , size_t N >  // Number of columns of the static tensor
-class Creator< blaze::StaticTensor<T,O,M,N> >
+template< typename T > // Element type of the uniform tensor
+class Creator< blaze::UniformTensor<T> >
 {
  public:
    //**Type definitions****************************************************************************
-   using Type = blaze::StaticTensor<T,O,M,N>;  //!< Type to be created by the Creator.
+   using Type = blaze::UniformTensor<T>;  //!< Type to be created by the Creator.
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
    explicit inline Creator( const Creator<T>& elementCreator = Creator<T>() );
+   explicit inline Creator( size_t o, size_t m, size_t n, const Creator<T>& elementCreator = Creator<T>() );
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -88,10 +86,10 @@ class Creator< blaze::StaticTensor<T,O,M,N> >
    //@{
    // No explicitly declared copy assignment operator.
 
-   const blaze::StaticTensor<T,O,M,N> operator()() const;
+   const blaze::UniformTensor<T> operator()() const;
 
    template< typename CP >
-   const blaze::StaticTensor<T,O,M,N> operator()( const CP& policy ) const;
+   const blaze::UniformTensor<T> operator()( const CP& policy ) const;
    //@}
    //**********************************************************************************************
 
@@ -99,6 +97,9 @@ class Creator< blaze::StaticTensor<T,O,M,N> >
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
+   size_t o_;       //!< The number of pages of the uniform tensor.
+   size_t m_;       //!< The number of rows of the uniform tensor.
+   size_t n_;       //!< The number of columns of the uniform tensor.
    Creator<T> ec_;  //!< Creator for the elements of the static tensor.
    //@}
    //**********************************************************************************************
@@ -115,16 +116,33 @@ class Creator< blaze::StaticTensor<T,O,M,N> >
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constructor for the creator specialization for StaticTensor.
+/*!\brief Constructor for the creator specialization for UniformTensor.
 //
 // \param elementCreator The creator for the elements of the static tensor.
 */
-template< typename T  // Element type of the static tensor
-        , size_t O    // Number of rows of the static tensor
-        , size_t M    // Number of rows of the static tensor
-        , size_t N >  // Number of columns of the static tensor
-inline Creator< blaze::StaticTensor<T,O,M,N> >::Creator( const Creator<T>& elementCreator )
-   : ec_( elementCreator )  // Creator for the elements of the static tensor
+template< typename T > // Element type of the uniform tensor
+inline Creator< blaze::UniformTensor<T> >::Creator( const Creator<T>& elementCreator )
+   : o_( 2UL )              // The number of pages of the uniform tensor
+   , m_( 3UL )              // The number of rows of the uniform tensor
+   , n_( 3UL )              // The number of columns of the uniform tensor
+   , ec_( elementCreator )  // Creator for the elements of the static tensor
+{}
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*!\brief Constructor for the creator specialization for UniformTensor.
+//
+// \param elementCreator The creator for the elements of the static tensor.
+*/
+template< typename T > // Element type of the uniform tensor
+inline Creator< blaze::UniformTensor<T> >::Creator( size_t o, size_t m, size_t n, const Creator<T>& elementCreator )
+   : o_( o )              // The number of pages of the uniform tensor
+   , m_( m )              // The number of rows of the uniform tensor
+   , n_( n )              // The number of columns of the uniform tensor
+   , ec_( elementCreator )  // Creator for the elements of the static tensor
 {}
 //*************************************************************************************************
 
@@ -142,12 +160,9 @@ inline Creator< blaze::StaticTensor<T,O,M,N> >::Creator( const Creator<T>& eleme
 //
 // \return The randomly generated static tensor.
 */
-template< typename T  // Element type of the static tensor
-        , size_t O    // Number of rows of the static tensor
-        , size_t M    // Number of rows of the static tensor
-        , size_t N >  // Number of columns of the static tensor
-inline const blaze::StaticTensor<T,O,M,N>
-   Creator< blaze::StaticTensor<T,O,M,N> >::operator()() const
+template< typename T > // Element type of the uniform tensor
+inline const blaze::UniformTensor<T>
+   Creator< blaze::UniformTensor<T> >::operator()() const
 {
    return (*this)( Default() );
 }
@@ -160,22 +175,12 @@ inline const blaze::StaticTensor<T,O,M,N>
 // \param policy The creation policy for the elements of fundamental data type.
 // \return The randomly generated static tensor.
 */
-template< typename T  // Element type of the static tensor
-        , size_t O    // Number of rows of the static tensor
-        , size_t M    // Number of rows of the static tensor
-        , size_t N >  // Number of columns of the static tensor
+template< typename T > // Element type of the uniform tensor
 template< typename CP >  // Creation policy
-inline const blaze::StaticTensor<T,O,M,N>
-   Creator< blaze::StaticTensor<T,O,M,N> >::operator()( const CP& policy ) const
+inline const blaze::UniformTensor<T>
+   Creator< blaze::UniformTensor<T> >::operator()( const CP& policy ) const
 {
-   blaze::StaticTensor<T,O,M,N> tensor;
-
-   for( size_t k=0UL; k<O; ++k )
-      for( size_t i=0UL; i<M; ++i )
-         for( size_t j=0UL; j<N; ++j )
-            tensor(k,i,j) = ec_( policy );
-
-   return tensor;
+   return blaze::UniformTensor<T>( o_, m_, n_, ec_( policy ) );
 }
 //*************************************************************************************************
 

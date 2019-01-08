@@ -120,6 +120,26 @@ set(tests
     T6x6x6bT6x6x6b
     T6x6x6bTDa
     T6x6x6bTDb
+    T6x6x6aTUa
+    T6x6x6aTUb
+    T6x6x6bTUa
+    T6x6x6bTUb
+    TDaTUa
+    TDaTUb
+    TDbTUa
+    TDbTUb
+    TUaT6x6x6a
+    TUaT6x6x6b
+    TUaTDa
+    TUaTDb
+    TUaTUa
+    TUaTUb
+    TUbT6x6x6a
+    TUbT6x6x6b
+    TUbTDa
+    TUbTDb
+    TUbTUa
+    TUbTUb
 )
 
 foreach(test ${tests})

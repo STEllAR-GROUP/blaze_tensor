@@ -41,8 +41,15 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/UniformMatrix.h>
+#include <blaze/math/shims/Conjugate.h>
+#include <blaze/math/shims/Real.h>
+#include <blaze/math/typetraits/UnderlyingBuiltin.h>
+#include <blaze/util/Assert.h>
 #include <blaze/util/Random.h>
+#include <blaze/util/StaticAssert.h>
 #include <blaze/util/Types.h>
+#include <blaze/util/constraints/Numeric.h>
 
 #include <blaze_tensor/math/DenseTensor.h>
 #include <blaze_tensor/math/dense/UniformTensor.h>

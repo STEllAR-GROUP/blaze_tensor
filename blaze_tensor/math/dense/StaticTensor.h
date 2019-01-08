@@ -47,8 +47,8 @@
 #include <blaze/math/Aliases.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/Forward.h>
-#include <blaze/math/StaticMatrix.h>
 #include <blaze/math/SIMD.h>
+#include <blaze/math/StaticMatrix.h>
 #include <blaze/math/constraints/Diagonal.h>
 #include <blaze/math/constraints/Symmetric.h>
 #include <blaze/math/dense/DenseIterator.h>
@@ -59,6 +59,7 @@
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/traits/AddTrait.h>
 #include <blaze/math/traits/DivTrait.h>
+#include <blaze/math/traits/ExpandTrait.h>
 #include <blaze/math/traits/MapTrait.h>
 #include <blaze/math/traits/MultTrait.h>
 #include <blaze/math/traits/SchurTrait.h>
@@ -3669,8 +3670,7 @@ struct ColumnSliceTraitEval2<
    MT, M,
    EnableIf_t< IsDenseTensor_v<MT> &&
                M != 0UL && Size_v< MT,0UL > != DefaultSize_v &&
-                           Size_v< MT,1UL > != DefaultSize_v &&
-                           Size_v< MT,2UL > != DefaultSize_v > >
+                           Size_v< MT,1UL > != DefaultSize_v > >
 {
    using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,0UL >, Size_v< MT,1UL >, false >;
 };
@@ -3692,8 +3692,7 @@ template <typename MT, size_t M>
 struct PageSliceTraitEval2<
    MT, M,
    EnableIf_t< IsDenseTensor_v<MT> &&
-               M != 0UL && Size_v< MT,0UL > != DefaultSize_v &&
-                           Size_v< MT,1UL > != DefaultSize_v &&
+               M != 0UL && Size_v< MT,1UL > != DefaultSize_v &&
                            Size_v< MT,2UL > != DefaultSize_v > >
 {
    using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,1UL >, Size_v< MT,2UL >, false >;
@@ -3717,7 +3716,6 @@ struct RowSliceTraitEval2<
    MT, M,
    EnableIf_t< IsDenseTensor_v<MT> &&
                M != 0UL && Size_v< MT,0UL > != DefaultSize_v &&
-                           Size_v< MT,1UL > != DefaultSize_v &&
                            Size_v< MT,2UL > != DefaultSize_v > >
 {
    using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,2UL >, Size_v< MT,0UL >, false >;
