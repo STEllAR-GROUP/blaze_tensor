@@ -85,6 +85,7 @@
 #include <blaze_tensor/math/Aliases.h>
 #include <blaze_tensor/math/ReductionFlag.h>
 #include <blaze_tensor/math/expressions/Forward.h>
+#include <blaze_tensor/math/expressions/MatExpandExpr.h>
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
 #include <blaze_tensor/math/expressions/TensReduceExpr.h>
@@ -1875,6 +1876,70 @@ inline decltype(auto) submatrix( const TensReduceExpr<MT,pagewise>& matrix, RSAs
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subtensor of the given vector expansion operation.
+// \ingroup subtensor
+//
+// \param matrix The constant vector expansion operation.
+// \param args Optional subtensor arguments.
+// \return View on the specified subtensor of the expansion operation.
+//
+// This function returns an expression representing the specified subtensor of the given vector
+// expansion operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t K            // Index of the first page
+        , size_t I            // Index of the first row
+        , size_t J            // Index of the first column
+        , size_t O            // Number of pages
+        , size_t M            // Number of rows
+        , size_t N            // Number of columns
+        , typename MT         // Matrix base type of the expression
+        , size_t... CEAs      // Compile time expansion arguments
+        , typename... RSAs >  // Optional subtensor arguments
+inline decltype(auto) subtensor( const MatExpandExpr<MT,CEAs...>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return expand<O>( submatrix<I, J, M, N>( (~matrix).operand(), args... ) );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subtensor of the given vector expansion operation.
+// \ingroup subtensor
+//
+// \param matrix The constant matrix expansion operation.
+// \param row The index of the first row of the subtensor.
+// \param column The index of the first column of the subtensor.
+// \param m The number of rows of the subtensor.
+// \param n The number of columns of the subtensor.
+// \param args Optional subtensor arguments.
+// \return View on the specified subtensor of the expansion operation.
+//
+// This function returns an expression representing the specified subtensor of the given vector
+// expansion operation.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , typename MT         // Matrix base type of the expression
+        , size_t... CEAs      // Compile time expansion arguments
+        , typename... RSAs >  // Optional subtensor arguments
+inline decltype(auto)
+   subtensor( const MatExpandExpr<MT,CEAs...>& matrix,
+              size_t page, size_t row, size_t column, size_t k, size_t m, size_t n, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return expand( submatrix( (~matrix).operand(), row, column, m, n, args... ), k );
+}
+/*! \endcond */
+//*************************************************************************************************
 
 
 

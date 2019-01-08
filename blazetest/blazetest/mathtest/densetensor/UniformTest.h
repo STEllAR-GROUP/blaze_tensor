@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/densetensor/GeneralTest.h
-//  \brief Header file for the general DenseMatrix operation test
+//  \file blazetest/mathtest/densetensor/UniformTest.h
+//  \brief Header file for the uniform DenseTensor operation test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DENSETENSOR_GENERALTEST_H_
-#define _BLAZETEST_MATHTEST_DENSETENSOR_GENERALTEST_H_
+#ifndef _BLAZETEST_MATHTEST_DENSETENSOR_UNIFORMTEST_H_
+#define _BLAZETEST_MATHTEST_DENSETENSOR_UNIFORMTEST_H_
 
 
 //*************************************************************************************************
@@ -59,13 +59,13 @@ namespace densetensor {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for tests of the DenseMatrix functionality.
+/*!\brief Auxiliary class for tests of the DenseTensor functionality.
 //
-// This class represents a test suite for the DenseMatrix functionality contained in the
-// <em><blaze/math/dense/DenseMatrix.h></em> header file. It performs a series of runtime
-// tests with general matrices.
+// This class represents a test suite for the DenseTensor functionality contained in the
+// <em><blaze/math/dense/DenseTensor.h></em> header file. It performs a series of runtime
+// tests with uniform matrices.
 */
-class GeneralTest
+class UniformTest
 {
  private:
    //**Type definitions****************************************************************************
@@ -76,7 +76,7 @@ class GeneralTest
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
-   explicit GeneralTest();
+   explicit UniformTest();
    // No explicitly declared copy constructor.
    //@}
    //**********************************************************************************************
@@ -89,28 +89,18 @@ class GeneralTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testIsNan();
-//    void testIsSquare();
-//    void testIsSymmetric();
-//    void testIsHermitian();
+   void testIsSymmetric();
+   void testIsHermitian();
    void testIsUniform();
-//    void testIsLower();
-//    void testIsUniLower();
-//    void testIsStrictlyLower();
-//    void testIsUpper();
-//    void testIsUniUpper();
-//    void testIsStrictlyUpper();
-//    void testIsDiagonal();
-//    void testIsIdentity();
-   void testMinimum();
-   void testMaximum();
-   void testSoftmax();
-//    void testTrace();
-//    void testL1Norm();
-//    void testL2Norm();
-//    void testL3Norm();
-//    void testL4Norm();
-//    void testLpNorm();
+   void testIsZero();
+   void testIsLower();
+   void testIsUniLower();
+   void testIsStrictlyLower();
+   void testIsUpper();
+   void testIsUniUpper();
+   void testIsStrictlyUpper();
+   void testIsDiagonal();
+   void testIsIdentity();
 
    template< typename Type >
    void checkRows( const Type& tensor, size_t expectedRows ) const;
@@ -163,7 +153,7 @@ class GeneralTest
 // exception is thrown.
 */
 template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkRows( const Type& tensor, size_t expectedRows ) const
+void UniformTest::checkRows( const Type& tensor, size_t expectedRows ) const
 {
    if( tensor.rows() != expectedRows ) {
       std::ostringstream oss;
@@ -191,7 +181,7 @@ void GeneralTest::checkRows( const Type& tensor, size_t expectedRows ) const
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkColumns( const Type& tensor, size_t expectedColumns ) const
+void UniformTest::checkColumns( const Type& tensor, size_t expectedColumns ) const
 {
    if( tensor.columns() != expectedColumns ) {
       std::ostringstream oss;
@@ -219,7 +209,7 @@ void GeneralTest::checkColumns( const Type& tensor, size_t expectedColumns ) con
 // a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkPages( const Type& tensor, size_t expectedPages ) const
+void UniformTest::checkPages( const Type& tensor, size_t expectedPages ) const
 {
    if( tensor.pages() != expectedPages ) {
       std::ostringstream oss;
@@ -247,7 +237,7 @@ void GeneralTest::checkPages( const Type& tensor, size_t expectedPages ) const
 // thrown.
 */
 template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkCapacity( const Type& tensor, size_t minCapacity ) const
+void UniformTest::checkCapacity( const Type& tensor, size_t minCapacity ) const
 {
    if( tensor.capacity() < minCapacity ) {
       std::ostringstream oss;
@@ -275,7 +265,7 @@ void GeneralTest::checkCapacity( const Type& tensor, size_t minCapacity ) const
 // number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkNonZeros( const Type& tensor, size_t expectedNonZeros ) const
+void UniformTest::checkNonZeros( const Type& tensor, size_t expectedNonZeros ) const
 {
    if( tensor.nonZeros() != expectedNonZeros ) {
       std::ostringstream oss;
@@ -314,7 +304,7 @@ void GeneralTest::checkNonZeros( const Type& tensor, size_t expectedNonZeros ) c
 // to the given expected number, a \a std::runtime_error exception is thrown.
 */
 template< typename Type >  // Type of the dense tensor
-void GeneralTest::checkNonZeros( const Type& tensor, size_t i, size_t k, size_t expectedNonZeros ) const
+void UniformTest::checkNonZeros( const Type& tensor, size_t i, size_t k, size_t expectedNonZeros ) const
 {
    if( tensor.nonZeros( i, k ) != expectedNonZeros ) {
       std::ostringstream oss;
@@ -348,13 +338,13 @@ void GeneralTest::checkNonZeros( const Type& tensor, size_t i, size_t k, size_t 
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the DenseMatrix class template.
+/*!\brief Testing the functionality of the DenseTensor class template.
 //
 // \return void
 */
 void runTest()
 {
-   GeneralTest();
+   UniformTest();
 }
 //*************************************************************************************************
 
@@ -369,9 +359,9 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the general DenseMatrix operation test.
+/*!\brief Macro for the execution of the uniform DenseTensor operation test.
 */
-#define RUN_DENSETENSOR_GENERAL_TEST \
+#define RUN_DENSETENSOR_UNIFORM_TEST \
    blazetest::mathtest::densetensor::runTest()
 /*! \endcond */
 //*************************************************************************************************

@@ -603,7 +603,9 @@ void ClassTest::testAssignment()
              << " Error: Assignment failed\n"
              << " Details:\n"
              << "   Result:\n" << mat << "\n"
-             << "   Expected result:\n(( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n)(( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n)\n";
+             << "   Expected result:\n"
+                        "(( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 )\n"
+                        " ( 2 2 2 2 )\n( 2 2 2 2 )\n( 2 2 2 2 ))\n";
          throw std::runtime_error( oss.str() );
       }
    }
@@ -781,8 +783,8 @@ void ClassTest::testAssignment()
    {
       test_ = "Row-major/row-major StaticTensor dense tensor assignment (mixed type)";
 
-      blaze::StaticTensor<short,2UL,2UL,3UL> mat1{{{1, 2, 3}, {4, 5, 6}},
-                                                {{1, 2, 3}, {4, 5, 6}}};
+      blaze::StaticTensor<short, 2UL, 2UL, 3UL> mat1{{{1, 2, 3}, {4, 5, 6}},
+                                                     {{1, 2, 3}, {4, 5, 6}}};
       blaze::StaticTensor<int,2UL,2UL,3UL> mat2;
       mat2 = mat1;
 
@@ -815,7 +817,6 @@ void ClassTest::testAssignment()
 
       using blaze::aligned;
       using blaze::padded;
-      using blaze::rowMajor;
 
       using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );

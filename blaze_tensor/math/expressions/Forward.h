@@ -61,6 +61,7 @@ template< typename, typename > class DTensMapExpr;
 template< typename, typename > class DTensScalarMultExpr;
 template< typename, typename > class DTensScalarDivExpr;
 template< typename, typename, typename > class DTensDTensMapExpr;
+template< typename, size_t... > class DMatExpandExpr;
 
 
 
@@ -85,17 +86,23 @@ decltype(auto) eval( const DenseTensor<TT>& );
 template< typename TT >
 decltype(auto) serial( const DenseTensor<TT>& );
 
-// template< typename MT >
-// inline decltype(auto) inv( const DenseTensor<TT>& );
-//
-// template< typename MT, typename OP >
-// decltype(auto) map( const DenseTensor<TT>&, OP );
-//
-// template< typename TT1, typename TT2, typename OP >
-// decltype(auto) map( const DenseTensor<TT1>&, const DenseTensor<TT2>&, OP );
-//
-// template< typename MT, typename OP >
-// decltype(auto) reduce( const DenseTensor<TT>&, OP );
+template< typename TT >
+inline decltype(auto) inv( const DenseTensor<TT>& );
+
+template< typename TT, typename OP >
+decltype(auto) map( const DenseTensor<TT>&, OP );
+
+template< typename TT1, typename TT2, typename OP >
+decltype(auto) map( const DenseTensor<TT1>&, const DenseTensor<TT2>&, OP );
+
+template< typename TT, typename OP >
+decltype(auto) reduce( const DenseTensor<TT>&, OP );
+
+template< typename TT >
+decltype(auto) expand( const DenseTensor<TT>&, size_t );
+
+template< size_t E, typename TT >
+decltype(auto) expand( const DenseTensor<TT>& );
 
 } // namespace blaze
 

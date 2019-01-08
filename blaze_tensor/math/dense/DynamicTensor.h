@@ -154,9 +154,9 @@ class DynamicTensor
    //**Resize struct definition********************************************************************
    /*!\brief Resize mechanism to obtain a DynamicTensor with different fixed dimensions.
    */
-   template< size_t NewM    // Number of rows of the other tensor
-           , size_t NewN    // Number of columns of the other tensor
-           , size_t NewO >  // Number of pages of the other tensor
+   template< size_t NewO    // Number of pages of the other tensor
+           , size_t NewM    // Number of rows of the other tensor
+           , size_t NewN >  // Number of columns of the other tensor
    struct Resize {
       using Other = DynamicTensor<Type>;  //!< The type of the other DynamicTensor.
    };
@@ -3195,6 +3195,32 @@ struct BinaryMapTraitEval2< T1, T2, OP
    using ET2 = ElementType_t<T2>;
 
    using Type = DynamicTensor< MapTrait_t<ET1,ET2,OP> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  EXPANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T  // Type to be expanded
+        , size_t E >  // Compile time expansion
+struct ExpandTraitEval2< T, E
+                       , EnableIf_t< IsDenseMatrix_v<T> &&
+                                     ( ( E == inf ) ||
+                                       ( ( Size_v<T,0UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,0UL> == DefaultMaxSize_v ) &&
+                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,1UL> == DefaultMaxSize_v ) ) ) > >
+{
+   using Type = DynamicTensor< ElementType_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************

@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/Tensor.h
-//  \brief Header file for all basic Tensor functionality
+//  \file blaze_tensor/math/typetraits/IsMatExpandExpr.h
+//  \brief Header file for the IsMatExpandExpr type trait class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,122 +33,104 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TENSOR_H_
-#define _BLAZE_TENSOR_MATH_TENSOR_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISMATEXPANDEXPR_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISMATEXPANDEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <iomanip>
-#include <iosfwd>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 
-#include <blaze/math/Matrix.h>
-
-#include <blaze_tensor/math/expressions/Tensor.h>
-
+#include <blaze_tensor/math/expressions/MatExpandExpr.h>
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  GLOBAL FUNCTIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\name Tensor functions */
-//@{
-template< typename MT >
-bool isUniform( const Tensor<MT>& m );
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checks if the given tensor is a uniform tensor.
-// \ingroup tensor
-//
-// \param m The tensor to be checked.
-// \return \a true if the tensor is a uniform tensor, \a false if not.
-//
-// This function checks if the given dense or sparse tensor is a uniform tensor. The tensor
-// is considered to be uniform if all its elements are identical. The following code example
-// demonstrates the use of the function:
-
-   \code
-   blaze::Dynamictensor<int,blaze::rowMajor> A, B;
-   // ... Initialization
-   if( isUniform( A ) ) { ... }
-   \endcode
-
-// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
-// semantics (blaze::relaxed):
-
-   \code
-   if( isUniform<relaxed>( A ) ) { ... }
-   \endcode
-
-// It is also possible to check if a tensor expression results in a uniform tensor:
-
-   \code
-   if( isUniform( A * B ) ) { ... }
-   \endcode
-
-// However, note that this might require the complete evaluation of the expression, including
-// the generation of a temporary tensor.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsMatExpandExpr type trait.
+// \ingroup math_type_traits
 */
-template< typename MT > // Type of the tensor
-inline bool isUniform( const Tensor<MT>& t )
+template< typename T >
+struct IsMatExpandExprHelper
 {
-   return isUniform<relaxed>( ~t );
-}
+ private:
+   //**********************************************************************************************
+   static T* create();
+
+   template< typename U, size_t... Es >
+   static TrueType test( const MatExpandExpr<U,Es...>* );
+
+   template< typename U, size_t... Es >
+   static TrueType test( const volatile MatExpandExpr<U,Es...>* );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( create() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
 
-//=================================================================================================
+//*************************************************************************************************
+/*!\brief Compile time check whether the given type is a vector expansion expression template.
+// \ingroup math_type_traits
 //
-//  GLOBAL OPERATORS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\name Tensor operators */
-//@{
-template< typename MT >
-inline std::ostream& operator<<( std::ostream& os, const Tensor<MT>& m );
-//@}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Global output operator for dense and sparse tensors.
-// \ingroup tensor
-//
-// \param os Reference to the output stream.
-// \param m Reference to a constant tensor object.
-// \return Reference to the output stream.
+// This type trait class tests whether or not the given type \a Type is a vector expansion
+// expression template. In order to qualify as a valid vector expansion expression template, the
+// given type has to derive publicly from the MatExpandExpr base class. In case the given type
+// is a valid expansion expression template, the \a value member constant is set to \a true,
+// the nested type definition \a Type is \a TrueType, and the class derives from \a TrueType.
+// Otherwise \a value is set to \a false, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
 */
-template< typename MT >
-inline std::ostream& operator<<( std::ostream& os, const Tensor<MT>& m )
-{
-   CompositeType_t<MT> tmp( ~m );
+template< typename T >
+struct IsMatExpandExpr
+   : public IsMatExpandExprHelper<T>::Type
+{};
+//*************************************************************************************************
 
-   for (size_t k = 0UL; k < tmp.pages(); ++k) {
-      os << "(";
-      for (size_t i = 0UL; i < tmp.rows(); ++i) {
-         os << "(";
-         for (size_t j = 0UL; j < tmp.columns(); ++j) {
-            os << std::setw(12) << tmp(k, i, j) << " ";
-         }
-         os << ") ";
-      }
-      os << ")\n";
-   }
 
-   return os;
-}
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Specialization of the IsMatExpandExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsMatExpandExpr<T&>
+   : public FalseType
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsMatExpandExpr type trait.
+// \ingroup type_traits
+//
+// The IsMatExpandExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsMatExpandExpr class template. For instance, given the type \a T the
+// following two statements are identical:
+
+   \code
+   constexpr bool value1 = blaze::IsMatExpandExpr<T>::value;
+   constexpr bool value2 = blaze::IsMatExpandExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsMatExpandExpr_v = IsMatExpandExpr<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

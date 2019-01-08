@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/TypeTraits.h
-//  \brief Header file for all type traits
+//  \file blaze_tensor/math/views/Views.h
+//  \brief Views module documentation
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,34 +33,20 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_H_
+#ifndef _BLAZE_TENSOR_MATH_VIEWS_VIEWS_H_
+#define _BLAZE_TENSOR_MATH_VIEWS_VIEWS_H_
 
+
+//=================================================================================================
+//
+//  DOXYGEN DOCUMENTATION
+//
+//=================================================================================================
 
 //*************************************************************************************************
-// Includes
+/*!\defgroup views Views
+// \ingroup math
+*/
 //*************************************************************************************************
-
-#include <blaze/math/TypeTraits.h>
-
-#include <blaze_tensor/math/typetraits/IsColumnMajorTensor.h>
-#include <blaze_tensor/math/typetraits/IsColumnSlice.h>
-#include <blaze_tensor/math/typetraits/IsDenseTensor.h>
-#include <blaze_tensor/math/typetraits/IsMatExpandExpr.h>
-#include <blaze_tensor/math/typetraits/IsNumericTensor.h>
-#include <blaze_tensor/math/typetraits/IsPageSlice.h>
-#include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
-#include <blaze_tensor/math/typetraits/IsRowSlice.h>
-#include <blaze_tensor/math/typetraits/IsSubtensor.h>
-#include <blaze_tensor/math/typetraits/IsTensMapExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensScalarDivExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensScalarMultExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensSerialExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensAddExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensMapExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensMultExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensSubExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensor.h>
-#include <blaze_tensor/math/typetraits/StorageOrder.h>
 
 #endif

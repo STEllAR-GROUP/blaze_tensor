@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/TypeTraits.h
-//  \brief Header file for all type traits
+//  \file blaze_tensor/math/expressions/MatExpandExpr.h
+//  \brief Header file for the MatExpandExpr base class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,34 +33,43 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_MATEXPANDEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_MATEXPANDEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/TypeTraits.h>
+#include <blaze/math/expressions/ExpandExpr.h>
 
-#include <blaze_tensor/math/typetraits/IsColumnMajorTensor.h>
-#include <blaze_tensor/math/typetraits/IsColumnSlice.h>
-#include <blaze_tensor/math/typetraits/IsDenseTensor.h>
-#include <blaze_tensor/math/typetraits/IsMatExpandExpr.h>
-#include <blaze_tensor/math/typetraits/IsNumericTensor.h>
-#include <blaze_tensor/math/typetraits/IsPageSlice.h>
-#include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
-#include <blaze_tensor/math/typetraits/IsRowSlice.h>
-#include <blaze_tensor/math/typetraits/IsSubtensor.h>
-#include <blaze_tensor/math/typetraits/IsTensMapExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensScalarDivExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensScalarMultExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensSerialExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensAddExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensMapExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensMultExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensTensSubExpr.h>
-#include <blaze_tensor/math/typetraits/IsTensor.h>
-#include <blaze_tensor/math/typetraits/StorageOrder.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Base class for all matrix expansion expression templates.
+// \ingroup math
+//
+// The MatExpandExpr class serves as a tag for all expression templates that implement a matrix
+// expansion. All classes, that represent a matrix expansion and and that are used within the
+// expression template environment of the Blaze library have to derive publicly from this class
+// in order to qualify as matrix expansion expression template. Only in case a class is derived
+// publicly from the MatExpandExpr base class, the IsMatExpandExpr type trait recognizes the
+// class as valid matrix expansion expression template.
+*/
+template< typename MT       // Matrix base type of the expression
+        , size_t... CEAs >  // Compile time expansion arguments
+struct MatExpandExpr
+   : public ExpandExpr<MT>
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

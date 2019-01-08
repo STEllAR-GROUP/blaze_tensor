@@ -44,6 +44,7 @@
 #include <blaze/math/constraints/DenseMatrix.h>
 
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
+#include <blaze_tensor/math/typetraits/IsDenseTensor.h>
 
 namespace blaze {
 

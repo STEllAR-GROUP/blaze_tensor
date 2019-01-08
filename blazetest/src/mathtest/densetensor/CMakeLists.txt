@@ -35,6 +35,7 @@ set(category DenseTensor)
 
 set(tests
     GeneralTest
+    UniformTest
 )
 
 foreach(test ${tests})

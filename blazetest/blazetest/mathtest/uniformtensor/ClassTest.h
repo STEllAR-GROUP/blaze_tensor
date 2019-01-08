@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/statictensor/ClassTest.h
-//  \brief Header file for the StaticTensor class test
+//  \file blazetest/mathtest/uniformtensor/ClassTest.h
+//  \brief Header file for the UniformTensor class test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,35 +33,32 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_STATICTENSOR_CLASSTEST_H_
-#define _BLAZETEST_MATHTEST_STATICTENSOR_CLASSTEST_H_
+#ifndef _BLAZETEST_MATHTEST_UNIFORMTENSOR_CLASSTEST_H_
+#define _BLAZETEST_MATHTEST_UNIFORMTENSOR_CLASSTEST_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <array>
+// TODO: Rework Includes!!!
+#include <blaze/math/constraints/RequiresEvaluation.h>
+#include <blaze/util/constraints/SameType.h>
+
+#include <blaze_tensor/math/UniformTensor.h>
+#include <blaze_tensor/math/constraints/DenseTensor.h>
+
+#include <blazetest/system/Types.h>
+
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <typeinfo>
-#include <vector>
-#include <blaze/math/typetraits/IsAligned.h>
-#include <blaze/util/AlignedAllocator.h>
-#include <blaze/util/constraints/SameType.h>
-#include <blaze/util/typetraits/AlignmentOf.h>
-#include <blazetest/system/Types.h>
-
-#include <blaze_tensor/math/StaticTensor.h>
-#include <blaze_tensor/math/constraints/DenseTensor.h>
-#include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
 
 namespace blazetest {
 
 namespace mathtest {
 
-namespace statictensor {
+namespace uniformtensor {
 
 //=================================================================================================
 //
@@ -70,9 +67,9 @@ namespace statictensor {
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Auxiliary class for all tests of the StaticTensor class template.
+/*!\brief Auxiliary class for all tests of the UniformTensor class template.
 //
-// This class represents a test suite for the blaze::StaticTensor class template. It performs
+// This class represents a test suite for the blaze::UniformTensor class template. It performs
 // a series of both compile time as well as runtime tests.
 */
 class ClassTest
@@ -110,10 +107,15 @@ class ClassTest
    void testNonZeros    ();
    void testReset       ();
    void testClear       ();
+   void testResize      ();
+   void testExtend      ();
    void testSwap        ();
    void testTranspose   ();
    void testCTranspose  ();
    void testIsDefault   ();
+
+   template< typename Type >
+   void checkPages( const Type& tensor, size_t expectedPages ) const;
 
    template< typename Type >
    void checkRows( const Type& tensor, size_t expectedRows ) const;
@@ -122,16 +124,13 @@ class ClassTest
    void checkColumns( const Type& tensor, size_t expectedColumns ) const;
 
    template< typename Type >
-   void checkPages( const Type& tensor, size_t expectedColumns ) const;
-
-   template< typename Type >
    void checkCapacity( const Type& tensor, size_t minCapacity ) const;
 
    template< typename Type >
    void checkNonZeros( const Type& tensor, size_t expectedNonZeros ) const;
 
    template< typename Type >
-   void checkNonZeros( const Type& tensor, size_t i, size_t k, size_t expectedNonZeros ) const;
+   void checkNonZeros( const Type& tensor, size_t index, size_t page, size_t expectedNonZeros ) const;
    //@}
    //**********************************************************************************************
 
@@ -143,11 +142,11 @@ class ClassTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using MT  = blaze::StaticTensor<int,2UL,2UL,3UL>;     //!< Type of the row-major static tensor.
-//    using OMT = blaze::StaticTensor<int,2UL,2UL,3UL,blaze::columnMajor>;  //!< Type of the column-major static tensor.
+   using MT  = blaze::UniformTensor<int>;     //!< Type of the row-major uniform tensor.
+//    using OMT = blaze::UniformTensor<int,blaze::columnMajor>;  //!< Type of the column-major uniform tensor.
 
-   using RMT  = MT::Rebind<double>::Other;   //!< Rebound row-major static tensor type.
-//    using ORMT = OMT::Rebind<double>::Other;  //!< Rebound column-major static tensor type.
+   using RMT  = MT::Rebind<double>::Other;   //!< Rebound row-major uniform tensor type.
+//    using ORMT = OMT::Rebind<double>::Other;  //!< Rebound column-major uniform tensor type.
    //**********************************************************************************************
 
    //**Compile time checks*************************************************************************
@@ -226,224 +225,18 @@ class ClassTest
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Test of the alignment of different StaticTensor instances.
+/*!\brief Checking the number of rows of the given uniform tensor.
 //
-// \return void
-// \param type The string representation of the given template type.
-// \exception std::runtime_error Error detected.
-//
-// This function performs a test of the alignment of both a row-major and a column-major
-// StaticTensor instance of the given element type. In case an error is detected, a
-// \a std::runtime_error exception is thrown.
-*/
-template< typename Type >
-void ClassTest::testAlignment( const std::string& type )
-{
-   using RowMajorTensorType    = blaze::StaticTensor<Type,2UL,7UL,5UL>;
-//    using ColumnMajorTensorType = blaze::StaticTensor<Type,2UL,7UL,5UL,blaze::columnMajor>;
-
-   using RowMajorAllocatorType    = blaze::AlignedAllocator<RowMajorTensorType>;
-//    using ColumnMajorAllocatorType = blaze::AlignedAllocator<ColumnMajorTensorType>;
-
-   constexpr size_t alignment( blaze::AlignmentOf<Type>::value );
-
-
-   //=====================================================================================
-   // Single tensor alignment test
-   //=====================================================================================
-
-   if( blaze::IsAligned_v<RowMajorTensorType> )
-   {
-      const RowMajorTensorType mat;
-
-      const size_t pages( mat.pages() );
-      const size_t rows( blaze::usePadding ? mat.rows() : 1UL );
-
-      for( size_t k=0UL; k<pages; ++k )
-      {
-         for( size_t i=0UL; i<rows; ++i )
-         {
-            const size_t deviation( reinterpret_cast<size_t>( &mat(k,i,0UL) ) % alignment );
-
-            if( deviation != 0UL ) {
-               std::ostringstream oss;
-               oss << " Test: Single tensor alignment test (row-major)\n"
-                   << " Error: Invalid alignment in row " << i << " page " << k << " detected\n"
-                   << " Details:\n"
-                   << "   Element type      : " << type << "\n"
-                   << "   Expected alignment: " << alignment << "\n"
-                   << "   Deviation         : " << deviation << "\n";
-               throw std::runtime_error( oss.str() );
-            }
-         }
-      }
-   }
-
-//    if( blaze::IsAligned_v<ColumnMajorTensorType> )
-//    {
-//       const ColumnMajorTensorType mat;
-//
-//       const size_t columns( blaze::usePadding ? mat.columns() : 1UL );
-//
-//       for( size_t j=0UL; j<columns; ++j )
-//       {
-//          const size_t deviation( reinterpret_cast<size_t>( &mat(0UL,j) ) % alignment );
-//
-//          if( deviation != 0UL ) {
-//             std::ostringstream oss;
-//             oss << " Test: Single tensor alignment test (column-major)\n"
-//                 << " Error: Invalid alignment in column " << j << " detected\n"
-//                 << " Details:\n"
-//                 << "   Element type      : " << type << "\n"
-//                 << "   Expected alignment: " << alignment << "\n"
-//                 << "   Deviation         : " << deviation << "\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-
-
-   //=====================================================================================
-   // Static array alignment test
-   //=====================================================================================
-
-   if( blaze::IsAligned_v<RowMajorTensorType> )
-   {
-      const RowMajorTensorType init;
-      const std::array<RowMajorTensorType,7UL> mats{ init, init, init, init, init, init, init };
-
-      for( size_t i=0UL; i<mats.size(); ++i )
-      {
-         const size_t pages( mats[i].pages() );
-         const size_t rows( blaze::usePadding ? mats[i].rows() : 1UL );
-
-         for( size_t k=0UL; k<pages; ++k )
-         {
-            for( size_t j=0UL; j<rows; ++j )
-            {
-               const size_t deviation( reinterpret_cast<size_t>( &mats[i](k,j,0UL) ) % alignment );
-
-               if( deviation != 0UL ) {
-                  std::ostringstream oss;
-                  oss << " Test: Static array alignment test (row-major)\n"
-                      << " Error: Invalid alignment at index " << i << " in row " << j << " page " << k << " detected\n"
-                      << " Details:\n"
-                      << "   Element type      : " << type << "\n"
-                      << "   Expected alignment: " << alignment << "\n"
-                      << "   Deviation         : " << deviation << "\n";
-                  throw std::runtime_error( oss.str() );
-               }
-            }
-         }
-      }
-   }
-
-//    if( blaze::IsAligned_v<ColumnMajorTensorType> )
-//    {
-//       const ColumnMajorTensorType init;
-//       const std::array<ColumnMajorTensorType,7UL> mats{ init, init, init, init, init, init, init };
-//
-//       for( size_t i=0UL; i<mats.size(); ++i )
-//       {
-//          const size_t columns( blaze::usePadding ? mats[i].columns() : 1UL );
-//
-//          for( size_t j=0UL; j<columns; ++j )
-//          {
-//             const size_t deviation( reinterpret_cast<size_t>( &mats[i](0UL,j) ) % alignment );
-//
-//             if( deviation != 0UL ) {
-//                std::ostringstream oss;
-//                oss << " Test: Static array alignment test (column-major)\n"
-//                    << " Error: Invalid alignment at index " << i << " in column " << j << " detected\n"
-//                    << " Details:\n"
-//                    << "   Element type      : " << type << "\n"
-//                    << "   Expected alignment: " << alignment << "\n"
-//                    << "   Deviation         : " << deviation << "\n";
-//                throw std::runtime_error( oss.str() );
-//             }
-//          }
-//       }
-//    }
-
-
-   //=====================================================================================
-   // Dynamic array alignment test
-   //=====================================================================================
-
-   if( blaze::IsAligned_v<RowMajorTensorType> )
-   {
-      const RowMajorTensorType init;
-      const std::vector<RowMajorTensorType,RowMajorAllocatorType> mats( 7UL, init );
-
-      for( size_t i=0UL; i<mats.size(); ++i )
-      {
-         const size_t pages( mats[i].pages() );
-         const size_t rows( blaze::usePadding ? mats[i].rows() : 1UL );
-
-         for( size_t k=0UL; k<pages; ++k )
-         {
-            for( size_t j=0UL; j<rows; ++j )
-            {
-               const size_t deviation( reinterpret_cast<size_t>( &mats[i](k,j,0UL) ) % alignment );
-
-               if( deviation != 0UL ) {
-                  std::ostringstream oss;
-                  oss << " Test: Dynamic array alignment test (row-major)\n"
-                      << " Error: Invalid alignment at index " << i << " in row " << j << " page " << k << " detected\n"
-                      << " Details:\n"
-                      << "   Element type      : " << type << "\n"
-                      << "   Expected alignment: " << alignment << "\n"
-                      << "   Deviation         : " << deviation << "\n";
-                  throw std::runtime_error( oss.str() );
-               }
-            }
-         }
-      }
-   }
-
-//    if( blaze::IsAligned_v<ColumnMajorTensorType> )
-//    {
-//       const ColumnMajorTensorType init;
-//       const std::vector<ColumnMajorTensorType,ColumnMajorAllocatorType> mats( 7UL, init );
-//
-//       for( size_t i=0UL; i<mats.size(); ++i )
-//       {
-//          const size_t columns( blaze::usePadding ? mats[i].columns() : 1UL );
-//
-//          for( size_t j=0UL; j<columns; ++j )
-//          {
-//             const size_t deviation( reinterpret_cast<size_t>( &mats[i](0UL,j) ) % alignment );
-//
-//             if( deviation != 0UL ) {
-//                std::ostringstream oss;
-//                oss << " Test: Dynamic array alignment test (column-major)\n"
-//                    << " Error: Invalid alignment at index " << i << " in column " << j << " detected\n"
-//                    << " Details:\n"
-//                    << "   Element type      : " << type << "\n"
-//                    << "   Expected alignment: " << alignment << "\n"
-//                    << "   Deviation         : " << deviation << "\n";
-//                throw std::runtime_error( oss.str() );
-//             }
-//          }
-//       }
-//    }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking the number of rows of the given static tensor.
-//
-// \param tensor The static tensor to be checked.
-// \param expectedRows The expected number of rows of the static tensor.
+// \param tensor The uniform tensor to be checked.
+// \param expectedRows The expected number of rows of the uniform tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of rows of the given static tensor. In case the actual number
+// This function checks the number of rows of the given uniform tensor. In case the actual number
 // of rows does not correspond to the given expected number of rows, a \a std::runtime_error
 // exception is thrown.
 */
-template< typename Type >  // Type of the static tensor
+template< typename Type >  // Type of the uniform tensor
 void ClassTest::checkRows( const Type& tensor, size_t expectedRows ) const
 {
    if( rows( tensor ) != expectedRows ) {
@@ -460,18 +253,18 @@ void ClassTest::checkRows( const Type& tensor, size_t expectedRows ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the number of columns of the given static tensor.
+/*!\brief Checking the number of columns of the given uniform tensor.
 //
-// \param tensor The static tensor to be checked.
-// \param expectedRows The expected number of columns of the static tensor.
+// \param tensor The uniform tensor to be checked.
+// \param expectedRows The expected number of columns of the uniform tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the number of columns of the given static tensor. In case the
+// This function checks the number of columns of the given uniform tensor. In case the
 // actual number of columns does not correspond to the given expected number of columns,
 // a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the static tensor
+template< typename Type >  // Type of the uniform tensor
 void ClassTest::checkColumns( const Type& tensor, size_t expectedColumns ) const
 {
    if( columns( tensor ) != expectedColumns ) {
@@ -515,19 +308,20 @@ void ClassTest::checkPages( const Type& tensor, size_t expectedPages ) const
 //*************************************************************************************************
 
 
+
 //*************************************************************************************************
-/*!\brief Checking the capacity of the given static tensor.
+/*!\brief Checking the capacity of the given uniform tensor.
 //
-// \param tensor The static tensor to be checked.
-// \param minCapacity The expected minimum capacity of the static tensor.
+// \param tensor The uniform tensor to be checked.
+// \param minCapacity The expected minimum capacity of the uniform tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the capacity of the given static tensor. In case the actual capacity
+// This function checks the capacity of the given uniform tensor. In case the actual capacity
 // is smaller than the given expected minimum capacity, a \a std::runtime_error exception is
 // thrown.
 */
-template< typename Type >  // Type of the static tensor
+template< typename Type >  // Type of the uniform tensor
 void ClassTest::checkCapacity( const Type& tensor, size_t minCapacity ) const
 {
    if( capacity( tensor ) < minCapacity ) {
@@ -544,18 +338,18 @@ void ClassTest::checkCapacity( const Type& tensor, size_t minCapacity ) const
 
 
 //*************************************************************************************************
-/*!\brief Checking the total number of non-zero elements of the given static tensor.
+/*!\brief Checking the number of non-zero elements of the given uniform tensor.
 //
-// \param tensor The static tensor to be checked.
-// \param expectedNonZeros The expected number of non-zero elements of the static tensor.
+// \param tensor The uniform tensor to be checked.
+// \param expectedNonZeros The expected number of non-zero elements of the uniform tensor.
 // \return void
 // \exception std::runtime_error Error detected.
 //
-// This function checks the total number of non-zero elements of the given static tensor.
-// In case the actual number of non-zero elements does not correspond to the given expected
+// This function checks the number of non-zero elements of the given uniform tensor. In
+// case the actual number of non-zero elements does not correspond to the given expected
 // number, a \a std::runtime_error exception is thrown.
 */
-template< typename Type >  // Type of the static tensor
+template< typename Type >  // Type of the uniform tensor
 void ClassTest::checkNonZeros( const Type& tensor, size_t expectedNonZeros ) const
 {
    if( nonZeros( tensor ) != expectedNonZeros ) {
@@ -629,7 +423,7 @@ void ClassTest::checkNonZeros( const Type& tensor, size_t index, size_t page, si
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Testing the functionality of the StaticTensor class template.
+/*!\brief Testing the functionality of the UniformTensor class template.
 //
 // \return void
 */
@@ -650,14 +444,14 @@ void runTest()
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Macro for the execution of the StaticTensor class test.
+/*!\brief Macro for the execution of the UniformTensor class test.
 */
-#define RUN_STATICTENSOR_CLASS_TEST \
-   blazetest::mathtest::statictensor::runTest()
+#define RUN_UNIFORMTENSOR_CLASS_TEST \
+   blazetest::mathtest::uniformtensor::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace statictensor
+} // namespace uniformtensor
 
 } // namespace mathtest
 

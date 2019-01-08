@@ -72,7 +72,7 @@ GeneralTest::GeneralTest()
 //    testIsSymmetric();
 //    testIsHermitian();
 //    testIsLower();
-//    testIsUniform();
+   testIsUniform();
 //    testIsUniLower();
 //    testIsStrictlyLower();
 //    testIsUpper();
@@ -609,7 +609,7 @@ void GeneralTest::testIsHermitian()
    }
 }
 //*************************************************************************************************
-
+#endif
 
 //*************************************************************************************************
 /*!\brief Test of the \c isUniform() function for dense tensors.
@@ -629,10 +629,11 @@ void GeneralTest::testIsUniform()
    {
       test_ = "Row-major isUniform()";
 
-      // Uniform tensor (0x3)
+      // Uniform tensor (0x0x3)
       {
-         blaze::DynamicTensor<int> tens( 0UL, 3UL, 5 );
+         blaze::DynamicTensor<int> tens( 0UL, 0UL, 3UL, 5 );
 
+         checkPages   ( tens, 0UL );
          checkRows    ( tens, 0UL );
          checkColumns ( tens, 3UL );
          checkCapacity( tens, 0UL );
@@ -648,10 +649,11 @@ void GeneralTest::testIsUniform()
          }
       }
 
-      // Uniform tensor (3x0)
+      // Uniform tensor (0x3x0)
       {
-         blaze::DynamicTensor<int> tens( 3UL, 0UL, 5 );
+         blaze::DynamicTensor<int> tens( 0UL, 3UL, 0UL, 5 );
 
+         checkPages   ( tens, 0UL );
          checkRows    ( tens, 3UL );
          checkColumns ( tens, 0UL );
          checkCapacity( tens, 0UL );
@@ -667,15 +669,37 @@ void GeneralTest::testIsUniform()
          }
       }
 
-      // Uniform tensor (1x3)
+      // Uniform tensor (2x0x0)
       {
-         blaze::DynamicTensor<int> tens( 1UL, 3UL, 5 );
+         blaze::DynamicTensor<int> tens( 2UL, 0UL, 0UL, 5 );
 
+         checkPages   ( tens, 2UL );
+         checkRows    ( tens, 0UL );
+         checkColumns ( tens, 0UL );
+         checkCapacity( tens, 0UL );
+         checkNonZeros( tens, 0UL );
+
+         if( isUniform( tens ) != true ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid isUniform evaluation\n"
+                << " Details:\n"
+                << "   Tensor:\n" << tens << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Uniform tensor (2x1x3)
+      {
+         blaze::DynamicTensor<int> tens( 2UL, 1UL, 3UL, 5 );
+
+         checkPages   ( tens, 2UL );
          checkRows    ( tens, 1UL );
          checkColumns ( tens, 3UL );
-         checkCapacity( tens, 3UL );
-         checkNonZeros( tens, 3UL );
-         checkNonZeros( tens, 0UL, 3UL );
+         checkCapacity( tens, 6UL );
+         checkNonZeros( tens, 6UL );
+         checkNonZeros( tens, 0UL, 0UL, 3UL );
+         checkNonZeros( tens, 0UL, 1UL, 3UL );
 
          if( isUniform( tens ) != true ) {
             std::ostringstream oss;
@@ -687,17 +711,21 @@ void GeneralTest::testIsUniform()
          }
       }
 
-      // Uniform tensor (3x1)
+      // Uniform tensor (2x3x1)
       {
-         blaze::DynamicTensor<int> tens( 3UL, 1UL, 5 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 1UL, 5 );
 
+         checkPages   ( tens, 2UL );
          checkRows    ( tens, 3UL );
          checkColumns ( tens, 1UL );
-         checkCapacity( tens, 3UL );
-         checkNonZeros( tens, 3UL );
-         checkNonZeros( tens, 0UL, 1UL );
-         checkNonZeros( tens, 1UL, 1UL );
-         checkNonZeros( tens, 2UL, 1UL );
+         checkCapacity( tens, 6UL );
+         checkNonZeros( tens, 6UL );
+         checkNonZeros( tens, 0UL, 0UL, 1UL );
+         checkNonZeros( tens, 1UL, 0UL, 1UL );
+         checkNonZeros( tens, 2UL, 0UL, 1UL );
+         checkNonZeros( tens, 0UL, 1UL, 1UL );
+         checkNonZeros( tens, 1UL, 1UL, 1UL );
+         checkNonZeros( tens, 2UL, 1UL, 1UL );
 
          if( isUniform( tens ) != true ) {
             std::ostringstream oss;
@@ -709,17 +737,18 @@ void GeneralTest::testIsUniform()
          }
       }
 
-      // Uniform tensor (3x5)
+      // Uniform tensor (1x3x5)
       {
-         blaze::DynamicTensor<int> tens( 3UL, 5UL, 5 );
+         blaze::DynamicTensor<int> tens( 1UL, 3UL, 5UL, 5 );
 
+         checkPages   ( tens,  1UL );
          checkRows    ( tens,  3UL );
          checkColumns ( tens,  5UL );
          checkCapacity( tens, 15UL );
          checkNonZeros( tens, 15UL );
-         checkNonZeros( tens,  0UL, 5UL );
-         checkNonZeros( tens,  1UL, 5UL );
-         checkNonZeros( tens,  2UL, 5UL );
+         checkNonZeros( tens,  0UL, 0UL, 5UL );
+         checkNonZeros( tens,  1UL, 0UL, 5UL );
+         checkNonZeros( tens,  2UL, 0UL, 5UL );
 
          if( isUniform( tens ) != true ) {
             std::ostringstream oss;
@@ -731,19 +760,20 @@ void GeneralTest::testIsUniform()
          }
       }
 
-      // Uniform tensor (5x3)
+      // Uniform tensor (1x5x3)
       {
-         blaze::DynamicTensor<int> tens( 5UL, 3UL, 5 );
+         blaze::DynamicTensor<int> tens( 1UL, 5UL, 3UL, 5 );
 
+         checkPages   ( tens,  1UL );
          checkRows    ( tens,  5UL );
          checkColumns ( tens,  3UL );
          checkCapacity( tens, 15UL );
          checkNonZeros( tens, 15UL );
-         checkNonZeros( tens,  0UL, 3UL );
-         checkNonZeros( tens,  1UL, 3UL );
-         checkNonZeros( tens,  2UL, 3UL );
-         checkNonZeros( tens,  3UL, 3UL );
-         checkNonZeros( tens,  4UL, 3UL );
+         checkNonZeros( tens,  0UL, 0UL, 3UL );
+         checkNonZeros( tens,  1UL, 0UL, 3UL );
+         checkNonZeros( tens,  2UL, 0UL, 3UL );
+         checkNonZeros( tens,  3UL, 0UL, 3UL );
+         checkNonZeros( tens,  4UL, 0UL, 3UL );
 
          if( isUniform( tens ) != true ) {
             std::ostringstream oss;
@@ -755,18 +785,25 @@ void GeneralTest::testIsUniform()
          }
       }
 
-      // Non-uniform tensor (3x3)
+      // Non-uniform tensor (3x3x3)
       {
-         blaze::DynamicTensor<int> tens( 3UL, 3UL, 5 );
-         tens(2,2) = 3;
+         blaze::DynamicTensor<int> tens( 3UL, 3UL, 3UL, 5 );
+         tens(2,2,2) = 3;
 
-         checkRows    ( tens, 3UL );
-         checkColumns ( tens, 3UL );
-         checkCapacity( tens, 9UL );
-         checkNonZeros( tens, 9UL );
-         checkNonZeros( tens, 0UL, 3UL );
-         checkNonZeros( tens, 1UL, 3UL );
-         checkNonZeros( tens, 2UL, 3UL );
+         checkPages   ( tens,  3UL );
+         checkRows    ( tens,  3UL );
+         checkColumns ( tens,  3UL );
+         checkCapacity( tens, 27UL );
+         checkNonZeros( tens, 27UL );
+         checkNonZeros( tens, 0UL, 0UL, 3UL );
+         checkNonZeros( tens, 1UL, 0UL, 3UL );
+         checkNonZeros( tens, 2UL, 0UL, 3UL );
+         checkNonZeros( tens, 0UL, 1UL, 3UL );
+         checkNonZeros( tens, 1UL, 1UL, 3UL );
+         checkNonZeros( tens, 2UL, 1UL, 3UL );
+         checkNonZeros( tens, 0UL, 2UL, 3UL );
+         checkNonZeros( tens, 1UL, 2UL, 3UL );
+         checkNonZeros( tens, 2UL, 2UL, 3UL );
 
          if( isUniform( tens ) != false ) {
             std::ostringstream oss;
@@ -781,7 +818,7 @@ void GeneralTest::testIsUniform()
 }
 //*************************************************************************************************
 
-
+#if 0
 //*************************************************************************************************
 /*!\brief Test of the \c isLower() function for dense tensors.
 //

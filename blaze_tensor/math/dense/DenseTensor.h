@@ -294,7 +294,7 @@ template< typename TT    // Type of the left-hand side dense tensor
 inline auto operator/=( DenseTensor<TT>& tens, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, TT& >
 {
-   BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_MATRIX_TYPE( TT );
+//    BLAZE_CONSTRAINT_MUST_NOT_BE_UNITRIANGULAR_TENSOR_TYPE( TT );
 
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
@@ -354,38 +354,38 @@ inline auto operator/=( DenseTensor<TT>&& tens, ST scalar )
 template< typename TT >
 bool isnan( const DenseTensor<TT>& dm );
 
-// template< bool RF, typename MT, bool SO >
-// bool isSymmetric( const DenseMatrix<MT,SO>& dm );
+// template< bool RF, typename MT >
+// bool isSymmetric( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT, bool SO >
-// bool isHermitian( const DenseMatrix<MT,SO>& dm );
+// template< bool RF, typename MT >
+// bool isHermitian( const DenseTensor<MT>& dm );
+
+template< bool RF, typename MT >
+bool isUniform( const DenseTensor<MT>& dm );
+
+// template< bool RF, typename MT >
+// bool isLower( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT, bool SO >
-// bool isUniform( const DenseMatrix<MT,SO>& dm );
+// template< bool RF, typename MT >
+// bool isUniLower( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT, bool SO >
-// bool isLower( const DenseMatrix<MT,SO>& dm );
+// template< bool RF, typename MT >
+// bool isStrictlyLower( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT, bool SO >
-// bool isUniLower( const DenseMatrix<MT,SO>& dm );
+// template< bool RF, typename MT >
+// bool isUpper( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT, bool SO >
-// bool isStrictlyLower( const DenseMatrix<MT,SO>& dm );
+// template< bool RF, typename MT >
+// bool isUniUpper( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT, bool SO >
-// bool isUpper( const DenseMatrix<MT,SO>& dm );
+// template< bool RF, typename MT >
+// bool isStrictlyUpper( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT, bool SO >
-// bool isUniUpper( const DenseMatrix<MT,SO>& dm );
+// template< bool RF, typename MT >
+// bool isDiagonal( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT, bool SO >
-// bool isStrictlyUpper( const DenseMatrix<MT,SO>& dm );
-//
-// template< bool RF, typename MT, bool SO >
-// bool isDiagonal( const DenseMatrix<MT,SO>& dm );
-//
-// template< bool RF, typename MT, bool SO >
-// bool isIdentity( const DenseMatrix<MT,SO>& dm );
+// template< bool RF, typename MT >
+// bool isIdentity( const DenseTensor<MT>& dm );
 
 template< typename MT >
 auto softmax( const DenseTensor<MT>& dm );
@@ -452,6 +452,93 @@ auto softmax( const DenseTensor<MT>& dm )
    return tmp;
 }
 //*************************************************************************************************
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Checks if the given row-major general dense tensor is a uniform tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be checked.
+// \return \a true if the tensor is a uniform tensor, \a false if not.
+*/
+template< bool RF        // Relaxation flag
+        , typename MT >  // Type of the dense tensor
+bool isUniform_backend( const DenseTensor<MT>& dm )
+{
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
+
+   BLAZE_INTERNAL_ASSERT( (~dm).pages()   != 0UL, "Invalid number of pages detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
+
+   const auto& cmp( (~dm)(0UL,0UL,0UL) );
+
+   for( size_t k=0UL; k<(~dm).pages(); ++k ) {
+      for( size_t i=0UL; i<(~dm).rows(); ++i ) {
+         for( size_t j=0UL; j<(~dm).columns(); ++j ) {
+            if( !equal<RF>( (~dm)(k,i,j), cmp ) )
+               return false;
+         }
+      }
+   }
+
+   return true;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checks if the given dense tensor is a uniform tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be checked.
+// \return \a true if the tensor is a uniform tensor, \a false if not.
+//
+// This function checks if the given dense tensor is a uniform tensor. The tensor is considered
+// to be uniform if all its elements are identical. The following code example demonstrates the
+// use of the function:
+
+   \code
+   blaze::DynamicTensor<int,blaze::rowMajor> A, B;
+   // ... Initialization
+   if( isUniform( A ) ) { ... }
+   \endcode
+
+// Optionally, it is possible to switch between strict semantics (blaze::strict) and relaxed
+// semantics (blaze::relaxed):
+
+   \code
+   if( isUniform<relaxed>( A ) ) { ... }
+   \endcode
+
+// It is also possible to check if a tensor expression results is a uniform tensor:
+
+   \code
+   if( isUniform( A * B ) ) { ... }
+   \endcode
+
+// However, note that this might require the complete evaluation of the expression, including
+// the generation of a temporary tensor.
+*/
+template< bool RF      // Relaxation flag
+        , typename MT > // Type of the dense tensor
+bool isUniform( const DenseTensor<MT>& dm )
+{
+   if( IsUniform_v<MT> ||
+       (~dm).pages() == 0UL || (~dm).rows() == 0UL || (~dm).columns() == 0UL ||
+       ( (~dm).pages() == 1UL && (~dm).rows() == 1UL && (~dm).columns() == 1UL ) )
+      return true;
+
+   if( IsUniTriangular_v<MT> )
+      return false;
+
+   CompositeType_t<MT> A( ~dm );  // Evaluation of the dense tensor operand
+
+   return isUniform_backend<RF>( A );
+}
+//*************************************************************************************************
+
 
 } // namespace blaze
 

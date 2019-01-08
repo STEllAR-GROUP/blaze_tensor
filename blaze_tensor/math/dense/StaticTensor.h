@@ -3592,6 +3592,34 @@ struct BinaryMapTraitEval2< T1, T2, OP
 
 //=================================================================================================
 //
+//  EXPANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T  // Type to be expanded
+        , size_t E >  // Compile time expansion
+struct ExpandTraitEval2< T, E
+                       , EnableIf_t< IsDenseMatrix_v<T> &&
+                                     ( E != inf ) &&
+                                     ( Size_v<T,0UL> != DefaultSize_v ) &&
+                                     ( Size_v<T,1UL> != DefaultSize_v )> >
+{
+   static constexpr size_t O = ( E );
+   static constexpr size_t M = ( Size_v<T,0UL> );
+   static constexpr size_t N = ( Size_v<T,1UL> );
+
+   using Type = StaticMatrix< ElementType_t<T>, O, M, N >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
 //  HIGHTYPE SPECIALIZATIONS
 //
 //=================================================================================================
