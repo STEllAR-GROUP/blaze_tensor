@@ -3672,7 +3672,7 @@ struct ColumnSliceTraitEval2<
                M != 0UL && Size_v< MT,0UL > != DefaultSize_v &&
                            Size_v< MT,1UL > != DefaultSize_v > >
 {
-   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,0UL >, Size_v< MT,1UL >, false >;
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,0UL >, Size_v< MT,1UL >, rowMajor >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3695,7 +3695,7 @@ struct PageSliceTraitEval2<
                M != 0UL && Size_v< MT,1UL > != DefaultSize_v &&
                            Size_v< MT,2UL > != DefaultSize_v > >
 {
-   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,1UL >, Size_v< MT,2UL >, false >;
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,1UL >, Size_v< MT,2UL >, rowMajor >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3718,7 +3718,7 @@ struct RowSliceTraitEval2<
                M != 0UL && Size_v< MT,0UL > != DefaultSize_v &&
                            Size_v< MT,2UL > != DefaultSize_v > >
 {
-   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,2UL >, Size_v< MT,0UL >, false >;
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, Size_v< MT,2UL >, Size_v< MT,0UL >, columnMajor >;
 };
 /*! \endcond */
 //*************************************************************************************************
