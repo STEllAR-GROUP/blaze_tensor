@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dtensdtensadd/TUbM6x6b.cpp
-//  \brief Source file for the TUbM6x6b dense tensor/dense tensor addition math test
+//  \file src/mathtest/dtensdtensadd/TUbT6x6x6b.cpp
+//  \brief Source file for the TUbT6x6x6b dense tensor/dense tensor addition math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
@@ -61,7 +61,7 @@
 //*************************************************************************************************
 int main()
 {
-   std::cout << "   Running 'TUbM6x6b'..." << std::endl;
+   std::cout << "   Running 'TUbT6x6x6b'..." << std::endl;
 
    using blazetest::mathtest::TypeB;
 
@@ -69,14 +69,14 @@ int main()
    {
       // Tensor type definitions
       using TUb = blaze::UniformTensor<TypeB>;
-      using M6x6b = blaze::StaticTensor<TypeB,6UL,6UL,6UL>;
+      using T6x6x6b = blaze::StaticTensor<TypeB,6UL,6UL,6UL>;
 
       // Creator type definitions
       using CTUb = blazetest::Creator<TUb>;
-      using CM6x6b = blazetest::Creator<M6x6b>;
+      using CT6x6x6b = blazetest::Creator<T6x6x6b>;
 
       // Running the tests
-      RUN_DTENSDTENSADD_OPERATION_TEST( CTUb( 6UL, 6UL, 6UL ), CM6x6b() );
+      RUN_DTENSDTENSADD_OPERATION_TEST( CTUb( 6UL, 6UL, 6UL ), CT6x6x6b() );
    }
    catch( std::exception& ex ) {
       std::cerr << "\n\n ERROR DETECTED during dense tensor/dense tensor addition:\n"

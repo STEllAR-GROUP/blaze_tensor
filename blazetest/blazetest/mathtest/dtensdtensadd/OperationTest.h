@@ -210,13 +210,16 @@ class OperationTest
 //                           void testDeclDiagOperation ( blaze::FalseType );
                           void testSubtensorOperation( blaze::TrueType );
                           void testSubtensorOperation( blaze::FalseType );
-                          void testRowSliceOperation      ();
+                          void testRowSliceOperation    ( blaze::TrueType  );
+                          void testRowSliceOperation    ( blaze::FalseType );
 //                           void testRowSlicesOperation     ( blaze::TrueType  );
 //                           void testRowSlicesOperation     ( blaze::FalseType );
-                          void testColumnSliceOperation   ();
+                          void testColumnSliceOperation ( blaze::TrueType  );
+                          void testColumnSliceOperation ( blaze::FalseType );
 //                           void testColumnSlicesOperation  ( blaze::TrueType  );
 //                           void testColumnSlicesOperation  ( blaze::FalseType );
-                          void testPageSliceOperation   ();
+                          void testPageSliceOperation   ( blaze::TrueType  );
+                          void testPageSliceOperation   ( blaze::FalseType );
 //                           void testPageSlicesOperation  ( blaze::TrueType  );
 //                           void testPageSlicesOperation  ( blaze::FalseType );
 //                           void testBandOperation     ();
@@ -420,11 +423,11 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
 //    testDeclUppOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
 //    testDeclDiagOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
    testSubtensorOperation( blaze::Not< blaze::IsUniform<DRE> >() );
-   testRowSliceOperation();
+   testRowSliceOperation( blaze::Not< blaze::IsUniform<DRE> >() );
 //    testRowSlicesOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
-   testColumnSliceOperation();
+   testColumnSliceOperation( blaze::Not< blaze::IsUniform<DRE> >() );
 //    testColumnSlicesOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
-   testPageSliceOperation();
+   testPageSliceOperation( blaze::Not< blaze::IsUniform<DRE> >() );
 //    testPageSlicesOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
 //    testBandOperation();
 }
@@ -8509,7 +8512,7 @@ void OperationTest<MT1,MT2>::testSubtensorOperation( blaze::FalseType )
 */
 template< typename MT1    // Type of the left-hand side dense tensor
         , typename MT2 >  // Type of the right-hand side dense tensor
-void OperationTest<MT1,MT2>::testRowSliceOperation()
+void OperationTest<MT1,MT2>::testRowSliceOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_ROWSLICE_OPERATION
    if( BLAZETEST_MATHTEST_TEST_ROWSLICE_OPERATION > 1 )
@@ -8954,6 +8957,22 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the rowslice-wise dense tensor/dense tensor addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function is called in case the rowslice-wise tensor/tensor addition operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testRowSliceOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
@@ -9630,7 +9649,7 @@ void OperationTest<MT1,MT2>::testRowSliceOperation()
 */
 template< typename MT1    // Type of the left-hand side dense tensor
         , typename MT2 >  // Type of the right-hand side dense tensor
-void OperationTest<MT1,MT2>::testColumnSliceOperation()
+void OperationTest<MT1,MT2>::testColumnSliceOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_COLUMNSLICE_OPERATION
    if( BLAZETEST_MATHTEST_TEST_COLUMNSLICE_OPERATION > 1 )
@@ -10078,6 +10097,22 @@ void OperationTest<MT1,MT2>::testColumnSliceOperation()
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Skipping the columnslice-wise dense tensor/dense tensor addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function is called in case the columnslice-wise tensor/tensor addition operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testColumnSliceOperation( blaze::FalseType )
+{}
+//*************************************************************************************************
+
+
 
 //*************************************************************************************************
 /*!\brief Testing the row-wise dense tensor/dense tensor addition.
@@ -10092,7 +10127,7 @@ void OperationTest<MT1,MT2>::testColumnSliceOperation()
 */
 template< typename MT1    // Type of the left-hand side dense tensor
         , typename MT2 >  // Type of the right-hand side dense tensor
-void OperationTest<MT1,MT2>::testPageSliceOperation()
+void OperationTest<MT1,MT2>::testPageSliceOperation( blaze::TrueType )
 {
 #if BLAZETEST_MATHTEST_TEST_PAGESLICE_OPERATION
    if( BLAZETEST_MATHTEST_TEST_PAGESLICE_OPERATION > 1 )
@@ -10537,6 +10572,22 @@ void OperationTest<MT1,MT2>::testPageSliceOperation()
    }
 #endif
 }
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Skipping the pageslice-wise dense tensor/dense tensor addition.
+//
+// \return void
+// \exception std::runtime_error Addition error detected.
+//
+// This function is called in case the pageslice-wise tensor/tensor addition operation is not
+// available for the given matrix types \a MT1 and \a MT2.
+*/
+template< typename MT1    // Type of the left-hand side dense matrix
+        , typename MT2 >  // Type of the right-hand side dense matrix
+void OperationTest<MT1,MT2>::testPageSliceOperation( blaze::FalseType )
+{}
 //*************************************************************************************************
 
 
