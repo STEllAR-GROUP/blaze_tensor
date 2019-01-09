@@ -37,11 +37,11 @@ jobs:
             # Build all targets
             - run:
                 name: Build all targets
-                command: cmake --build build -- -j2
+                command: cmake --build build -- -j1
             # Run all tests
             - run:
                 name: Run all the tests
-                command: cmake --build build --target test -- -j2
+                command: cmake --build build --target test -- -j1
 
 ################################################################################
 workflows:
