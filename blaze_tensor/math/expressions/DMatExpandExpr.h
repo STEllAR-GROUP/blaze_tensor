@@ -81,7 +81,7 @@ namespace blaze {
 // \ingroup dense_matrix_expression
 //
 // The DMatExpandExpr class represents the compile time expression for expansions of
-// dense matrixs.
+// dense matrices.
 */
 template< typename MT       // Type of the dense tensor
         , size_t... CEAs >  // Compile time expansion arguments
@@ -96,7 +96,8 @@ class DMatExpandExpr
 
    using DataType = ExpandExprData<CEAs...>;  //!< The type of the ExpandExprData base class.
 
-   //! Definition of the GetConstIterator type trait.
+   //! Definition of the GetIterator and GetConstIterator type traits.
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetIterator, Iterator, INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
 
@@ -142,7 +143,13 @@ class DMatExpandExpr
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const DMatExpandExpr& >;
 
+   using Reference      = ElementType&;        //!< Reference to a non-constant tensor value.
+   using ConstReference = const ElementType&;  //!< Reference to a constant tensor value.
+   using Pointer        = ElementType*;        //!< Pointer to a non-constant tensor value.
+   using ConstPointer   = const ElementType*;  //!< Pointer to a constant tensor value.
+
    //! Iterator over the elements of the dense matrix.
+   using Iterator = GetIterator_t<MT>;
    using ConstIterator = GetConstIterator_t<MT>;
 
    //! Composite data type of the dense matrix expression.
@@ -209,7 +216,7 @@ class DMatExpandExpr
       if( j >= dm_.columns() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
       }
-      return (*this)(i,j);
+      return (*this)(k,i,j);
    }
    //**********************************************************************************************
 
@@ -230,26 +237,26 @@ class DMatExpandExpr
    //**********************************************************************************************
 
    //**Begin function******************************************************************************
-   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   /*!\brief Returns an iterator to the first element of row/column \a i.
    //
    // \param i The row/column index.
-   // \return Iterator to the first non-zero element of row/column \a i.
+   // \return Iterator to the first element of row/column \a i.
    */
    inline ConstIterator begin( size_t i, size_t k ) const {
       UNUSED_PARAMETER( i, k );
-      return ConstIterator( dm_.begin() );
+      return ConstIterator( dm_.begin( i ) );
    }
    //**********************************************************************************************
 
    //**End function********************************************************************************
-   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   /*!\brief Returns an iterator just past the last element of row/column \a i.
    //
    // \param i The row/column index.
-   // \return Iterator just past the last non-zero element of row/column \a i.
+   // \return Iterator just past the last element of row/column \a i.
    */
    inline ConstIterator end( size_t i, size_t k ) const {
       UNUSED_PARAMETER( i, k );
-      return ConstIterator( dm_.end() );
+      return ConstIterator( dm_.end( i ) );
    }
    //**********************************************************************************************
 
@@ -280,6 +287,16 @@ class DMatExpandExpr
    */
    inline size_t columns() const noexcept {
       return dm_.columns();
+   }
+   //**********************************************************************************************
+
+   //**Spacing function****************************************************************************
+   /*!\brief Returns the current spacing between the beginning of two rows of the tensor.
+   //
+   // \return The spacing between the beginning of two rows of the tensor.
+   */
+   inline size_t spacing() const noexcept {
+      return dm_.spacing();
    }
    //**********************************************************************************************
 
@@ -732,8 +749,8 @@ class DMatExpandExpr
    B = expand( b, 3UL );
    \endcode
 */
-template< typename MT > // Type of the target tensor
-inline decltype(auto) expand( const DenseTensor<MT>& dm, size_t expansion )
+template< typename MT, bool SO > // Type of the target tensor
+inline decltype(auto) expand( const DenseMatrix<MT, SO>& dm, size_t expansion )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -759,8 +776,8 @@ inline decltype(auto) expand( const DenseTensor<MT>& dm, size_t expansion )
    blaze::DynamicMatrix<int,columnMatrix> a{ 1, 5, -2, 4 }
    blaze::DynamicMatrix<int,rowMatrix> b{ 3, -1, 7, 0 }
 
-   blaze::DynamicMatrix<double,columnMajor> A;
-   blaze::DynamicMatrix<double,rowMajor> B;
+   blaze::DynamicTensor<double> A;
+   blaze::DynamicTensor<double> B;
    // ... Resizing and initialization
 
    // Expansion of the column matrix 'a' to 4x3 column-major matrix
@@ -782,12 +799,12 @@ inline decltype(auto) expand( const DenseTensor<MT>& dm, size_t expansion )
    \endcode
 */
 template< size_t E     // Compile time expansion argument
-        , typename MT > // Type of the dense tensor
-inline decltype(auto) expand( const DenseTensor<MT>& dm )
+        , typename MT  // Type of the dense tensor
+        , bool SO >    // Storage order
+inline decltype(auto) expand( const DenseMatrix<MT, SO>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DMatExpandExpr<MT,E>;
    using ReturnType = const DMatExpandExpr<MT,E>;
    return ReturnType( ~dm );
 }
@@ -807,8 +824,9 @@ inline decltype(auto) expand( const DenseTensor<MT>& dm )
 // expansion. The runtime argument is discarded in favor of the compile time argument.
 */
 template< size_t E     // Compile time expansion argument
-        , typename MT > // Type of the dense tensor
-inline decltype(auto) expand( const DenseTensor<MT>& dm, size_t expansion )
+        , typename MT  // Type of the dense tensor
+        , bool SO >    // Storage order
+inline decltype(auto) expand( const DenseMatrix<MT, SO>& dm, size_t expansion )
 {
    UNUSED_PARAMETER( expansion );
 

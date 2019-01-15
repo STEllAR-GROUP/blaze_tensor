@@ -98,11 +98,14 @@ decltype(auto) map( const DenseTensor<TT1>&, const DenseTensor<TT2>&, OP );
 template< typename TT, typename OP >
 decltype(auto) reduce( const DenseTensor<TT>&, OP );
 
-template< typename TT >
-decltype(auto) expand( const DenseTensor<TT>&, size_t );
+template< typename TT, bool SO >
+decltype(auto) expand( const DenseMatrix<TT, SO>&, size_t );
 
-template< size_t E, typename TT >
-decltype(auto) expand( const DenseTensor<TT>& );
+template< size_t E, typename TT, bool SO >
+decltype(auto) expand( const DenseMatrix<TT, SO>& );
+
+template< size_t E, typename TT, bool SO >
+decltype(auto) expand( const DenseMatrix<TT, SO>&, size_t );
 
 } // namespace blaze
 

@@ -1,7 +1,7 @@
 # =================================================================================================
 #
 #   Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-#   Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+#   Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 #
 #   This file is part of the Blaze library. You can redistribute it and/or modify it under
 #   the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -30,22 +30,19 @@
 #
 # =================================================================================================
 
-set(subdirs
-   columnslice
-   customtensor
-   densetensor
-   dmatexpand
-   dtensdtensadd
-   dynamictensor
-   initializertensor
-   pageslice
-   rowslice
-   statictensor
-   subtensor
-   uniformtensor
+set(category DMatExpand)
+
+set(tests
+    M3x3a
+    M3x3b
+    MDa
+    MDb
+    MUa
+    MUb
 )
 
-foreach(dir ${subdirs})
-   add_subdirectory(${dir})
+foreach(test ${tests})
+   add_blaze_tensor_test(${category}${test}
+      SOURCES ${test}
+      FOLDER "Tests/${category}")
 endforeach()
-

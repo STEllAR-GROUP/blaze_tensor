@@ -3580,9 +3580,6 @@ struct BinaryMapTraitEval2< T1, T2, OP
    static constexpr size_t M = max( Size_v<T1,1UL>, Size_v<T2,1UL> );
    static constexpr size_t N = max( Size_v<T1,2UL>, Size_v<T2,2UL> );
 
-   static constexpr bool SO1 = StorageOrder_v<T1>;
-   static constexpr bool SO2 = StorageOrder_v<T2>;
-
    using Type = StaticTensor< MapTrait_t<ET1,ET2,OP>, O, M, N >;
 };
 /*! \endcond */
@@ -3605,13 +3602,15 @@ struct ExpandTraitEval2< T, E
                        , EnableIf_t< IsDenseMatrix_v<T> &&
                                      ( E != inf ) &&
                                      ( Size_v<T,0UL> != DefaultSize_v ) &&
-                                     ( Size_v<T,1UL> != DefaultSize_v )> >
+                                     ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
+                                     ( Size_v<T,1UL> != DefaultSize_v ) &&
+                                     ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) > >
 {
    static constexpr size_t O = ( E );
    static constexpr size_t M = ( Size_v<T,0UL> );
    static constexpr size_t N = ( Size_v<T,1UL> );
 
-   using Type = StaticMatrix< ElementType_t<T>, O, M, N >;
+   using Type = StaticTensor< ElementType_t<T>, O, M, N >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3761,6 +3760,7 @@ struct SubtensorTraitEval2< MT, inf, inf, inf, inf, inf, inf,
 //    static constexpr size_t M = max( Size_v<MT,1UL>, MaxSize_v<MT,1UL> );
 //    static constexpr size_t N = max( Size_v<MT,2UL>, MaxSize_v<MT,2UL> );
 
+   // FIXME: change this to HybridTensor, once available
    using Type = DynamicTensor< RemoveConst_t< ElementType_t<MT> > >;
 };
 /*! \endcond */
