@@ -61,6 +61,8 @@ integration service tracks the current build status for the master branch:
   to refer to some other 3D dense array
 - `blaze::StaticTensor<T, O, M, N>`: a statically sized 3D dense array data
   structure of arbitrary types
+- `blaze::UniformTensor<T>`: a dynamically sized uniform (all elements have the
+  same value) 3D dense array data structure of arbitrary types
 
 ### Views
 
@@ -73,7 +75,7 @@ integration service tracks the current build status for the master branch:
 - `blaze::RowSlice<...>`: a view representing a slice of 'thickness' one along
   the column/page plane of a 3D dense array
 
-### Arithmetic Operations
+### Operations
 
 - All element-wise arithmetic operations that are supported by the Blaze library:
   element-wise addition, subtraction, division, Schur-multiplication, scalar
@@ -81,6 +83,8 @@ integration service tracks the current build status for the master branch:
   like `sqrt`, `cqrt`, `abs`, `sign`, `floor`, etc.
 - Reduction operations like `min` and `max`, also unary and binary overloads for
   `blaze::map`.
+- Matrix expand operations that produce tensors from expanding (broadcasting)
+  matrices in page direction.
 
 We have created a list of things that need to be implemented:
 [TODO: Things to implement](https://github.com/STEllAR-GROUP/blaze_tensor/issues/2).
