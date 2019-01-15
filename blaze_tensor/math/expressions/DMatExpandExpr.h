@@ -290,16 +290,6 @@ class DMatExpandExpr
    }
    //**********************************************************************************************
 
-   //**Spacing function****************************************************************************
-   /*!\brief Returns the current spacing between the beginning of two rows of the tensor.
-   //
-   // \return The spacing between the beginning of two rows of the tensor.
-   */
-   inline size_t spacing() const noexcept {
-      return dm_.spacing();
-   }
-   //**********************************************************************************************
-
    //**Operand access******************************************************************************
    /*!\brief Returns the dense matrix operand.
    //

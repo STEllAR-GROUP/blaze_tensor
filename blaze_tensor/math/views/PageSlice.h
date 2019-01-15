@@ -4,7 +4,7 @@
 //  \brief Header file for the implementation of the PageSlice view
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,10 +41,12 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/views/Row.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SchurExpr.h>
+#include <blaze/math/views/Row.h>
+#include <blaze/math/views/Submatrix.h>
 
+#include <blaze_tensor/math/expressions/MatExpandExpr.h>
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
 #include <blaze_tensor/math/expressions/TensReduceExpr.h>
@@ -683,6 +685,36 @@ inline decltype(auto) pageslice( const DeclExpr<MT>& tensor, RRAs... args )
 // }
 /*! \endcond */
 //*************************************************************************************************
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given matrix expansion operation.
+// \ingroup subtensor
+//
+// \param tensor The constant matrix expansion operation.
+// \param args Optional pageslice arguments.
+// \return View on the specified pageslice of the expansion operation.
+//
+// This function returns an expression representing the specified pageslice of the given matrix
+// expansion operation.
+*/
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename MT         // Matrix base type of the expression
+        , size_t... CEAs      // Compile time expansion arguments
+        , typename... RSAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const MatExpandExpr<MT,CEAs...>& tensor, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   UNUSED_PARAMETER( args... );
+
+   return submatrix( (~tensor).operand(), 0UL, 0UL, (~tensor).rows(), (~tensor).columns() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 
 
