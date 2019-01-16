@@ -48,7 +48,7 @@
 //   - 1: The subtensor tests are included in the compilation process, but not executed
 //   - 2: The subtensor tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_SUBTENSOR_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_SUBTENSOR_OPERATION 1
 //*************************************************************************************************
 
 
@@ -65,7 +65,7 @@
 //   - 1: The rowslice tests are included in the compilation process, but not executed
 //   - 2: The rowslice tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_ROWSLICE_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_ROWSLICE_OPERATION 1
 //*************************************************************************************************
 
 
@@ -82,7 +82,7 @@
 //   - 1: The columnslice tests are included in the compilation process, but not executed
 //   - 2: The columnslice tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_COLUMNSLICE_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_COLUMNSLICE_OPERATION 1
 //*************************************************************************************************
 
 
@@ -99,6 +99,6 @@
 //   - 1: The pageslice tests are included in the compilation process, but not executed
 //   - 2: The pageslice tests are included in the compilation process and executed
 */
-#define BLAZETEST_MATHTEST_TEST_PAGESLICE_OPERATION 2
+#define BLAZETEST_MATHTEST_TEST_PAGESLICE_OPERATION 1
 //*************************************************************************************************
 
