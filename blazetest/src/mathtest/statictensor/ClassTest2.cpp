@@ -4,7 +4,7 @@
 //  \brief Source file for the StaticTensor class test (part 2)
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -1857,66 +1857,99 @@ void ClassTest::testSwap()
 */
 void ClassTest::testTranspose()
 {
-//    //=====================================================================================
-//    // Row-major tensor tests
-//    //=====================================================================================
-//
+   //=====================================================================================
+   // Row-major tensor tests
+   //=====================================================================================
+
 //    {
 //       test_ = "Row-major self-transpose via transpose()";
 //
-//       blaze::StaticTensor<int,3UL,3UL> mat{ { 1, 2, 3 },
-//                                                             { 4, 5, 6 },
-//                                                             { 7, 8, 9 } };
+//       blaze::StaticTensor<int, 3UL, 3UL, 3UL> mat{
+//           {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+//           {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+//           {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}};
 //
-//       transpose( mat );
+//       transpose(mat, {2, 1, 0});
 //
 //       checkRows    ( mat, 3UL );
 //       checkColumns ( mat, 3UL );
-//       checkCapacity( mat, 9UL );
-//       checkNonZeros( mat, 9UL );
-//       checkNonZeros( mat, 0UL, 3UL );
-//       checkNonZeros( mat, 1UL, 3UL );
-//       checkNonZeros( mat, 2UL, 3UL );
+//       checkPages   ( mat, 3UL );
+//       checkCapacity( mat, 27UL );
+//       checkNonZeros( mat, 27UL );
+//       checkNonZeros( mat, 0UL, 0UL, 3UL );
+//       checkNonZeros( mat, 1UL, 0UL, 3UL );
+//       checkNonZeros( mat, 2UL, 0UL, 3UL );
+//       checkNonZeros( mat, 0UL, 1UL, 3UL );
+//       checkNonZeros( mat, 1UL, 1UL, 3UL );
+//       checkNonZeros( mat, 2UL, 1UL, 3UL );
+//       checkNonZeros( mat, 0UL, 2UL, 3UL );
+//       checkNonZeros( mat, 1UL, 2UL, 3UL );
+//       checkNonZeros( mat, 2UL, 2UL, 3UL );
 //
-//       if( mat(0,0) != 1 || mat(0,1) != 4 || mat(0,2) != 7 ||
-//           mat(1,0) != 2 || mat(1,1) != 5 || mat(1,2) != 8 ||
-//           mat(2,0) != 3 || mat(2,1) != 6 || mat(2,2) != 9 ) {
+//       if( mat(0,0,0) != 1 || mat(1,0,0) != 2 || mat(2,0,0) != 3 ||
+//           mat(0,1,0) != 4 || mat(1,1,0) != 5 || mat(2,1,0) != 6 ||
+//           mat(0,2,0) != 7 || mat(1,2,0) != 8 || mat(2,2,0) != 9 ||
+//           mat(0,0,1) != 1 || mat(1,0,1) != 2 || mat(2,0,1) != 3 ||
+//           mat(0,1,1) != 4 || mat(1,1,1) != 5 || mat(2,1,1) != 6 ||
+//           mat(0,2,1) != 7 || mat(1,2,1) != 8 || mat(2,2,1) != 9 ||
+//           mat(0,0,2) != 1 || mat(1,0,2) != 2 || mat(2,0,2) != 3 ||
+//           mat(0,1,2) != 4 || mat(1,1,2) != 5 || mat(2,1,2) != 6 ||
+//           mat(0,2,2) != 7 || mat(1,2,2) != 8 || mat(2,2,2) != 9 ) {
 //          std::ostringstream oss;
 //          oss << " Test: " << test_ << "\n"
 //              << " Error: Transpose operation failed\n"
 //              << " Details:\n"
 //              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 1 4 7 )\n( 2 5 8 )\n( 3 6 9 )\n";
+//              << "   Expected result:\n"
+//                      "(( 1 1 1 )\n( 4 4 4 )\n( 7 7 7 )\n"
+//                      " ( 2 2 2 )\n( 5 5 5 )\n( 8 8 8 )\n"
+//                      " ( 3 3 3 )\n( 6 6 6 )\n( 9 9 9 ))\n";
 //          throw std::runtime_error( oss.str() );
 //       }
 //    }
 //
 //    {
 //       test_ = "Row-major self-transpose via trans()";
+//       blaze::StaticTensor<int, 3UL, 3UL, 3UL> mat{
+//           {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+//           {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+//           {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}};
 //
-//       blaze::StaticTensor<int,3UL,3UL> mat{ { 1, 2, 3 },
-//                                                             { 4, 5, 6 },
-//                                                             { 7, 8, 9 } };
-//
-//       mat = trans( mat );
+//       mat = trans(mat, {2, 1, 0});
 //
 //       checkRows    ( mat, 3UL );
 //       checkColumns ( mat, 3UL );
-//       checkCapacity( mat, 9UL );
-//       checkNonZeros( mat, 9UL );
-//       checkNonZeros( mat, 0UL, 3UL );
-//       checkNonZeros( mat, 1UL, 3UL );
-//       checkNonZeros( mat, 2UL, 3UL );
+//       checkPages   ( mat, 3UL );
+//       checkCapacity( mat, 27UL );
+//       checkNonZeros( mat, 27UL );
+//       checkNonZeros( mat, 0UL, 0UL, 3UL );
+//       checkNonZeros( mat, 1UL, 0UL, 3UL );
+//       checkNonZeros( mat, 2UL, 0UL, 3UL );
+//       checkNonZeros( mat, 0UL, 1UL, 3UL );
+//       checkNonZeros( mat, 1UL, 1UL, 3UL );
+//       checkNonZeros( mat, 2UL, 1UL, 3UL );
+//       checkNonZeros( mat, 0UL, 2UL, 3UL );
+//       checkNonZeros( mat, 1UL, 2UL, 3UL );
+//       checkNonZeros( mat, 2UL, 2UL, 3UL );
 //
-//       if( mat(0,0) != 1 || mat(0,1) != 4 || mat(0,2) != 7 ||
-//           mat(1,0) != 2 || mat(1,1) != 5 || mat(1,2) != 8 ||
-//           mat(2,0) != 3 || mat(2,1) != 6 || mat(2,2) != 9 ) {
+//       if( mat(0,0,0) != 1 || mat(1,0,0) != 2 || mat(2,0,0) != 3 ||
+//           mat(0,1,0) != 4 || mat(1,1,0) != 5 || mat(2,1,0) != 6 ||
+//           mat(0,2,0) != 7 || mat(1,2,0) != 8 || mat(2,2,0) != 9 ||
+//           mat(0,0,1) != 1 || mat(1,0,1) != 2 || mat(2,0,1) != 3 ||
+//           mat(0,1,1) != 4 || mat(1,1,1) != 5 || mat(2,1,1) != 6 ||
+//           mat(0,2,1) != 7 || mat(1,2,1) != 8 || mat(2,2,1) != 9 ||
+//           mat(0,0,2) != 1 || mat(1,0,2) != 2 || mat(2,0,2) != 3 ||
+//           mat(0,1,2) != 4 || mat(1,1,2) != 5 || mat(2,1,2) != 6 ||
+//           mat(0,2,2) != 7 || mat(1,2,2) != 8 || mat(2,2,2) != 9 ) {
 //          std::ostringstream oss;
 //          oss << " Test: " << test_ << "\n"
 //              << " Error: Transpose operation failed\n"
 //              << " Details:\n"
 //              << "   Result:\n" << mat << "\n"
-//              << "   Expected result:\n( 1 4 7 )\n( 2 5 8 )\n( 3 6 9 )\n";
+//              << "   Expected result:\n"
+//                      "(( 1 1 1 )\n( 4 4 4 )\n( 7 7 7 )\n"
+//                      " ( 2 2 2 )\n( 5 5 5 )\n( 8 8 8 )\n"
+//                      " ( 3 3 3 )\n( 6 6 6 )\n( 9 9 9 ))\n";
 //          throw std::runtime_error( oss.str() );
 //       }
 //    }

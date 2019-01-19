@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/views/pageslice/BaseTemplate.h
-//  \brief Header file for the implementation of the PageSlice base template
+//  \file blaze/math/constraints/TensTransExpr.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,65 +33,34 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_PAGESLICE_BASETEMPLATE_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_PAGESLICE_BASETEMPLATE_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSTRANSEXPR_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSTRANSEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/DeclExpr.h>
-#include <blaze/math/expressions/SchurExpr.h>
-#include <blaze/math/shims/IsDefault.h>
-#include <blaze/math/typetraits/HasConstDataAccess.h>
-#include <blaze/math/typetraits/HasMutableDataAccess.h>
-#include <blaze/math/typetraits/IsAligned.h>
-#include <blaze/math/typetraits/IsContiguous.h>
-#include <blaze/math/typetraits/IsOpposedView.h>
-#include <blaze/math/typetraits/IsRowMajorMatrix.h>
-#include <blaze/math/typetraits/IsSymmetric.h>
-#include <blaze/math/typetraits/MaxSize.h>
-#include <blaze/math/typetraits/Size.h>
-#include <blaze/math/views/Check.h>
-#include <blaze/util/Assert.h>
-#include <blaze/util/FunctionTrace.h>
-#include <blaze/util/IntegralConstant.h>
-#include <blaze/util/TrueType.h>
-#include <blaze/util/TypeList.h>
-#include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
-
-#include <blaze_tensor/math/expressions/TensEvalExpr.h>
-// #include <blaze_tensor/math/expressions/TensTensExpr.h>
-#include <blaze_tensor/math/expressions/TensTensAddExpr.h>
-#include <blaze_tensor/math/expressions/TensTensMapExpr.h>
-#include <blaze_tensor/math/expressions/TensTensMultExpr.h>
-#include <blaze_tensor/math/expressions/TensTensSubExpr.h>
-#include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
-#include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
-#include <blaze_tensor/math/expressions/TensSerialExpr.h>
-#include <blaze_tensor/math/expressions/TensTransExpr.h>
-#include <blaze_tensor/math/typetraits/IsDenseTensor.h>
+#include <blaze_tensor/math/typetraits/IsTensTransExpr.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  MUST_BE_TENSTRANSEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Base template of the PageSlice class template.
-// \ingroup pageslice
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a tensor transposition expression (i.e. a type derived
+// from the TensTransExpr base class), a compilation error is created.
 */
-template< typename MT                       // Type of the tensor
-        , size_t... CRAs >                  // Compile time pageslice arguments
-class PageSlice;
-/*! \endcond */
+#define BLAZE_CONSTRAINT_MUST_BE_TENSTRANSEXPR_TYPE(T) \
+   static_assert( ::blaze::IsTensTransExpr_v<T>, "Non-tensor transposition expression type detected" )
 //*************************************************************************************************
 
 
@@ -99,23 +68,19 @@ class PageSlice;
 
 //=================================================================================================
 //
-//  ALIAS DECLARATIONS
+//  MUST_NOT_BE_TENSTRANSEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary alias declaration for the PageSlice class template.
-// \ingroup pageslice
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
 //
-// The PageSlice_ alias declaration represents a convenient shortcut for the specification of the
-// non-derived template arguments of the PageSlice class template.
+// In case the given data type \a T is a tensor transposition expression (i.e. a type derived from
+// the TensTransExpr base class), a compilation error is created.
 */
-template< typename MT       // Type of the tensor
-        , size_t... CRAs >  // Compile time pageslice arguments
-using PageSlice_ = PageSlice< MT
-                , CRAs... >;
-/*! \endcond */
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_TENSTRANSEXPR_TYPE(T) \
+   static_assert( !::blaze::IsTensTransExpr_v<T>, "Matrix transposition expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

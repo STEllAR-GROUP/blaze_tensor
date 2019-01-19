@@ -43,6 +43,11 @@
 
 #include <blaze/math/expressions/Matrix.h>
 
+#include <blaze_tensor/math/expressions/Forward.h>
+
+#include <initializer_list>
+#include <type_traits>
+
 namespace blaze {
 
 //=================================================================================================
@@ -972,11 +977,24 @@ BLAZE_ALWAYS_INLINE void resize( Tensor<MT>& tensor, size_t rows, size_t columns
 template< typename MT >
 BLAZE_ALWAYS_INLINE void shrinkToFit( Tensor<MT>& tensor );
 
-// template< typename MT >
-// BLAZE_ALWAYS_INLINE void transpose( Tensor<MT>& tensor );
-//
-// template< typename MT >
-// BLAZE_ALWAYS_INLINE void ctranspose( Tensor<MT>& tensor );
+template< typename MT >
+BLAZE_ALWAYS_INLINE void transpose( Tensor<MT>& tensor );
+
+template< typename MT, typename T >
+BLAZE_ALWAYS_INLINE void transpose( Tensor<MT>& tensor, const T*, size_t );
+
+template< typename MT, typename T >
+BLAZE_ALWAYS_INLINE void transpose( Tensor<MT>& tensor, std::initializer_list<T> );
+
+template< typename MT >
+BLAZE_ALWAYS_INLINE void ctranspose( Tensor<MT>& tensor );
+
+template< typename MT, typename T >
+BLAZE_ALWAYS_INLINE void ctranspose( Tensor<MT>& tensor, const T*, size_t );
+
+template< typename MT, typename T >
+BLAZE_ALWAYS_INLINE void ctranspose( Tensor<MT>& tensor, std::initializer_list<T> );
+
 
 template< typename MT >
 inline const typename MT::ResultType evaluate( const Tensor<MT>& tensor );
@@ -1454,11 +1472,63 @@ BLAZE_ALWAYS_INLINE void shrinkToFit( Tensor<MT>& tensor )
 //
 // In all failure cases a \a std::logic_error exception is thrown.
 */
-// template< typename MT > // Type of the tensor
-// BLAZE_ALWAYS_INLINE void transpose( Tensor<MT>& tensor )
-// {
-//    (~tensor).transpose();
-// }
+template< typename MT > // Type of the tensor
+BLAZE_ALWAYS_INLINE void transpose( Tensor<MT>& tensor )
+{
+   (~tensor).transpose( );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place transpose of the given tensor.
+// \ingroup tensor
+//
+// \param tensor The given tensor to be transposed.
+// \return void
+// \exception std::logic_error Tensor cannot be transposed.
+//
+// This function transposes the given tensor in-place. The function fails if ...
+//
+//  - ... the given tensor has a fixed size and is non-square;
+//  - ... the given tensor is a triangular tensor;
+//  - ... the given subtensor affects the restricted parts of a triangular tensor;
+//  - ... the given subtensor would cause non-deterministic results in a symmetric/Hermitian tensor.
+//
+// In all failure cases a \a std::logic_error exception is thrown.
+*/
+template< typename MT   // Type of the tensor
+        , typename T >  // Type of the index initializer
+BLAZE_ALWAYS_INLINE void transpose( Tensor<MT>& tensor, const T* indices, size_t n )
+{
+   (~tensor).transpose( indices, n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place transpose of the given tensor.
+// \ingroup tensor
+//
+// \param tensor The given tensor to be transposed.
+// \return void
+// \exception std::logic_error Tensor cannot be transposed.
+//
+// This function transposes the given tensor in-place. The function fails if ...
+//
+//  - ... the given tensor has a fixed size and is non-square;
+//  - ... the given tensor is a triangular tensor;
+//  - ... the given subtensor affects the restricted parts of a triangular tensor;
+//  - ... the given subtensor would cause non-deterministic results in a symmetric/Hermitian tensor.
+//
+// In all failure cases a \a std::logic_error exception is thrown.
+*/
+template< typename MT   // Type of the tensor
+        , typename T >  // Type of the index initializer
+BLAZE_ALWAYS_INLINE void transpose( Tensor<MT>& tensor, std::initializer_list<T> indices )
+{
+   (~tensor).transpose( indices.begin(), indices.size() );
+}
 //*************************************************************************************************
 
 
@@ -1479,11 +1549,63 @@ BLAZE_ALWAYS_INLINE void shrinkToFit( Tensor<MT>& tensor )
 //
 // In all failure cases a \a std::logic_error exception is thrown.
 */
-// template< typename MT > // Type of the tensor
-// BLAZE_ALWAYS_INLINE void ctranspose( Tensor<MT>& tensor )
-// {
-//    (~tensor).ctranspose();
-// }
+template< typename MT > // Type of the tensor
+BLAZE_ALWAYS_INLINE void ctranspose( Tensor<MT>& tensor )
+{
+   (~tensor).ctranspose();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the given tensor.
+// \ingroup tensor
+//
+// \param tensor The given tensor to be transposed.
+// \return void
+// \exception std::logic_error Tensor cannot be transposed.
+//
+// This function transposes the given tensor in-place. The function fails if ...
+//
+//  - ... the given tensor has a fixed size and is non-square;
+//  - ... the given tensor is a triangular tensor;
+//  - ... the given subtensor affects the restricted parts of a triangular tensor;
+//  - ... the given subtensor would cause non-deterministic results in a symmetric/Hermitian tensor.
+//
+// In all failure cases a \a std::logic_error exception is thrown.
+*/
+template< typename MT   // Type of the tensor
+        , typename T >  // Type of the index initializer
+BLAZE_ALWAYS_INLINE void ctranspose( Tensor<MT>& tensor, const T* indices, size_t n )
+{
+   (~tensor).ctranspose( indices, n );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the given tensor.
+// \ingroup tensor
+//
+// \param tensor The given tensor to be transposed.
+// \return void
+// \exception std::logic_error Tensor cannot be transposed.
+//
+// This function transposes the given tensor in-place. The function fails if ...
+//
+//  - ... the given tensor has a fixed size and is non-square;
+//  - ... the given tensor is a triangular tensor;
+//  - ... the given subtensor affects the restricted parts of a triangular tensor;
+//  - ... the given subtensor would cause non-deterministic results in a symmetric/Hermitian tensor.
+//
+// In all failure cases a \a std::logic_error exception is thrown.
+*/
+template< typename MT   // Type of the tensor
+        , typename T >  // Type of the index initializer
+BLAZE_ALWAYS_INLINE void ctranspose( Tensor<MT>& tensor, std::initializer_list<T> indices )
+{
+   (~tensor).ctranspose( indices.begin(), indices.size() );
+}
 //*************************************************************************************************
 
 

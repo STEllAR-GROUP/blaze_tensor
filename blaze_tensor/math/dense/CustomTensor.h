@@ -492,8 +492,12 @@ class CustomTensor
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-//    inline CustomTensor& transpose();
-//    inline CustomTensor& ctranspose();
+   inline CustomTensor& transpose();
+   inline CustomTensor& ctranspose();
+   template< typename T >
+   inline CustomTensor& transpose( const T* indices, size_t n );
+   template< typename T >
+   inline CustomTensor& ctranspose( const T* indices, size_t n );
 
    template< typename Other > inline CustomTensor& scale( const Other& scalar );
    //@}
@@ -1818,24 +1822,54 @@ inline void CustomTensor<Type,AF,PF,RT>::swap( CustomTensor& m ) noexcept
 //
 // In case the tensor is not a square tensor, a \a std::logic_error exception is thrown.
 */
-// template< typename Type  // Data type of the tensor
-//         , bool AF        // Alignment flag
-//         , bool PF        // Padding flag
-//         , typename RT >  // Result type
-// inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::transpose()
-// {
-//    using std::swap;
-//
-//    if( m_ != n_ ) {
-//       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
-//    }
-//
+template< typename Type  // Data type of the tensor
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::transpose()
+{
+   using std::swap;
+
+   if( o_ != m_ || m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
+
 //    for( size_t i=1UL; i<m_; ++i )
 //       for( size_t j=0UL; j<i; ++j )
 //          swap( v_[i*nn_+j], v_[j*nn_+i] );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place transpose of the tensor.
 //
-//    return *this;
-// }
+// \return Reference to the transposed tensor.
+// \exception std::logic_error Impossible transpose operation.
+//
+// In case the tensor is not a square tensor, a \a std::logic_error exception is thrown.
+*/
+template< typename Type  // Data type of the tensor
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+template< typename T >   // Type of the mapping indices
+inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::transpose( const T* indices, size_t n )
+{
+   using std::swap;
+
+   if( o_ != m_ || m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
+
+//    for( size_t i=1UL; i<m_; ++i )
+//       for( size_t j=0UL; j<i; ++j )
+//          swap( v_[i*nn_+j], v_[j*nn_+i] );
+
+   return *this;
+}
 //*************************************************************************************************
 
 
@@ -1847,25 +1881,56 @@ inline void CustomTensor<Type,AF,PF,RT>::swap( CustomTensor& m ) noexcept
 //
 // In case the tensor is not a square tensor, a \a std::logic_error exception is thrown.
 */
-// template< typename Type  // Data type of the tensor
-//         , bool AF        // Alignment flag
-//         , bool PF        // Padding flag
-//         , typename RT >  // Result type
-// inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::ctranspose()
-// {
-//    if( m_ != n_ ) {
-//       BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
-//    }
-//
+template< typename Type  // Data type of the tensor
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::ctranspose()
+{
+   if( o_ != m_ || m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
+
 //    for( size_t i=0UL; i<m_; ++i ) {
 //       for( size_t j=0UL; j<i; ++j ) {
 //          cswap( v_[i*nn_+j], v_[j*nn_+i] );
 //       }
 //       conjugate( v_[i*nn_+i] );
 //    }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the tensor.
 //
-//    return *this;
-// }
+// \return Reference to the transposed tensor.
+// \exception std::logic_error Impossible transpose operation.
+//
+// In case the tensor is not a square tensor, a \a std::logic_error exception is thrown.
+*/
+template< typename Type  // Data type of the tensor
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+template< typename T >   // Type of the mapping indices
+inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::ctranspose( const T* indices, size_t n )
+{
+   if( o_ != m_ || m_ != n_ ) {
+      BLAZE_THROW_LOGIC_ERROR( "Impossible transpose operation" );
+   }
+
+//    for( size_t i=0UL; i<m_; ++i ) {
+//       for( size_t j=0UL; j<i; ++j ) {
+//          cswap( v_[i*nn_+j], v_[j*nn_+i] );
+//       }
+//       conjugate( v_[i*nn_+i] );
+//    }
+
+   return *this;
+}
 //*************************************************************************************************
 
 

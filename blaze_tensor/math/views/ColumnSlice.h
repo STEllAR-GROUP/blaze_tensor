@@ -59,6 +59,7 @@
 #include <blaze_tensor/math/expressions/TensTensMapExpr.h>
 #include <blaze_tensor/math/expressions/TensTensMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
+#include <blaze_tensor/math/expressions/TensTransExpr.h>
 #include <blaze_tensor/math/expressions/Tensor.h>
 #include <blaze_tensor/math/views/Forward.h>
 #include <blaze_tensor/math/views/columnslice/BaseTemplate.h>
@@ -676,18 +677,43 @@ inline decltype(auto) columnslice( const DeclExpr<MT>& tensor, RRAs... args )
 // This function returns an expression representing the specified columnslice of the given tensor
 // transpose operation.
 */
-// template< size_t... CRAs      // Compile time columnslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime columnslice arguments
-// inline decltype(auto) columnslice( const MatTransExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return trans( column<CRAs...>( (~tensor).operand(), args... ) );
-// }
+template< size_t MK           // Compile time pageslice arguments
+        , size_t MI
+        , size_t MJ
+        , typename MT         // Tensor base type of the expression
+        , typename... RTAs >  // Runtime columnslice arguments
+inline decltype(auto) columnslice( const TensTransExpr<MT>& tensor, size_t index, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return columnslice<MK, MI, MJ>( evaluate( ~tensor ), index, args... );
+}
 /*! \endcond */
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific columnslice of the given tensor transpose operation.
+// \ingroup columnslice
+//
+// \param tensor The constant tensor transpose operation.
+// \param args The runtime columnslice arguments
+// \return View on the specified columnslice of the transpose operation.
+//
+// This function returns an expression representing the specified columnslice of the given tensor
+// transpose operation.
+*/
+template< typename MT         // Tensor base type of the expression
+        , typename... RTAs >  // Runtime columnslice arguments
+inline decltype(auto) columnslice( const TensTransExpr<MT>& tensor, size_t index, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return columnslice( evaluate( ~tensor ), index, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
 
 
 //*************************************************************************************************

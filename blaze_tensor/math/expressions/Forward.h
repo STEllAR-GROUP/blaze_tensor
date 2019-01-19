@@ -61,6 +61,7 @@ template< typename, typename > class DTensMapExpr;
 template< typename, typename > class DTensScalarMultExpr;
 template< typename, typename > class DTensScalarDivExpr;
 template< typename, typename, typename > class DTensDTensMapExpr;
+template< typename, size_t... > class DTensTransExpr;
 template< typename, size_t... > class DMatExpandExpr;
 
 
@@ -77,8 +78,13 @@ decltype(auto) operator*( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
 template< typename TT1, typename TT2 >
 decltype(auto) operator%( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
 
-// template< typename MT >
-// decltype(auto) trans( const DenseTensor<TT>& );
+
+template< size_t O, size_t M, size_t N, typename MT, typename ... RTAs>
+decltype(auto) trans( const DenseTensor<MT>& dm, RTAs... args );
+
+template< typename MT, typename ... RTAs>
+decltype(auto) trans( const DenseTensor<MT>& dm, RTAs... args );
+
 
 template< typename TT >
 decltype(auto) eval( const DenseTensor<TT>& );

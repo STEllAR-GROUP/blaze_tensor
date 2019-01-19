@@ -1227,13 +1227,14 @@ inline decltype(auto) conj( const DenseTensor<MT>& dm )
    B = conj( trans( A ) );  // Computing the conjugate transpose tensor
    \endcode
 */
-// template< typename MT > // Type of the dense tensor
-// inline decltype(auto) ctrans( const DenseTensor<MT>& dm )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return trans( conj( ~dm ) );
-// }
+template< typename MT         // Type of the dense tensor
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) ctrans( const DenseTensor<MT>& dm, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( conj( ~dm ), args... );
+}
 //*************************************************************************************************
 
 
@@ -2251,14 +2252,16 @@ inline decltype(auto) conj( const DTensMapExpr<MT,Conj>& dm )
    B = conj( ctrans( A ) );
    \endcode
 */
-// template< typename MT > // Type of the dense tensor
-// inline decltype(auto) conj( const DTensTransExpr<DTensMapExpr<MT,Conj>,!SO>& dm )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    using ReturnType = const DTensTransExpr<MT,!SO>;
-//    return ReturnType( dm.operand().operand() );
-// }
+template< typename MT         // Type of the dense tensor
+        , typename Conj       // Type of the custom operation
+        , size_t ... CTAs>  // Compile time arguments
+inline decltype(auto) conj( const DTensTransExpr<DTensMapExpr<MT,Conj>, CTAs... >& dm )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = const DTensTransExpr<MT,CTAs...>;
+   return ReturnType( dm.operand().operand(), (~dm).idces() );
+}
 /*! \endcond */
 //*************************************************************************************************
 
