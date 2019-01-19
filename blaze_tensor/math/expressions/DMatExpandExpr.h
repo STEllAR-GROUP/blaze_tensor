@@ -56,6 +56,7 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
+#include <blaze/math/typetraits/StorageOrder.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
@@ -158,10 +159,10 @@ class DMatExpandExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   static constexpr bool simdEnabled = MT::simdEnabled;
+   static constexpr bool simdEnabled = (StorageOrder_v<MT> == rowMajor) && MT::simdEnabled;
 
    //! Compilation switch for the expression template assignment strategy.
-   static constexpr bool smpAssignable = MT::smpAssignable;
+   static constexpr bool smpAssignable = (StorageOrder_v<MT> == rowMajor) && MT::smpAssignable;
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
@@ -191,11 +192,14 @@ class DMatExpandExpr
    // \return The resulting value.
    */
    inline ReturnType operator()( size_t k, size_t i, size_t j ) const {
+
       BLAZE_INTERNAL_ASSERT( k < expansion()   , "Invalid page access index"    );
       BLAZE_INTERNAL_ASSERT( i < dm_.rows()    , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.columns() , "Invalid column access index" );
+
       return dm_(i, j);
    }
+
    //**********************************************************************************************
 
    //**At function*********************************************************************************
@@ -228,10 +232,12 @@ class DMatExpandExpr
    // \return Reference to the accessed values.
    */
    BLAZE_ALWAYS_INLINE auto load( size_t k, size_t i, size_t j ) const noexcept {
-      BLAZE_INTERNAL_ASSERT( k < expansion()   , "Invalid page access index"    );
-      BLAZE_INTERNAL_ASSERT( i < dm_.rows()    , "Invalid row access index"    );
-      BLAZE_INTERNAL_ASSERT( j < dm_.columns() , "Invalid column access index" );
-      BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
+
+      BLAZE_INTERNAL_ASSERT( k < expansion()     , "Invalid page access index"    );
+      BLAZE_INTERNAL_ASSERT( i < dm_.rows()      , "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( j < dm_.columns()   , "Invalid column access index" );
+      BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL , "Invalid column access index" );
+
       return dm_.load(i, j);
    }
    //**********************************************************************************************
