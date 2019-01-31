@@ -178,7 +178,7 @@ class DTensTransExpr
 
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
-   static constexpr bool simdEnabled = MT::simdEnabled;
+   static constexpr bool simdEnabled = false;
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = MT::smpAssignable;
