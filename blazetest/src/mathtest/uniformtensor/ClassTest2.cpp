@@ -38,6 +38,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/system/Platform.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/Random.h>
@@ -3453,311 +3454,508 @@ void ClassTest::testSwap()
 */
 void ClassTest::testTranspose()
 {
-//    //=====================================================================================
-//    // Row-major tensor tests
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major self-transpose via transpose()";
-//
-//       // Self-transpose of a 3x5 tensor
-//       {
-//          blaze::UniformTensor<int,blaze::rowMajor> mat( 3UL, 5UL, 2 );
-//
-//          transpose( mat );
-//
-//          checkRows    ( mat,  5UL );
-//          checkColumns ( mat,  3UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat, 15UL );
-//          checkNonZeros( mat,  0UL, 3UL );
-//          checkNonZeros( mat,  1UL, 3UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//          checkNonZeros( mat,  3UL, 3UL );
-//          checkNonZeros( mat,  4UL, 3UL );
-//
-//          if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 ||
-//              mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 ||
-//              mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 ||
-//              mat(3,0) != 2 || mat(3,1) != 2 || mat(3,2) != 2 ||
-//              mat(4,0) != 2 || mat(4,1) != 2 || mat(4,2) != 2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//
-//       // Self-transpose of a 5x3 tensor
-//       {
-//          blaze::UniformTensor<int,blaze::rowMajor> mat( 5UL, 3UL, 2 );
-//
-//          transpose( mat );
-//
-//          checkRows    ( mat,  3UL );
-//          checkColumns ( mat,  5UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat, 15UL );
-//          checkNonZeros( mat,  0UL, 5UL );
-//          checkNonZeros( mat,  1UL, 5UL );
-//          checkNonZeros( mat,  2UL, 5UL );
-//
-//          if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 || mat(0,4) != 2 ||
-//              mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 || mat(1,4) != 2 ||
-//              mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 || mat(2,4) != 2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major self-transpose via trans()";
-//
-//       // Self-transpose of a 3x5 tensor
-//       {
-//          blaze::UniformTensor<int,blaze::rowMajor> mat( 3UL, 5UL, 2 );
-//
-//          mat = trans( mat );
-//
-//          checkRows    ( mat,  5UL );
-//          checkColumns ( mat,  3UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat, 15UL );
-//          checkNonZeros( mat,  0UL, 3UL );
-//          checkNonZeros( mat,  1UL, 3UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//          checkNonZeros( mat,  3UL, 3UL );
-//          checkNonZeros( mat,  4UL, 3UL );
-//
-//          if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 ||
-//              mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 ||
-//              mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 ||
-//              mat(3,0) != 2 || mat(3,1) != 2 || mat(3,2) != 2 ||
-//              mat(4,0) != 2 || mat(4,1) != 2 || mat(4,2) != 2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//
-//       // Self-transpose of a 5x3 tensor
-//       {
-//          blaze::UniformTensor<int,blaze::rowMajor> mat( 5UL, 3UL, 2 );
-//
-//          mat = trans( mat );
-//
-//          checkRows    ( mat,  3UL );
-//          checkColumns ( mat,  5UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat, 15UL );
-//          checkNonZeros( mat,  0UL, 5UL );
-//          checkNonZeros( mat,  1UL, 5UL );
-//          checkNonZeros( mat,  2UL, 5UL );
-//
-//          if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 || mat(0,4) != 2 ||
-//              mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 || mat(1,4) != 2 ||
-//              mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 || mat(2,4) != 2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major self-transpose (stress test)";
-//
-//       const size_t m( blaze::rand<size_t>( 0UL, 100UL ) );
-//       const size_t n( blaze::rand<size_t>( 0UL, 100UL ) );
-//
-//       blaze::UniformTensor<int,blaze::rowMajor> mat1( m, n );
-//       randomize( mat1 );
-//       blaze::UniformTensor<int,blaze::rowMajor> mat2( mat1 );
-//
-//       transpose( mat1 );
-//
-//       if( mat1 != trans( mat2 ) ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Transpose operation failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << trans( mat2 ) << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//
-//    //=====================================================================================
-//    // Column-major tensor tests
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Column-major self-transpose via transpose()";
-//
-//       // Self-transpose of a 3x5 tensor
-//       {
-//          blaze::UniformTensor<int,blaze::columnMajor> mat( 3UL, 5UL, 2 );
-//
-//          transpose( mat );
-//
-//          checkRows    ( mat,  5UL );
-//          checkColumns ( mat,  3UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat, 15UL );
-//          checkNonZeros( mat,  0UL, 5UL );
-//          checkNonZeros( mat,  1UL, 5UL );
-//          checkNonZeros( mat,  2UL, 5UL );
-//
-//          if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 ||
-//              mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 ||
-//              mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 ||
-//              mat(3,0) != 2 || mat(3,1) != 2 || mat(3,2) != 2 ||
-//              mat(4,0) != 2 || mat(4,1) != 2 || mat(4,2) != 2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//
-//       // Self-transpose of a 5x3 tensor
-//       {
-//          blaze::UniformTensor<int,blaze::columnMajor> mat( 5UL, 3UL, 2 );
-//
-//          transpose( mat );
-//
-//          checkRows    ( mat,  3UL );
-//          checkColumns ( mat,  5UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat, 15UL );
-//          checkNonZeros( mat,  0UL, 3UL );
-//          checkNonZeros( mat,  1UL, 3UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//
-//          if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 || mat(0,4) != 2 ||
-//              mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 || mat(1,4) != 2 ||
-//              mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 || mat(2,4) != 2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major self-transpose via trans()";
-//
-//       // Self-transpose of a 3x5 tensor
-//       {
-//          blaze::UniformTensor<int,blaze::columnMajor> mat( 3UL, 5UL, 2 );
-//
-//          mat = trans( mat );
-//
-//          checkRows    ( mat,  5UL );
-//          checkColumns ( mat,  3UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat, 15UL );
-//          checkNonZeros( mat,  0UL, 5UL );
-//          checkNonZeros( mat,  1UL, 5UL );
-//          checkNonZeros( mat,  2UL, 5UL );
-//
-//          if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 ||
-//              mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 ||
-//              mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 ||
-//              mat(3,0) != 2 || mat(3,1) != 2 || mat(3,2) != 2 ||
-//              mat(4,0) != 2 || mat(4,1) != 2 || mat(4,2) != 2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//
-//       // Self-transpose of a 5x3 tensor
-//       {
-//          blaze::UniformTensor<int,blaze::columnMajor> mat( 5UL, 3UL, 2 );
-//
-//          mat = trans( mat );
-//
-//          checkRows    ( mat,  3UL );
-//          checkColumns ( mat,  5UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat, 15UL );
-//          checkNonZeros( mat,  0UL, 3UL );
-//          checkNonZeros( mat,  1UL, 3UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//
-//          if( mat(0,0) != 2 || mat(0,1) != 2 || mat(0,2) != 2 || mat(0,3) != 2 || mat(0,4) != 2 ||
-//              mat(1,0) != 2 || mat(1,1) != 2 || mat(1,2) != 2 || mat(1,3) != 2 || mat(1,4) != 2 ||
-//              mat(2,0) != 2 || mat(2,1) != 2 || mat(2,2) != 2 || mat(2,3) != 2 || mat(2,4) != 2 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Column-major self-transpose (stress test)";
-//
-//       const size_t m( blaze::rand<size_t>( 0UL, 100UL ) );
-//       const size_t n( blaze::rand<size_t>( 0UL, 100UL ) );
-//
-//       blaze::UniformTensor<int,blaze::columnMajor> mat1( m, n );
-//       randomize( mat1 );
-//       blaze::UniformTensor<int,blaze::columnMajor> mat2( mat1 );
-//
-//       transpose( mat1 );
-//
-//       if( mat1 != trans( mat2 ) ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Transpose operation failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << trans( mat2 ) << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-}
-//*************************************************************************************************
+   //=====================================================================================
+   // Row-major tensor tests
+   //=====================================================================================
 
+   {
+      test_ = "Row-major self-transpose via transpose()";
+
+      // Self-transpose of a 2x3x5 tensor
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         transpose(mat, {0, 1, 2});
+
+         checkPages   ( mat,  2UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 5UL );
+         checkNonZeros( mat,  1UL, 0UL, 5UL );
+         checkNonZeros( mat,  2UL, 0UL, 5UL );
+         checkNonZeros( mat,  0UL, 1UL, 5UL );
+         checkNonZeros( mat,  1UL, 1UL, 5UL );
+         checkNonZeros( mat,  2UL, 1UL, 5UL );
+
+         if( mat(0,0,0) != 2 || mat(0,0,1) != 2 || mat(0,0,2) != 2 || mat(0,0,3) != 2 || mat(0,0,4) != 2 ||
+             mat(0,1,0) != 2 || mat(0,1,1) != 2 || mat(0,1,2) != 2 || mat(0,1,3) != 2 || mat(0,1,4) != 2 ||
+             mat(0,2,0) != 2 || mat(0,2,1) != 2 || mat(0,2,2) != 2 || mat(0,2,3) != 2 || mat(0,2,4) != 2 ||
+             mat(1,0,0) != 2 || mat(1,0,1) != 2 || mat(1,0,2) != 2 || mat(1,0,3) != 2 || mat(1,0,4) != 2 ||
+             mat(1,1,0) != 2 || mat(1,1,1) != 2 || mat(1,1,2) != 2 || mat(1,1,3) != 2 || mat(1,1,4) != 2 ||
+             mat(1,2,0) != 2 || mat(1,2,1) != 2 || mat(1,2,2) != 2 || mat(1,2,3) != 2 || mat(1,2,4) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n"
+                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n( 2 2 2 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         transpose(mat, {0, 2, 1});
+
+         checkPages   ( mat,  2UL );
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 3UL );
+         checkNonZeros( mat,  1UL, 0UL, 3UL );
+         checkNonZeros( mat,  2UL, 0UL, 3UL );
+         checkNonZeros( mat,  3UL, 0UL, 3UL );
+         checkNonZeros( mat,  4UL, 0UL, 3UL );
+         checkNonZeros( mat,  0UL, 1UL, 3UL );
+         checkNonZeros( mat,  1UL, 1UL, 3UL );
+         checkNonZeros( mat,  2UL, 1UL, 3UL );
+         checkNonZeros( mat,  3UL, 1UL, 3UL );
+         checkNonZeros( mat,  4UL, 1UL, 3UL );
+
+         if( mat(0,0,0) != 2 || mat(0,1,0) != 2 || mat(0,2,0) != 2 || mat(0,3,0) != 2 || mat(0,4,0) != 2 ||
+             mat(0,0,1) != 2 || mat(0,1,1) != 2 || mat(0,2,1) != 2 || mat(0,3,1) != 2 || mat(0,4,1) != 2 ||
+             mat(0,0,2) != 2 || mat(0,1,2) != 2 || mat(0,2,2) != 2 || mat(0,3,2) != 2 || mat(0,4,2) != 2 ||
+             mat(1,0,0) != 2 || mat(1,1,0) != 2 || mat(1,2,0) != 2 || mat(1,3,0) != 2 || mat(1,4,0) != 2 ||
+             mat(1,0,1) != 2 || mat(1,1,1) != 2 || mat(1,2,1) != 2 || mat(1,3,1) != 2 || mat(1,4,1) != 2 ||
+             mat(1,0,2) != 2 || mat(1,1,2) != 2 || mat(1,2,2) != 2 || mat(1,3,2) != 2 || mat(1,4,2) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n"
+                        " ( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         transpose(mat, {1, 0, 2});
+
+         checkPages   ( mat,  3UL );
+         checkRows    ( mat,  2UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 5UL );
+         checkNonZeros( mat,  1UL, 0UL, 5UL );
+         checkNonZeros( mat,  0UL, 1UL, 5UL );
+         checkNonZeros( mat,  1UL, 1UL, 5UL );
+         checkNonZeros( mat,  0UL, 2UL, 5UL );
+         checkNonZeros( mat,  1UL, 2UL, 5UL );
+
+         if( mat(0,0,0) != 2 || mat(0,0,1) != 2 || mat(0,0,2) != 2 || mat(0,0,3) != 2 || mat(0,0,4) != 2 ||
+             mat(1,0,0) != 2 || mat(1,0,1) != 2 || mat(1,0,2) != 2 || mat(1,0,3) != 2 || mat(1,0,4) != 2 ||
+             mat(2,0,0) != 2 || mat(2,0,1) != 2 || mat(2,0,2) != 2 || mat(2,0,3) != 2 || mat(2,0,4) != 2 ||
+             mat(0,1,0) != 2 || mat(0,1,1) != 2 || mat(0,1,2) != 2 || mat(0,1,3) != 2 || mat(0,1,4) != 2 ||
+             mat(1,1,0) != 2 || mat(1,1,1) != 2 || mat(1,1,2) != 2 || mat(1,1,3) != 2 || mat(1,1,4) != 2 ||
+             mat(2,1,0) != 2 || mat(2,1,1) != 2 || mat(2,1,2) != 2 || mat(2,1,3) != 2 || mat(2,1,4) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n"
+                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n";
+                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         transpose(mat, {1, 2, 0});
+
+         checkPages   ( mat,  3UL );
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  2UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 2UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  3UL, 0UL, 2UL );
+         checkNonZeros( mat,  4UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL, 2UL );
+         checkNonZeros( mat,  4UL, 1UL, 2UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 2UL );
+         checkNonZeros( mat,  2UL, 2UL, 2UL );
+         checkNonZeros( mat,  3UL, 2UL, 2UL );
+         checkNonZeros( mat,  4UL, 2UL, 2UL );
+
+         if( mat(0,0,0) != 2 || mat(0,1,0) != 2 || mat(0,2,0) != 2 || mat(0,3,0) != 2 || mat(0,4,0) != 2 ||
+             mat(1,0,0) != 2 || mat(1,1,0) != 2 || mat(1,2,0) != 2 || mat(1,3,0) != 2 || mat(1,4,0) != 2 ||
+             mat(2,0,0) != 2 || mat(2,1,0) != 2 || mat(2,2,0) != 2 || mat(2,3,0) != 2 || mat(2,4,0) != 2 ||
+             mat(0,0,1) != 2 || mat(0,1,1) != 2 || mat(0,2,1) != 2 || mat(0,3,1) != 2 || mat(0,4,1) != 2 ||
+             mat(1,0,1) != 2 || mat(1,1,1) != 2 || mat(1,2,1) != 2 || mat(1,3,1) != 2 || mat(1,4,1) != 2 ||
+             mat(2,0,1) != 2 || mat(2,1,1) != 2 || mat(2,2,1) != 2 || mat(2,3,1) != 2 || mat(2,4,1) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         transpose(mat, {2, 0, 1});
+
+         checkPages   ( mat,  5UL );
+         checkRows    ( mat,  2UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 3UL );
+         checkNonZeros( mat,  1UL, 0UL, 3UL );
+         checkNonZeros( mat,  0UL, 1UL, 3UL );
+         checkNonZeros( mat,  1UL, 1UL, 3UL );
+         checkNonZeros( mat,  0UL, 2UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL, 3UL );
+         checkNonZeros( mat,  0UL, 3UL, 3UL );
+         checkNonZeros( mat,  1UL, 3UL, 3UL );
+         checkNonZeros( mat,  0UL, 4UL, 3UL );
+         checkNonZeros( mat,  1UL, 4UL, 3UL );
+
+         if( mat(0,0,0) != 2 || mat(1,0,0) != 2 || mat(2,0,0) != 2 || mat(3,0,0) != 2 || mat(4,0,0) != 2 ||
+             mat(0,0,1) != 2 || mat(1,0,1) != 2 || mat(2,0,1) != 2 || mat(3,0,1) != 2 || mat(4,0,1) != 2 ||
+             mat(0,0,2) != 2 || mat(1,0,2) != 2 || mat(2,0,2) != 2 || mat(3,0,2) != 2 || mat(4,0,2) != 2 ||
+             mat(0,1,0) != 2 || mat(1,1,0) != 2 || mat(2,1,0) != 2 || mat(3,1,0) != 2 || mat(4,1,0) != 2 ||
+             mat(0,1,1) != 2 || mat(1,1,1) != 2 || mat(2,1,1) != 2 || mat(3,1,1) != 2 || mat(4,1,1) != 2 ||
+             mat(0,1,2) != 2 || mat(1,1,2) != 2 || mat(2,1,2) != 2 || mat(3,1,2) != 2 || mat(4,1,2) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 2 )\n( 2 2 2 )\n"
+                        " ( 2 2 2 )\n( 2 2 2 )\n";
+                        " ( 2 2 2 )\n( 2 2 2 )\n";
+                        " ( 2 2 2 )\n( 2 2 2 )\n";
+                        " ( 2 2 2 )\n( 2 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         transpose(mat, {2, 1, 0});
+
+         checkPages   ( mat,  5UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  2UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 2UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 2UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 2UL );
+         checkNonZeros( mat,  2UL, 2UL, 2UL );
+         checkNonZeros( mat,  0UL, 3UL, 2UL );
+         checkNonZeros( mat,  1UL, 3UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL, 2UL );
+         checkNonZeros( mat,  0UL, 4UL, 2UL );
+         checkNonZeros( mat,  1UL, 4UL, 2UL );
+         checkNonZeros( mat,  2UL, 4UL, 2UL );
+
+         if( mat(0,0,0) != 2 || mat(1,0,0) != 2 || mat(2,0,0) != 2 || mat(3,0,0) != 2 || mat(4,0,0) != 2 ||
+             mat(0,1,0) != 2 || mat(1,1,0) != 2 || mat(2,1,0) != 2 || mat(3,1,0) != 2 || mat(4,1,0) != 2 ||
+             mat(0,2,0) != 2 || mat(1,2,0) != 2 || mat(2,2,0) != 2 || mat(3,2,0) != 2 || mat(4,2,0) != 2 ||
+             mat(0,0,1) != 2 || mat(1,0,1) != 2 || mat(2,0,1) != 2 || mat(3,0,1) != 2 || mat(4,0,1) != 2 ||
+             mat(0,1,1) != 2 || mat(1,1,1) != 2 || mat(2,1,1) != 2 || mat(3,1,1) != 2 || mat(4,1,1) != 2 ||
+             mat(0,2,1) != 2 || mat(1,2,1) != 2 || mat(2,2,1) != 2 || mat(3,2,1) != 2 || mat(4,2,1) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      // Self-transpose of a 2x3x5 tensor
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         mat = trans(mat, {0, 1, 2});
+
+         checkPages   ( mat,  2UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 5UL );
+         checkNonZeros( mat,  1UL, 0UL, 5UL );
+         checkNonZeros( mat,  2UL, 0UL, 5UL );
+         checkNonZeros( mat,  0UL, 1UL, 5UL );
+         checkNonZeros( mat,  1UL, 1UL, 5UL );
+         checkNonZeros( mat,  2UL, 1UL, 5UL );
+
+         if( mat(0,0,0) != 2 || mat(0,0,1) != 2 || mat(0,0,2) != 2 || mat(0,0,3) != 2 || mat(0,0,4) != 2 ||
+             mat(0,1,0) != 2 || mat(0,1,1) != 2 || mat(0,1,2) != 2 || mat(0,1,3) != 2 || mat(0,1,4) != 2 ||
+             mat(0,2,0) != 2 || mat(0,2,1) != 2 || mat(0,2,2) != 2 || mat(0,2,3) != 2 || mat(0,2,4) != 2 ||
+             mat(1,0,0) != 2 || mat(1,0,1) != 2 || mat(1,0,2) != 2 || mat(1,0,3) != 2 || mat(1,0,4) != 2 ||
+             mat(1,1,0) != 2 || mat(1,1,1) != 2 || mat(1,1,2) != 2 || mat(1,1,3) != 2 || mat(1,1,4) != 2 ||
+             mat(1,2,0) != 2 || mat(1,2,1) != 2 || mat(1,2,2) != 2 || mat(1,2,3) != 2 || mat(1,2,4) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n"
+                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n( 2 2 2 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         mat = trans(mat, {0, 2, 1});
+
+         checkPages   ( mat,  2UL );
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 3UL );
+         checkNonZeros( mat,  1UL, 0UL, 3UL );
+         checkNonZeros( mat,  2UL, 0UL, 3UL );
+         checkNonZeros( mat,  3UL, 0UL, 3UL );
+         checkNonZeros( mat,  4UL, 0UL, 3UL );
+         checkNonZeros( mat,  0UL, 1UL, 3UL );
+         checkNonZeros( mat,  1UL, 1UL, 3UL );
+         checkNonZeros( mat,  2UL, 1UL, 3UL );
+         checkNonZeros( mat,  3UL, 1UL, 3UL );
+         checkNonZeros( mat,  4UL, 1UL, 3UL );
+
+         if( mat(0,0,0) != 2 || mat(0,1,0) != 2 || mat(0,2,0) != 2 || mat(0,3,0) != 2 || mat(0,4,0) != 2 ||
+             mat(0,0,1) != 2 || mat(0,1,1) != 2 || mat(0,2,1) != 2 || mat(0,3,1) != 2 || mat(0,4,1) != 2 ||
+             mat(0,0,2) != 2 || mat(0,1,2) != 2 || mat(0,2,2) != 2 || mat(0,3,2) != 2 || mat(0,4,2) != 2 ||
+             mat(1,0,0) != 2 || mat(1,1,0) != 2 || mat(1,2,0) != 2 || mat(1,3,0) != 2 || mat(1,4,0) != 2 ||
+             mat(1,0,1) != 2 || mat(1,1,1) != 2 || mat(1,2,1) != 2 || mat(1,3,1) != 2 || mat(1,4,1) != 2 ||
+             mat(1,0,2) != 2 || mat(1,1,2) != 2 || mat(1,2,2) != 2 || mat(1,3,2) != 2 || mat(1,4,2) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n"
+                        " ( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 )\n( 2 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         mat = trans(mat, {1, 0, 2});
+
+         checkPages   ( mat,  3UL );
+         checkRows    ( mat,  2UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 5UL );
+         checkNonZeros( mat,  1UL, 0UL, 5UL );
+         checkNonZeros( mat,  0UL, 1UL, 5UL );
+         checkNonZeros( mat,  1UL, 1UL, 5UL );
+         checkNonZeros( mat,  0UL, 2UL, 5UL );
+         checkNonZeros( mat,  1UL, 2UL, 5UL );
+
+         if( mat(0,0,0) != 2 || mat(0,0,1) != 2 || mat(0,0,2) != 2 || mat(0,0,3) != 2 || mat(0,0,4) != 2 ||
+             mat(1,0,0) != 2 || mat(1,0,1) != 2 || mat(1,0,2) != 2 || mat(1,0,3) != 2 || mat(1,0,4) != 2 ||
+             mat(2,0,0) != 2 || mat(2,0,1) != 2 || mat(2,0,2) != 2 || mat(2,0,3) != 2 || mat(2,0,4) != 2 ||
+             mat(0,1,0) != 2 || mat(0,1,1) != 2 || mat(0,1,2) != 2 || mat(0,1,3) != 2 || mat(0,1,4) != 2 ||
+             mat(1,1,0) != 2 || mat(1,1,1) != 2 || mat(1,1,2) != 2 || mat(1,1,3) != 2 || mat(1,1,4) != 2 ||
+             mat(2,1,0) != 2 || mat(2,1,1) != 2 || mat(2,1,2) != 2 || mat(2,1,3) != 2 || mat(2,1,4) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n"
+                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n";
+                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         mat = trans(mat, {1, 2, 0});
+
+         checkPages   ( mat,  3UL );
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  2UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 2UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  3UL, 0UL, 2UL );
+         checkNonZeros( mat,  4UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL, 2UL );
+         checkNonZeros( mat,  4UL, 1UL, 2UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 2UL );
+         checkNonZeros( mat,  2UL, 2UL, 2UL );
+         checkNonZeros( mat,  3UL, 2UL, 2UL );
+         checkNonZeros( mat,  4UL, 2UL, 2UL );
+
+         if( mat(0,0,0) != 2 || mat(0,1,0) != 2 || mat(0,2,0) != 2 || mat(0,3,0) != 2 || mat(0,4,0) != 2 ||
+             mat(1,0,0) != 2 || mat(1,1,0) != 2 || mat(1,2,0) != 2 || mat(1,3,0) != 2 || mat(1,4,0) != 2 ||
+             mat(2,0,0) != 2 || mat(2,1,0) != 2 || mat(2,2,0) != 2 || mat(2,3,0) != 2 || mat(2,4,0) != 2 ||
+             mat(0,0,1) != 2 || mat(0,1,1) != 2 || mat(0,2,1) != 2 || mat(0,3,1) != 2 || mat(0,4,1) != 2 ||
+             mat(1,0,1) != 2 || mat(1,1,1) != 2 || mat(1,2,1) != 2 || mat(1,3,1) != 2 || mat(1,4,1) != 2 ||
+             mat(2,0,1) != 2 || mat(2,1,1) != 2 || mat(2,2,1) != 2 || mat(2,3,1) != 2 || mat(2,4,1) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 )\n( 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         mat = trans(mat, {2, 0, 1});
+
+         checkPages   ( mat,  5UL );
+         checkRows    ( mat,  2UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 3UL );
+         checkNonZeros( mat,  1UL, 0UL, 3UL );
+         checkNonZeros( mat,  0UL, 1UL, 3UL );
+         checkNonZeros( mat,  1UL, 1UL, 3UL );
+         checkNonZeros( mat,  0UL, 2UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL, 3UL );
+         checkNonZeros( mat,  0UL, 3UL, 3UL );
+         checkNonZeros( mat,  1UL, 3UL, 3UL );
+         checkNonZeros( mat,  0UL, 4UL, 3UL );
+         checkNonZeros( mat,  1UL, 4UL, 3UL );
+
+         if( mat(0,0,0) != 2 || mat(1,0,0) != 2 || mat(2,0,0) != 2 || mat(3,0,0) != 2 || mat(4,0,0) != 2 ||
+             mat(0,0,1) != 2 || mat(1,0,1) != 2 || mat(2,0,1) != 2 || mat(3,0,1) != 2 || mat(4,0,1) != 2 ||
+             mat(0,0,2) != 2 || mat(1,0,2) != 2 || mat(2,0,2) != 2 || mat(3,0,2) != 2 || mat(4,0,2) != 2 ||
+             mat(0,1,0) != 2 || mat(1,1,0) != 2 || mat(2,1,0) != 2 || mat(3,1,0) != 2 || mat(4,1,0) != 2 ||
+             mat(0,1,1) != 2 || mat(1,1,1) != 2 || mat(2,1,1) != 2 || mat(3,1,1) != 2 || mat(4,1,1) != 2 ||
+             mat(0,1,2) != 2 || mat(1,1,2) != 2 || mat(2,1,2) != 2 || mat(3,1,2) != 2 || mat(4,1,2) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 2 )\n( 2 2 2 )\n"
+                        " ( 2 2 2 )\n( 2 2 2 )\n";
+                        " ( 2 2 2 )\n( 2 2 2 )\n";
+                        " ( 2 2 2 )\n( 2 2 2 )\n";
+                        " ( 2 2 2 )\n( 2 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::UniformTensor<int> mat( 2UL, 3UL, 5UL, 2 );
+
+         mat = trans(mat, {2, 1, 0});
+
+         checkPages   ( mat,  5UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  2UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 30UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 2UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 2UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 2UL );
+         checkNonZeros( mat,  2UL, 2UL, 2UL );
+         checkNonZeros( mat,  0UL, 3UL, 2UL );
+         checkNonZeros( mat,  1UL, 3UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL, 2UL );
+         checkNonZeros( mat,  0UL, 4UL, 2UL );
+         checkNonZeros( mat,  1UL, 4UL, 2UL );
+         checkNonZeros( mat,  2UL, 4UL, 2UL );
+
+         if( mat(0,0,0) != 2 || mat(1,0,0) != 2 || mat(2,0,0) != 2 || mat(3,0,0) != 2 || mat(4,0,0) != 2 ||
+             mat(0,1,0) != 2 || mat(1,1,0) != 2 || mat(2,1,0) != 2 || mat(3,1,0) != 2 || mat(4,1,0) != 2 ||
+             mat(0,2,0) != 2 || mat(1,2,0) != 2 || mat(2,2,0) != 2 || mat(3,2,0) != 2 || mat(4,2,0) != 2 ||
+             mat(0,0,1) != 2 || mat(1,0,1) != 2 || mat(2,0,1) != 2 || mat(3,0,1) != 2 || mat(4,0,1) != 2 ||
+             mat(0,1,1) != 2 || mat(1,1,1) != 2 || mat(2,1,1) != 2 || mat(3,1,1) != 2 || mat(4,1,1) != 2 ||
+             mat(0,2,1) != 2 || mat(1,2,1) != 2 || mat(2,2,1) != 2 || mat(3,2,1) != 2 || mat(4,2,1) != 2) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
 
 //*************************************************************************************************
 /*!\brief Test of the \c ctranspose() member function of the UniformTensor class template.

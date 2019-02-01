@@ -46,6 +46,7 @@
 #include <blaze/math/views/Row.h>
 #include <blaze/math/views/Submatrix.h>
 
+#include <blaze_tensor/math/expressions/Forward.h>
 #include <blaze_tensor/math/expressions/MatExpandExpr.h>
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
@@ -57,6 +58,7 @@
 #include <blaze_tensor/math/expressions/TensTensMapExpr.h>
 #include <blaze_tensor/math/expressions/TensTensMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
+#include <blaze_tensor/math/expressions/TensTransExpr.h>
 #include <blaze_tensor/math/expressions/Tensor.h>
 #include <blaze_tensor/math/views/Forward.h>
 #include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
@@ -674,15 +676,41 @@ inline decltype(auto) pageslice( const DeclExpr<MT>& tensor, RRAs... args )
 // This function returns an expression representing the specified pageslice of the given tensor
 // transpose operation.
 */
-// template< size_t... CRAs      // Compile time pageslice arguments
-//         , typename MT         // Tensor base type of the expression
-//         , typename... RRAs >  // Runtime pageslice arguments
-// inline decltype(auto) pageslice( const MatTransExpr<MT>& tensor, RRAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
+template< size_t MK           // Compile time pageslice arguments
+        , size_t MI
+        , size_t MJ
+        , typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime arguments
+inline decltype(auto) pageslice( const TensTransExpr<MT>& tensor, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return pageslice<MK, MI, MJ>( evaluate( ~tensor ), index, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given tensor transpose operation.
+// \ingroup pageslice
 //
-//    return trans( column<CRAs...>( (~tensor).operand(), args... ) );
-// }
+// \param tensor The constant tensor transpose operation.
+// \param args The runtime pageslice arguments
+// \return View on the specified pageslice of the transpose operation.
+//
+// This function returns an expression representing the specified pageslice of the given tensor
+// transpose operation.
+*/
+template< typename MT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime arguments
+inline decltype(auto) pageslice( const TensTransExpr<MT>& tensor, size_t index, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return pageslice( evaluate( ~tensor ), index, args... );
+}
 /*! \endcond */
 //*************************************************************************************************
 

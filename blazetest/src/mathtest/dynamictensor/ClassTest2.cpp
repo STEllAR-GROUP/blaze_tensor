@@ -2359,167 +2359,559 @@ void ClassTest::testSwap()
 */
 void ClassTest::testTranspose()
 {
-//    //=====================================================================================
-//    // Row-major tensor tests
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major self-transpose via transpose()";
-//
-//       // Self-transpose of a 3x5 tensor
-//       {
-//          blaze::DynamicTensor<int> mat{ { 1, 0, 2, 0, 3 },
-//                                                         { 0, 4, 0, 5, 0 },
-//                                                         { 6, 0, 7, 0, 8 } };
-//
-//          transpose( mat );
-//
-//          checkRows    ( mat,  5UL );
-//          checkColumns ( mat,  3UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat,  8UL );
-//          checkNonZeros( mat,  0UL, 2UL );
-//          checkNonZeros( mat,  1UL, 1UL );
-//          checkNonZeros( mat,  2UL, 2UL );
-//          checkNonZeros( mat,  3UL, 1UL );
-//          checkNonZeros( mat,  4UL, 2UL );
-//
-//          if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 6 ||
-//              mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 ||
-//              mat(2,0) != 2 || mat(2,1) != 0 || mat(2,2) != 7 ||
-//              mat(3,0) != 0 || mat(3,1) != 5 || mat(3,2) != 0 ||
-//              mat(4,0) != 3 || mat(4,1) != 0 || mat(4,2) != 8 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//
-//       // Self-transpose of a 5x3 tensor
-//       {
-//          blaze::DynamicTensor<int> mat{ { 1, 0, 6 },
-//                                                         { 0, 4, 0 },
-//                                                         { 2, 0, 7 },
-//                                                         { 0, 5, 0 },
-//                                                         { 3, 0, 8 } };
-//
-//          transpose( mat );
-//
-//          checkRows    ( mat,  3UL );
-//          checkColumns ( mat,  5UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat,  8UL );
-//          checkNonZeros( mat,  0UL, 3UL );
-//          checkNonZeros( mat,  1UL, 2UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//
-//          if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
-//              mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
-//              mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major self-transpose via trans()";
-//
-//       // Self-transpose of a 3x5 tensor
-//       {
-//          blaze::DynamicTensor<int> mat{ { 1, 0, 2, 0, 3 },
-//                                                         { 0, 4, 0, 5, 0 },
-//                                                         { 6, 0, 7, 0, 8 } };
-//
-//          mat = trans( mat );
-//
-//          checkRows    ( mat,  5UL );
-//          checkColumns ( mat,  3UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat,  8UL );
-//          checkNonZeros( mat,  0UL, 2UL );
-//          checkNonZeros( mat,  1UL, 1UL );
-//          checkNonZeros( mat,  2UL, 2UL );
-//          checkNonZeros( mat,  3UL, 1UL );
-//          checkNonZeros( mat,  4UL, 2UL );
-//
-//          if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 6 ||
-//              mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 ||
-//              mat(2,0) != 2 || mat(2,1) != 0 || mat(2,2) != 7 ||
-//              mat(3,0) != 0 || mat(3,1) != 5 || mat(3,2) != 0 ||
-//              mat(4,0) != 3 || mat(4,1) != 0 || mat(4,2) != 8 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//
-//       // Self-transpose of a 5x3 tensor
-//       {
-//          blaze::DynamicTensor<int> mat{ { 1, 0, 6 },
-//                                                         { 0, 4, 0 },
-//                                                         { 2, 0, 7 },
-//                                                         { 0, 5, 0 },
-//                                                         { 3, 0, 8 } };
-//
-//          mat = trans( mat );
-//
-//          checkRows    ( mat,  3UL );
-//          checkColumns ( mat,  5UL );
-//          checkCapacity( mat, 15UL );
-//          checkNonZeros( mat,  8UL );
-//          checkNonZeros( mat,  0UL, 3UL );
-//          checkNonZeros( mat,  1UL, 2UL );
-//          checkNonZeros( mat,  2UL, 3UL );
-//
-//          if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 2 || mat(0,3) != 0 || mat(0,4) != 3 ||
-//              mat(1,0) != 0 || mat(1,1) != 4 || mat(1,2) != 0 || mat(1,3) != 5 || mat(1,4) != 0 ||
-//              mat(2,0) != 6 || mat(2,1) != 0 || mat(2,2) != 7 || mat(2,3) != 0 || mat(2,4) != 8 ) {
-//             std::ostringstream oss;
-//             oss << " Test: " << test_ << "\n"
-//                 << " Error: Transpose operation failed\n"
-//                 << " Details:\n"
-//                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n";
-//             throw std::runtime_error( oss.str() );
-//          }
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major self-transpose (stress test)";
-//
-//       const size_t n( blaze::rand<size_t>( 0UL, 100UL ) );
-//
-//       blaze::DynamicTensor<int> mat1( n, n, 0 );
-//       randomize( mat1 );
-//       blaze::DynamicTensor<int> mat2( mat1 );
-//
-//       transpose( mat1 );
-//
-//       if( mat1 != trans( mat2 ) ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Transpose operation failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << mat1 << "\n"
-//              << "   Expected result:\n" << trans( mat2 ) << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
+   //=====================================================================================
+   // Row-major tensor tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via transpose()";
+
+      // Self-transpose of a 2x3x5 tensor
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         transpose(mat, {0, 1, 2});
+
+         checkPages   ( mat,  2UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 3UL );
+         checkNonZeros( mat,  1UL, 0UL, 2UL );
+         checkNonZeros( mat,  2UL, 0UL, 3UL );
+         checkNonZeros( mat,  0UL, 1UL, 3UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 3UL );
+
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 0 || mat(0,0,2) != 2 || mat(0,0,3) != 0 || mat(0,0,4) != 3 ||
+             mat(0,1,0) != 0 || mat(0,1,1) != 4 || mat(0,1,2) != 0 || mat(0,1,3) != 5 || mat(0,1,4) != 0 ||
+             mat(0,2,0) != 6 || mat(0,2,1) != 0 || mat(0,2,2) != 7 || mat(0,2,3) != 0 || mat(0,2,4) != 8 ||
+             mat(1,0,0) != 1 || mat(1,0,1) != 0 || mat(1,0,2) != 2 || mat(1,0,3) != 0 || mat(1,0,4) != 3 ||
+             mat(1,1,0) != 0 || mat(1,1,1) != 4 || mat(1,1,2) != 0 || mat(1,1,3) != 5 || mat(1,1,4) != 0 ||
+             mat(1,2,0) != 6 || mat(1,2,1) != 0 || mat(1,2,2) != 7 || mat(1,2,3) != 0 || mat(1,2,4) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n"
+                        " ( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         transpose(mat, {0, 2, 1});
+
+         checkPages   ( mat,  2UL );
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 1UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  3UL, 0UL, 1UL );
+         checkNonZeros( mat,  4UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL, 1UL );
+         checkNonZeros( mat,  2UL, 1UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL, 1UL );
+         checkNonZeros( mat,  4UL, 1UL, 2UL );
+
+         if( mat(0,0,0) != 1 || mat(0,1,0) != 0 || mat(0,2,0) != 2 || mat(0,3,0) != 0 || mat(0,4,0) != 3 ||
+             mat(0,0,1) != 0 || mat(0,1,1) != 4 || mat(0,2,1) != 0 || mat(0,3,1) != 5 || mat(0,4,1) != 0 ||
+             mat(0,0,2) != 6 || mat(0,1,2) != 0 || mat(0,2,2) != 7 || mat(0,3,2) != 0 || mat(0,4,2) != 8 ||
+             mat(1,0,0) != 1 || mat(1,1,0) != 0 || mat(1,2,0) != 2 || mat(1,3,0) != 0 || mat(1,4,0) != 3 ||
+             mat(1,0,1) != 0 || mat(1,1,1) != 4 || mat(1,2,1) != 0 || mat(1,3,1) != 5 || mat(1,4,1) != 0 ||
+             mat(1,0,2) != 6 || mat(1,1,2) != 0 || mat(1,2,2) != 7 || mat(1,3,2) != 0 || mat(1,4,2) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n"
+                        " ( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         transpose(mat, {1, 0, 2});
+
+         checkPages   ( mat,  3UL );
+         checkRows    ( mat,  2UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 3UL );
+         checkNonZeros( mat,  1UL, 0UL, 3UL );
+         checkNonZeros( mat,  0UL, 1UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  0UL, 2UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL, 3UL );
+
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 0 || mat(0,0,2) != 2 || mat(0,0,3) != 0 || mat(0,0,4) != 3 ||
+             mat(1,0,0) != 0 || mat(1,0,1) != 4 || mat(1,0,2) != 0 || mat(1,0,3) != 5 || mat(1,0,4) != 0 ||
+             mat(2,0,0) != 6 || mat(2,0,1) != 0 || mat(2,0,2) != 7 || mat(2,0,3) != 0 || mat(2,0,4) != 8 ||
+             mat(0,1,0) != 1 || mat(0,1,1) != 0 || mat(0,1,2) != 2 || mat(0,1,3) != 0 || mat(0,1,4) != 3 ||
+             mat(1,1,0) != 0 || mat(1,1,1) != 4 || mat(1,1,2) != 0 || mat(1,1,3) != 5 || mat(1,1,4) != 0 ||
+             mat(2,1,0) != 6 || mat(2,1,1) != 0 || mat(2,1,2) != 7 || mat(2,1,3) != 0 || mat(2,1,4) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 0 2 0 3 )\n( 1 0 2 0 3 )\n"
+                        " ( 0 4 0 5 0 )\n( 0 4 0 5 0 )\n";
+                        " ( 6 0 7 0 8 )\n( 6 0 7 0 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         transpose(mat, {1, 2, 0});
+
+         checkPages   ( mat,  3UL );
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  2UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 0UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  3UL, 0UL, 0UL );
+         checkNonZeros( mat,  4UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 0UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 0UL );
+         checkNonZeros( mat,  3UL, 1UL, 2UL );
+         checkNonZeros( mat,  4UL, 1UL, 0UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 0UL );
+         checkNonZeros( mat,  2UL, 2UL, 2UL );
+         checkNonZeros( mat,  3UL, 2UL, 0UL );
+         checkNonZeros( mat,  4UL, 2UL, 2UL );
+
+         if( mat(0,0,0) != 1 || mat(0,1,0) != 0 || mat(0,2,0) != 2 || mat(0,3,0) != 0 || mat(0,4,0) != 3 ||
+             mat(1,0,0) != 0 || mat(1,1,0) != 4 || mat(1,2,0) != 0 || mat(1,3,0) != 5 || mat(1,4,0) != 0 ||
+             mat(2,0,0) != 6 || mat(2,1,0) != 0 || mat(2,2,0) != 7 || mat(2,3,0) != 0 || mat(2,4,0) != 8 ||
+             mat(0,0,1) != 1 || mat(0,1,1) != 0 || mat(0,2,1) != 2 || mat(0,3,1) != 0 || mat(0,4,1) != 3 ||
+             mat(1,0,1) != 0 || mat(1,1,1) != 4 || mat(1,2,1) != 0 || mat(1,3,1) != 5 || mat(1,4,1) != 0 ||
+             mat(2,0,1) != 6 || mat(2,1,1) != 0 || mat(2,2,1) != 7 || mat(2,3,1) != 0 || mat(2,4,1) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 1 )\n( 0 0 )\n( 2 2 )\n( 0 0 )\n( 3 3 )\n"
+                        " ( 0 0 )\n( 4 4 )\n( 0 0 )\n( 5 5 )\n( 0 0 )\n"
+                        " ( 6 6 )\n( 0 0 )\n( 7 7 )\n( 0 0 )\n( 8 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         transpose(mat, {2, 0, 1});
+
+         checkPages   ( mat,  5UL );
+         checkRows    ( mat,  2UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 1UL );
+         checkNonZeros( mat,  1UL, 1UL, 1UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 2UL );
+         checkNonZeros( mat,  0UL, 3UL, 1UL );
+         checkNonZeros( mat,  1UL, 3UL, 1UL );
+         checkNonZeros( mat,  0UL, 4UL, 2UL );
+         checkNonZeros( mat,  1UL, 4UL, 2UL );
+
+         if( mat(0,0,0) != 1 || mat(1,0,0) != 0 || mat(2,0,0) != 2 || mat(3,0,0) != 0 || mat(4,0,0) != 3 ||
+             mat(0,0,1) != 0 || mat(1,0,1) != 4 || mat(2,0,1) != 0 || mat(3,0,1) != 5 || mat(4,0,1) != 0 ||
+             mat(0,0,2) != 6 || mat(1,0,2) != 0 || mat(2,0,2) != 7 || mat(3,0,2) != 0 || mat(4,0,2) != 8 ||
+             mat(0,1,0) != 1 || mat(1,1,0) != 0 || mat(2,1,0) != 2 || mat(3,1,0) != 0 || mat(4,1,0) != 3 ||
+             mat(0,1,1) != 0 || mat(1,1,1) != 4 || mat(2,1,1) != 0 || mat(3,1,1) != 5 || mat(4,1,1) != 0 ||
+             mat(0,1,2) != 6 || mat(1,1,2) != 0 || mat(2,1,2) != 7 || mat(3,1,2) != 0 || mat(4,1,2) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 0 6 )\n( 1 0 6 )\n"
+                        " ( 0 4 0 )\n( 0 4 0 )\n";
+                        " ( 2 0 7 )\n( 2 0 7 )\n";
+                        " ( 0 5 0 )\n( 0 5 0 )\n";
+                        " ( 3 0 8 )\n( 3 0 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         transpose(mat, {2, 1, 0});
+
+         checkPages   ( mat,  5UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  2UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 0UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 0UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 0UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 0UL );
+         checkNonZeros( mat,  2UL, 2UL, 2UL );
+         checkNonZeros( mat,  0UL, 3UL, 0UL );
+         checkNonZeros( mat,  1UL, 3UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL, 0UL );
+         checkNonZeros( mat,  0UL, 4UL, 2UL );
+         checkNonZeros( mat,  1UL, 4UL, 0UL );
+         checkNonZeros( mat,  2UL, 4UL, 2UL );
+
+         if( mat(0,0,0) != 1 || mat(1,0,0) != 0 || mat(2,0,0) != 2 || mat(3,0,0) != 0 || mat(4,0,0) != 3 ||
+             mat(0,1,0) != 0 || mat(1,1,0) != 4 || mat(2,1,0) != 0 || mat(3,1,0) != 5 || mat(4,1,0) != 0 ||
+             mat(0,2,0) != 6 || mat(1,2,0) != 0 || mat(2,2,0) != 7 || mat(3,2,0) != 0 || mat(4,2,0) != 8 ||
+             mat(0,0,1) != 1 || mat(1,0,1) != 0 || mat(2,0,1) != 2 || mat(3,0,1) != 0 || mat(4,0,1) != 3 ||
+             mat(0,1,1) != 0 || mat(1,1,1) != 4 || mat(2,1,1) != 0 || mat(3,1,1) != 5 || mat(4,1,1) != 0 ||
+             mat(0,2,1) != 6 || mat(1,2,1) != 0 || mat(2,2,1) != 7 || mat(3,2,1) != 0 || mat(4,2,1) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 1 )\n( 0 0 )\n( 6 6 )\n"
+                        " ( 0 0 )\n( 4 4 )\n( 0 0 )\n";
+                        " ( 2 2 )\n( 0 0 )\n( 7 7 )\n";
+                        " ( 0 0 )\n( 5 5 )\n( 0 0 )\n";
+                        " ( 3 3 )\n( 0 0 )\n( 8 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      // Self-transpose of a 2x3x5 tensor
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         mat = trans(mat, {0, 1, 2});
+
+         checkPages   ( mat,  2UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 3UL );
+         checkNonZeros( mat,  1UL, 0UL, 2UL );
+         checkNonZeros( mat,  2UL, 0UL, 3UL );
+         checkNonZeros( mat,  0UL, 1UL, 3UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 3UL );
+
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 0 || mat(0,0,2) != 2 || mat(0,0,3) != 0 || mat(0,0,4) != 3 ||
+             mat(0,1,0) != 0 || mat(0,1,1) != 4 || mat(0,1,2) != 0 || mat(0,1,3) != 5 || mat(0,1,4) != 0 ||
+             mat(0,2,0) != 6 || mat(0,2,1) != 0 || mat(0,2,2) != 7 || mat(0,2,3) != 0 || mat(0,2,4) != 8 ||
+             mat(1,0,0) != 1 || mat(1,0,1) != 0 || mat(1,0,2) != 2 || mat(1,0,3) != 0 || mat(1,0,4) != 3 ||
+             mat(1,1,0) != 0 || mat(1,1,1) != 4 || mat(1,1,2) != 0 || mat(1,1,3) != 5 || mat(1,1,4) != 0 ||
+             mat(1,2,0) != 6 || mat(1,2,1) != 0 || mat(1,2,2) != 7 || mat(1,2,3) != 0 || mat(1,2,4) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 )\n"
+                        " ( 1 0 2 0 3 )\n( 0 4 0 5 0 )\n( 6 0 7 0 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         mat = trans(mat, {0, 2, 1});
+
+         checkPages   ( mat,  2UL );
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 1UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  3UL, 0UL, 1UL );
+         checkNonZeros( mat,  4UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL, 1UL );
+         checkNonZeros( mat,  2UL, 1UL, 2UL );
+         checkNonZeros( mat,  3UL, 1UL, 1UL );
+         checkNonZeros( mat,  4UL, 1UL, 2UL );
+
+         if( mat(0,0,0) != 1 || mat(0,1,0) != 0 || mat(0,2,0) != 2 || mat(0,3,0) != 0 || mat(0,4,0) != 3 ||
+             mat(0,0,1) != 0 || mat(0,1,1) != 4 || mat(0,2,1) != 0 || mat(0,3,1) != 5 || mat(0,4,1) != 0 ||
+             mat(0,0,2) != 6 || mat(0,1,2) != 0 || mat(0,2,2) != 7 || mat(0,3,2) != 0 || mat(0,4,2) != 8 ||
+             mat(1,0,0) != 1 || mat(1,1,0) != 0 || mat(1,2,0) != 2 || mat(1,3,0) != 0 || mat(1,4,0) != 3 ||
+             mat(1,0,1) != 0 || mat(1,1,1) != 4 || mat(1,2,1) != 0 || mat(1,3,1) != 5 || mat(1,4,1) != 0 ||
+             mat(1,0,2) != 6 || mat(1,1,2) != 0 || mat(1,2,2) != 7 || mat(1,3,2) != 0 || mat(1,4,2) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 )\n"
+                        " ( 1 0 6 )\n( 0 4 0 )\n( 2 0 7 )\n( 0 5 0 )\n( 3 0 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         mat = trans(mat, {1, 0, 2});
+
+         checkPages   ( mat,  3UL );
+         checkRows    ( mat,  2UL );
+         checkColumns ( mat,  5UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 3UL );
+         checkNonZeros( mat,  1UL, 0UL, 3UL );
+         checkNonZeros( mat,  0UL, 1UL, 2UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  0UL, 2UL, 3UL );
+         checkNonZeros( mat,  1UL, 2UL, 3UL );
+
+         if( mat(0,0,0) != 1 || mat(0,0,1) != 0 || mat(0,0,2) != 2 || mat(0,0,3) != 0 || mat(0,0,4) != 3 ||
+             mat(1,0,0) != 0 || mat(1,0,1) != 4 || mat(1,0,2) != 0 || mat(1,0,3) != 5 || mat(1,0,4) != 0 ||
+             mat(2,0,0) != 6 || mat(2,0,1) != 0 || mat(2,0,2) != 7 || mat(2,0,3) != 0 || mat(2,0,4) != 8 ||
+             mat(0,1,0) != 1 || mat(0,1,1) != 0 || mat(0,1,2) != 2 || mat(0,1,3) != 0 || mat(0,1,4) != 3 ||
+             mat(1,1,0) != 0 || mat(1,1,1) != 4 || mat(1,1,2) != 0 || mat(1,1,3) != 5 || mat(1,1,4) != 0 ||
+             mat(2,1,0) != 6 || mat(2,1,1) != 0 || mat(2,1,2) != 7 || mat(2,1,3) != 0 || mat(2,1,4) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 0 2 0 3 )\n( 1 0 2 0 3 )\n"
+                        " ( 0 4 0 5 0 )\n( 0 4 0 5 0 )\n";
+                        " ( 6 0 7 0 8 )\n( 6 0 7 0 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         mat = trans(mat, {1, 2, 0});
+
+         checkPages   ( mat,  3UL );
+         checkRows    ( mat,  5UL );
+         checkColumns ( mat,  2UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 0UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  3UL, 0UL, 0UL );
+         checkNonZeros( mat,  4UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 0UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 0UL );
+         checkNonZeros( mat,  3UL, 1UL, 2UL );
+         checkNonZeros( mat,  4UL, 1UL, 0UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 0UL );
+         checkNonZeros( mat,  2UL, 2UL, 2UL );
+         checkNonZeros( mat,  3UL, 2UL, 0UL );
+         checkNonZeros( mat,  4UL, 2UL, 2UL );
+
+         if( mat(0,0,0) != 1 || mat(0,1,0) != 0 || mat(0,2,0) != 2 || mat(0,3,0) != 0 || mat(0,4,0) != 3 ||
+             mat(1,0,0) != 0 || mat(1,1,0) != 4 || mat(1,2,0) != 0 || mat(1,3,0) != 5 || mat(1,4,0) != 0 ||
+             mat(2,0,0) != 6 || mat(2,1,0) != 0 || mat(2,2,0) != 7 || mat(2,3,0) != 0 || mat(2,4,0) != 8 ||
+             mat(0,0,1) != 1 || mat(0,1,1) != 0 || mat(0,2,1) != 2 || mat(0,3,1) != 0 || mat(0,4,1) != 3 ||
+             mat(1,0,1) != 0 || mat(1,1,1) != 4 || mat(1,2,1) != 0 || mat(1,3,1) != 5 || mat(1,4,1) != 0 ||
+             mat(2,0,1) != 6 || mat(2,1,1) != 0 || mat(2,2,1) != 7 || mat(2,3,1) != 0 || mat(2,4,1) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 1 )\n( 0 0 )\n( 2 2 )\n( 0 0 )\n( 3 3 )\n"
+                        " ( 0 0 )\n( 4 4 )\n( 0 0 )\n( 5 5 )\n( 0 0 )\n"
+                        " ( 6 6 )\n( 0 0 )\n( 7 7 )\n( 0 0 )\n( 8 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         mat = trans(mat, {2, 0, 1});
+
+         checkPages   ( mat,  5UL );
+         checkRows    ( mat,  2UL );
+         checkColumns ( mat,  3UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 1UL );
+         checkNonZeros( mat,  1UL, 1UL, 1UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 2UL );
+         checkNonZeros( mat,  0UL, 3UL, 1UL );
+         checkNonZeros( mat,  1UL, 3UL, 1UL );
+         checkNonZeros( mat,  0UL, 4UL, 2UL );
+         checkNonZeros( mat,  1UL, 4UL, 2UL );
+
+         if( mat(0,0,0) != 1 || mat(1,0,0) != 0 || mat(2,0,0) != 2 || mat(3,0,0) != 0 || mat(4,0,0) != 3 ||
+             mat(0,0,1) != 0 || mat(1,0,1) != 4 || mat(2,0,1) != 0 || mat(3,0,1) != 5 || mat(4,0,1) != 0 ||
+             mat(0,0,2) != 6 || mat(1,0,2) != 0 || mat(2,0,2) != 7 || mat(3,0,2) != 0 || mat(4,0,2) != 8 ||
+             mat(0,1,0) != 1 || mat(1,1,0) != 0 || mat(2,1,0) != 2 || mat(3,1,0) != 0 || mat(4,1,0) != 3 ||
+             mat(0,1,1) != 0 || mat(1,1,1) != 4 || mat(2,1,1) != 0 || mat(3,1,1) != 5 || mat(4,1,1) != 0 ||
+             mat(0,1,2) != 6 || mat(1,1,2) != 0 || mat(2,1,2) != 7 || mat(3,1,2) != 0 || mat(4,1,2) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 0 6 )\n( 1 0 6 )\n"
+                        " ( 0 4 0 )\n( 0 4 0 )\n";
+                        " ( 2 0 7 )\n( 2 0 7 )\n";
+                        " ( 0 5 0 )\n( 0 5 0 )\n";
+                        " ( 3 0 8 )\n( 3 0 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         blaze::DynamicTensor<int> mat{
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}},
+            {{1, 0, 2, 0, 3}, {0, 4, 0, 5, 0}, {6, 0, 7, 0, 8}}};
+
+         mat = trans(mat, {2, 1, 0});
+
+         checkPages   ( mat,  5UL );
+         checkRows    ( mat,  3UL );
+         checkColumns ( mat,  2UL );
+         checkCapacity( mat, 30UL );
+         checkNonZeros( mat, 16UL );
+         checkNonZeros( mat,  0UL, 0UL, 2UL );
+         checkNonZeros( mat,  1UL, 0UL, 0UL );
+         checkNonZeros( mat,  2UL, 0UL, 2UL );
+         checkNonZeros( mat,  0UL, 1UL, 0UL );
+         checkNonZeros( mat,  1UL, 1UL, 2UL );
+         checkNonZeros( mat,  2UL, 1UL, 0UL );
+         checkNonZeros( mat,  0UL, 2UL, 2UL );
+         checkNonZeros( mat,  1UL, 2UL, 0UL );
+         checkNonZeros( mat,  2UL, 2UL, 2UL );
+         checkNonZeros( mat,  0UL, 3UL, 0UL );
+         checkNonZeros( mat,  1UL, 3UL, 2UL );
+         checkNonZeros( mat,  2UL, 3UL, 0UL );
+         checkNonZeros( mat,  0UL, 4UL, 2UL );
+         checkNonZeros( mat,  1UL, 4UL, 0UL );
+         checkNonZeros( mat,  2UL, 4UL, 2UL );
+
+         if( mat(0,0,0) != 1 || mat(1,0,0) != 0 || mat(2,0,0) != 2 || mat(3,0,0) != 0 || mat(4,0,0) != 3 ||
+             mat(0,1,0) != 0 || mat(1,1,0) != 4 || mat(2,1,0) != 0 || mat(3,1,0) != 5 || mat(4,1,0) != 0 ||
+             mat(0,2,0) != 6 || mat(1,2,0) != 0 || mat(2,2,0) != 7 || mat(3,2,0) != 0 || mat(4,2,0) != 8 ||
+             mat(0,0,1) != 1 || mat(1,0,1) != 0 || mat(2,0,1) != 2 || mat(3,0,1) != 0 || mat(4,0,1) != 3 ||
+             mat(0,1,1) != 0 || mat(1,1,1) != 4 || mat(2,1,1) != 0 || mat(3,1,1) != 5 || mat(4,1,1) != 0 ||
+             mat(0,2,1) != 6 || mat(1,2,1) != 0 || mat(2,2,1) != 7 || mat(3,2,1) != 0 || mat(4,2,1) != 8) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Transpose operation failed\n"
+                << " Details:\n"
+                << "   Result:\n" << mat << "\n"
+                << "   Expected result:\n"
+                        "(( 1 1 )\n( 0 0 )\n( 6 6 )\n"
+                        " ( 0 0 )\n( 4 4 )\n( 0 0 )\n";
+                        " ( 2 2 )\n( 0 0 )\n( 7 7 )\n";
+                        " ( 0 0 )\n( 5 5 )\n( 0 0 )\n";
+                        " ( 3 3 )\n( 0 0 )\n( 8 8 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      {
+         test_ = "Row-major self-transpose (stress test)";
+
+         const size_t n( blaze::rand<size_t>( 0UL, 20UL ) );
+
+         blaze::DynamicTensor<int> mat1( n, n, n, 0 );
+         randomize( mat1 );
+
+         std::initializer_list< std::initializer_list< size_t > > indices{
+             {0, 1, 2}, {0, 2, 1}, {1, 0, 2}, {1, 2, 0}, {2, 0, 1}, {2, 1, 0}};
+
+         for ( auto idx : indices )
+         {
+            blaze::DynamicTensor<int> mat2( mat1 );
+            transpose( mat2, idx );
+
+            if( mat2 != trans( mat1, idx ) ) {
+               std::ostringstream oss;
+               oss << " Test: " << test_ << "\n"
+                     << " Error: Transpose operation failed\n"
+                     << " Details:\n"
+                     << "   Result:\n" << mat2 << "\n"
+                     << "   Expected result:\n" << trans( mat1, idx ) << "\n";
+               throw std::runtime_error( oss.str() );
+            }
+         }
+      }
+   }
 }
 //*************************************************************************************************
 

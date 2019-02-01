@@ -43,17 +43,18 @@
 
 #include <blaze/math/dense/DynamicMatrix.h>
 
-#include <blaze_tensor/math/Tensor.h>
+#include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitializerList.h>
+#include <blaze_tensor/math/SMP.h>
+#include <blaze_tensor/math/Tensor.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
-#include <blaze_tensor/math/traits/SubtensorTrait.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
 #include <blaze_tensor/math/traits/RowSliceTrait.h>
-#include <blaze_tensor/math/SMP.h>
+#include <blaze_tensor/math/traits/SubtensorTrait.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
-#include <blaze_tensor/math/typetraits/IsTensor.h>
 #include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
+#include <blaze_tensor/math/typetraits/IsTensor.h>
 
 namespace blaze {
 
@@ -268,8 +269,12 @@ class DynamicTensor
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-//    inline DynamicTensor& transpose();
-//    inline DynamicTensor& ctranspose();
+   inline DynamicTensor& transpose();
+   inline DynamicTensor& ctranspose();
+   template < typename T >
+   inline DynamicTensor& transpose( const T* indices, size_t n );
+   template < typename T >
+   inline DynamicTensor& ctranspose( const T* indices, size_t n );
 
    template< typename Other > inline DynamicTensor& scale( const Other& scalar );
    //@}
@@ -1793,14 +1798,14 @@ inline size_t DynamicTensor<Type>::addPadding( size_t value ) const noexcept
 //
 // \return Reference to the transposed tensor.
 */
-// template< typename Type > // Data type of the tensor
-// inline DynamicTensor<Type>& DynamicTensor<Type>::transpose()
-// {
+template< typename Type >  // Data type of the tensor
+inline DynamicTensor<Type>& DynamicTensor<Type>::transpose()
+{
 //    using std::swap;
 //
 //    constexpr size_t block( BLOCK_SIZE );
 //
-//    if( m_ == n_ )
+//    if( o_ == n_ && m_ == n_ )
 //    {
 //       for( size_t ii=0UL; ii<m_; ii+=block ) {
 //          const size_t iend( min( ii+block, m_ ) );
@@ -1816,12 +1821,50 @@ inline size_t DynamicTensor<Type>::addPadding( size_t value ) const noexcept
 //    }
 //    else
 //    {
-//       DynamicTensor tmp( trans(*this) );
-//       this->swap( tmp );
+      DynamicTensor tmp( trans( *this ) );
+      this->swap( tmp );
 //    }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place transpose of the tensor.
 //
-//    return *this;
-// }
+// \return Reference to the transposed tensor.
+*/
+template< typename Type >  // Data type of the tensor
+template< typename T >     // Type of the mapping indices
+inline DynamicTensor<Type>& DynamicTensor<Type>::transpose( const T* indices, size_t n )
+{
+//    using std::swap;
+//
+//    constexpr size_t block( BLOCK_SIZE );
+//
+//    if( o_ == n_ && m_ == n_ )
+//    {
+//       for( size_t ii=0UL; ii<m_; ii+=block ) {
+//          const size_t iend( min( ii+block, m_ ) );
+//          for( size_t jj=0UL; jj<=ii; jj+=block ) {
+//             for( size_t i=ii; i<iend; ++i ) {
+//                const size_t jend( min( jj+block, n_, i ) );
+//                for( size_t j=jj; j<jend; ++j ) {
+//                   swap( v_[i*nn_+j], v_[j*nn_+i] );
+//                }
+//             }
+//          }
+//       }
+//    }
+//    else
+//    {
+      DynamicTensor tmp( trans(*this, indices, n ) );
+      this->swap( tmp );
+//    }
+
+   return *this;
+}
 //*************************************************************************************************
 
 
@@ -1830,12 +1873,12 @@ inline size_t DynamicTensor<Type>::addPadding( size_t value ) const noexcept
 //
 // \return Reference to the transposed tensor.
 */
-// template< typename Type > // Data type of the tensor
-// inline DynamicTensor<Type>& DynamicTensor<Type>::ctranspose()
-// {
+template< typename Type >  // Data type of the tensor
+inline DynamicTensor<Type>& DynamicTensor<Type>::ctranspose()
+{
 //    constexpr size_t block( BLOCK_SIZE );
 //
-//    if( m_ == n_ )
+//    if( o_ == n_ && m_ == n_ )
 //    {
 //       for( size_t ii=0UL; ii<m_; ii+=block ) {
 //          const size_t iend( min( ii+block, m_ ) );
@@ -1857,12 +1900,54 @@ inline size_t DynamicTensor<Type>::addPadding( size_t value ) const noexcept
 //    }
 //    else
 //    {
-//       DynamicTensor tmp( ctrans(*this) );
-//       swap( tmp );
+      DynamicTensor tmp( ctrans( *this ) );
+      swap( tmp );
 //    }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the tensor.
 //
-//    return *this;
-// }
+// \return Reference to the transposed tensor.
+*/
+template< typename Type >  // Data type of the tensor
+template< typename T >     // Type of the mapping indices
+inline DynamicTensor<Type>& DynamicTensor<Type>::ctranspose( const T* indices, size_t n )
+{
+//    constexpr size_t block( BLOCK_SIZE );
+//
+//    if( o_ == n_ && m_ == n_ )
+//    {
+//       for( size_t ii=0UL; ii<m_; ii+=block ) {
+//          const size_t iend( min( ii+block, m_ ) );
+//          for( size_t jj=0UL; jj<ii; jj+=block ) {
+//             const size_t jend( min( jj+block, n_ ) );
+//             for( size_t i=ii; i<iend; ++i ) {
+//                for( size_t j=jj; j<jend; ++j ) {
+//                   cswap( v_[i*nn_+j], v_[j*nn_+i] );
+//                }
+//             }
+//          }
+//          for( size_t i=ii; i<iend; ++i ) {
+//             for( size_t j=ii; j<i; ++j ) {
+//                cswap( v_[i*nn_+j], v_[j*nn_+i] );
+//             }
+//             conjugate( v_[i*nn_+i] );
+//          }
+//       }
+//    }
+//    else
+//    {
+      DynamicTensor tmp( ctrans(*this, indices, n ) );
+      swap( tmp );
+//    }
+
+   return *this;
+}
 //*************************************************************************************************
 
 

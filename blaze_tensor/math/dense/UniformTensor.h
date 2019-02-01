@@ -325,8 +325,12 @@ class UniformTensor
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-//    inline constexpr UniformTensor& transpose();
-//    inline constexpr UniformTensor& ctranspose();
+   inline constexpr UniformTensor& transpose();
+   inline constexpr UniformTensor& ctranspose();
+   template< typename T >
+   inline constexpr UniformTensor& transpose( const T* indices, size_t n );
+   template< typename T >
+   inline constexpr UniformTensor& ctranspose( const T* indices, size_t n );
 
    template< typename Other > inline UniformTensor& scale( const Other& scalar );
    //@}
@@ -707,26 +711,20 @@ template< typename Type > // Data type of the tensor
 template< typename MT >   // Type of the right-hand side tensor
 inline UniformTensor<Type>& UniformTensor<Type>::operator=( const Tensor<MT>& rhs )
 {
-//    using TT = decltype( trans( *this ) );
-//    using CT = decltype( ctrans( *this ) );
-
    if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of uniform tensor" );
    }
 
-//    if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
-//       transpose();
-//    }
-//    else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
-//       ctranspose();
-//    }
-//    else
-   {
+   if( (~rhs).canAlias( this ) ) {
+      UniformTensor tmp( ~rhs );
+      swap( tmp );
+   }
+   else {
       o_ = (~rhs).pages();
       m_ = (~rhs).rows();
       n_ = (~rhs).columns();
 
-      if( (~rhs).pages() > 0UL && (~rhs).rows() > 0UL && (~rhs).columns() > 0UL ) {
+      if( o_ > 0UL && m_ > 0UL && n_ > 0UL ) {
          value_ = (~rhs)(0UL,0UL,0UL);
       }
    }
@@ -1152,20 +1150,74 @@ inline constexpr void UniformTensor<Type>::swap( UniformTensor& m ) noexcept
 //
 //=================================================================================================
 
+
 //*************************************************************************************************
 /*!\brief In-place transpose of the tensor.
 //
 // \return Reference to the transposed tensor.
 */
-// template< typename Type > // Data type of the tensor
-// inline constexpr UniformTensor<Type>& UniformTensor<Type>::transpose()
-// {
-//    using std::swap;
+template< typename Type > // Data type of the tensor
+inline constexpr UniformTensor<Type>& UniformTensor<Type>::transpose()
+{
+   using std::swap;
+
+   swap( o_, n_ );      // {2, 1, 0}
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place transpose of the tensor.
 //
-//    swap( m_, n_ );
-//
-//    return *this;
-// }
+// \return Reference to the transposed tensor.
+*/
+template< typename Type > // Data type of the tensor
+template< typename T >    // Type of the mapping indices
+inline constexpr UniformTensor<Type>& UniformTensor<Type>::transpose( const T* indices, size_t n )
+{
+   using std::swap;
+
+   if ( indices[0] == 0 )
+   {
+      if ( indices[1] == 2 )
+      {
+         swap( m_, n_ );      // {0, 2, 1}
+      }
+   }
+   else if ( indices[0] == 1 )
+   {
+      if ( indices[1] == 2 )
+      {
+         auto t = o_;         // {1, 2, 0}
+         o_ = m_;
+         m_ = n_;
+         n_ = t;
+      }
+      else
+      {
+         swap ( o_, m_ );     // {1, 0, 2}
+      }
+   }
+   else
+   {
+      // indices[0] == 2
+      if ( indices[1] == 1 )
+      {
+         swap( o_, n_ );      // {2, 1, 0}
+      }
+      else
+      {
+         auto t = o_;         // {2, 0, 1}
+         o_ = n_;
+         n_ = m_;
+         m_ = t;
+      }
+   }
+
+   return *this;
+}
 //*************************************************************************************************
 
 
@@ -1174,16 +1226,35 @@ inline constexpr void UniformTensor<Type>::swap( UniformTensor& m ) noexcept
 //
 // \return Reference to the transposed tensor.
 */
-// template< typename Type > // Data type of the tensor
-// inline constexpr UniformTensor<Type>& UniformTensor<Type>::ctranspose()
-// {
-//    using std::swap;
+template< typename Type >  // Data type of the tensor
+inline constexpr UniformTensor<Type>& UniformTensor<Type>::ctranspose()
+{
+   using std::swap;
+
+   transpose();
+   conjugate( value_ );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the tensor.
 //
-//    swap( m_, n_ );
-//    conjugate( value_ );
-//
-//    return *this;
-// }
+// \return Reference to the transposed tensor.
+*/
+template< typename Type >  // Data type of the tensor
+template< typename T >     // Type of the mapping indices
+inline constexpr UniformTensor<Type>& UniformTensor<Type>::ctranspose( const T* indices, size_t n )
+{
+   using std::swap;
+
+   transpose( indices, n );
+   conjugate( value_ );
+
+   return *this;
+}
 //*************************************************************************************************
 
 

@@ -2176,47 +2176,81 @@ void AlignedPaddedTest::testTranspose()
 //    {
 //       test_ = "Row-major self-transpose via transpose()";
 //
-//       // Self-transpose of a 3x3 tensor
+//       // Self-transpose of a 3x3x3 tensor
 //       {
-//          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//          MT mat( memory.get(), 16UL, 3UL, 3UL );
-//          mat(0,0) = 1;
-//          mat(0,1) = 0;
-//          mat(0,2) = 2;
-//          mat(1,0) = 0;
-//          mat(1,1) = 3;
-//          mat(1,2) = 0;
-//          mat(2,0) = 4;
-//          mat(2,1) = 0;
-//          mat(2,2) = 5;
+//          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 432UL ) );
+//          MT mat( memory.get(), 3UL, 3UL, 3UL, 16UL );
+//          mat(0,0,0) = 1;
+//          mat(0,0,1) = 2;
+//          mat(0,0,2) = 3;
+//          mat(0,1,0) = 4;
+//          mat(0,1,1) = 5;
+//          mat(0,1,2) = 6;
+//          mat(0,2,0) = 7;
+//          mat(0,2,1) = 8;
+//          mat(0,2,2) = 9;
+//          mat(1,0,0) = 1;
+//          mat(1,0,1) = 2;
+//          mat(1,0,2) = 3;
+//          mat(1,1,0) = 4;
+//          mat(1,1,1) = 5;
+//          mat(1,1,2) = 6;
+//          mat(1,2,0) = 7;
+//          mat(1,2,1) = 8;
+//          mat(1,2,2) = 9;
+//          mat(2,0,0) = 1;
+//          mat(2,0,1) = 2;
+//          mat(2,0,2) = 3;
+//          mat(2,1,0) = 4;
+//          mat(2,1,1) = 5;
+//          mat(2,1,2) = 6;
+//          mat(2,2,0) = 7;
+//          mat(2,2,1) = 8;
+//          mat(2,2,2) = 9;
 //
-//          transpose( mat );
+//          transpose(mat, {2, 1, 0});
 //
-//          checkRows    ( mat,  3UL );
-//          checkColumns ( mat,  3UL );
-//          checkCapacity( mat, 48UL );
-//          checkNonZeros( mat,  5UL );
-//          checkNonZeros( mat,  0UL, 2UL );
-//          checkNonZeros( mat,  1UL, 1UL );
-//          checkNonZeros( mat,  2UL, 2UL );
+//          checkRows    ( mat, 3UL );
+//          checkColumns ( mat, 3UL );
+//          checkPages   ( mat, 3UL );
+//          checkCapacity( mat, 27UL );
+//          checkNonZeros( mat, 27UL );
+//          checkNonZeros( mat, 0UL, 0UL, 3UL );
+//          checkNonZeros( mat, 1UL, 0UL, 3UL );
+//          checkNonZeros( mat, 2UL, 0UL, 3UL );
+//          checkNonZeros( mat, 0UL, 1UL, 3UL );
+//          checkNonZeros( mat, 1UL, 1UL, 3UL );
+//          checkNonZeros( mat, 2UL, 1UL, 3UL );
+//          checkNonZeros( mat, 0UL, 2UL, 3UL );
+//          checkNonZeros( mat, 1UL, 2UL, 3UL );
+//          checkNonZeros( mat, 2UL, 2UL, 3UL );
 //
-//          if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 4 ||
-//              mat(1,0) != 0 || mat(1,1) != 3 || mat(1,2) != 0 ||
-//              mat(2,0) != 2 || mat(2,1) != 0 || mat(2,2) != 5 ) {
+//          if( mat(0,0,0) != 1 || mat(1,0,0) != 2 || mat(2,0,0) != 3 ||
+//              mat(0,1,0) != 4 || mat(1,1,0) != 5 || mat(2,1,0) != 6 ||
+//              mat(0,2,0) != 7 || mat(1,2,0) != 8 || mat(2,2,0) != 9 ||
+//              mat(0,0,1) != 1 || mat(1,0,1) != 2 || mat(2,0,1) != 3 ||
+//              mat(0,1,1) != 4 || mat(1,1,1) != 5 || mat(2,1,1) != 6 ||
+//              mat(0,2,1) != 7 || mat(1,2,1) != 8 || mat(2,2,1) != 9 ||
+//              mat(0,0,2) != 1 || mat(1,0,2) != 2 || mat(2,0,2) != 3 ||
+//              mat(0,1,2) != 4 || mat(1,1,2) != 5 || mat(2,1,2) != 6 ||
+//              mat(0,2,2) != 7 || mat(1,2,2) != 8 || mat(2,2,2) != 9 ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
-//                 << " Error: Initialization failed\n"
+//                 << " Error: Transpose operation failed\n"
 //                 << " Details:\n"
 //                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 1 0 4 )\n( 0 3 0 )\n( 2 0 5 )\n";
+//                 << "   Expected result:\n"
+//                         "(( 1 1 1 )\n( 4 4 4 )\n( 7 7 7 )\n"
+//                         " ( 2 2 2 )\n( 5 5 5 )\n( 8 8 8 )\n"
+//                         " ( 3 3 3 )\n( 6 6 6 )\n( 9 9 9 ))\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 //
-//       // Try to self-transpose a 3x5 tensor
+//       // Try to self-transpose a 2x3x5 tensor
 //       try {
-//          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//          MT mat( memory.get(), 16UL, 3UL, 5UL );
+//          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 480UL ) );
+//          MT mat( memory.get(), 2UL, 3UL, 5UL, 16UL );
 //
 //          transpose( mat );
 //
@@ -2231,47 +2265,81 @@ void AlignedPaddedTest::testTranspose()
 //    {
 //       test_ = "Row-major self-transpose via trans()";
 //
-//       // Self-transpose of a 3x3 tensor
+//       // Self-transpose of a 3x3x3 tensor
 //       {
-//          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//          MT mat( memory.get(), 16UL, 3UL, 3UL );
-//          mat(0,0) = 1;
-//          mat(0,1) = 0;
-//          mat(0,2) = 2;
-//          mat(1,0) = 0;
-//          mat(1,1) = 3;
-//          mat(1,2) = 0;
-//          mat(2,0) = 4;
-//          mat(2,1) = 0;
-//          mat(2,2) = 5;
+//          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 432UL ) );
+//          MT mat( memory.get(), 3UL, 3UL, 3UL, 16UL );
+//          mat(0,0,0) = 1;
+//          mat(0,0,1) = 2;
+//          mat(0,0,2) = 3;
+//          mat(0,1,0) = 4;
+//          mat(0,1,1) = 5;
+//          mat(0,1,2) = 6;
+//          mat(0,2,0) = 7;
+//          mat(0,2,1) = 8;
+//          mat(0,2,2) = 9;
+//          mat(1,0,0) = 1;
+//          mat(1,0,1) = 2;
+//          mat(1,0,2) = 3;
+//          mat(1,1,0) = 4;
+//          mat(1,1,1) = 5;
+//          mat(1,1,2) = 6;
+//          mat(1,2,0) = 7;
+//          mat(1,2,1) = 8;
+//          mat(1,2,2) = 9;
+//          mat(2,0,0) = 1;
+//          mat(2,0,1) = 2;
+//          mat(2,0,2) = 3;
+//          mat(2,1,0) = 4;
+//          mat(2,1,1) = 5;
+//          mat(2,1,2) = 6;
+//          mat(2,2,0) = 7;
+//          mat(2,2,1) = 8;
+//          mat(2,2,2) = 9;
 //
-//          mat = trans( mat );
+//          mat = trans(mat, {2, 1, 0});
 //
-//          checkRows    ( mat,  3UL );
-//          checkColumns ( mat,  3UL );
-//          checkCapacity( mat, 48UL );
-//          checkNonZeros( mat,  5UL );
-//          checkNonZeros( mat,  0UL, 2UL );
-//          checkNonZeros( mat,  1UL, 1UL );
-//          checkNonZeros( mat,  2UL, 2UL );
+//          checkRows    ( mat, 3UL );
+//          checkColumns ( mat, 3UL );
+//          checkPages   ( mat, 3UL );
+//          checkCapacity( mat, 27UL );
+//          checkNonZeros( mat, 27UL );
+//          checkNonZeros( mat, 0UL, 0UL, 3UL );
+//          checkNonZeros( mat, 1UL, 0UL, 3UL );
+//          checkNonZeros( mat, 2UL, 0UL, 3UL );
+//          checkNonZeros( mat, 0UL, 1UL, 3UL );
+//          checkNonZeros( mat, 1UL, 1UL, 3UL );
+//          checkNonZeros( mat, 2UL, 1UL, 3UL );
+//          checkNonZeros( mat, 0UL, 2UL, 3UL );
+//          checkNonZeros( mat, 1UL, 2UL, 3UL );
+//          checkNonZeros( mat, 2UL, 2UL, 3UL );
 //
-//          if( mat(0,0) != 1 || mat(0,1) != 0 || mat(0,2) != 4 ||
-//              mat(1,0) != 0 || mat(1,1) != 3 || mat(1,2) != 0 ||
-//              mat(2,0) != 2 || mat(2,1) != 0 || mat(2,2) != 5 ) {
+//          if( mat(0,0,0) != 1 || mat(1,0,0) != 2 || mat(2,0,0) != 3 ||
+//              mat(0,1,0) != 4 || mat(1,1,0) != 5 || mat(2,1,0) != 6 ||
+//              mat(0,2,0) != 7 || mat(1,2,0) != 8 || mat(2,2,0) != 9 ||
+//              mat(0,0,1) != 1 || mat(1,0,1) != 2 || mat(2,0,1) != 3 ||
+//              mat(0,1,1) != 4 || mat(1,1,1) != 5 || mat(2,1,1) != 6 ||
+//              mat(0,2,1) != 7 || mat(1,2,1) != 8 || mat(2,2,1) != 9 ||
+//              mat(0,0,2) != 1 || mat(1,0,2) != 2 || mat(2,0,2) != 3 ||
+//              mat(0,1,2) != 4 || mat(1,1,2) != 5 || mat(2,1,2) != 6 ||
+//              mat(0,2,2) != 7 || mat(1,2,2) != 8 || mat(2,2,2) != 9 ) {
 //             std::ostringstream oss;
 //             oss << " Test: " << test_ << "\n"
-//                 << " Error: Initialization failed\n"
+//                 << " Error: Transpose operation failed\n"
 //                 << " Details:\n"
 //                 << "   Result:\n" << mat << "\n"
-//                 << "   Expected result:\n( 1 0 4 )\n( 0 3 0 )\n( 2 0 5 )\n";
+//                 << "   Expected result:\n"
+//                         "(( 1 1 1 )\n( 4 4 4 )\n( 7 7 7 )\n"
+//                         " ( 2 2 2 )\n( 5 5 5 )\n( 8 8 8 )\n"
+//                         " ( 3 3 3 )\n( 6 6 6 )\n( 9 9 9 ))\n";
 //             throw std::runtime_error( oss.str() );
 //          }
 //       }
 //
-//       // Try to self-transpose a 3x5 tensor
+//       // Try to self-transpose a 2x3x5 tensor
 //       try {
-//          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//          MT mat( memory.get(), 16UL, 3UL, 5UL );
+//          std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 480UL ) );
+//          MT mat( memory.get(), 2UL, 3UL, 5UL, 16UL );
 //
 //          mat = trans( mat );
 //
@@ -2280,7 +2348,7 @@ void AlignedPaddedTest::testTranspose()
 //              << " Error: Self-transpose of a non-square tensor succeeded\n";
 //          throw std::runtime_error( oss.str() );
 //       }
-//       catch( std::invalid_argument& ) {}
+//       catch( std::logic_error& ) {}
 //    }
 }
 //*************************************************************************************************

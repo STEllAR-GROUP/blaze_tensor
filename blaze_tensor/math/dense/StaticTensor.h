@@ -381,8 +381,12 @@ class StaticTensor
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-//    inline StaticTensor& transpose();
-//    inline StaticTensor& ctranspose();
+   inline StaticTensor& transpose();
+   inline StaticTensor& ctranspose();
+   template< typename T >
+   inline StaticTensor& transpose( const T* indices, size_t n );
+   template< typename T >
+   inline StaticTensor& ctranspose( const T* indices, size_t n );
 
    template< typename Other > inline StaticTensor& scale( const Other& scalar );
    //@}
@@ -1859,6 +1863,7 @@ inline void StaticTensor<Type,O,M,N>::swap( StaticTensor& m ) noexcept
 //
 //=================================================================================================
 
+
 //*************************************************************************************************
 /*!\brief In-place transpose of the tensor.
 //
@@ -1867,22 +1872,50 @@ inline void StaticTensor<Type,O,M,N>::swap( StaticTensor& m ) noexcept
 // This function transposes the static tensor in-place. Note that this function can only be used
 // for square static matrices, i.e. if \a M is equal to N.
 */
-// template< typename Type  // Data type of the tensor
-//         , size_t O       // Number of pages
-//         , size_t M       // Number of rows
-//         , size_t N >     // Number of columns
-// inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::transpose()
-// {
-//    using std::swap;
-//
-//    BLAZE_STATIC_ASSERT( M == N );
-//
+template< typename Type  // Data type of the tensor
+        , size_t O       // Number of pages
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::transpose()
+{
+   using std::swap;
+
+   BLAZE_STATIC_ASSERT( O == M && M == N );
+
 //    for( size_t i=1UL; i<M; ++i )
 //       for( size_t j=0UL; j<i; ++j )
 //          swap( v_[i*NN+j], v_[j*NN+i] );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place transpose of the tensor.
 //
-//    return *this;
-// }
+// \return Reference to the transposed tensor.
+//
+// This function transposes the static tensor in-place. Note that this function can only be used
+// for square static matrices, i.e. if \a M is equal to N.
+*/
+template< typename Type  // Data type of the tensor
+        , size_t O       // Number of pages
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+template< typename T >   // Type of the mapping indices
+inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::transpose( const T* indices, size_t n )
+{
+   using std::swap;
+
+   BLAZE_STATIC_ASSERT( O == M && M == N );
+
+//    for( size_t i=1UL; i<M; ++i )
+//       for( size_t j=0UL; j<i; ++j )
+//          swap( v_[i*NN+j], v_[j*NN+i] );
+
+   return *this;
+}
 //*************************************************************************************************
 
 
@@ -1944,23 +1977,52 @@ inline void StaticTensor<Type,O,M,N>::swap( StaticTensor& m ) noexcept
 // This function transposes the static tensor in-place. Note that this function can only be used
 // for square static matrices, i.e. if \a M is equal to N.
 */
-// template< typename Type  // Data type of the tensor
-//         , size_t O       // Number of pages
-//         , size_t M       // Number of rows
-//         , size_t N >     // Number of columns
-// inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::ctranspose()
-// {
-//    BLAZE_STATIC_ASSERT( M == N );
-//
+template< typename Type  // Data type of the tensor
+        , size_t O       // Number of pages
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::ctranspose()
+{
+   BLAZE_STATIC_ASSERT( M == N );
+
 //    for( size_t i=0UL; i<M; ++i ) {
 //       for( size_t j=0UL; j<i; ++j ) {
 //          cswap( v_[i*NN+j], v_[j*NN+i] );
 //       }
 //       conjugate( v_[i*NN+i] );
 //    }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief In-place conjugate transpose of the tensor.
 //
-//    return *this;
-// }
+// \return Reference to the transposed tensor.
+//
+// This function transposes the static tensor in-place. Note that this function can only be used
+// for square static matrices, i.e. if \a M is equal to N.
+*/
+template< typename Type  // Data type of the tensor
+        , size_t O       // Number of pages
+        , size_t M       // Number of rows
+        , size_t N >     // Number of columns
+template< typename T >   // Type of the mapping indices
+inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::ctranspose( const T* indices, size_t n )
+{
+   BLAZE_STATIC_ASSERT( M == N );
+
+//    for( size_t i=0UL; i<M; ++i ) {
+//       for( size_t j=0UL; j<i; ++j ) {
+//          cswap( v_[i*NN+j], v_[j*NN+i] );
+//       }
+//       conjugate( v_[i*NN+i] );
+//    }
+
+   return *this;
+}
 //*************************************************************************************************
 
 

@@ -1396,68 +1396,74 @@ void DenseAlignedTest::testClear()
 */
 void DenseAlignedTest::testTranspose()
 {
-//    using blaze::subtensor;
-//    using blaze::aligned;
-//    using blaze::unaligned;
-//
-//
-//    //=====================================================================================
-//    // Row-major subtensor tests
-//    //=====================================================================================
-//
-//    {
-//       test_ = "Row-major self-transpose via transpose()";
-//
-//       initialize();
-//
-//       ASMT sm1 = subtensor<aligned>  ( mat1_, 8UL, 8UL, 16UL, 8UL );
-//       USMT sm2 = subtensor<unaligned>( mat2_, 8UL, 8UL, 16UL, 8UL );
-//
-//       transpose( sm1 );
-//       transpose( sm2 );
-//
-//       checkRows   ( sm1, 8UL );
-//       checkColumns( sm1, 8UL );
-//       checkRows   ( sm2, 8UL );
-//       checkColumns( sm2, 8UL );
-//
-//       if( sm1 != sm2 || mat1_ != mat2_ ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Transpose operation failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << sm1 << "\n"
-//              << "   Expected result:\n" << sm2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
-//
-//    {
-//       test_ = "Row-major self-transpose via trans()";
-//
-//       initialize();
-//
-//       ASMT sm1 = subtensor<aligned>  ( mat1_, 8UL, 8UL, 16UL, 8UL );
-//       USMT sm2 = subtensor<unaligned>( mat2_, 8UL, 8UL, 16UL, 8UL );
-//
-//       sm1 = trans( sm1 );
-//       sm2 = trans( sm2 );
-//
-//       checkRows   ( sm1, 8UL );
-//       checkColumns( sm1, 8UL );
-//       checkRows   ( sm2, 8UL );
-//       checkColumns( sm2, 8UL );
-//
-//       if( sm1 != sm2 || mat1_ != mat2_ ) {
-//          std::ostringstream oss;
-//          oss << " Test: " << test_ << "\n"
-//              << " Error: Transpose operation failed\n"
-//              << " Details:\n"
-//              << "   Result:\n" << sm1 << "\n"
-//              << "   Expected result:\n" << sm2 << "\n";
-//          throw std::runtime_error( oss.str() );
-//       }
-//    }
+   using blaze::subtensor;
+   using blaze::aligned;
+   using blaze::unaligned;
+
+
+   //=====================================================================================
+   // Row-major subtensor tests
+   //=====================================================================================
+
+   {
+      test_ = "Row-major self-transpose via transpose()";
+
+      initialize();
+
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 12UL, 8UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 12UL, 8UL );
+
+      transpose( sm1 );
+      transpose( sm2 );
+
+      checkRows   ( sm1, 12UL );
+      checkColumns( sm1,  8UL );
+      checkPages  ( sm1,  8UL );
+
+      checkRows   ( sm2, 12UL );
+      checkColumns( sm2,  8UL );
+      checkPages  ( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Row-major self-transpose via trans()";
+
+      initialize();
+
+      ASMT sm1 = subtensor<aligned>  ( mat1_, 2UL, 2UL, 0UL, 8UL, 12UL, 8UL );
+      USMT sm2 = subtensor<unaligned>( mat2_, 2UL, 2UL, 0UL, 8UL, 12UL, 8UL );
+
+      sm1 = trans( sm1 );
+      sm2 = trans( sm2 );
+
+      checkRows   ( sm1, 12UL );
+      checkColumns( sm1,  8UL );
+      checkPages  ( sm1,  8UL );
+
+      checkRows   ( sm2, 12UL );
+      checkColumns( sm2,  8UL );
+      checkPages  ( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Transpose operation failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 }
 //*************************************************************************************************
 

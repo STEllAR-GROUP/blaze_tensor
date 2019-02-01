@@ -4,7 +4,7 @@
 //  \brief Header file for the dense tensor/dense tensor addition operation test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -85,13 +85,11 @@
 
 #include <blaze_tensor/math/constraints/StorageOrder.h>
 // #include <blaze_tensor/math/CompressedTensor.h>
-// #include <blaze_tensor/math/constraints/ColumnMajorTensor.h>
+#include <blaze_tensor/math/constraints/Tensor.h>
 #include <blaze_tensor/math/constraints/DenseTensor.h>
-// #include <blaze_tensor/math/constraints/RowMajorTensor.h>
 // #include <blaze_tensor/math/constraints/SparseTensor.h>
 #include <blaze_tensor/math/DynamicTensor.h>
 #include <blaze_tensor/math/typetraits/StorageOrder.h>
-// #include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
 #include <blaze_tensor/math/Views.h>
 
 namespace blazetest {
@@ -124,8 +122,8 @@ class OperationTest
 
 //    using OMT1  = blaze::OppositeType_t<MT1>;    //!< Tensor type 1 with opposite storage order
 //    using OMT2  = blaze::OppositeType_t<MT2>;    //!< Tensor type 2 with opposite storage order
-//    using TMT1  = blaze::TransposeType_t<MT1>;   //!< Transpose tensor type 1
-//    using TMT2  = blaze::TransposeType_t<MT2>;   //!< Transpose tensor type 2
+   using TMT1  = blaze::TransposeType_t<MT1>;   //!< Transpose tensor type 1
+   using TMT2  = blaze::TransposeType_t<MT2>;   //!< Transpose tensor type 2
 //    using TOMT1 = blaze::TransposeType_t<OMT1>;  //!< Transpose tensor type 1 with opposite storage order
 //    using TOMT2 = blaze::TransposeType_t<OMT2>;  //!< Transpose tensor type 2 with opposite storage order
 
@@ -133,9 +131,9 @@ class OperationTest
    using DRE = blaze::AddTrait_t<MT1,MT2>;
 
    using DET   = blaze::ElementType_t<DRE>;     //!< Element type of the dense result
-   using ODRE  = blaze::OppositeType_t<DRE>;    //!< Dense result type with opposite storage order
+//    using ODRE  = blaze::OppositeType_t<DRE>;    //!< Dense result type with opposite storage order
    using TDRE  = blaze::TransposeType_t<DRE>;   //!< Transpose dense result type
-   using TODRE = blaze::TransposeType_t<ODRE>;  //!< Transpose dense result type with opposite storage order
+//    using TODRE = blaze::TransposeType_t<ODRE>;  //!< Transpose dense result type with opposite storage order
 
    //! Sparse result type
 //    using SRE = MatchAdaptor_t< DRE, blaze::CompressedTensor<DET,false> >;
@@ -189,7 +187,7 @@ class OperationTest
                           void testBasicOperation    ();
                           void testNegatedOperation  ();
    template< typename T > void testScaledOperation   ( T scalar );
-//                           void testTransOperation    ();
+                          void testTransOperation    ();
 //                           void testCTransOperation   ();
                           void testAbsOperation      ();
                           void testConjOperation     ();
@@ -256,7 +254,7 @@ class OperationTest
 //    SRE   sres_;    //!< The sparse result tensor.
 //    ODRE  odres_;   //!< The dense result tensor with opposite storage order.
 //    OSRE  osres_;   //!< The sparse result tensor with opposite storage order.
-//    TDRE  tdres_;   //!< The transpose dense result tensor.
+   TDRE  tdres_;   //!< The transpose dense result tensor.
 //    TSRE  tsres_;   //!< The transpose sparse result tensor.
 //    TODRE todres_;  //!< The transpose dense result tensor with opposite storage order.
 //    TOSRE tosres_;  //!< The transpose sparse result tensor with opposite storage order.
@@ -275,8 +273,8 @@ class OperationTest
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( MT2   );
 //    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( OMT1  );
 //    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( OMT2  );
-//    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( TMT1  );
-//    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( TMT2  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( TMT1  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( TMT2  );
 //    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( TOMT1 );
 //    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( TOMT2 );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE ( RT1   );
@@ -312,13 +310,13 @@ class OperationTest
 
 //    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_t<OMT1>   );
 //    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_t<OMT2>   );
-//    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_t<TMT1>   );
-//    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_t<TMT2>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_t<TMT1>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_t<TMT2>   );
 //    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET1, blaze::ElementType_t<TOMT1>  );
 //    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ET2, blaze::ElementType_t<TOMT2>  );
    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<DRE>    );
 //    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<ODRE>   );
-//    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<TDRE>   );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<TDRE>   );
 //    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<TODRE>  );
 //    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( DET, blaze::ElementType_t<SRE>    );
 //    BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( SET, blaze::ElementType_t<SRE>    );
@@ -382,7 +380,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
 //    , sres_()             // The sparse result tensor
 //    , odres_()            // The dense result tensor with opposite storage order
 //    , osres_()            // The sparse result tensor with opposite storage order
-//    , tdres_()            // The transpose dense result tensor
+   , tdres_()            // The transpose dense result tensor
 //    , tsres_()            // The transpose sparse result tensor
 //    , todres_()           // The transpose dense result tensor with opposite storage order
 //    , tosres_()           // The transpose sparse result tensor with opposite storage order
@@ -408,7 +406,7 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testScaledOperation( 2.0F );
    testScaledOperation( 2.0 );
    testScaledOperation( Scalar( 2 ) );
-//    testTransOperation();
+   testTransOperation();
 //    testCTransOperation();
    testAbsOperation();
    testConjOperation();
@@ -4282,36 +4280,36 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 // resulting from the addition or the subsequent assignment is detected, a \a std::runtime_error
 // exception is thrown.
 */
-// template< typename MT1    // Type of the left-hand side dense tensor
-//         , typename MT2 >  // Type of the right-hand side dense tensor
-// void OperationTest<MT1,MT2>::testTransOperation()
-// {
-// #if BLAZETEST_MATHTEST_TEST_TRANS_OPERATION
-//    if( BLAZETEST_MATHTEST_TEST_TRANS_OPERATION > 1 )
-//    {
-//       //=====================================================================================
-//       // Transpose addition
-//       //=====================================================================================
-//
-//       // Transpose addition with the given tensors
-//       {
-//          test_  = "Transpose addition with the given tensors";
-//          error_ = "Failed addition operation";
-//
-//          try {
-//             initTransposeResults();
-//             tdres_  = trans( lhs_ + rhs_ );
+template< typename MT1    // Type of the left-hand side dense tensor
+        , typename MT2 >  // Type of the right-hand side dense tensor
+void OperationTest<MT1,MT2>::testTransOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_TRANS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_TRANS_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Transpose addition
+      //=====================================================================================
+
+      // Transpose addition with the given tensors
+      {
+         test_  = "Transpose addition with the given tensors";
+         error_ = "Failed addition operation";
+
+         try {
+            initTransposeResults();
+            tdres_  = trans(lhs_ + rhs_ );
 //             todres_ = trans( lhs_ + rhs_ );
 //             tsres_  = trans( lhs_ + rhs_ );
 //             tosres_ = trans( lhs_ + rhs_ );
-//             refres_ = trans( reflhs_ + refrhs_ );
-//          }
-//          catch( std::exception& ex ) {
-//             convertException<MT1,MT2>( ex );
-//          }
-//
-//          checkTransposeResults<MT1,MT2>();
-//
+            refres_ = trans( reflhs_ + refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkTransposeResults<MT1,MT2>();
+
 //          try {
 //             initTransposeResults();
 //             tdres_  = trans( lhs_ + orhs_ );
@@ -4353,27 +4351,27 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 //          }
 //
 //          checkTransposeResults<OMT1,OMT2>();
-//       }
-//
-//       // Transpose addition with evaluated tensors
-//       {
-//          test_  = "Transpose addition with evaluated tensors";
-//          error_ = "Failed addition operation";
-//
-//          try {
-//             initTransposeResults();
-//             tdres_  = trans( eval( lhs_ ) + eval( rhs_ ) );
+      }
+
+      // Transpose addition with evaluated tensors
+      {
+         test_  = "Transpose addition with evaluated tensors";
+         error_ = "Failed addition operation";
+
+         try {
+            initTransposeResults();
+            tdres_  = trans( eval( lhs_ ) + eval( rhs_ ) );
 //             todres_ = trans( eval( lhs_ ) + eval( rhs_ ) );
 //             tsres_  = trans( eval( lhs_ ) + eval( rhs_ ) );
 //             tosres_ = trans( eval( lhs_ ) + eval( rhs_ ) );
-//             refres_ = trans( eval( reflhs_ ) + eval( refrhs_ ) );
-//          }
-//          catch( std::exception& ex ) {
-//             convertException<MT1,MT2>( ex );
-//          }
-//
-//          checkTransposeResults<MT1,MT2>();
-//
+            refres_ = trans( eval( reflhs_ ) + eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<MT1,MT2>( ex );
+         }
+
+         checkTransposeResults<MT1,MT2>();
+
 //          try {
 //             initTransposeResults();
 //             tdres_  = trans( eval( lhs_ ) + eval( orhs_ ) );
@@ -4415,10 +4413,10 @@ void OperationTest<MT1,MT2>::testScaledOperation( T scalar )
 //          }
 //
 //          checkTransposeResults<OMT1,OMT2>();
-//       }
-//    }
-// #endif
-// }
+      }
+   }
+#endif
+}
 //*************************************************************************************************
 
 
@@ -13066,7 +13064,7 @@ void OperationTest<MT1,MT2>::checkResults()
 }
 //*************************************************************************************************
 
-#if 0
+
 //*************************************************************************************************
 /*!\brief Checking and comparing the computed transpose results.
 //
@@ -13087,39 +13085,39 @@ void OperationTest<MT1,MT2>::checkTransposeResults()
 //    template <typename MT>
 //    using IsRowMajorTensor = blaze::IsTensor<MT>;
 
-   if( !isEqual( tdres_, refres_ ) || !isEqual( todres_, refres_ ) ) {
+   if( !isEqual( tdres_, refres_ ) /*|| !isEqual( todres_, refres_ )*/ ) {
       std::ostringstream oss;
       oss.precision( 20 );
       oss << " Test : " << test_ << "\n"
           << " Error: Incorrect dense result detected\n"
           << " Details:\n"
           << "   Random seed = " << blaze::getSeed() << "\n"
-          << "   Left-hand side " << ( IsRowMajorTensor<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense tensor type:\n"
+          << "   Left-hand side " << " dense tensor type:\n"
           << "     " << typeid( LT ).name() << "\n"
-          << "   Right-hand side " << ( IsRowMajorTensor<RT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense tensor type:\n"
+          << "   Right-hand side " << " dense tensor type:\n"
           << "     " << typeid( RT ).name() << "\n"
           << "   Transpose result:\n" << tdres_ << "\n"
-          << "   Transpose result with opposite storage order:\n" << todres_ << "\n"
+//           << "   Transpose result with opposite storage order:\n" << todres_ << "\n"
           << "   Expected result:\n" << refres_ << "\n";
       throw std::runtime_error( oss.str() );
    }
 
-   if( !isEqual( tsres_, refres_ ) || !isEqual( tosres_, refres_ ) ) {
-      std::ostringstream oss;
-      oss.precision( 20 );
-      oss << " Test : " << test_ << "\n"
-          << " Error: Incorrect sparse result detected\n"
-          << " Details:\n"
-          << "   Random seed = " << blaze::getSeed() << "\n"
-          << "   Left-hand side " << ( IsRowMajorTensor<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense tensor type:\n"
-          << "     " << typeid( LT ).name() << "\n"
-          << "   Right-hand side " << ( IsRowMajorTensor<RT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense tensor type:\n"
-          << "     " << typeid( RT ).name() << "\n"
-          << "   Transpose result:\n" << tsres_ << "\n"
-          << "   Transpose result with opposite storage order:\n" << tosres_ << "\n"
-          << "   Expected result:\n" << refres_ << "\n";
-      throw std::runtime_error( oss.str() );
-   }
+//    if( !isEqual( tsres_, refres_ ) || !isEqual( tosres_, refres_ ) ) {
+//       std::ostringstream oss;
+//       oss.precision( 20 );
+//       oss << " Test : " << test_ << "\n"
+//           << " Error: Incorrect sparse result detected\n"
+//           << " Details:\n"
+//           << "   Random seed = " << blaze::getSeed() << "\n"
+//           << "   Left-hand side " << ( IsRowMajorTensor<LT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense tensor type:\n"
+//           << "     " << typeid( LT ).name() << "\n"
+//           << "   Right-hand side " << ( IsRowMajorTensor<RT>::value ? ( "row-major" ) : ( "column-major" ) ) << " dense tensor type:\n"
+//           << "     " << typeid( RT ).name() << "\n"
+//           << "   Transpose result:\n" << tsres_ << "\n"
+//           << "   Transpose result with opposite storage order:\n" << tosres_ << "\n"
+//           << "   Expected result:\n" << refres_ << "\n";
+//       throw std::runtime_error( oss.str() );
+//    }
 }
 //*************************************************************************************************
 
@@ -13131,7 +13129,6 @@ void OperationTest<MT1,MT2>::checkTransposeResults()
 //  UTILITY FUNCTIONS
 //
 //=================================================================================================
-#endif
 
 //*************************************************************************************************
 /*!\brief Initializing the non-transpose result tensors.
@@ -13158,7 +13155,6 @@ void OperationTest<MT1,MT2>::initResults()
 }
 //*************************************************************************************************
 
-#if 0
 //*************************************************************************************************
 /*!\brief Initializing the transpose result tensors.
 //
@@ -13174,16 +13170,15 @@ void OperationTest<MT1,MT2>::initTransposeResults()
    const blaze::UnderlyingBuiltin_t<TDRE> min( randmin );
    const blaze::UnderlyingBuiltin_t<TDRE> max( randmax );
 
-   resize( tdres_, columns( lhs_ ), rows( lhs_ ) );
+   resize( tdres_, pages( lhs_ ), columns( lhs_ ), rows( lhs_ ) );
    randomize( tdres_, min, max );
 
-   todres_ = tdres_;
-   tsres_  = tdres_;
-   tosres_ = tdres_;
+//    todres_ = tdres_;
+//    tsres_  = tdres_;
+//    tosres_ = tdres_;
    refres_ = tdres_;
 }
 //*************************************************************************************************
-#endif
 
 
 //*************************************************************************************************

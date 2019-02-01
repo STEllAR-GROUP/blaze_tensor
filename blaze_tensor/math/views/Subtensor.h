@@ -95,6 +95,7 @@
 #include <blaze_tensor/math/expressions/TensTensMapExpr.h>
 #include <blaze_tensor/math/expressions/TensTensMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
+#include <blaze_tensor/math/expressions/TensTransExpr.h>
 #include <blaze_tensor/math/views/columnslice/ColumnSliceData.h>
 #include <blaze_tensor/math/views/pageslice/PageSliceData.h>
 #include <blaze_tensor/math/views/rowslice/RowSliceData.h>
@@ -1240,21 +1241,21 @@ inline decltype(auto) subtensor( const DeclExpr<TT>& tensor, RSAs... args )
 // This function returns an expression representing the specified subtensor of the given tensor
 // transpose operation.
 */
-template< AlignmentFlag AF    // Alignment flag
-        , size_t K            // Index of the first page
-        , size_t I            // Index of the first row
-        , size_t J            // Index of the first column
-        , size_t O            // Number of pages
-        , size_t M            // Number of rows
-        , size_t N            // Number of columns
-        , typename TT         // Tensor base type of the expression
-        , typename... RSAs >  // Optional subtensor arguments
-inline decltype(auto) subtensor( const MatTransExpr<TT>& tensor, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( subtensor<AF,K,I,J,O,M,N>( (~tensor).operand(), args... ) );
-}
+// template< AlignmentFlag AF    // Alignment flag
+//         , size_t K            // Index of the first page
+//         , size_t I            // Index of the first row
+//         , size_t J            // Index of the first column
+//         , size_t O            // Number of pages
+//         , size_t M            // Number of rows
+//         , size_t N            // Number of columns
+//         , typename TT         // Tensor base type of the expression
+//         , typename... RSAs >  // Optional subtensor arguments
+// inline decltype(auto) subtensor( const TensTransExpr<TT>& tensor, RSAs... args )
+// {
+//    BLAZE_FUNCTION_TRACE;
+//
+//    return trans( subtensor<AF,K,I,J,O,M,N>( (~tensor).operand(), args... ), (~tensor).idces() );
+// }
 /*! \endcond */
 //*************************************************************************************************
 
@@ -1275,16 +1276,16 @@ inline decltype(auto) subtensor( const MatTransExpr<TT>& tensor, RSAs... args )
 // This function returns an expression representing the specified subtensor of the given tensor
 // transpose operation.
 */
-// template< AlignmentFlag AF    // Alignment flag
-//         , typename TT         // Tensor base type of the expression
-//         , typename... RSAs >  // Optional subtensor arguments
-// inline decltype(auto)
-//    subtensor( const TensTransExpr<TT>& tensor, size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, RSAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    return trans( subtensor<AF>( (~tensor).operand(), page, column, row, n, m, o, args... ) );
-// }
+template< AlignmentFlag AF    // Alignment flag
+        , typename TT         // Tensor base type of the expression
+        , typename... RSAs >  // Optional subtensor arguments
+inline decltype(auto)
+   subtensor( const TensTransExpr<TT>& tensor, size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( subtensor<AF>( (~tensor).operand(), page, column, row, n, m, o, args... ), (~tensor).idces() );
+}
 /*! \endcond */
 //*************************************************************************************************
 

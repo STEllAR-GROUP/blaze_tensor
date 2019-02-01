@@ -4,7 +4,7 @@
 //  \brief Subtensor specialization for dense matrices
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -682,8 +682,13 @@ class Subtensor<MT,unaligned,CSAs...>
    //**Numeric functions***************************************************************************
    /*!\name Numeric functions */
    //@{
-//    inline Subtensor& transpose();
-//    inline Subtensor& ctranspose();
+   inline Subtensor& transpose();
+   inline Subtensor& ctranspose();
+
+   template< typename T >
+   inline Subtensor& transpose( const T* indices, size_t n );
+   template< typename T >
+   inline Subtensor& ctranspose( const T* indices, size_t n );
 
    template< typename Other > inline Subtensor& scale( const Other& scalar );
    //@}
@@ -1984,26 +1989,69 @@ inline void Subtensor<MT,unaligned,CSAs...>::reset( size_t i, size_t k )
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-// template< typename MT       // Type of the dense tensor
-//         , size_t... CSAs >  // Compile time subtensor arguments
-// inline Subtensor<MT,unaligned,CSAs...>&
-//    Subtensor<MT,unaligned,CSAs...>::transpose()
-// {
+template< typename MT       // Type of the dense tensor
+        , size_t... CSAs >  // Compile time subtensor arguments
+inline Subtensor<MT,unaligned,CSAs...>&
+   Subtensor<MT,unaligned,CSAs...>::transpose()
+{
+   if( pages() != columns() ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic subtensor" );
+   }
+
+   if( !tryAssign( tensor_, trans( *this ), row(), column(), page() ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   const ResultType tmp( trans( *this ) );
+
+   smpAssign( left, tmp );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place transpose of the subtensor.
+//
+// \return Reference to the transposed subtensor.
+// \exception std::logic_error Invalid transpose of a non-quadratic subtensor.
+// \exception std::logic_error Invalid transpose operation.
+//
+// This function transposes the dense subtensor in-place. Note that this function can only be used
+// for quadratic subtensors, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
+//
+//  - ... the subtensor contains elements from the upper part of the underlying lower tensor;
+//  - ... the subtensor contains elements from the lower part of the underlying upper tensor;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian tensor.
+//
+// In all cases, a \a std::logic_error is thrown.
+*/
+template< typename MT       // Type of the dense tensor
+        , size_t... CSAs >  // Compile time subtensor arguments
+template< typename T >      // Type of the mapping indices
+inline Subtensor<MT,unaligned,CSAs...>&
+   Subtensor<MT,unaligned,CSAs...>::transpose( const T* indices, size_t n )
+{
 //    if( rows() != columns() ) {
 //       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic subtensor" );
 //    }
-//
-//    if( !tryAssign( tensor_, trans( *this ), row(), column() ) ) {
-//       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
-//    }
-//
-//    decltype(auto) left( derestrict( *this ) );
-//    const ResultType tmp( trans( *this ) );
-//
-//    smpAssign( left, tmp );
-//
-//    return *this;
-// }
+
+   if( !tryAssign( tensor_, trans( *this, indices, n ), row(), column(), page() ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   const ResultType tmp( trans( *this, indices, n ) );
+
+   smpAssign( left, tmp );
+
+   return *this;
+}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -2026,26 +2074,69 @@ inline void Subtensor<MT,unaligned,CSAs...>::reset( size_t i, size_t k )
 //
 // In all cases, a \a std::logic_error is thrown.
 */
-// template< typename MT       // Type of the dense tensor
-//         , size_t... CSAs >  // Compile time subtensor arguments
-// inline Subtensor<MT,unaligned,CSAs...>&
-//    Subtensor<MT,unaligned,CSAs...>::ctranspose()
-// {
-//    if( rows() != columns() ) {
-//       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic subtensor" );
-//    }
+template< typename MT       // Type of the dense tensor
+        , size_t... CSAs >  // Compile time subtensor arguments
+inline Subtensor<MT,unaligned,CSAs...>&
+   Subtensor<MT,unaligned,CSAs...>::ctranspose()
+{
+   if( pages() != columns() ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic subtensor" );
+   }
+
+   if( !tryAssign( tensor_, ctrans( *this ), row(), column(), page() ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   const ResultType tmp( ctrans( *this ) );
+
+   smpAssign( left, tmp );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief In-place conjugate transpose of the subtensor.
 //
-//    if( !tryAssign( tensor_, ctrans( *this ), row(), column() ) ) {
-//       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
-//    }
+// \return Reference to the transposed subtensor.
+// \exception std::logic_error Invalid transpose of a non-quadratic subtensor.
+// \exception std::logic_error Invalid transpose operation.
 //
-//    decltype(auto) left( derestrict( *this ) );
-//    const ResultType tmp( ctrans( *this ) );
+// This function transposes the dense subtensor in-place. Note that this function can only be used
+// for quadratic subtensors, i.e. if the number of rows is equal to the number of columns. Also,
+// the function fails if ...
 //
-//    smpAssign( left, tmp );
+//  - ... the subtensor contains elements from the upper part of the underlying lower tensor;
+//  - ... the subtensor contains elements from the lower part of the underlying upper tensor;
+//  - ... the result would be non-deterministic in case of a symmetric or Hermitian tensor.
 //
-//    return *this;
-// }
+// In all cases, a \a std::logic_error is thrown.
+*/
+template< typename MT       // Type of the dense tensor
+        , size_t... CSAs >  // Compile time subtensor arguments
+template< typename T >      // Type of the mapping indices
+inline Subtensor<MT,unaligned,CSAs...>&
+   Subtensor<MT,unaligned,CSAs...>::ctranspose( const T* indices, size_t n )
+{
+   if( rows() != columns() ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic subtensor" );
+   }
+
+   if( !tryAssign( tensor_, ctrans( *this, indices, n ), row(), column(), page() ) ) {
+      BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+   const ResultType tmp( ctrans( *this, indices, n ) );
+
+   smpAssign( left, tmp );
+
+   return *this;
+}
 /*! \endcond */
 //*************************************************************************************************
 
