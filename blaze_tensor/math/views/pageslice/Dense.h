@@ -213,10 +213,10 @@ class PageSlice
    inline PageSlice& operator=( initializer_list<initializer_list<ElementType> > list );
    inline PageSlice& operator=( const PageSlice& rhs );
 
-   template< typename VT > inline PageSlice& operator= ( const Matrix<VT,false>& rhs );
-   template< typename VT > inline PageSlice& operator+=( const Matrix<VT,false>& rhs );
-   template< typename VT > inline PageSlice& operator-=( const Matrix<VT,false>& rhs );
-   template< typename VT > inline PageSlice& operator%=( const Matrix<VT,false>& rhs );
+   template< typename VT, bool SO > inline PageSlice& operator= ( const Matrix<VT,SO>& rhs );
+   template< typename VT, bool SO > inline PageSlice& operator+=( const Matrix<VT,SO>& rhs );
+   template< typename VT, bool SO > inline PageSlice& operator-=( const Matrix<VT,SO>& rhs );
+   template< typename VT, bool SO > inline PageSlice& operator%=( const Matrix<VT,SO>& rhs );
    //@}
    //**********************************************************************************************
 
@@ -873,11 +873,12 @@ inline PageSlice<MT,CRAs...>&
 */
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side matrix
+template< typename VT       // Type of the right-hand side matrix
+        , bool SO >         // RIght hand side storage order
 inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator=( const Matrix<VT,false>& rhs )
+   PageSlice<MT,CRAs...>::operator=( const Matrix<VT,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
+   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
@@ -927,11 +928,12 @@ inline PageSlice<MT,CRAs...>&
 */
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side matrix
+template< typename VT       // Type of the right-hand side matrix
+        , bool SO >         // RIght hand side storage order
 inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator+=( const Matrix<VT,false>& rhs )
+   PageSlice<MT,CRAs...>::operator+=( const Matrix<VT,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
+   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
@@ -979,11 +981,12 @@ inline PageSlice<MT,CRAs...>&
 */
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side matrix
+template< typename VT       // Type of the right-hand side matrix
+        , bool SO >         // RIght hand side storage order
 inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator-=( const Matrix<VT,false>& rhs )
+   PageSlice<MT,CRAs...>::operator-=( const Matrix<VT,SO>& rhs )
 {
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
+   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
    if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
@@ -1030,13 +1033,14 @@ inline PageSlice<MT,CRAs...>&
 */
 template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
-template< typename VT >     // Type of the right-hand side matrix
+template< typename VT       // Type of the right-hand side matrix
+        , bool SO >         // RIght hand side storage order
 inline PageSlice<MT,CRAs...>&
-   PageSlice<MT,CRAs...>::operator%=( const Matrix<VT,false>& rhs )
+   PageSlice<MT,CRAs...>::operator%=( const Matrix<VT,SO>& rhs )
 {
    using blaze::assign;
 
-   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
+   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
