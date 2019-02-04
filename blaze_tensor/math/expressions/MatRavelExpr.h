@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/DenseMatrix.h
-//  \brief Header file for all basic DenseMatrix functionality
+//  \file blaze_tensor/math/expressions/MatRavelExpr.h
+//  \brief Header file for the MatRavelExpr base class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,32 +33,42 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSETENSOR_H_
-#define _BLAZE_TENSOR_MATH_DENSETENSOR_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_MATRAVELEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_MATRAVELEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/DenseMatrix.h>
+#include <blaze_tensor/math/expressions/RavelExpr.h>
 
-#include <blaze_tensor/math/Tensor.h>
-#include <blaze_tensor/math/dense/DenseTensor.h>
-#include <blaze_tensor/math/expressions/DMatExpandExpr.h>
-#include <blaze_tensor/math/expressions/DMatRavelExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
-#include <blaze_tensor/math/expressions/DTensMapExpr.h>
-//#include <blaze_tensor/math/expressions/DTensRavelExpr.h>
-#include <blaze_tensor/math/expressions/DTensScalarDivExpr.h>
-#include <blaze_tensor/math/expressions/DTensScalarMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensSerialExpr.h>
-#include <blaze_tensor/math/expressions/DTensTransExpr.h>
-#include <blaze_tensor/math/expressions/DenseTensor.h>
-#include <blaze_tensor/math/smp/DenseTensor.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Base class for all matrix ravel expression templates.
+// \ingroup math
+//
+// The MatRavelExpr class serves as a tag for all expression templates that implement a matrix
+// ravel operation. All classes, that represent a matrix ravel and and that are used within the
+// expression template environment of the Blaze library have to derive publicly from this class
+// in order to qualify as matrix ravel expression template. Only in case a class is derived
+// publicly from the MatRavelExpr base class, the IsMatRavelExpr type trait recognizes the
+// class as valid matrix ravel expression template.
+*/
+template< typename MT >     // Matrix base type of the expression
+struct MatRavelExpr
+   : public RavelExpr<MT>
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

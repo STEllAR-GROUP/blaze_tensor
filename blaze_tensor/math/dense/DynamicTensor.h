@@ -42,6 +42,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/dense/DynamicMatrix.h>
+#include <blaze/math/traits/ExpandTrait.h>
 
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitializerList.h>
@@ -50,6 +51,7 @@
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
+#include <blaze_tensor/math/traits/RavelTrait.h>
 #include <blaze_tensor/math/traits/RowSliceTrait.h>
 #include <blaze_tensor/math/traits/SubtensorTrait.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
@@ -3309,6 +3311,143 @@ struct ExpandTraitEval2< T, E
 };
 /*! \endcond */
 //*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  RAVELTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// FIXME: this needs to go into math/dense/DynamicMatrix.h
+template< typename T > // Type to be expanded
+struct RavelTraitEval2< T
+                       , EnableIf_t< IsDenseMatrix_v<T> &&
+                                     ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,0UL> == DefaultMaxSize_v ) &&
+                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,1UL> == DefaultMaxSize_v ) ) ) > >
+{
+   using Type = DynamicVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// FIXME: this needs to go into math/adaptors/HybridMatrix.h
+template< typename T > // Type to be expanded
+struct RavelTraitEval2< T
+                       , EnableIf_t< IsDenseMatrix_v<T> &&
+                                     ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
+                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) ) ) > >
+{
+   using Type = HybridVector< ElementType_t<T>, MaxSize_v<T,0UL> * MaxSize_v<T,1UL>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// FIXME: this needs to go into math/adaptors/DiagonalMatrix.h
+template< typename T >
+struct RavelTraitEval1< T
+                    , EnableIf_t< IsDenseMatrix_v<T> && IsDiagonal_v<T> &&
+                                 !IsUniform_v<T> && !IsZero_v<T> &&
+                                 !IsLower_v<T> && !IsUpper_v<T> > >
+{
+   using Type = DynamicVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// FIXME: this needs to go into math/adaptors/HermetianMatrix.h
+template< typename T >
+struct RavelTraitEval1< T
+                    , EnableIf_t< IsDenseMatrix_v<T> && IsHermitian_v<T> /*&& !IsSymmetric_v<T>*/ > >
+{
+   using Type = DynamicVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// FIXME: this needs to go into math/adaptors/LowerMatrix.h
+template< typename T >
+struct RavelTraitEval1< T
+                    , EnableIf_t< IsDenseMatrix_v<T> && IsLower_v<T> && !IsSymmetric_v<T> > >
+{
+   using Type = DynamicVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// FIXME: this needs to go into math/adaptors/UpperMatrix.h
+template< typename T >
+struct RavelTraitEval1< T
+                    , EnableIf_t< IsDenseMatrix_v<T> && IsUpper_v<T> && !IsSymmetric_v<T> > >
+{
+   using Type = DynamicVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// FIXME: this needs to go into math/adaptors/ZeroMatrix.h
+template< typename T >
+struct RavelTraitEval1< T
+                    , EnableIf_t< IsDenseMatrix_v<T> && IsZero_v<T> && !IsSymmetric_v<T> > >
+{
+   using Type = DynamicVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// FIXME: this needs to go into math/dense/UniformMatrix.h
+template< typename T >
+struct RavelTraitEval1< T
+                    , EnableIf_t< IsDenseMatrix_v<T> && IsUniform_v<T> && !IsZero_v<T> > >
+{
+   using Type = UniformVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 
 

@@ -41,7 +41,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/Matrix.h>
+#include <blaze_tensor/math/typetraits/IsTensor.h>
 
 
 namespace blaze {
@@ -60,7 +60,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_TENSOR_TYPE(T) \
-   static_assert( ::blaze::IsTensor_v_v<T>, "Non-tensor type detected" )
+   static_assert( ::blaze::IsTensor_v<T>, "Non-tensor type detected" )
 //*************************************************************************************************
 
 

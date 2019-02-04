@@ -238,22 +238,6 @@ class DTensTransExpr
    }
    //**********************************************************************************************
 
-   //**Load function*******************************************************************************
-   /*!\brief Access to the SIMD elements of the tensor.
-   //
-   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
-   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
-   // \return Reference to the accessed values.
-   */
-   BLAZE_ALWAYS_INLINE auto load( size_t k, size_t i, size_t j ) const noexcept {
-      BLAZE_INTERNAL_ASSERT( k < pages()  , "Invalid page access index" );
-      BLAZE_INTERNAL_ASSERT( i < rows()   , "Invalid row access index"    );
-      BLAZE_INTERNAL_ASSERT( j < columns(), "Invalid column access index" );
-      BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL , "Invalid column access index" );
-      return dm_.load( reverse_page(k, i, j), reverse_row(k, i, j), reverse_column(k, i, j) );
-   }
-   //**********************************************************************************************
-
    //**Low-level data access***********************************************************************
    /*!\brief Low-level data access to the tensor elements.
    //

@@ -124,6 +124,7 @@
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
+#include <blaze_tensor/math/traits/RavelTrait.h>
 #include <blaze_tensor/math/traits/RowSliceTrait.h>
 #include <blaze_tensor/math/traits/SubtensorTrait.h>
 #include <blaze_tensor/math/typetraits/IsColumnMajorTensor.h>
@@ -3673,6 +3674,30 @@ struct ExpandTraitEval2< T, E
    static constexpr size_t N = ( Size_v<T,1UL> );
 
    using Type = StaticTensor< ElementType_t<T>, O, M, N >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  RAVELTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T > // Type to be expanded
+struct RavelTraitEval2< T
+                       , EnableIf_t< IsDenseMatrix_v<T> &&
+                                     ( Size_v<T,0UL> != DefaultSize_v ) &&
+                                     ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
+                                     ( Size_v<T,1UL> != DefaultSize_v ) &&
+                                     ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) > >
+{
+   using Type = StaticVector< ElementType_t<T>, Size_v<T,0UL> * Size_v<T,1UL>, rowVector >;
 };
 /*! \endcond */
 //*************************************************************************************************
