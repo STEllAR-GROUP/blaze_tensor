@@ -1174,7 +1174,7 @@ inline bool tryAssign( const ColumnSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1206,7 +1206,7 @@ inline bool tryAddAssign( const ColumnSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryAddAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1238,7 +1238,7 @@ inline bool trySubAssign( const ColumnSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return trySubAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1270,7 +1270,7 @@ inline bool tryMultAssign( const ColumnSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryMultAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1302,7 +1302,7 @@ inline bool tryDivAssign( const ColumnSlice<MT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryDivAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
