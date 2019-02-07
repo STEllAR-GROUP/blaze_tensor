@@ -3326,6 +3326,26 @@ struct ExpandTraitEval2< T, E
 // FIXME: this needs to go into math/dense/DynamicMatrix.h
 template< typename T > // Type to be expanded
 struct RavelTraitEval2< T
+                       , EnableIf_t< IsDenseTensor_v<T> &&
+                                     ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,0UL> == DefaultMaxSize_v ) &&
+                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,1UL> == DefaultMaxSize_v ) &&
+                                         ( Size_v<T,2UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,2UL> == DefaultMaxSize_v ) ) ) > >
+{
+   using Type = DynamicVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T > // Type to be expanded
+struct RavelTraitEval2< T
                        , EnableIf_t< IsDenseMatrix_v<T> &&
                                      ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
                                          ( MaxSize_v<T,0UL> == DefaultMaxSize_v ) &&
