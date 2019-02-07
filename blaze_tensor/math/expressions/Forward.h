@@ -58,11 +58,14 @@ template< typename, typename > class DTensDTensMultExpr;
 template< typename, typename > class DTensDTensSchurExpr;
 template< typename, typename > class DTensDTensSubExpr;
 template< typename, typename > class DTensMapExpr;
+//template< typename > class DTensRavelExpr;
 template< typename, typename > class DTensScalarMultExpr;
 template< typename, typename > class DTensScalarDivExpr;
 template< typename, typename, typename > class DTensDTensMapExpr;
 template< typename, size_t... > class DTensTransExpr;
+
 template< typename, size_t... > class DMatExpandExpr;
+template< typename > class DMatRavelExpr;
 
 
 
@@ -112,6 +115,12 @@ decltype(auto) expand( const DenseMatrix<TT, SO>& );
 
 template< size_t E, typename TT, bool SO >
 decltype(auto) expand( const DenseMatrix<TT, SO>&, size_t );
+
+template< typename MT, bool SO >
+decltype(auto) ravel( const DenseMatrix<MT, SO>& );
+
+//template< typename TT >
+//decltype(auto) ravel( const DenseTensor<TT>& );
 
 } // namespace blaze
 
