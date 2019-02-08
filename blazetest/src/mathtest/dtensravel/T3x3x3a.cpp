@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/DenseMatrix.h
-//  \brief Header file for all basic DenseMatrix functionality
+//  \file src/mathtest/dtensravel/T3x3x3a.cpp
+//  \brief Source file for the T3x3x3a dense tensor ravel operation math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,32 +33,54 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSETENSOR_H_
-#define _BLAZE_TENSOR_MATH_DENSETENSOR_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/DenseMatrix.h>
+#include <cstdlib>
+#include <iostream>
+#include <blaze_tensor/math/DynamicTensor.h>
+#include <blaze_tensor/math/StaticTensor.h>
+#include <blazetest/mathtest/creator/StaticTensor.h>
+#include <blazetest/mathtest/dtensravel/OperationTest.h>
+#include <blazetest/system/MathTest.h>
 
-#include <blaze_tensor/math/Tensor.h>
-#include <blaze_tensor/math/dense/DenseTensor.h>
-#include <blaze_tensor/math/expressions/DMatExpandExpr.h>
-#include <blaze_tensor/math/expressions/DMatRavelExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
-#include <blaze_tensor/math/expressions/DTensMapExpr.h>
-#include <blaze_tensor/math/expressions/DTensRavelExpr.h>
-#include <blaze_tensor/math/expressions/DTensScalarDivExpr.h>
-#include <blaze_tensor/math/expressions/DTensScalarMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensSerialExpr.h>
-#include <blaze_tensor/math/expressions/DTensTransExpr.h>
-#include <blaze_tensor/math/expressions/DenseTensor.h>
-#include <blaze_tensor/math/smp/DenseTensor.h>
-
+#ifdef BLAZE_USE_HPX_THREADS
+#  include <hpx/hpx_main.hpp>
 #endif
+
+
+//=================================================================================================
+//
+//  MAIN FUNCTION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+int main()
+{
+   std::cout << "   Running 'T3x3x3a'..." << std::endl;
+
+   using blazetest::mathtest::TypeA;
+
+   try
+   {
+      // Matrix type definitions
+      using T3x3x3a = blaze::StaticTensor<TypeA,3UL,3UL,3UL>;
+
+      // Creator type definitions
+      using CT3x3x3a = blazetest::Creator<T3x3x3a>;
+
+      // Running the tests
+      RUN_DTENSRAVEL_OPERATION_TEST( CT3x3x3a() );
+   }
+   catch( std::exception& ex ) {
+      std::cerr << "\n\n ERROR DETECTED during dense tensor ravel operation:\n"
+                << ex.what() << "\n";
+      return EXIT_FAILURE;
+   }
+
+   return EXIT_SUCCESS;
+}
+//*************************************************************************************************
