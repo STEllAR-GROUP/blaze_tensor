@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file src/mathtest/dmatravel/TDa.cpp
+//  \file src/mathtest/dtensravel/TDa.cpp
 //  \brief Source file for the TDa dense tensor ravel operation math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
