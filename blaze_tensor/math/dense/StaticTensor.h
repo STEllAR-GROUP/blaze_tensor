@@ -121,6 +121,7 @@
 // #include <blaze_tensor/math/typetraits/IsSparseTensor.h>
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/dense/Forward.h>
+#include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
@@ -1879,13 +1880,9 @@ template< typename Type  // Data type of the tensor
         , size_t N >     // Number of columns
 inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::transpose()
 {
-   using std::swap;
-
    BLAZE_STATIC_ASSERT( O == M && M == N );
 
-//    for( size_t i=1UL; i<M; ++i )
-//       for( size_t j=0UL; j<i; ++j )
-//          swap( v_[i*NN+j], v_[j*NN+i] );
+   transposeGeneral( *this );
 
    return *this;
 }
@@ -1907,13 +1904,9 @@ template< typename Type  // Data type of the tensor
 template< typename T >   // Type of the mapping indices
 inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::transpose( const T* indices, size_t n )
 {
-   using std::swap;
-
    BLAZE_STATIC_ASSERT( O == M && M == N );
 
-//    for( size_t i=1UL; i<M; ++i )
-//       for( size_t j=0UL; j<i; ++j )
-//          swap( v_[i*NN+j], v_[j*NN+i] );
+   transposeGeneral( *this, indices, n );
 
    return *this;
 }

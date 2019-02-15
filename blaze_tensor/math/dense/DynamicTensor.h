@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
 //  \file blaze_tensor/math/dense/DynamicTensor.h
-//  \brief Header file for the implementation of a dynamic MxN tensor
+//  \brief Header file for the implementation of a dynamic OxMxN tensor
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -48,6 +48,7 @@
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/Tensor.h>
+#include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
@@ -1803,29 +1804,15 @@ inline size_t DynamicTensor<Type>::addPadding( size_t value ) const noexcept
 template< typename Type >  // Data type of the tensor
 inline DynamicTensor<Type>& DynamicTensor<Type>::transpose()
 {
-//    using std::swap;
-//
-//    constexpr size_t block( BLOCK_SIZE );
-//
-//    if( o_ == n_ && m_ == n_ )
-//    {
-//       for( size_t ii=0UL; ii<m_; ii+=block ) {
-//          const size_t iend( min( ii+block, m_ ) );
-//          for( size_t jj=0UL; jj<=ii; jj+=block ) {
-//             for( size_t i=ii; i<iend; ++i ) {
-//                const size_t jend( min( jj+block, n_, i ) );
-//                for( size_t j=jj; j<jend; ++j ) {
-//                   swap( v_[i*nn_+j], v_[j*nn_+i] );
-//                }
-//             }
-//          }
-//       }
-//    }
-//    else
-//    {
+   if( o_ == n_ && m_ == n_ )
+   {
+      transposeGeneral( *this );
+   }
+   else
+   {
       DynamicTensor tmp( trans( *this ) );
       this->swap( tmp );
-//    }
+   }
 
    return *this;
 }
@@ -1841,29 +1828,15 @@ template< typename Type >  // Data type of the tensor
 template< typename T >     // Type of the mapping indices
 inline DynamicTensor<Type>& DynamicTensor<Type>::transpose( const T* indices, size_t n )
 {
-//    using std::swap;
-//
-//    constexpr size_t block( BLOCK_SIZE );
-//
-//    if( o_ == n_ && m_ == n_ )
-//    {
-//       for( size_t ii=0UL; ii<m_; ii+=block ) {
-//          const size_t iend( min( ii+block, m_ ) );
-//          for( size_t jj=0UL; jj<=ii; jj+=block ) {
-//             for( size_t i=ii; i<iend; ++i ) {
-//                const size_t jend( min( jj+block, n_, i ) );
-//                for( size_t j=jj; j<jend; ++j ) {
-//                   swap( v_[i*nn_+j], v_[j*nn_+i] );
-//                }
-//             }
-//          }
-//       }
-//    }
-//    else
-//    {
+   if( o_ == n_ && m_ == n_ )
+   {
+      transposeGeneral( *this, indices, n );
+   }
+   else
+   {
       DynamicTensor tmp( trans(*this, indices, n ) );
       this->swap( tmp );
-//    }
+   }
 
    return *this;
 }
