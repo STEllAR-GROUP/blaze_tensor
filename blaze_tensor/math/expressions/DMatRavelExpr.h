@@ -482,24 +482,42 @@ class DMatRavelExpr
    //**********************************************************************************************
 
    //**Begin function******************************************************************************
-   /*!\brief Returns an iterator to the first element of row/column \a i.
+   /*!\brief Returns an iterator to the first element of the underlying matrix.
    //
-   // \param i The row/column index.
-   // \return Iterator to the first element of row/column \a i.
+   // \return Iterator to the first element of the underlying matrix.
    */
-   inline ConstIterator begin( ) const {
-      return ConstIterator( dm_.begin( 0 ), 0 );
+   inline ConstIterator begin( ) {
+      return ConstIterator( dm_, 0 );
    }
    //**********************************************************************************************
 
    //**End function********************************************************************************
-   /*!\brief Returns an iterator just past the last element of row/column \a i.
+   /*!\brief Returns an iterator just past the last element of the underlying matrix.
    //
-   // \param i The row/column index.
-   // \return Iterator just past the last element of row/column \a i.
+   // \return Iterator just past the last element of the underlying matrix.
    */
    inline ConstIterator end( ) const {
-      return ConstIterator( dm_.end( dm_.rows() - 1 ), size() );
+      return ConstIterator( dm_, size() );
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first element of the underlying matrix.
+   //
+   // \return Iterator to the first element of the underlying matrix.
+   */
+   inline ConstIterator cbegin( ) const {
+      return ConstIterator( dm_, 0 );
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last element of the underlying matrix.
+   //
+   // \return Iterator just past the last element of the underlying matrix.
+   */
+   inline ConstIterator cend( ) const {
+      return ConstIterator( dm_, size() );
    }
    //**********************************************************************************************
 

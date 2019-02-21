@@ -152,7 +152,7 @@ class DTensRavelExpr
    //**RavelIterator class definition**************************************************************
    /*!\brief Iterator over the elements of the dense tensor map expression.
    */
-   template< typename MatrixType      // Type of the dense tensor
+   template< typename TensorType      // Type of the dense tensor
            , typename IteratorType >  // Type of the dense tensor iterator
    class RavelIterator
    {
@@ -178,7 +178,7 @@ class DTensRavelExpr
       // \param it Iterator to the initial tensor element.
       // \param op The custom unary operation.
       */
-      explicit inline RavelIterator( MatrixType& tensor, size_t pos )
+      explicit inline RavelIterator( TensorType& tensor, size_t pos )
          : tensor_( &tensor )     //!< The dense tensor being ravel-ed
          , page_  ( ( pos / tensor_->columns() ) / tensor_->rows() )    //!< The current page index
          , row_   ( ( pos / tensor_->columns() ) % tensor_->rows() )    //!< The current row index
@@ -310,7 +310,7 @@ class DTensRavelExpr
       // \return The resulting value.
       */
       inline ReturnType operator*() const {
-         return (*tensor_)( row_, column_ );
+         return (*tensor_)( page_, row_, column_ );
       }
       //*******************************************************************************************
 
@@ -434,7 +434,7 @@ class DTensRavelExpr
       }
 
       //**Member variables*************************************************************************
-      MatrixType*  tensor_;
+      TensorType*  tensor_;
       size_t       page_;     //!< The current page index.
       size_t       row_;      //!< The current row index.
       size_t       column_;   //!< The current column index.
@@ -511,24 +511,42 @@ class DTensRavelExpr
    //**********************************************************************************************
 
    //**Begin function******************************************************************************
-   /*!\brief Returns an iterator to the first element of row/column \a i.
+   /*!\brief Returns an iterator to the first element of the underlying tensor.
    //
-   // \param i The row/column index.
-   // \return Iterator to the first element of row/column \a i.
+   // \return Iterator to the first element of the underlying tensor.
    */
    inline ConstIterator begin( ) const {
-      return ConstIterator( dm_.begin( 0, 0 ), 0 );
+      return ConstIterator( dm_, 0 );
    }
    //**********************************************************************************************
 
    //**End function********************************************************************************
-   /*!\brief Returns an iterator just past the last element of row/column \a i.
+   /*!\brief Returns an iterator just past the last element of the underlying tensor.
    //
-   // \param i The row/column index.
-   // \return Iterator just past the last element of row/column \a i.
+   // \return Iterator just past the last element of the underlying tensor.
    */
    inline ConstIterator end( ) const {
-      return ConstIterator( dm_.end( dm_.rows() - 1, dm_.pages() - 1 ), size() );
+      return ConstIterator( dm_, size() );
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first element of the underlying tensor.
+   //
+   // \return Iterator to the first element of the underlying tensor.
+   */
+   inline ConstIterator cbegin( ) const {
+      return ConstIterator( dm_, 0 );
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last element of the underlying tensor.
+   //
+   // \return Iterator just past the last element of the underlying tensor.
+   */
+   inline ConstIterator cend( ) const {
+      return ConstIterator( dm_, size() );
    }
    //**********************************************************************************************
 
