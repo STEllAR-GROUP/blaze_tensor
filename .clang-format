@@ -1,0 +1,117 @@
+# Copyright (c) 2016 Thomas Heller
+# Copyright (c) 2016-2018 Hartmut Kaiser
+#
+# Distributed under the Boost Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+# This .clang-format file is a suggested configuration file for formatting
+# source code for the HPX project.
+#
+# Here are a couple of guidelines of how to use this file.
+#
+# - You should use this file for creating an initial formatting for new files.
+#
+# - Please separate edits which are pure formatting into isolated commits
+#   keeping those distinct from edits changing any of the code.
+#
+# - Please do _not_ configure your editor to automatically format the source
+#   file while saving edits to disk
+# - Please do _not_ reformat a full source file without dire need.
+
+# PLEASE NOTE: This file requires to use a recent version of clang-format. It
+#              is known to work with clang-format V7.0, other (earlier) version
+#              may work as well.
+
+---
+AccessModifierOffset: -3
+AlignAfterOpenBracket: DontAlign
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+AlignEscapedNewlines: Right
+AlignOperands: false
+AlignTrailingComments: true
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakAfterDefinitionReturnType: None
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: false
+AlwaysBreakTemplateDeclarations: true
+BinPackArguments: true
+BinPackParameters: true
+BraceWrapping:
+    AfterClass: true
+    AfterControlStatement: true
+    AfterEnum: true
+    AfterFunction: true
+    AfterNamespace: false
+    AfterStruct: true
+    AfterUnion: true
+    BeforeCatch: true
+    BeforeElse: true
+    IndentBraces: false
+BreakBeforeBinaryOperators: None
+BreakBeforeBraces: Custom
+BreakBeforeInheritanceComma: true
+BreakBeforeTernaryOperators: false
+BreakConstructorInitializersBeforeComma: true
+BreakStringLiterals: true
+ColumnLimit: 80
+CommentPragmas: "///"
+CompactNamespaces: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ConstructorInitializerIndentWidth: 3
+ContinuationIndentWidth: 3
+Cpp11BracedListStyle: true
+DerivePointerAlignment: false
+ExperimentalAutoDetectBinPacking: true
+FixNamespaceComments: false
+# ForEachMacros: ['']
+#IncludeCategories:
+#  - Regex:           '^<hpx/config\.hpp>'
+#    Priority:        1
+#  - Regex:           '^<hpx/.*\.hpp>'
+#    Priority:        2
+#  - Regex:           '^<hpx/parallel/.*\.hpp>'
+#    Priority:        3
+#  - Regex:           '^<.*'
+#    Priority:        4
+#  - Regex:           '.*'
+#    Priority:        5
+# IncludeIsMainRegex: ''
+IndentCaseLabels: false
+IndentWidth: 3
+IndentWrappedFunctionNames: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+Language: Cpp
+# MacroBlockBegin: ''
+# MacroBlockEnd: ''
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: All
+PenaltyBreakBeforeFirstCallParameter: 1
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 200
+PointerAlignment: Left
+ReflowComments: false
+SortIncludes:    true
+SpaceAfterCStyleCast: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: Never
+SpaceInEmptyParentheses: true
+SpacesBeforeTrailingComments: 3
+SpacesInAngles: true
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: true
+SpacesInSquareBrackets: false
+Standard: Cpp11
+TabWidth: 3
+UseTab: Never
+...
