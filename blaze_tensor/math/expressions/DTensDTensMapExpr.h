@@ -46,6 +46,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/DMatDMatMapExpr.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
+#include <blaze/math/typetraits/IsSIMDEnabled.h>
 
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
@@ -120,17 +121,6 @@ class DTensDTensMapExpr
    template< typename MT >
    static constexpr bool UseSMPAssign_v =
       ( ( !MT1::smpAssignable || !MT2::smpAssignable ) && useAssign );
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SIMD support detection**********************************************************************
-   /*! \cond BLAZE_INTERNAL */
-   //! Helper structure for the detection of the SIMD capabilities of the given custom operation.
-   struct UseSIMDEnabledFlag {
-      static constexpr bool test( bool (*fnc)() ) { return fnc(); }
-      static constexpr bool test( bool b ) { return b; }
-      static constexpr bool value = test( OP::BLAZE_TEMPLATE simdEnabled<ET1,ET2> );
-   };
    /*! \endcond */
    //**********************************************************************************************
 
@@ -421,7 +411,7 @@ class DTensDTensMapExpr
    //! Compilation switch for the expression template evaluation strategy.
    static constexpr bool simdEnabled =
       ( MT1::simdEnabled && MT2::simdEnabled &&
-        If_t< HasSIMDEnabled_v<OP>, UseSIMDEnabledFlag, HasLoad<OP> >::value );
+        If_t< HasSIMDEnabled_v<OP>, GetSIMDEnabled<OP,ET1,ET2>, HasLoad<OP> >::value );
 
    //! Compilation switch for the expression template assignment strategy.
    static constexpr bool smpAssignable = ( MT1::smpAssignable && MT2::smpAssignable );
