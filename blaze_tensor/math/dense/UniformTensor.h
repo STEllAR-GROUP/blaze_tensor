@@ -83,7 +83,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/constraints/Const.h>
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
@@ -489,7 +489,7 @@ template< typename Type > // Data type of the tensor
 inline constexpr typename UniformTensor<Type>::ConstReference
    UniformTensor<Type>::operator()( size_t k, size_t i, size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( k, i, j );
+   MAYBE_UNUSED( k, i, j );
 
    BLAZE_USER_ASSERT( k < o_, "Invalid page access index"    );
    BLAZE_USER_ASSERT( i < m_, "Invalid row access index"    );
@@ -564,7 +564,7 @@ template< typename Type > // Data type of the tensor
 inline constexpr typename UniformTensor<Type>::ConstPointer
    UniformTensor<Type>::data( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i, k );
+   MAYBE_UNUSED( i, k );
 
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor row access index" );
    BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor page access index" );
@@ -589,7 +589,7 @@ template< typename Type > // Data type of the tensor
 inline constexpr typename UniformTensor<Type>::ConstIterator
    UniformTensor<Type>::begin( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i, k );
+   MAYBE_UNUSED( i, k );
 
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor row access index" );
    BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor page access index" );
@@ -614,7 +614,7 @@ template< typename Type > // Data type of the tensor
 inline constexpr typename UniformTensor<Type>::ConstIterator
    UniformTensor<Type>::cbegin( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i, k );
+   MAYBE_UNUSED( i, k );
 
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor row access index" );
    BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor page access index" );
@@ -639,7 +639,7 @@ template< typename Type > // Data type of the tensor
 inline constexpr typename UniformTensor<Type>::ConstIterator
    UniformTensor<Type>::end( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i, k );
+   MAYBE_UNUSED( i, k );
 
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor row access index" );
    BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor page access index" );
@@ -664,7 +664,7 @@ template< typename Type > // Data type of the tensor
 inline constexpr typename UniformTensor<Type>::ConstIterator
    UniformTensor<Type>::cend( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor row access index" );
    BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor page access index" );
@@ -994,7 +994,7 @@ inline constexpr size_t UniformTensor<Type>::capacity() const noexcept
 template< typename Type > // Data type of the tensor
 inline constexpr size_t UniformTensor<Type>::capacity( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i, k );
+   MAYBE_UNUSED( i, k );
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor row access index" );
    BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor page access index" );
    return n_;
@@ -1032,7 +1032,7 @@ inline size_t UniformTensor<Type>::nonZeros() const
 template< typename Type > // Data type of the tensor
 inline size_t UniformTensor<Type>::nonZeros( size_t i, size_t k ) const
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( i < m_, "Invalid dense tensor row access index" );
    BLAZE_USER_ASSERT( k < o_, "Invalid dense tensor page access index" );
@@ -1094,7 +1094,7 @@ inline constexpr void UniformTensor<Type>::clear()
 template< typename Type > // Data type of the tensor
 void constexpr UniformTensor<Type>::resize( size_t k, size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    o_  = k;
    m_  = m;
@@ -1412,7 +1412,7 @@ template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE typename UniformTensor<Type>::SIMDType
    UniformTensor<Type>::loada( size_t k, size_t i, size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( k, i, j );
+   MAYBE_UNUSED( k, i, j );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1444,7 +1444,7 @@ template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE typename UniformTensor<Type>::SIMDType
    UniformTensor<Type>::loadu( size_t k, size_t i, size_t j ) const noexcept
 {
-   UNUSED_PARAMETER( k, i, j );
+   MAYBE_UNUSED( k, i, j );
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
@@ -1576,7 +1576,7 @@ inline constexpr bool isDefault( const UniformTensor<Type>& m )
 template< typename Type > // Data type of the tensor
 inline constexpr bool isIntact( const UniformTensor<Type>& m ) noexcept
 {
-   UNUSED_PARAMETER( m );
+   MAYBE_UNUSED( m );
 
    return true;
 }

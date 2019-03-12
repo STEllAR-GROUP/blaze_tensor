@@ -440,7 +440,7 @@ inline decltype(auto) rowslice( const TensTensMultExpr<MT>& tensor, RRAs... args
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    UNUSED_PARAMETER( args... );
+//    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
 //       if( (~tensor).rowslices() <= I ) {
@@ -473,7 +473,7 @@ inline decltype(auto) rowslice( const TensTensMultExpr<MT>& tensor, RRAs... args
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    UNUSED_PARAMETER( args... );
+//    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
 //       if( (~tensor).rowslices() <= index ) {
@@ -735,7 +735,7 @@ inline decltype(auto) rowslice( const MatExpandExpr<TT,CEAs...>& tensor, CSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 
    return expand( trans( row( (~tensor).operand(), 0UL ) ), (~tensor).expansion() );
 }

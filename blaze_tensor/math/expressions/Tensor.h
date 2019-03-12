@@ -177,7 +177,7 @@ BLAZE_ALWAYS_INLINE bool trySet( const Tensor<MT>& mat, size_t k, size_t i, size
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( mat, k, i, j, value );
+   MAYBE_UNUSED( mat, k, i, j, value );
 
    return true;
 }
@@ -210,7 +210,7 @@ BLAZE_ALWAYS_INLINE bool tryAdd( const Tensor<MT>& mat, size_t k, size_t i, size
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( mat, k, i, j, value );
+   MAYBE_UNUSED( mat, k, i, j, value );
 
    return true;
 }
@@ -243,7 +243,7 @@ BLAZE_ALWAYS_INLINE bool trySub( const Tensor<MT>& mat, size_t k, size_t i, size
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( mat, k, i, j, value );
+   MAYBE_UNUSED( mat, k, i, j, value );
 
    return true;
 }
@@ -276,7 +276,7 @@ BLAZE_ALWAYS_INLINE bool tryMult( const Tensor<MT>& tens, size_t k, size_t i, si
    BLAZE_INTERNAL_ASSERT( j < (~tens).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~tens).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( tens, k, i, j, value );
+   MAYBE_UNUSED( tens, k, i, j, value );
 
    return true;
 }
@@ -316,7 +316,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( column + n <= (~tens).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + o <= (~tens).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( tens, page, row, column, o, m, n, value );
+   MAYBE_UNUSED( tens, page, row, column, o, m, n, value );
 
    return true;
 }
@@ -349,7 +349,7 @@ BLAZE_ALWAYS_INLINE bool tryDiv( const Tensor<MT>& mat, size_t k, size_t i, size
    BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~tens).pages(), "Invalid page access index" );
 
-   UNUSED_PARAMETER( mat, k, i, j, value );
+   MAYBE_UNUSED( mat, k, i, j, value );
 
    return true;
 }
@@ -389,7 +389,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( column + n <= (~tens).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + o <= (~tens).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( tens, page, row, column, o, m, n, value );
+   MAYBE_UNUSED( tens, page, row, column, o, m, n, value );
 
    return true;
 }
@@ -426,7 +426,7 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Tensor<MT>& lhs, const Matrix<VT,SO>& 
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -463,7 +463,7 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Tensor<TT1>& lhs, const Tensor<TT2>& r
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -500,7 +500,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,SO
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -538,7 +538,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<MT>& lhs, const Matrix<VT,SO
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, band, page, row, column );
 
    return true;
 }
@@ -574,7 +574,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Tensor<TT1>& lhs, const Tensor<TT2>
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -611,7 +611,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,SO
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -650,7 +650,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<MT>& lhs, const Matrix<VT,SO
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, band, page, row, column );
 
    return true;
 }
@@ -686,7 +686,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Tensor<TT1>& lhs, const Tensor<TT2>
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -723,7 +723,7 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,S
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -762,7 +762,7 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Tensor<MT>& lhs, const Matrix<VT,S
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, band, page, row, column );
 
    return true;
 }
@@ -798,7 +798,7 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<TT1>& lhs, const Tensor<TT
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -836,7 +836,7 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Tensor<MT>& lhs, const Matrix<VT,
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -873,7 +873,7 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,SO
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, page, row, column );
 
    return true;
 }
@@ -912,7 +912,7 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Tensor<MT>& lhs, const Matrix<VT,SO
    BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= (~lhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + 1 <= (~lhs).pages(), "Invalid number of pages" );
 
-   UNUSED_PARAMETER( lhs, rhs, band, page, row, column );
+   MAYBE_UNUSED( lhs, rhs, band, page, row, column );
 
    return true;
 }
@@ -1290,7 +1290,7 @@ template< typename MT > // Type of the tensor
 BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<MT> >
    resize_backend( Tensor<MT>& tensor, size_t o, size_t m, size_t n, bool preserve )
 {
-   UNUSED_PARAMETER( preserve );
+   MAYBE_UNUSED( preserve );
 
    if( (~tensor).rows() != m || (~tensor).columns() != n || (~tensor).pages() != o) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor cannot be resized" );
@@ -1409,7 +1409,7 @@ template< typename MT > // Type of the tensor
 BLAZE_ALWAYS_INLINE DisableIf_t< IsShrinkable_v<MT> >
    shrinkToFit_backend( Tensor<MT>& tensor )
 {
-   UNUSED_PARAMETER( tensor );
+   MAYBE_UNUSED( tensor );
 }
 /*! \endcond */
 //*************************************************************************************************

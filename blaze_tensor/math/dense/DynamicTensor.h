@@ -1459,7 +1459,7 @@ inline size_t DynamicTensor<Type>::capacity() const noexcept
 template< typename Type > // Data type of the tensor
 inline size_t DynamicTensor<Type>::capacity( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index" );
    return nn_;

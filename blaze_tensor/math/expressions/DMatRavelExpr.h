@@ -61,7 +61,7 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/GetMemberType.h>
 

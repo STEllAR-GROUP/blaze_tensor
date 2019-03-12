@@ -44,7 +44,7 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 #include <array>
 #include <algorithm>
@@ -85,7 +85,7 @@ struct DTensTransExprData<0UL, 1UL, 2UL>
    template< typename... RTAs >
    explicit inline DTensTransExprData( RTAs... args ) noexcept
    {
-      UNUSED_PARAMETER( args... );
+      MAYBE_UNUSED( args... );
    }
 
    DTensTransExprData( const DTensTransExprData& ) = default;
@@ -221,7 +221,7 @@ struct DTensTransExprData<0UL, 2UL, 1UL>
    template< typename... RTAs >
    explicit inline DTensTransExprData( RTAs... args ) noexcept
    {
-      UNUSED_PARAMETER( args... );
+      MAYBE_UNUSED( args... );
    }
 
    DTensTransExprData( const DTensTransExprData& ) = default;
@@ -357,7 +357,7 @@ struct DTensTransExprData<1UL, 0UL, 2UL>
    template< typename... RTAs >
    explicit inline DTensTransExprData( RTAs... args ) noexcept
    {
-      UNUSED_PARAMETER( args... );
+      MAYBE_UNUSED( args... );
    }
 
    DTensTransExprData( const DTensTransExprData& ) = default;
@@ -493,7 +493,7 @@ struct DTensTransExprData<1UL, 2UL, 0UL>
    template< typename... RTAs >
    explicit inline DTensTransExprData( RTAs... args ) noexcept
    {
-      UNUSED_PARAMETER( args... );
+      MAYBE_UNUSED( args... );
    }
 
    DTensTransExprData( const DTensTransExprData& ) = default;
@@ -629,7 +629,7 @@ struct DTensTransExprData<2UL, 0UL, 1UL>
    template< typename... RTAs >
    explicit inline DTensTransExprData( RTAs... args ) noexcept
    {
-      UNUSED_PARAMETER( args... );
+      MAYBE_UNUSED( args... );
    }
 
    DTensTransExprData( const DTensTransExprData& ) = default;
@@ -765,7 +765,7 @@ struct DTensTransExprData<2UL, 1UL, 0UL>
    template< typename... RTAs >
    explicit inline DTensTransExprData( RTAs... args ) noexcept
    {
-      UNUSED_PARAMETER( args... );
+      MAYBE_UNUSED( args... );
    }
 
    DTensTransExprData( const DTensTransExprData& ) = default;
@@ -976,7 +976,7 @@ inline DTensTransExprData<>::DTensTransExprData( RTAs... args )
    : indices_( {2, 1, 0} )  // The indices of the elements in the tensor
    , reverse_indices_( {2, 1, 0} )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -996,7 +996,7 @@ inline DTensTransExprData<>::DTensTransExprData( const T* indices, size_t n, RTA
    : indices_( indices, indices+n )  // The indices of the elements in the tensor
 {
    BLAZE_USER_ASSERT( n == 3, "Invalid number of transpose mapping indices (should be three)" );
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 
    for( size_t i = 0; i != 3; ++i )
    {

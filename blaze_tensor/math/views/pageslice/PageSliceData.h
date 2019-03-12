@@ -42,7 +42,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 
 namespace blaze {
@@ -141,7 +141,7 @@ template< typename... RRAs >  // Optional pageslice arguments
 inline PageSliceData<>::PageSliceData( size_t index, RRAs... args )
    : pageslice_( index )  // The index of the pageslice in the tensor
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -226,7 +226,7 @@ template< size_t Index >      // Compile time pageslice index
 template< typename... RRAs >  // Optional pageslice arguments
 inline PageSliceData<Index>::PageSliceData( RRAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

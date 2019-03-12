@@ -1639,7 +1639,7 @@ template< typename Type  // Data type of the tensor
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::capacity( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i, k );
+   MAYBE_UNUSED( i, k );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index" );
    return nn_;

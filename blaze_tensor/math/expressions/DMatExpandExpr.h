@@ -63,7 +63,7 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/InvalidType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/GetMemberType.h>
 
@@ -249,7 +249,7 @@ class DMatExpandExpr
    // \return Iterator to the first element of row/column \a i.
    */
    inline ConstIterator begin( size_t i, size_t k ) const {
-      UNUSED_PARAMETER( i, k );
+      MAYBE_UNUSED( i, k );
       return ConstIterator( dm_.begin( i ) );
    }
    //**********************************************************************************************
@@ -261,7 +261,7 @@ class DMatExpandExpr
    // \return Iterator just past the last element of row/column \a i.
    */
    inline ConstIterator end( size_t i, size_t k ) const {
-      UNUSED_PARAMETER( i, k );
+      MAYBE_UNUSED( i, k );
       return ConstIterator( dm_.end( i ) );
    }
    //**********************************************************************************************
@@ -824,7 +824,7 @@ template< size_t E     // Compile time expansion argument
         , bool SO >    // Storage order
 inline decltype(auto) expand( const DenseMatrix<MT, SO>& dm, size_t expansion )
 {
-   UNUSED_PARAMETER( expansion );
+   MAYBE_UNUSED( expansion );
 
    BLAZE_FUNCTION_TRACE;
 

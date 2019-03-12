@@ -42,7 +42,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 
 namespace blaze {
@@ -160,7 +160,7 @@ inline SubtensorData<>::SubtensorData( size_t pindex, size_t rindex, size_t cind
    , m_     ( m      )  // The number of rows of the subtensor
    , n_     ( n      )  // The number of columns of the subtensor
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -330,7 +330,7 @@ template< size_t K    // Index of the first page
 template< typename... RSAs >  // Optional subtensor arguments
 inline SubtensorData<K,I,J,O,M,N>::SubtensorData( RSAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

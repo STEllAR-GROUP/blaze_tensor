@@ -76,7 +76,7 @@
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Pointer.h>
@@ -1425,7 +1425,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline size_t Subtensor<MT,aligned,CSAs...>::capacity( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i, k );
+   MAYBE_UNUSED( i, k );
 
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index" );

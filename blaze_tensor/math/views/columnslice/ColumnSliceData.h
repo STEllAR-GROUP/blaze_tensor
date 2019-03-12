@@ -42,7 +42,7 @@
 //*************************************************************************************************
 
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 
 namespace blaze {
@@ -141,7 +141,7 @@ template< typename... RRAs >  // Optional columnslice arguments
 inline ColumnSliceData<>::ColumnSliceData( size_t index, RRAs... args )
    : columnslice_( index )  // The index of the columnslice in the tensor
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -226,7 +226,7 @@ template< size_t Index >      // Compile time columnslice index
 template< typename... RRAs >  // Optional columnslice arguments
 inline ColumnSliceData<Index>::ColumnSliceData( RRAs... args )
 {
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 }
 /*! \endcond */
 //*************************************************************************************************

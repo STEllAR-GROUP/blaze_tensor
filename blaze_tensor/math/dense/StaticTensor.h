@@ -100,7 +100,7 @@
 #include <blaze/util/StaticAssert.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Const.h>
@@ -1719,7 +1719,7 @@ template< typename Type  // Data type of the tensor
         , size_t N >     // Number of columns
 inline size_t StaticTensor<Type,O,M,N>::capacity( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i );
+   MAYBE_UNUSED( i );
 
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index" );
    BLAZE_USER_ASSERT( i < rows() , "Invalid row access index" );
@@ -2128,7 +2128,7 @@ template< typename Type  // Data type of the tensor
         , size_t N >     // Number of columns
 inline void* StaticTensor<Type,O,M,N>::operator new( std::size_t size )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( StaticTensor ), "Invalid number of bytes detected" );
 
@@ -2177,7 +2177,7 @@ template< typename Type  // Data type of the tensor
         , size_t N >     // Number of columns
 inline void* StaticTensor<Type,O,M,N>::operator new( std::size_t size, const std::nothrow_t& )
 {
-   UNUSED_PARAMETER( size );
+   MAYBE_UNUSED( size );
 
    BLAZE_INTERNAL_ASSERT( size == sizeof( StaticTensor ), "Invalid number of bytes detected" );
 

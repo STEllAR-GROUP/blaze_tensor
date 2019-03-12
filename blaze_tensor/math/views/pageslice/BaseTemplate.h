@@ -60,7 +60,7 @@
 #include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 // #include <blaze_tensor/math/expressions/TensTensExpr.h>

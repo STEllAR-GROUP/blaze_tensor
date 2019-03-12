@@ -440,7 +440,7 @@ inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... arg
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    UNUSED_PARAMETER( args... );
+//    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
 //       if( (~tensor).pageslices() <= I ) {
@@ -473,7 +473,7 @@ inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... arg
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    UNUSED_PARAMETER( args... );
+//    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
 //       if( (~tensor).pageslices() <= index ) {
@@ -736,7 +736,7 @@ inline decltype(auto) pageslice( const MatExpandExpr<MT,CEAs...>& tensor, RSAs..
 {
    BLAZE_FUNCTION_TRACE;
 
-   UNUSED_PARAMETER( args... );
+   MAYBE_UNUSED( args... );
 
    return submatrix( (~tensor).operand(), 0UL, 0UL, (~tensor).rows(), (~tensor).columns() );
 }

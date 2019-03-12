@@ -46,7 +46,7 @@
 #include <blaze/system/Inline.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 #include <blaze_tensor/math/expressions/Tensor.h>
 
@@ -118,7 +118,7 @@ template< typename TT > // Type of the tensor
 BLAZE_ALWAYS_INLINE DisableIf_t< HasMutableDataAccess_v<TT>, typename TT::ElementType* >
    data_backend( DenseTensor<TT>& dm ) noexcept
 {
-   UNUSED_PARAMETER( dm );
+   MAYBE_UNUSED( dm );
 
    return nullptr;
 }
@@ -182,7 +182,7 @@ template< typename TT > // Type of the tensor
 BLAZE_ALWAYS_INLINE DisableIf_t< HasConstDataAccess_v<TT>, typename TT::ElementType* >
    data_backend( const DenseTensor<TT>& dm ) noexcept
 {
-   UNUSED_PARAMETER( dm );
+   MAYBE_UNUSED( dm );
 
    return nullptr;
 }

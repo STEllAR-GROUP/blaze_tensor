@@ -56,7 +56,7 @@
 #include <blaze/util/constraints/Volatile.h>
 #include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitializerList.h>
@@ -660,7 +660,7 @@ inline size_t InitializerTensor<Type>::capacity() const noexcept
 template< typename Type >  // Data type of the tensor
 inline size_t InitializerTensor<Type>::capacity( size_t i, size_t k ) const noexcept
 {
-   UNUSED_PARAMETER( i, k );
+   MAYBE_UNUSED( i, k );
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_USER_ASSERT( k < pages(), "Invalid row access index" );
    return n_;
@@ -823,7 +823,7 @@ inline void swap( InitializerTensor<Type>& a, InitializerTensor<Type>& b ) noexc
 template< typename Type >
 inline bool isIntact( const InitializerTensor<Type>& m ) noexcept
 {
-   UNUSED_PARAMETER( m );
+   MAYBE_UNUSED( m );
 
    return true;
 }

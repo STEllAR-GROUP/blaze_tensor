@@ -80,7 +80,7 @@
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
-#include <blaze/util/Unused.h>
+#include <blaze/util/MaybeUnused.h>
 
 #include <blaze_tensor/math/Aliases.h>
 #include <blaze_tensor/math/ReductionFlag.h>
@@ -4973,7 +4973,7 @@ template< typename TT       // Type of the tensor
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Subtensor<TT,AF,CSAs...>& sm, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, const ET& value )
 {
-   UNUSED_PARAMETER( column );
+   MAYBE_UNUSED( column );
 
    BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
@@ -5045,7 +5045,7 @@ template< typename TT       // Type of the tensor
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const Subtensor<TT,AF,CSAs...>& sm, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, const ET& value )
 {
-   UNUSED_PARAMETER( column );
+   MAYBE_UNUSED( column );
 
    BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
