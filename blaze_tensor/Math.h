@@ -47,6 +47,8 @@
 #include <blaze_tensor/math/Constraints.h>
 #include <blaze_tensor/math/CustomTensor.h>
 #include <blaze_tensor/math/DynamicTensor.h>
+#include <blaze_tensor/math/UniformTensor.h>
+#include <blaze_tensor/math/StaticTensor.h>
 #include <blaze_tensor/math/TypeTraits.h>
 #include <blaze_tensor/math/Views.h>
 
