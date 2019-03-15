@@ -574,6 +574,70 @@ void DenseGeneralTest::testAssignment()
    }
 
    {
+      test_ = "dense matrix assignment (mixed type)";
+
+      initialize();
+
+      RT pageslice1 = blaze::pageslice( mat_, 1UL );
+
+      blaze::DynamicMatrix<int, blaze::columnMajor> m1;
+      m1 = {{0, 8, 0, 9}, {0}, {0}, {0}, {0}};
+
+      pageslice1 = m1;
+
+      checkRows    ( pageslice1, 5UL );
+      checkColumns ( pageslice1, 4UL );
+      checkCapacity( pageslice1, 20UL );
+      checkNonZeros( pageslice1, 2UL );
+      checkRows    ( mat_,  5UL );
+      checkColumns ( mat_,  4UL );
+      checkPages   ( mat_,  2UL );
+      checkNonZeros( mat_, 12UL );
+
+      if( pageslice1(0,0) !=  0 || pageslice1(0,1) !=  8 || pageslice1(0,2) !=  0 || pageslice1(0,3) !=  9 ||
+          pageslice1(1,0) !=  0 || pageslice1(1,1) !=  0 || pageslice1(1,2) !=  0 || pageslice1(1,3) !=  0 ||
+          pageslice1(2,0) !=  0 || pageslice1(2,1) !=  0 || pageslice1(2,2) !=  0 || pageslice1(2,3) !=  0 ||
+          pageslice1(3,0) !=  0 || pageslice1(3,1) !=  0 || pageslice1(3,2) !=  0 || pageslice1(3,3) !=  0 ||
+          pageslice1(4,0) !=  0 || pageslice1(4,1) !=  0 || pageslice1(4,2) !=  0 || pageslice1(4,3) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << pageslice1 << "\n"
+             << "   Expected result:\n(( 0 8 0 9 )\n(0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( mat_(0,0,0) !=  0 || mat_(0,0,1) !=  0 || mat_(0,0,2) !=  0 || mat_(0,0,3) !=  0 ||
+          mat_(0,1,0) !=  0 || mat_(0,1,1) !=  1 || mat_(0,1,2) !=  0 || mat_(0,1,3) !=  0 ||
+          mat_(0,2,0) != -2 || mat_(0,2,1) !=  0 || mat_(0,2,2) != -3 || mat_(0,2,3) !=  0 ||
+          mat_(0,3,0) !=  0 || mat_(0,3,1) !=  4 || mat_(0,3,2) !=  5 || mat_(0,3,3) != -6 ||
+          mat_(0,4,0) !=  7 || mat_(0,4,1) != -8 || mat_(0,4,2) !=  9 || mat_(0,4,3) != 10 ||
+          mat_(1,0,0) !=  0 || mat_(1,0,1) !=  8 || mat_(1,0,2) !=  0 || mat_(1,0,3) !=  9 ||
+          mat_(1,1,0) !=  0 || mat_(1,1,1) !=  0 || mat_(1,1,2) !=  0 || mat_(1,1,3) !=  0 ||
+          mat_(1,2,0) !=  0 || mat_(1,2,1) !=  0 || mat_(1,2,2) !=  0 || mat_(1,2,3) !=  0 ||
+          mat_(1,3,0) !=  0 || mat_(1,3,1) !=  0 || mat_(1,3,2) !=  0 || mat_(1,3,3) !=  0 ||
+          mat_(1,4,0) !=  0 || mat_(1,4,1) !=  0 || mat_(1,4,2) !=  0 || mat_(1,4,3) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << mat_ << "\n"
+             << "   Expected result:\n((  0  0  0  0 )\n"
+                                     " (  0  1  0  0 )\n"
+                                     " ( -2  0 -3  0 )\n"
+                                     " (  0  4  5 -6 )\n"
+                                     " (  7 -8  9 10 ))\n"
+                                     "((  0  9  0  9 )\n"
+                                     " (  0  0  0  0 )\n"
+                                     " (  0  0  0  0 )\n"
+                                     " (  0  0  0  0 )\n"
+                                     " (  0  0  0  0 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
       test_ = "dense matrix assignment (aligned/padded)";
 
       using blaze::aligned;
