@@ -1897,7 +1897,7 @@ inline void PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<MT2,columnMajor>
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               tensor_(page(),i,jpos) += (~rhs)(i,j);
+               tensor_(page(),i,j) += (~rhs)(i,j);
             }
          }
       }
@@ -2035,7 +2035,7 @@ inline void PageSlice<MT,CSAs...>::subAssign( const DenseMatrix<MT2,columnMajor>
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               tensor_(page(),i,jpos) -= (~rhs)(i,j);
+               tensor_(page(),i,j) -= (~rhs)(i,j);
             }
          }
       }
