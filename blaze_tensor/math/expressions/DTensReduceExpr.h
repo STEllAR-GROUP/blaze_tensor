@@ -2731,7 +2731,7 @@ inline auto dtensreduce( const DenseTensor<MT>& dm, OP op )
          redux0 = op( redux0, redux1 );
       }
 
-      i = 0UL;
+      i = 1UL;
    }
 
    return redux0;
