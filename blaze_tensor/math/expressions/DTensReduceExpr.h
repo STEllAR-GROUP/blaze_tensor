@@ -2986,7 +2986,7 @@ inline auto dtensreduce( const DenseTensor<MT>& dm, Add /*op*/ )
          size_t i( 0UL );
          for( ; (i+4UL) <= M; i+=4UL )
          {
-            xmm1 += tmp.load(k,i,0UL);
+            xmm1 = tmp.load(k,i,0UL);
             SIMDTrait_t<ET> xmm2( tmp.load(k,i+1UL,0UL) );
             SIMDTrait_t<ET> xmm3( tmp.load(k,i+2UL,0UL) );
             SIMDTrait_t<ET> xmm4( tmp.load(k,i+3UL,0UL) );
