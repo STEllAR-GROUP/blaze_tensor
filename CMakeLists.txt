@@ -31,13 +31,32 @@
 # =================================================================================================
 
 cmake_minimum_required(VERSION 3.5)
-project(BlazeTensor CXX)
 
+# Find out about BlazeTensor version
+file(READ blaze_tensor/system/Version.h BLAZE_TENSOR_VERSION_FILE)
+
+string(REGEX MATCH "#define BLAZE_TENSOR_MAJOR_VERSION ([0-9]*)"
+   _BLAZE_TENSOR_MAJOR_VERSION ${BLAZE_TENSOR_VERSION_FILE})
+set(BLAZE_TENSOR_MAJOR_VERSION ${CMAKE_MATCH_1})
+
+string(REGEX MATCH "#define BLAZE_TENSOR_MINOR_VERSION ([0-9]*)"
+   _BLAZE_TENSOR_MINOR_VERSION ${BLAZE_TENSOR_VERSION_FILE})
+set(BLAZE_TENSOR_MINOR_VERSION ${CMAKE_MATCH_1})
+
+project(BlazeTensor
+   LANGUAGES CXX
+   VERSION "${BLAZE_TENSOR_MAJOR_VERSION}.${BLAZE_TENSOR_MINOR_VERSION}")
+
+# set minimally required C++ Standard
 set(CMAKE_CXX_STANDARD 14)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Add cmake directory
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
+
+# find out about Git commit hash
+include(BlazeTensor_GitCommit)
+message(STATUS "Configuring BlazeTensor version ${PROJECT_VERSION}")
 
 # Set up BlazeTensor target
 add_library(BlazeTensor INTERFACE)
@@ -67,6 +86,13 @@ if(blaze_parallelization_mode AND "${blaze_parallelization_mode}" STREQUAL "BLAZ
    target_include_directories(BlazeTensor INTERFACE ${HPX_INCLUDE_DIRS})
    target_link_libraries(BlazeTensor INTERFACE ${HPX_LIBRARIES})
 endif()
+
+include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+   "${CMAKE_CURRENT_BINARY_DIR}/cmake/BlazeTensorConfigVersion.cmake"
+   VERSION ${PROJECT_VERSION}
+   COMPATIBILITY SameMajorVersion)
 
 install(TARGETS BlazeTensor EXPORT BlazeTensorTargets)
 
@@ -99,6 +125,7 @@ install(
 
 install(
    FILES "${CMAKE_CURRENT_BINARY_DIR}/cmake/BlazeTensorConfig.cmake"
+         "${CMAKE_CURRENT_BINARY_DIR}/cmake/BlazeTensorConfigVersion.cmake"
    DESTINATION share/BlazeTensor/cmake
 )
 
