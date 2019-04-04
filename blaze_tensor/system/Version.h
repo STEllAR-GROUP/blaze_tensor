@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/Blaze.h
-//  \brief Primary include file of the Blaze library
+//  \file blaze_tensor/system/Version.h
+//  \brief Header file for the current version of the Blaze library
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,31 +33,46 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_BLAZE_H_
-#define _BLAZE_TENSOR_BLAZE_H_
-
-
-//*************************************************************************************************
-// Includes
-//*************************************************************************************************
-
-#include <blaze/Blaze.h>
-
-#include <blaze_tensor/system/Version.h>
-#include <blaze_tensor/Math.h>
-
-
+#ifndef _BLAZE_TENSOR_SYSTEM_VERSION_H_
+#define _BLAZE_TENSOR_SYSTEM_VERSION_H_
 
 
 //=================================================================================================
 //
-//  DOXYGEN DOCUMENTATION
+//  BLAZE TENSOR VERSION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-//! Namespace of the \b Blaze C++ math library.
-namespace blaze {}
+/*!\brief Major version of the BlazeTensor library.
+// \ingroup system
+//
+// This value corresponds to the major version of the Blaze library. For instance, for BlazeTensor
+// version 0.1.0, the BLAZE_TENSOR_MAJOR_VERSION corresponds to 0.
+*/
+#define BLAZE_TENSOR_MAJOR_VERSION 0
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Minor version of the BlazeTensor library.
+// \ingroup system
+//
+// This value corresponds to the minor version of the Blaze library. For instance, for BlazeTensor
+// version 0.1.0, the BLAZE_TENSOR_MINOR_VERSION corresponds to 1.
+*/
+#define BLAZE_TENSOR_MINOR_VERSION 1
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Patch version of the BlazeTensor library.
+// \ingroup system
+//
+// This value corresponds to the patch version of the BlazeTensor library. For instance, for BlazeTensor
+// version 0.1.0, the BLAZE_TENSOR_PATCH_VERSION corresponds to 0.
+*/
+#define BLAZE_TENSOR_PATCH_VERSION 0
 //*************************************************************************************************
 
 #endif
