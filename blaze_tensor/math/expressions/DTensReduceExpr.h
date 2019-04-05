@@ -3044,6 +3044,7 @@ inline auto dtensreduce( const DenseTensor<MT>& dm, Add /*op*/ )
          }
 
          redux += sum( xmm1 );
+         xmm1 = SIMDTrait_t<ET>{};
       }
    }
    else
