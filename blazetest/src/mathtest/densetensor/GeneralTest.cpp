@@ -84,11 +84,11 @@ GeneralTest::GeneralTest()
    testMaximum();
    testSoftmax();
 //    testTrace();
-//    testL1Norm();
-//    testL2Norm();
-//    testL3Norm();
-//    testL4Norm();
-//    testLpNorm();
+   testL1Norm();
+   testL2Norm();
+   testL3Norm();
+   testL4Norm();
+   testLpNorm();
 }
 //*************************************************************************************************
 
@@ -2586,8 +2586,8 @@ void GeneralTest::testSoftmax()
 }
 //*************************************************************************************************
 
-#if 0
 
+#if 0
 //*************************************************************************************************
 /*!\brief Test of the \c trace() function for dense tensors.
 //
@@ -2670,7 +2670,7 @@ void GeneralTest::testTrace()
    }
 }
 //*************************************************************************************************
-
+#endif
 
 //*************************************************************************************************
 /*!\brief Test of the \c l1Norm() function for dense tensors.
@@ -2707,7 +2707,7 @@ void GeneralTest::testL1Norm()
       }
 
       {
-         blaze::DynamicTensor<int> tens( 3UL, 7UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 7UL, 0 );
 
          const int norm = blaze::l1Norm( tens );
 
@@ -2723,26 +2723,27 @@ void GeneralTest::testL1Norm()
       }
 
       {
-         blaze::DynamicTensor<int> tens{ { 0,  0,  1,  0,  1,  0,  0 },
-                                                        { 0, -2,  0,  0,  0, -1,  0 },
-                                                        { 0,  0,  0,  2,  0,  0,  0 } };
+         blaze::DynamicTensor< int > tens{
+            {{0, 0, 1, 0, 1, 0, 0}, {0, -2, 0, 0, 0, -1, 0},
+               {0, 0, 0, 2, 0, 0, 0}},
+            {{0, 0, 1, 0, 1, 0, 0}, {0, -2, 0, 0, 0, -1, 0},
+               {0, 0, 0, 2, 0, 0, 0}}};
 
          const int norm = blaze::l1Norm( tens );
 
-         if( !isEqual( norm, 7 ) ) {
+         if( !isEqual( norm, 14 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: L1 norm computation failed\n"
                 << " Details:\n"
                 << "   Result: " << norm << "\n"
-                << "   Expected result: 7\n";
+                << "   Expected result: 14\n";
             throw std::runtime_error( oss.str() );
          }
       }
    }
 }
 //*************************************************************************************************
-
 
 //*************************************************************************************************
 /*!\brief Test of the \c l2Norm() function for dense tensors.
@@ -2779,7 +2780,7 @@ void GeneralTest::testL2Norm()
       }
 
       {
-         blaze::DynamicTensor<int> tens( 3UL, 7UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 7UL, 0 );
 
          const double norm = blaze::l2Norm( tens );
 
@@ -2795,19 +2796,21 @@ void GeneralTest::testL2Norm()
       }
 
       {
-         blaze::DynamicTensor<int> tens{ { 0,  0,  1,  0,  1, -2,  0 },
-                                                        { 0, -2,  0,  0,  0, -1,  0 },
-                                                        { 0,  1,  0,  2,  0,  0,  0 } };
+         blaze::DynamicTensor< int > tens{
+            {{0, 0, 1, 0, 1, 0, 0}, {0, -2, 0, 0, 0, -1, 0},
+               {0, 0, 0, 2, 0, 0, 0}},
+            {{0, 0, 1, 0, 1, 0, 0}, {0, -2, 0, 0, 0, -1, 0},
+               {0, 0, 0, 2, 0, 0, 0}}};
 
          const double norm = blaze::l2Norm( tens );
 
-         if( !isEqual( norm, 4.0 ) ) {
+         if( !isEqual( norm, 4.6904157598234297 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: L2 norm computation failed\n"
                 << " Details:\n"
                 << "   Result: " << norm << "\n"
-                << "   Expected result: 4\n";
+                << "   Expected result: 4.6904157598234297\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2851,7 +2854,7 @@ void GeneralTest::testL3Norm()
       }
 
       {
-         blaze::DynamicTensor<int> tens( 3UL, 7UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 7UL, 0 );
 
          const double norm = blaze::l3Norm( tens );
 
@@ -2867,19 +2870,21 @@ void GeneralTest::testL3Norm()
       }
 
       {
-         blaze::DynamicTensor<int> tens{ { 0,  0,  1,  0,  1, -2,  0 },
-                                                        { 0, -2,  0,  0,  0, -1,  0 },
-                                                        { 0,  0,  0,  2,  0,  0,  0 } };
+         blaze::DynamicTensor< int > tens{
+            {{0, 0, 1, 0, 1, 0, 0}, {0, -2, 0, 0, 0, -1, 0},
+               {0, 0, 0, 2, 0, 0, 0}},
+            {{0, 0, 1, 0, 1, 0, 0}, {0, -2, 0, 0, 0, -1, 0},
+               {0, 0, 0, 2, 0, 0, 0}}};
 
          const double norm = blaze::l3Norm( tens );
 
-         if( !isEqual( norm, 3.0 ) ) {
+         if( !isEqual( norm, 3.3619754067989636 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: L3 norm computation failed\n"
                 << " Details:\n"
                 << "   Result: " << norm << "\n"
-                << "   Expected result: 3\n";
+                << "   Expected result: 3.3619754067989636\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2923,7 +2928,7 @@ void GeneralTest::testL4Norm()
       }
 
       {
-         blaze::DynamicTensor<int> tens( 3UL, 7UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 7UL, 0 );
 
          const double norm = blaze::l4Norm( tens );
 
@@ -2939,19 +2944,21 @@ void GeneralTest::testL4Norm()
       }
 
       {
-         blaze::DynamicTensor<int> tens{ { 0,  0,  2,  0,  2, -2,  0 },
-                                                        { 0, -2,  0,  0,  0, -1,  0 },
-                                                        { 0,  0,  0,  2,  0,  0,  0 } };
+         blaze::DynamicTensor< int > tens{
+            {{0, 0, 1, 0, 1, 0, 0}, {0, -2, 0, 0, 0, -1, 0},
+               {0, 0, 0, 2, 0, 0, 0}},
+            {{0, 0, 1, 0, 1, 0, 0}, {0, -2, 0, 0, 0, -1, 0},
+               {0, 0, 0, 2, 0, 0, 0}}};
 
          const double norm = blaze::l4Norm( tens );
 
-         if( !isEqual( norm, 3.0 ) ) {
+         if( !isEqual( norm, 2.8925076085190780 ) ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: L4 norm computation failed\n"
                 << " Details:\n"
                 << "   Result: " << norm << "\n"
-                << "   Expected result: 3\n";
+                << "   Expected result: 2.8925076085190780\n";
             throw std::runtime_error( oss.str() );
          }
       }
@@ -2997,7 +3004,7 @@ void GeneralTest::testLpNorm()
       }
 
       {
-         blaze::DynamicTensor<int> tens( 3UL, 7UL, 0 );
+         blaze::DynamicTensor<int> tens( 2UL, 3UL, 7UL, 0 );
 
          const double norm1 = blaze::lpNorm( tens, 2 );
          const double norm2 = blaze::lpNorm<2UL>( tens );
@@ -3015,7 +3022,7 @@ void GeneralTest::testLpNorm()
       }
 
       {
-         blaze::DynamicTensor<int> tens( 5UL, 10UL );
+         blaze::DynamicTensor<int> tens( 2UL, 5UL, 10UL );
          randomize( tens, -5, 5 );
 
          const int norm1( blaze::lpNorm( tens, 1 ) );
@@ -3035,7 +3042,7 @@ void GeneralTest::testLpNorm()
       }
 
       {
-         blaze::DynamicTensor<int> tens( 5UL, 10UL );
+         blaze::DynamicTensor<int> tens( 2UL, 5UL, 10UL );
          randomize( tens, -5, 5 );
 
          const double norm1( blaze::lpNorm( tens, 2 ) );
@@ -3055,7 +3062,7 @@ void GeneralTest::testLpNorm()
       }
 
       {
-         blaze::DynamicTensor<int> tens( 5UL, 10UL );
+         blaze::DynamicTensor<int> tens( 2UL, 5UL, 10UL );
          randomize( tens, -5, 5 );
 
          const double norm1( blaze::lpNorm( tens, 3 ) );
@@ -3075,7 +3082,7 @@ void GeneralTest::testLpNorm()
       }
 
       {
-         blaze::DynamicTensor<int> tens( 5UL, 10UL );
+         blaze::DynamicTensor<int> tens( 2UL, 5UL, 10UL );
          randomize( tens, -5, 5 );
 
          const double norm1( blaze::lpNorm( tens, 4 ) );
@@ -3096,7 +3103,6 @@ void GeneralTest::testLpNorm()
    }
 }
 //*************************************************************************************************
-#endif
 
 } // namespace densetensor
 
