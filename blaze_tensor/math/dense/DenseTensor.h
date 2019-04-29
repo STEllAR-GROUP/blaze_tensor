@@ -69,6 +69,7 @@
 #include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
 #include <blaze_tensor/math/expressions/DTensEvalExpr.h>
 #include <blaze_tensor/math/expressions/DTensMapExpr.h>
+#include <blaze_tensor/math/expressions/DTensNormExpr.h>
 #include <blaze_tensor/math/expressions/DTensReduceExpr.h>
 #include <blaze_tensor/math/expressions/DTensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/DTensScalarMultExpr.h>
