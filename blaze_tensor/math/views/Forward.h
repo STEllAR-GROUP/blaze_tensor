@@ -44,15 +44,10 @@
 #include <blaze/math/expressions/Forward.h>
 
 #include <blaze_tensor/math/expressions/Forward.h>
-// #include <blaze_tensor/math/views/column/BaseTemplate.h>
-// #include <blaze_tensor/math/views/columns/BaseTemplate.h>
-// #include <blaze_tensor/math/views/elements/BaseTemplate.h>
 #include <blaze_tensor/math/views/columnslice/BaseTemplate.h>
+#include <blaze_tensor/math/views/dilatedsubvector/BaseTemplate.h>
 #include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/rowslice/BaseTemplate.h>
-// #include <blaze_tensor/math/views/rows/BaseTemplate.h>
-// #include <blaze_tensor/math/views/page/BaseTemplate.h>
-// #include <blaze_tensor/math/views/pages/BaseTemplate.h>
 #include <blaze_tensor/math/views/subtensor/BaseTemplate.h>
 
 namespace blaze {
@@ -63,24 +58,25 @@ namespace blaze {
 //
 //=================================================================================================
 
-// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
-// decltype(auto) submatrix( Tensor<TT>&, RSAs... );
-//
-// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
-// decltype(auto) submatrix( const Tensor<TT>&, RSAs... );
-//
-// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
-// decltype(auto) submatrix( Tensor<TT>&&, RSAs... );
-//
-// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
-// decltype(auto) submatrix( Tensor<TT>&, size_t, size_t, size_t, size_t, RSAs... );
-//
-// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
-// decltype(auto) submatrix( const Tensor<TT>&, size_t, size_t, size_t, size_t, RSAs... );
-//
-// template< AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, typename TT, typename... RSAs >
-// decltype(auto) submatrix( Tensor<TT>&&, size_t, size_t, size_t, size_t, RSAs... );
-//
+template< size_t I, size_t M, size_t Dilation, typename VT, bool TF, typename... RSAs >
+decltype(auto) dilatedsubvector( Vector<VT,TF>&, RSAs... );
+
+template< size_t I, size_t M, size_t Dilation, typename VT, bool TF, typename... RSAs >
+decltype(auto) dilatedsubvector( const Vector<VT,TF>&, RSAs... );
+
+template< size_t I, size_t M, size_t Dilation, typename VT, bool TF, typename... RSAs >
+decltype(auto) dilatedsubvector( Vector<VT,TF>&&, RSAs... );
+
+template< typename VT, bool TF, typename... RSAs >
+decltype(auto) dilatedsubvector( Vector<VT,TF>&, size_t, size_t, size_t, RSAs... );
+
+template< typename VT, bool TF, typename... RSAs >
+decltype(auto) dilatedsubvector( const Vector<VT,TF>&, size_t, size_t, size_t, RSAs... );
+
+template< typename VT, bool TF, typename... RSAs >
+decltype(auto) dilatedsubvector( Vector<VT,TF>&&, size_t, size_t, size_t, RSAs... );
+
+
 // template< size_t I, size_t... Is, typename TT, typename... RRAs >
 // decltype(auto) rows( Tensor<TT>&, RRAs... );
 //
