@@ -93,6 +93,7 @@
 #include <blaze/util/typetraits/IsVectorizable.h>
 #include <blaze/util/typetraits/RemoveConst.h>
 
+#include <blaze_tensor/math/dense/UniformMatrix.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
@@ -1855,28 +1856,6 @@ struct BinaryMapTraitEval1< T1, T2, OP
    using ET2 = ElementType_t<T2>;
 
    using Type = UniformTensor< MapTrait_t<ET1,ET2,OP> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  EXPANDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T  // Type to be expanded
-        , size_t E >  // Compile time expansion
-struct ExpandTraitEval1< T, E
-                       , EnableIf_t< IsMatrix_v<T> && IsRowMajorMatrix_v<T> &&
-                                     IsUniform_v<T> && !IsZero_v<T> > >
-{
-   using Type = UniformTensor< ElementType_t<T> >;
 };
 /*! \endcond */
 //*************************************************************************************************
