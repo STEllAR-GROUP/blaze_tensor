@@ -84,7 +84,8 @@ integration service tracks the current build status for the master branch:
 - Reduction operations like `min` and `max`, also unary and binary overloads for
   `blaze::map`.
 - Matrix expand operations that produce tensors from expanding (broadcasting)
-  matrices in page direction.
+  matrices in page direction (`blaze::expand()`).
+- Matrix and Tensor flattening (`blaze::ravel()`).
 
 We have created a list of things that need to be implemented:
 [TODO: Things to implement](https://github.com/STEllAR-GROUP/blaze_tensor/issues/2).
@@ -95,8 +96,9 @@ This is a good starting point if you would like to help developing BlazeTensor.
 In order to use BlazeTensor you will need a proper installation of the
 [Blaze library](https://bitbucket.org/blaze-lib/blaze/src). Please see
 [here](https://bitbucket.org/blaze-lib/blaze/wiki/Configuration%20and%20Installation)
-for instructions on how to install it. If you want to run the BlazeTensor tests
-you will also need the Blaze source directory.
+for instructions on how to install it. Please note that you will need a very
+recent version (preferrably top of master) of Blaze. If you want to run the
+BlazeTensor tests you will also need the Blaze source directory.
 
 1. Clone this repository
 2. Create a build directory
