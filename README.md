@@ -74,6 +74,9 @@ integration service tracks the current build status for the master branch:
   the page/column plane of a 3D dense array
 - `blaze::RowSlice<...>`: a view representing a slice of 'thickness' one along
   the column/page plane of a 3D dense array
+- `blaze::DilatedSubvector<...>`: a view representing a sub-vector of any Blaze
+  vector-like data structure with an additional 'dilation' (step-size between
+  the elements of the underlying vector)
 
 ### Operations
 
