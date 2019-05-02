@@ -1,7 +1,7 @@
 # =================================================================================================
 #
 #   Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-#   Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+#   Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 #
 #   This file is part of the Blaze library. You can redistribute it and/or modify it under
 #   the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -30,27 +30,15 @@
 #
 # =================================================================================================
 
-set(subdirs
-   columnslice
-   customtensor
-   densearray
-   densetensor
-   dilatedsubvector
-   dilatedsubmatrix
-   dmatexpand
-   dmatravel
-   dtensdtensadd
-   dtensravel
-   dynamictensor
-   initializertensor
-   pageslice
-   rowslice
-   statictensor
-   subtensor
-   uniformtensor
+
+set(category DenseArray)
+
+set(tests
+    GeneralTest
 )
 
-foreach(dir ${subdirs})
-   add_subdirectory(${dir})
+foreach(test ${tests})
+   add_blaze_tensor_test(${category}${test}
+      SOURCES ${test}.cpp
+      FOLDER "Tests/${category}")
 endforeach()
-

@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/ReductionFlag.h
-//  \brief Header file for the reduction flags
+//  \file blaze_tensor/math/InitFromValue.h
+//  \brief Header file for the init_from_value functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,58 +33,25 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
-#define _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
-
-
-//*************************************************************************************************
-// Includes
-//*************************************************************************************************
-
-#include <blaze/util/Types.h>
-#include <blaze/math/ReductionFlag.h>
+#ifndef _BLAZE_TENSOR_TENSOR_MATH_INITFROMVALUE_H_
+#define _BLAZE_TENSOR_TENSOR_MATH_INITFROMVALUE_H_
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  REDUCTION FLAGS
+//  UTILITY FUNCTIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reduction flag for page-wise reduction operations.
-//
-// This flag can be used to perform page-wise reduction operations on tensors. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   blaze::DynamicTensor<int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<pagewise>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
+/*!\brief Defines a tag type to be used to initialize arrays from a value.
+// \ingroup math
 */
-constexpr size_t pagewise = 2UL;
-//*************************************************************************************************
+struct InitFromValue {};
 
-//*************************************************************************************************
-/*!\brief Reduction flag for arbitrary reduction operations.
-//
-// This flag can be used to perform arbitrary reduction operations on arrays. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   blaze::DynamicArray<3, int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<reduction<2>>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
-*/
-template< size_t N >
-constexpr size_t reduction = N;
+constexpr InitFromValue init_from_value{};
 //*************************************************************************************************
 
 } // namespace blaze

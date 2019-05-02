@@ -51,14 +51,17 @@ namespace blaze {
 //
 //=================================================================================================
 
+template< typename > struct DenseArray;
+
 template< typename > struct DenseTensor;
+
 template< typename > class DTensSerialExpr;
 template< typename, typename > class DTensDTensAddExpr;
 template< typename, typename > class DTensDTensMultExpr;
 template< typename, typename > class DTensDTensSchurExpr;
 template< typename, typename > class DTensDTensSubExpr;
 template< typename, typename > class DTensMapExpr;
-//template< typename > class DTensRavelExpr;
+template< typename > class DTensRavelExpr;
 template< typename, typename > class DTensScalarMultExpr;
 template< typename, typename > class DTensScalarDivExpr;
 template< typename, typename, typename > class DTensDTensMapExpr;
@@ -67,6 +70,10 @@ template< typename, size_t... > class DTensTransExpr;
 template< typename, size_t... > class DMatExpandExpr;
 template< typename > class DMatRavelExpr;
 
+template< typename, typename > class DArrMapExpr;
+template< typename, typename, typename > class DArrDArrMapExpr;
+template< typename, typename > class DArrScalarMultExpr;
+template< typename, typename > class DArrScalarDivExpr;
 
 
 template< typename TT1, typename TT2 >
@@ -107,6 +114,9 @@ decltype(auto) map( const DenseTensor<TT1>&, const DenseTensor<TT2>&, OP );
 template< typename TT, typename OP >
 decltype(auto) reduce( const DenseTensor<TT>&, OP );
 
+template< typename TT, typename OP >
+decltype(auto) reduce( const DenseArray<TT>&, OP );
+
 template< typename TT, bool SO >
 decltype(auto) expand( const DenseMatrix<TT, SO>&, size_t );
 
@@ -119,8 +129,8 @@ decltype(auto) expand( const DenseMatrix<TT, SO>&, size_t );
 template< typename MT, bool SO >
 decltype(auto) ravel( const DenseMatrix<MT, SO>& );
 
-//template< typename TT >
-//decltype(auto) ravel( const DenseTensor<TT>& );
+template< typename TT >
+decltype(auto) ravel( const DenseTensor<TT>& );
 
 } // namespace blaze
 

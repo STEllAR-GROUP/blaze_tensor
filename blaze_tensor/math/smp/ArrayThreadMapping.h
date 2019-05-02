@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/ReductionFlag.h
-//  \brief Header file for the reduction flags
+//  \file blaze_tensor/math/smp/ArrayThreadMapping.h
+//  \brief Header file for the SMP thread mapping functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,58 +33,79 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
-#define _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
+#ifndef _BLAZE_TENSOR_MATH_SMP_ARRAYTHREADMAPPING_H_
+#define _BLAZE_TENSOR_MATH_SMP_ARRAYTHREADMAPPING_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
+#include <tuple>
+#include <blaze/math/shims/Round.h>
+#include <blaze/math/shims/Sqrt.h>
+#include <blaze/math/smp/ThreadMapping.h>
+#include <blaze/util/algorithms/Max.h>
+#include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Types.h>
-#include <blaze/math/ReductionFlag.h>
 
+#include <blaze_tensor/math/expressions/Array.h>
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  REDUCTION FLAGS
+//  THREADMAPPING FUNCTIONALITY
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reduction flag for page-wise reduction operations.
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creates a 3D mapping of threads.
+// \ingroup smp
 //
-// This flag can be used to perform page-wise reduction operations on tensors. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   blaze::DynamicTensor<int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<pagewise>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
-*/
-constexpr size_t pagewise = 2UL;
-//*************************************************************************************************
-
-//*************************************************************************************************
-/*!\brief Reduction flag for arbitrary reduction operations.
+// \param threads The total number of threads to be mapped.
+// \param A The tensor the mapping is created for.
+// \return 2D mapping of the given number of threads.
 //
-// This flag can be used to perform arbitrary reduction operations on arrays. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   blaze::DynamicArray<3, int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<reduction<2>>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
+// This function creates a 2D mapping of the given number of threads for the given tensor \a A.
+// The mapping will depend on the ratio between rows and columns of the tensor and its storage
+// order.
 */
-template< size_t N >
-constexpr size_t reduction = N;
+template< typename MT >// Type of the tensor
+ThreadMapping createThreadMapping( size_t threads, const Array<MT>& A )
+{
+   const size_t M( (~A).dimension<1>() );
+   const size_t N( (~A).dimension<0>() );
+
+   if( M > N )
+   {
+      const double ratio( double(M)/double(N) );
+      size_t m = min( threads, max( 1UL, static_cast<size_t>( round( sqrt( threads*ratio ) ) ) ) );
+      size_t n = threads / m;
+
+      while( m * n != threads ) {
+         ++m;
+         n = threads / m;
+      }
+
+      return ThreadMapping( m, n );
+   }
+   else
+   {
+      const double ratio( double(N)/double(M) );
+      size_t n = min( threads, max( 1UL, static_cast<size_t>( round( sqrt( threads*ratio ) ) ) ) );
+      size_t m = threads / n;
+
+      while( m * n != threads ) {
+         ++n;
+         m = threads / n;
+      }
+
+      return ThreadMapping( m, n );
+   }
+}
+/*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze

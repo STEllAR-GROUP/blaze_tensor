@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/DenseTensor.h
-//  \brief Header file for all basic DenseTensor functionality
+//  \file blaze_tensor/math/DenseArray.h
+//  \brief Header file for all basic DenseArray functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,19 +33,14 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSETENSOR_H_
-#define _BLAZE_TENSOR_MATH_DENSETENSOR_H_
+#ifndef _BLAZE_TENSOR_MATH_DENSEARRAY_H_
+#define _BLAZE_TENSOR_MATH_DENSEARRAY_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/adaptors/DiagonalMatrix.h>
-#include <blaze/math/adaptors/HermitianMatrix.h>
-#include <blaze/math/adaptors/LowerMatrix.h>
-#include <blaze/math/adaptors/SymmetricMatrix.h>
-#include <blaze/math/adaptors/UpperMatrix.h>
 #include <blaze/math/dense/DenseMatrix.h>
 #include <blaze/math/dense/Eigen.h>
 #include <blaze/math/dense/Inversion.h>
@@ -121,22 +116,22 @@
 #include <blaze/math/views/Submatrix.h>
 #include <blaze/math/views/Subvector.h>
 
-#include <blaze_tensor/math/Tensor.h>
-#include <blaze_tensor/math/dense/DenseTensor.h>
-#include <blaze_tensor/math/expressions/DMatExpandExpr.h>
-#include <blaze_tensor/math/expressions/DMatRavelExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
-#include <blaze_tensor/math/expressions/DTensMapExpr.h>
-#include <blaze_tensor/math/expressions/DTensRavelExpr.h>
-#include <blaze_tensor/math/expressions/DTensScalarDivExpr.h>
-#include <blaze_tensor/math/expressions/DTensScalarMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensSerialExpr.h>
-#include <blaze_tensor/math/expressions/DTensTransExpr.h>
-#include <blaze_tensor/math/expressions/DenseTensor.h>
-#include <blaze_tensor/math/smp/DenseTensor.h>
+#include <blaze_tensor/math/Array.h>
+#include <blaze_tensor/math/dense/DenseArray.h>
+// #include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
+// #include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
+#include <blaze_tensor/math/expressions/DArrDArrMapExpr.h>
+// #include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
+// #include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
+// #include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
+// #include <blaze_tensor/math/expressions/DTensEvalExpr.h>
+#include <blaze_tensor/math/expressions/DArrMapExpr.h>
+#include <blaze_tensor/math/expressions/DArrNormExpr.h>
+#include <blaze_tensor/math/expressions/DArrReduceExpr.h>
+#include <blaze_tensor/math/expressions/DArrScalarDivExpr.h>
+#include <blaze_tensor/math/expressions/DArrScalarMultExpr.h>
+// #include <blaze_tensor/math/expressions/DTensSerialExpr.h>
+#include <blaze_tensor/math/expressions/DenseArray.h>
+#include <blaze_tensor/math/smp/DenseArray.h>
 
 #endif

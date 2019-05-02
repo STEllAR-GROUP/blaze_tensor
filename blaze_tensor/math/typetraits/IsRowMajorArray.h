@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsRowMajorTensor.h
-//  \brief Header file for the IsRowMajorTensor type trait
+//  \file blaze/math/typetraits/IsRowMajorArray.h
+//  \brief Header file for the IsRowMajorArray type trait
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORTENSOR_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORTENSOR_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORARRAY_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORARRAY_H_
 
 
 //*************************************************************************************************
@@ -45,7 +45,7 @@
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
 
-#include <blaze_tensor/math/expressions/Tensor.h>
+#include <blaze_tensor/math/expressions/Array.h>
 #include <blaze_tensor/math/StorageOrder.h>
 
 namespace blaze {
@@ -58,19 +58,19 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsRowMajorTensor type trait.
+/*!\brief Auxiliary helper struct for the IsRowMajorArray type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsRowMajorTensorHelper
+struct IsRowMajorArrayHelper
 {
  private:
    //**********************************************************************************************
    template< typename MT >
-   static TrueType test( const Tensor<MT>& );
+   static TrueType test( const Array<MT>& );
 
    template< typename MT >
-   static TrueType test( const volatile Tensor<MT>& );
+   static TrueType test( const volatile Array<MT>& );
 
    static FalseType test( ... );
    //**********************************************************************************************
@@ -95,42 +95,42 @@ struct IsRowMajorTensorHelper
 // is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
 
    \code
-   using blaze::StaticTensor;
-   using blaze::DynamicTensor;
-   using blaze::CompressedTensor;
+   using blaze::StaticArray;
+   using blaze::DynamicArray;
+   using blaze::CompressedArray;
    using blaze::rowMajor;
    using blaze::columnMajor;
 
-   blaze::IsRowMajorTensor< StaticTensor<float,3U,3U,rowMajor> >::value      // Evaluates to 1
-   blaze::IsRowMajorTensor< const DynamicTensor<double,rowMajor> >::Type     // Results in TrueType
-   blaze::IsRowMajorTensor< volatile CompressedTensor<int,rowMajor> >        // Is derived from TrueType
-   blaze::IsRowMajorTensor< StaticTensor<float,3U,3U,columnMajor> >::value   // Evaluates to 0
-   blaze::IsRowMajorTensor< const DynamicTensor<double,columnMajor> >::Type  // Results in FalseType
-   blaze::IsRowMajorTensor< volatile CompressedTensor<int,columnMajor> >     // Is derived from FalseType
+   blaze::IsRowMajorArray< StaticArray<float,3U,3U,rowMajor> >::value      // Evaluates to 1
+   blaze::IsRowMajorArray< const DynamicArray<double,rowMajor> >::Type     // Results in TrueType
+   blaze::IsRowMajorArray< volatile CompressedArray<int,rowMajor> >        // Is derived from TrueType
+   blaze::IsRowMajorArray< StaticArray<float,3U,3U,columnMajor> >::value   // Evaluates to 0
+   blaze::IsRowMajorArray< const DynamicArray<double,columnMajor> >::Type  // Results in FalseType
+   blaze::IsRowMajorArray< volatile CompressedArray<int,columnMajor> >     // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsRowMajorTensor
-   : public IsRowMajorTensorHelper<T>::Type
+struct IsRowMajorArray
+   : public IsRowMajorArrayHelper<T>::Type
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the IsRowMajorTensor type trait.
+/*!\brief Auxiliary variable template for the IsRowMajorArray type trait.
 // \ingroup type_traits
 //
-// The IsRowMajorTensor_v variable template provides a convenient shortcut to access the nested
-// \a value of the IsRowMajorTensor class template. For instance, given the type \a T the
+// The IsRowMajorArray_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsRowMajorArray class template. For instance, given the type \a T the
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = blaze::IsRowMajorTensor<T>::value;
-   constexpr bool value2 = blaze::IsRowMajorTensor_v<T>;
+   constexpr bool value1 = blaze::IsRowMajorArray<T>::value;
+   constexpr bool value2 = blaze::IsRowMajorArray_v<T>;
    \endcode
 */
 template< typename T >
-constexpr bool IsRowMajorTensor_v = IsRowMajorTensor<T>::value;
+constexpr bool IsRowMajorArray_v = IsRowMajorArray<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze
