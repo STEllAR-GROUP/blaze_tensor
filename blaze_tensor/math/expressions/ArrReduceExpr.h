@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/ReductionFlag.h
-//  \brief Header file for the reduction flags
+//  \file blaze_array/math/expressions/ArrReduceExpr.h
+//  \brief Header file for the ArrReduceExpr base class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,58 +33,41 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
-#define _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_ARRREDUCEEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_ARRREDUCEEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Types.h>
-#include <blaze/math/ReductionFlag.h>
+#include <blaze/math/expressions/ReduceExpr.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  REDUCTION FLAGS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reduction flag for page-wise reduction operations.
+/*!\brief Base class for all array reduction expression templates.
+// \ingroup math
 //
-// This flag can be used to perform page-wise reduction operations on tensors. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   blaze::DynamicTensor<int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<pagewise>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
+// The ArrReduceExpr class serves as a tag for all expression templates that implement a array
+// reduction. All classes, that represent a array reduction and and that are used within the
+// expression template environment of the Blaze library have to derive publicly from this class
+// in order to qualify as array reduction expression template. Only in case a class is derived
+// publicly from the ArrReduceExpr base class, the IsArrReduceExpr type trait recognizes the
+// class as valid array reduction expression template.
 */
-constexpr size_t pagewise = 2UL;
-//*************************************************************************************************
-
-//*************************************************************************************************
-/*!\brief Reduction flag for arbitrary reduction operations.
-//
-// This flag can be used to perform arbitrary reduction operations on arrays. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   blaze::DynamicArray<3, int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<reduction<2>>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
-*/
-template< size_t N >
-constexpr size_t reduction = N;
+template< typename VT  // Tensor base type of the expression
+        , size_t RF >  // Reduction flag
+struct ArrReduceExpr
+   : public ReduceExpr<VT>
+{};
 //*************************************************************************************************
 
 } // namespace blaze

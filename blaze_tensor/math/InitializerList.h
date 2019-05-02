@@ -59,7 +59,9 @@ namespace blaze {
 // \return The number of non-zeros elements.
 */
 template< typename Type >
-inline size_t nonZeros( initializer_list< initializer_list< initializer_list<Type> > > list ) noexcept
+inline constexpr size_t nonZeros(
+   initializer_list< initializer_list< initializer_list< Type > > >
+      list ) noexcept
 {
    size_t nonzeros( 0UL );
 
@@ -75,6 +77,77 @@ inline size_t nonZeros( initializer_list< initializer_list< initializer_list<Typ
 
 
 //*************************************************************************************************
+/*!\brief Determines the maximum number of pages specified by the given initializer list.
+// \ingroup math
+//
+// \param list The given initializer list
+// \return The maximum number of pages.
+*/
+template< typename Type >
+inline constexpr size_t determineCubes( initializer_list< initializer_list<
+      initializer_list< initializer_list< initializer_list< Type > > > > >
+      list ) noexcept
+{
+   size_t cubes( 0UL );
+   for( const auto& cube : list ) {
+      cubes = max( cubes, cube.size() );
+   }
+   return cubes;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Determines the maximum number of pages specified by the given initializer list.
+// \ingroup math
+//
+// \param list The given initializer list
+// \return The maximum number of pages.
+*/
+template< typename Type >
+inline constexpr size_t determinePages( initializer_list< initializer_list<
+      initializer_list< initializer_list< initializer_list< Type > > > > >
+      list ) noexcept
+{
+   size_t pages( 0UL );
+
+   for( const auto& cube : list ) {
+      for( const auto& page_list : cube ) {
+         pages = max( pages, page_list.size() );
+      }
+   }
+   return pages;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Determines the maximum number of rows specified by the given initializer list.
+// \ingroup math
+//
+// \param list The given initializer list
+// \return The maximum number of rows.
+*/
+template< typename Type >
+inline constexpr size_t determineRows( initializer_list< initializer_list<
+      initializer_list< initializer_list< initializer_list< Type > > > > >
+      list ) noexcept
+{
+   size_t rows( 0UL );
+
+   for( const auto& cube : list ) {
+      for( const auto& page_list : list ) {
+         for( const auto& row_list : page_list ) {
+            rows = max( rows, row_list.size() );
+         }
+      }
+   }
+   return rows;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief Determines the maximum number of columns specified by the given initializer list.
 // \ingroup math
 //
@@ -82,7 +155,109 @@ inline size_t nonZeros( initializer_list< initializer_list< initializer_list<Typ
 // \return The maximum number of columns.
 */
 template< typename Type >
-inline size_t determineColumns( initializer_list< initializer_list< initializer_list<Type> > > list ) noexcept
+inline constexpr size_t determineColumns( initializer_list< initializer_list<
+      initializer_list< initializer_list< initializer_list< Type > > > > >
+      list ) noexcept
+{
+   size_t cols( 0UL );
+
+   for( const auto& cube : list ) {
+      for( const auto& page_list : list ) {
+         for( const auto& row_list : page_list ) {
+            for(const auto& col_list : row_list) {
+               cols = max( cols, col_list.size() );
+            }
+         }
+      }
+   }
+   return cols;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Determines the maximum number of pages specified by the given initializer list.
+// \ingroup math
+//
+// \param list The given initializer list
+// \return The maximum number of pages.
+*/
+template< typename Type >
+inline constexpr size_t determinePages( initializer_list<
+   initializer_list< initializer_list< initializer_list< Type > > > >
+      list ) noexcept
+{
+   size_t pages( 0UL );
+
+   for( const auto& cube : list ) {
+      pages = max( pages, cube.size() );
+   }
+   return pages;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Determines the maximum number of columns specified by the given initializer list.
+// \ingroup math
+//
+// \param list The given initializer list
+// \return The maximum number of columns.
+*/
+template< typename Type >
+inline constexpr size_t determineColumns( initializer_list<
+   initializer_list< initializer_list< initializer_list< Type > > > >
+      list ) noexcept
+{
+   size_t cols( 0UL );
+
+   for( const auto& cube : list ) {
+      for( const auto& page_list : list ) {
+         for( const auto& row_list : page_list ) {
+            cols = max( cols, row_list.size() );
+         }
+      }
+   }
+   return cols;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Determines the maximum number of rows specified by the given initializer list.
+// \ingroup math
+//
+// \param list The given initializer list
+// \return The maximum number of rows.
+*/
+template< typename Type >
+inline constexpr size_t determineRows( initializer_list<
+   initializer_list< initializer_list< initializer_list< Type > > > >
+      list ) noexcept
+{
+   size_t rows( 0UL );
+
+   for( const auto& cube : list ) {
+      for( const auto& page_list : cube ) {
+         rows = max( rows, page_list.size() );
+      }
+   }
+   return rows;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Determines the maximum number of columns specified by the given initializer list.
+// \ingroup math
+//
+// \param list The given initializer list
+// \return The maximum number of columns.
+*/
+template< typename Type >
+inline constexpr size_t determineColumns(
+   initializer_list< initializer_list< initializer_list< Type > > >
+      list ) noexcept
 {
    size_t cols( 0UL );
 
@@ -103,7 +278,9 @@ inline size_t determineColumns( initializer_list< initializer_list< initializer_
 // \return The maximum number of rows.
 */
 template< typename Type >
-inline size_t determineRows( initializer_list< initializer_list< initializer_list<Type> > > list ) noexcept
+inline constexpr size_t determineRows(
+   initializer_list< initializer_list< initializer_list< Type > > >
+      list ) noexcept
 {
    size_t rows( 0UL );
 
@@ -112,6 +289,176 @@ inline size_t determineRows( initializer_list< initializer_list< initializer_lis
    }
    return rows;
 }
+//*************************************************************************************************
+
+//*************************************************************************************************
+/*!\brief Define a nested initializer list type of given dimensionality.
+// \ingroup math
+*/
+template< size_t N, typename Type >
+struct nested_initializer_list;
+
+template< typename Type >
+struct nested_initializer_list< 1, Type > : initializer_list< Type >
+{
+   using type = initializer_list< Type >;
+
+   constexpr nested_initializer_list(type rhs) : type(std::move(rhs)) {}
+
+   constexpr std::array< size_t, 1 > dimensions() const
+   {
+      std::array< size_t, 1 > dims {
+         this->type::size()
+      };
+      return dims;
+   }
+
+   template< typename C >
+   void transfer_data( C& rhs )
+   {
+      std::fill(
+         std::copy( this->type::begin(), this->type::end(), ( ~rhs ).begin() ),
+         ( ~rhs ).end(),
+         Type() );
+   }
+};
+
+template< typename Type >
+struct nested_initializer_list< 2, Type >
+   : initializer_list< initializer_list< Type > >
+{
+   using type = initializer_list< initializer_list< Type > >;
+
+   constexpr nested_initializer_list(type rhs) : type(std::move(rhs)) {}
+
+   constexpr std::array< size_t, 2 > dimensions() const
+   {
+      std::array< size_t, 2 > dims {
+         determineColumns( *this ),
+         this->type::size()
+      };
+      return dims;
+   }
+
+
+   template< typename C >
+   void transfer_data( C& rhs )
+   {
+      size_t i( 0UL );
+      for( const auto& rowList : *this ) {
+         std::fill(
+            std::copy( rowList.begin(), rowList.end(), ( ~rhs ).begin( i ) ),
+            ( ~rhs ).end( i ),
+            Type() );
+         ++i;
+      }
+   }
+};
+
+template< typename Type >
+struct nested_initializer_list< 3, Type >
+   : initializer_list< initializer_list< initializer_list< Type > > >
+{
+   using type =
+      initializer_list< initializer_list< initializer_list< Type > > >;
+
+   constexpr nested_initializer_list(type rhs) : type(std::move(rhs)) {}
+
+   constexpr std::array< size_t, 3 > dimensions() const
+   {
+      std::array< size_t, 3 > dims = {
+         determineColumns( *this ),
+         determineRows( *this ),
+         this->type::size()
+      };
+      return dims;
+   }
+
+   template< typename C >
+   void transfer_data( C& rhs )
+   {
+      size_t k( 0UL );
+      for (const auto& page : *this) {
+         size_t i( 0UL );
+         for (const auto& rowList : page) {
+            std::fill(
+               std::copy(
+                  rowList.begin(), rowList.end(), ( ~rhs ).begin( i, k ) ),
+               ( ~rhs ).end( i, k ),
+               Type() );
+            ++i;
+         }
+         ++k;
+      }
+   }
+};
+
+template< typename Type >
+struct nested_initializer_list< 4, Type >
+   : initializer_list<
+         initializer_list< initializer_list< initializer_list< Type > > > >
+{
+   using type = initializer_list<
+      initializer_list< initializer_list< initializer_list< Type > > > >;
+
+   constexpr nested_initializer_list(type rhs) : type(std::move(rhs)) {}
+
+   constexpr std::array< size_t, 4 > dimensions() const
+   {
+      std::array< size_t, 4 > dims = {
+         determineColumns( *this ),
+         determineRows( *this ),
+         determinePages( *this ),
+         this->type::size()
+      };
+      return dims;
+   }
+
+   template< typename C >
+   void transfer_data( C& rhs )
+   {
+      size_t l( 0UL );
+      for( const auto& cube : *this ) {
+         size_t k( 0UL );
+         for( const auto& page_list : cube ) {
+            size_t i( 0UL );
+            for( const auto& row_list : page_list ) {
+               std::fill( std::copy( row_list.begin(),
+                             row_list.end(),
+                             ( ~rhs ).begin( i, l, k ) ),
+                  ( ~rhs ).end( i, l, k ),
+                  Type() );
+               ++i;
+            }
+            ++k;
+         }
+         ++l;
+      }
+   }
+};
+
+template< typename Type >
+struct nested_initializer_list< 5, Type >
+   : initializer_list< initializer_list<
+         initializer_list< initializer_list< initializer_list< Type > > > > >
+{
+   using type = initializer_list< initializer_list<
+      initializer_list< initializer_list< initializer_list< Type > > > > >;
+
+   constexpr nested_initializer_list(type rhs) : type(std::move(rhs)) {}
+
+   constexpr std::array< size_t, 5 > dimensions() const
+   {
+      std::array< size_t, 5 > dims = {
+         determineColumns( *this ),
+         determineRows( *this ),
+         determinePages( *this ),
+         determineCubes( *this ),
+         this->type::size()
+      };
+      return dims;
+   }
+};
 //*************************************************************************************************
 
 } // namespace blaze

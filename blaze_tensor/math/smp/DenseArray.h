@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/ReductionFlag.h
-//  \brief Header file for the reduction flags
+//  \file blaze_tensor/math/smp/DenseArray.h
+//  \brief Header file for the dense array SMP implementation
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,60 +33,25 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
-#define _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
+#ifndef _BLAZE_TENSOR_MATH_SMP_DENSEARRAY_H_
+#define _BLAZE_TENSOR_MATH_SMP_DENSEARRAY_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Types.h>
-#include <blaze/math/ReductionFlag.h>
+#include <blaze/math/SMP.h>
+#include <blaze/system/SMP.h>
 
-
-namespace blaze {
-
-//=================================================================================================
-//
-//  REDUCTION FLAGS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Reduction flag for page-wise reduction operations.
-//
-// This flag can be used to perform page-wise reduction operations on tensors. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   blaze::DynamicTensor<int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<pagewise>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
-*/
-constexpr size_t pagewise = 2UL;
-//*************************************************************************************************
-
-//*************************************************************************************************
-/*!\brief Reduction flag for arbitrary reduction operations.
-//
-// This flag can be used to perform arbitrary reduction operations on arrays. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   blaze::DynamicArray<3, int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<reduction<2>>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
-*/
-template< size_t N >
-constexpr size_t reduction = N;
-//*************************************************************************************************
-
-} // namespace blaze
+#if BLAZE_HPX_PARALLEL_MODE
+#include <blaze_tensor/math/smp/hpx/DenseArray.h>
+#elif BLAZE_CPP_THREADS_PARALLEL_MODE || BLAZE_BOOST_THREADS_PARALLEL_MODE
+#include <blaze_tensor/math/smp/threads/DenseArray.h>
+#elif BLAZE_OPENMP_PARALLEL_MODE
+#include <blaze_tensor/math/smp/openmp/DenseArray.h>
+#else
+#include <blaze_tensor/math/smp/default/DenseArray.h>
+#endif
 
 #endif

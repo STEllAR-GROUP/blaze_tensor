@@ -1639,7 +1639,7 @@ void DynamicTensor<Type>::resize( size_t o, size_t m, size_t n, bool preserve )
 
       for (size_t k=0UL; k<min_o; ++k) {
          for (size_t i=0UL; i<min_m; ++i) {
-            transfer(v_+(k*o_+i)*nn_, v_+(k*o_+i)*nn_+min_n, v+(k*o+i)*nn);
+            transfer(v_+(k*m_+i)*nn_, v_+(k*m_+i)*nn_+min_n, v+(k*m+i)*nn);
          }
       }
       swap( v_, v );

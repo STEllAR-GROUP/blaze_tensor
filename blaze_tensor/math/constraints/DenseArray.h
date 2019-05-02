@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/ReductionFlag.h
-//  \brief Header file for the reduction flags
+//  \file blaze_tensor/math/constraints/DenseArray.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
@@ -33,58 +33,53 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
-#define _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_DENSEARRAY_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_DENSEARRAY_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Types.h>
-#include <blaze/math/ReductionFlag.h>
-
+#include <blaze_tensor/math/typetraits/IsDenseArray.h>
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  REDUCTION FLAGS
+//  MUST_BE_DENSE_ARRAY_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reduction flag for page-wise reduction operations.
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
 //
-// This flag can be used to perform page-wise reduction operations on tensors. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   blaze::DynamicTensor<int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<pagewise>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
+// In case the given data type \a T is not a dense, N-dimensional array type, a compilation
+// error is created.
 */
-constexpr size_t pagewise = 2UL;
+#define BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE(T) \
+   static_assert( ::blaze::IsDenseArray_v<T>, "Non-dense array type detected" )
 //*************************************************************************************************
 
-//*************************************************************************************************
-/*!\brief Reduction flag for arbitrary reduction operations.
+
+
+
+//=================================================================================================
 //
-// This flag can be used to perform arbitrary reduction operations on arrays. The following
-// example shows the row-wise summation of a tensor:
+//  MUST_NOT_BE_DENSE_ARRAY_TYPE CONSTRAINT
+//
+//=================================================================================================
 
-   \code
-   blaze::DynamicArray<3, int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<reduction<2>>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a dense, N-dimensional array type, a compilation
+// error is created.
 */
-template< size_t N >
-constexpr size_t reduction = N;
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_DENSE_ARRAY_TYPE(T) \
+   static_assert( !::blaze::IsDenseArray_v<T>, "Dense array type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

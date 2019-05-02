@@ -1,10 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/ReductionFlag.h
-//  \brief Header file for the reduction flags
+//  \file blaze_tensor/math/typetraits/IsArray.h
+//  \brief Header file for the IsArray type trait
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,58 +33,95 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
-#define _BLAZE_TENSOR_MATH_REDUCTIONFLAG_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISARRAY_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISARRAY_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/Types.h>
-#include <blaze/math/ReductionFlag.h>
+#include <utility>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 
+#include <blaze_tensor/math/expressions/Array.h>
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  REDUCTION FLAGS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Reduction flag for page-wise reduction operations.
-//
-// This flag can be used to perform page-wise reduction operations on tensors. The following
-// example shows the row-wise summation of a tensor:
-
-   \code
-   using blaze::rowMajor;
-   using blaze::columnVector;
-
-   blaze::DynamicTensor<int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<pagewise>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
-   \endcode
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsArray type trait.
+// \ingroup math_type_traits
 */
-constexpr size_t pagewise = 2UL;
+template< typename T >
+struct IsArrayHelper
+{
+ private:
+   //**********************************************************************************************
+   template< typename MT >
+   static TrueType test( const Array<MT>& );
+
+   template< typename MT >
+   static TrueType test( const volatile Array<MT>& );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( std::declval<T&>() ) );
+   //**********************************************************************************************
+};
+/*! \endcond */
 //*************************************************************************************************
 
+
 //*************************************************************************************************
-/*!\brief Reduction flag for arbitrary reduction operations.
+/*!\brief Compile time check for array types.
+// \ingroup math_type_traits
 //
-// This flag can be used to perform arbitrary reduction operations on arrays. The following
-// example shows the row-wise summation of a tensor:
+// This type trait tests whether or not the given template parameter is a N-dimensional dense
+// or sparse array type. In case the type is a array type, the \a value member constant is
+// set to \a true, the nested type definition \a Type is \a TrueType, and the class derives
+// from \a TrueType. Otherwise \a yes is set to \a false, \a Type is \a FalseType, and the
+// class derives from \a FalseType.
 
    \code
-   blaze::DynamicArray<3, int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
-
-   auto m = sum<reduction<2>>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
+   blaze::IsArray< const DynamicArray<double> >::Type        // Results in TrueType
+   blaze::IsArray< StaticVector<float,3U,false> >::value     // Evaluates to 0
+   blaze::IsArray< const DynamicVector<double,true> >::Type  // Results in FalseType
+   blaze::IsArray< volatile CompressedVector<int,true> >     // Is derived from FalseType
    \endcode
 */
-template< size_t N >
-constexpr size_t reduction = N;
+template< typename T >
+struct IsArray
+   : public IsArrayHelper<T>::Type
+{};
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary variable template for the IsArray type trait.
+// \ingroup type_traits
+//
+// The IsArray_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsArray class template. For instance, given the type \a T the following two statements
+// are identical:
+
+   \code
+   constexpr bool value1 = blaze::IsArray<T>::value;
+   constexpr bool value2 = blaze::IsArray_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsArray_v = IsArray<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze
