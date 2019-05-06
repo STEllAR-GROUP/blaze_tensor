@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/UniformVector.h
-//  \brief Header file for the implementation of a uniform vector
+//  \file blaze_tensor/math/views/dilatedsubmatrix/BaseTemplate.h
+//  \brief Header file for the implementation of the Submatrix base template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,34 +34,65 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_UNIFORMVECTOR_H_
-#define _BLAZE_TENSOR_MATH_DENSE_UNIFORMVECTOR_H_
+#ifndef _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_BASETEMPLATE_H_
+#define _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_BASETEMPLATE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/UniformVector.h>
-#include <blaze_tensor/math/traits/DilatedSubvectorTrait.h>
+#include <blaze/math/AlignmentFlag.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
+#include <blaze/util/Types.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  DILATEDSUBVECTORTRAIT SPECIALIZATIONS
+//  ::blaze NAMESPACE FORWARD DECLARATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT, size_t I, size_t N, size_t Dilation >
-struct DilatedSubvectorTraitEval1< VT, I, N, Dilation
-                          , EnableIf_t< IsUniform_v<VT> && !IsZero_v<VT> > >
-{
-   using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
-};
+/*!\brief Base template of the Submatrix class template.
+// \ingroup submatrix
+*/
+template< typename MT                          // Type of the matrix
+        , bool SO = IsColumnMajorMatrix_v<MT>  // Storage order
+        , bool DF = IsDenseMatrix_v<MT>        // Density flag
+        , size_t... CSAs >                     // Compile time dilatedsubmatrix arguments
+class DilatedSubmatrix
+{};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ALIAS DECLARATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary alias declaration for the Submatrix class template.
+// \ingroup submatrix
+//
+// The Submatrix_ alias declaration represents a convenient shortcut for the specification of the
+// non-derived template arguments of the Submatrix class template.
+*/
+template< typename MT                   // Type of the matrix
+        , size_t... CSAs >              // Compile time submatrix arguments
+using DilatedSubmatrix_ = DilatedSubmatrix< MT
+                            , IsColumnMajorMatrix_v<MT>
+                            , IsDenseMatrix_v<MT>
+                            , CSAs... >;
 /*! \endcond */
 //*************************************************************************************************
 

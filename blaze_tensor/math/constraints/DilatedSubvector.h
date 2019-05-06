@@ -60,7 +60,7 @@ namespace blaze {
 // a compilation error is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_DILATEDSUBVECTOR_TYPE(T) \
-   static_assert( ::blaze::IsDilatedSubvector_v<T>, "Non-dilateddilatedsubvector type detected" )
+   static_assert( ::blaze::IsDilatedSubvector_v<T>, "Non-dilatedsubvector type detected" )
 //*************************************************************************************************
 
 
