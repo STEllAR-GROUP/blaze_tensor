@@ -116,55 +116,58 @@ void DenseTest::testConstructors()
    // Row-major dilatedsubmatrix tests
    //=====================================================================================
 
-   {
-      test_ = "Row-major dilatedsubmatrix constructor";
+   //{
+   //   test_ = "Row-major dilatedsubmatrix constructor";
 
-      initialize();
+   //   initialize();
 
-      const size_t alignment = blaze::AlignmentOf<int>::value;
+   //   const size_t alignment = blaze::AlignmentOf<int>::value;
 
-      //for( size_t row=0UL; row<mat1_.rows(); row+=alignment ) {
-      //   for( size_t column=0UL; column<mat1_.columns(); column+=alignment ) {
-      //      for( size_t maxm=0UL; ; maxm+=alignment ) {
-      //         for( size_t maxn=0UL; ; maxn+=alignment )
-      //         {
-      //            size_t m( blaze::min( maxm, mat1_.rows()-row ) );
-      //            size_t n( blaze::min( maxn, mat1_.columns()-column ) );
+   //   for( size_t row=0UL; row<mat1_.rows(); row+=alignment ) {
+   //      for( size_t column=0UL; column<mat1_.columns(); column+=alignment ) {
+   //         for( size_t maxm=0UL; ; maxm+=alignment ) {
+   //            for( size_t maxn=0UL; ; maxn+=alignment )
+   //            {
+   //               size_t m( blaze::min( maxm, mat1_.rows()-row ) );
+   //               size_t n( blaze::min( maxn, mat1_.columns()-column ) );
 
-      //            for (size_t rowdilation = 1UL; rowdilation < maxm; ++rowdilation)
-      //            {
-      //               for (size_t columndilation = 1UL; columndilation < maxn; ++columndilation)
-      //               {
-      //                  while( row + (m - 1) * rowdilation >= mat1_.rows() ) --m;
-      //                  while( column + (n - 1) * columndilation >= mat1_.columns() ) --n;
-      //                  auto row_indices = generate_indices( row, m, rowdilation );
-      //                  auto column_indices = generate_indices( column, n, columndilation );
-      //                  //const USMT sm1 = blaze::columns(blaze::rows(mat1_, row_indices.data(), row_indices.size()), column_indices.data(), column_indices.size());
-      //                  const DSMT sm2 = dilatedsubmatrix(mat2_, row, column, m, n, rowdilation, columndilation);
-      //                  const DSMT sm1 = sm2;
+   //               for (size_t rowdilation = 1UL; rowdilation < maxm; ++rowdilation)
+   //               {
+   //                  //for (size_t columndilation = 1UL; columndilation < maxn; ++columndilation)
+   //                  //{
+   //                     size_t columndilation = 1UL;
+   //                     while( row + (m - 1) * rowdilation >= mat1_.rows() ) --m;
+   //                     while( column + (n - 1) * columndilation >= mat1_.columns() ) --n;
+   //                     auto row_indices = generate_indices( row, m, rowdilation );
+   //                     auto column_indices = generate_indices( column, n, columndilation );
+   //                     //auto sm1 = blaze::columns(blaze::rows(mat1_, row_indices.data(), row_indices.size()), column_indices.data(), column_indices.size());
+   //                     blaze::Rows<blaze::DynamicMatrix<int>> sm1 = blaze::rows(mat1_, row_indices.data(), row_indices.size());
+   //                     //auto sm1 = blaze::columns(mat1_, column_indices.data(), column_indices.size());
+   //                     const DSMT sm2 = dilatedsubmatrix(mat2_, row, column, m, n, rowdilation, columndilation);
+   //                     //const DSMT sm1 = sm2;
 
-      //                  if (sm1 != sm2) {
-      //                     std::ostringstream oss;
-      //                     oss << " Test: " << test_ << "\n"
-      //                        << " Error: Setup of dense dilatedsubmatrix failed\n"
-      //                        << " Details:\n"
-      //                        << "   Index of first row    = " << row << "\n"
-      //                        << "   Index of first column = " << column << "\n"
-      //                        << "   Number of rows        = " << m << "\n"
-      //                        << "   Number of columns     = " << n << "\n"
-      //                        << "   dilatedsubmatrix:\n" << sm1 << "\n"
-      //                        << "   Reference:\n" << sm2 << "\n";
-      //                     throw std::runtime_error(oss.str());
-      //                  }
-      //               }
-      //            }
-      //            if( column+maxn > mat1_.columns() ) break;
-      //         }
+   //                     if (sm1 != sm2) {
+   //                        std::ostringstream oss;
+   //                        oss << " Test: " << test_ << "\n"
+   //                           << " Error: Setup of dense dilatedsubmatrix failed\n"
+   //                           << " Details:\n"
+   //                           << "   Index of first row    = " << row << "\n"
+   //                           << "   Index of first column = " << column << "\n"
+   //                           << "   Number of rows        = " << m << "\n"
+   //                           << "   Number of columns     = " << n << "\n"
+   //                           << "   dilatedsubmatrix:\n" << sm1 << "\n"
+   //                           << "   Reference:\n" << sm2 << "\n";
+   //                        throw std::runtime_error(oss.str());
+   //                     }
+   //                  //}
+   //               }
+   //               if( column+maxn > mat1_.columns() ) break;
+   //            }
 
-      //         if( row+maxm > mat1_.rows() ) break;
-      //      }
-      //   }
-      //}
+   //            if( row+maxm > mat1_.rows() ) break;
+   //         }
+   //      }
+   //   }
 
       //try {
       //   ASMT sm = dilatedsubmatrix<aligned>( mat1_, 0UL, 16UL, 64UL, 49UL );
@@ -227,7 +230,7 @@ void DenseTest::testConstructors()
       //      throw std::runtime_error( oss.str() );
       //   }
       //   catch( std::invalid_argument& ) {}
-      }
+      //}
    }
 
 
@@ -340,59 +343,63 @@ void DenseTest::testConstructors()
 //   }
 //}
 ////*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the dilatedsubmatrix assignment operators.
 //
+// \return void
+// \exception std::runtime_error Error detected.
 //
-////*************************************************************************************************
-///*!\brief Test of the dilatedsubmatrix assignment operators.
-////
-//// \return void
-//// \exception std::runtime_error Error detected.
-////
-//// This function performs a test of all assignment operators of the dilatedsubmatrix specialization.
-//// In case an error is detected, a \a std::runtime_error exception is thrown.
-//*/
-//void DenseTest::testAssignment()
-//{
-//   using blaze::dilatedsubmatrix;
-//   using blaze::padded;
-//   using blaze::unpadded;
-//   using blaze::rowMajor;
-//   using blaze::columnMajor;
-//   using blaze::initializer_list;
-//
-//
-//   //=====================================================================================
-//   // Row-major homogeneous assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "Row-major dilatedsubmatrix homogeneous assignment";
-//
-//      initialize();
-//
-//      // Assigning to a 8x16 dilatedsubmatrix
-//      {
-//         ASMT sm1 = dilatedsubmatrix<aligned>  ( mat1_, 8UL, 16UL, 8UL, 16UL );
-//         USMT sm2 = dilatedsubmatrix<unaligned>( mat2_, 8UL, 16UL, 8UL, 16UL );
-//         sm1 = 12;
-//         sm2 = 12;
-//
-//         checkRows   ( sm1,  8UL );
-//         checkColumns( sm1, 16UL );
-//         checkRows   ( sm2,  8UL );
-//         checkColumns( sm2, 16UL );
-//
-//         if( sm1 != sm2 || mat1_ != mat2_ ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Assignment failed\n"
-//                << " Details:\n"
-//                << "   Result:\n" << sm1 << "\n"
-//                << "   Expected result:\n" << sm2 << "\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
+// This function performs a test of all assignment operators of the dilatedsubmatrix specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseTest::testAssignment()
+{
+   using blaze::dilatedsubmatrix;
+   using blaze::padded;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+   using blaze::columnMajor;
+   using blaze::initializer_list;
+
+
+   //=====================================================================================
+   // Row-major homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "Row-major dilatedsubmatrix homogeneous assignment";
+
+      initialize();
+
+      // Assigning to a 8x16 dilatedsubmatrix
+      {
+         auto row_indices = generate_indices( 8UL, 8UL, 2UL );
+         auto column_indices = generate_indices( 16UL, 4UL, 3UL );
+
+         DSMT sm1 = dilatedsubmatrix( mat1_, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
+         RMT sm_temp = blaze::rows( mat2_, row_indices.data(), row_indices.size() );
+         CRMT sm2= blaze::columns( sm_temp, column_indices.data(), column_indices.size() );
+         sm1 = 12;
+         sm2 = 12;
+
+         checkRows   ( sm1,  8UL );
+         checkColumns( sm1, 16UL );
+         checkRows   ( sm2,  8UL );
+         checkColumns( sm2, 16UL );
+
+         if( sm1 != sm2 || mat1_ != mat2_ ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment failed\n"
+                << " Details:\n"
+                << "   Result:\n" << sm1 << "\n"
+                << "   Expected result:\n" << sm2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
 //      // Assigning to a 16x8 dilatedsubmatrix
 //      {
 //         ASMT sm1 = dilatedsubmatrix<aligned>  ( mat1_, 8UL, 16UL, 16UL, 8UL );
@@ -415,9 +422,9 @@ void DenseTest::testConstructors()
 //            throw std::runtime_error( oss.str() );
 //         }
 //      }
-//   }
-//
-//
+   }
+
+
 //   //=====================================================================================
 //   // Row-major list assignment
 //   //=====================================================================================
