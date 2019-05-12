@@ -41,9 +41,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <memory>
+
 #include <blaze/math/CompressedMatrix.h>
-#include <blaze/math/DynamicMatrix.h>
 #include <blaze/math/CustomMatrix.h>
+#include <blaze/math/DynamicMatrix.h>
+#include <blaze/math/Views.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/policies/Deallocate.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
@@ -379,8 +381,9 @@ void DenseTest::testAssignment()
          auto column_indices = generate_indices( 16UL, 4UL, 3UL );
 
          DSMT sm1 = dilatedsubmatrix( mat1_, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
-         RMT sm_temp = blaze::rows( mat2_, row_indices.data(), row_indices.size() );
-         CRMT sm2= blaze::columns( sm_temp, column_indices.data(), column_indices.size() );
+         auto sm_temp = blaze::rows( mat2_, row_indices.data(), row_indices.size() );
+         CRMT sm2 = blaze::columns(
+            sm_temp, column_indices.data(), column_indices.size() );
          sm1 = 12;
          sm2 = 12;
 
@@ -1294,10 +1297,10 @@ void DenseTest::testAssignment()
 //         throw std::runtime_error( oss.str() );
 //      }
 //   }
-//}
-////*************************************************************************************************
-//
-//
+}
+//*************************************************************************************************
+
+
 ////*************************************************************************************************
 ///*!\brief Test of the dilatedsubmatrix addition assignment operators.
 ////
