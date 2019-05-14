@@ -34,8 +34,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE__TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_DILATEDSUBMATRIX_H_
-#define _BLAZE__TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_DILATEDSUBMATRIX_H_
+#ifndef _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_DILATEDSUBMATRIX_H_
+#define _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_DILATEDSUBMATRIX_H_
 
 
 //=================================================================================================

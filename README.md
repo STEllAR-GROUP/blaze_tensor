@@ -77,6 +77,10 @@ integration service tracks the current build status for the master branch:
 - `blaze::DilatedSubvector<...>`: a view representing a sub-vector of any Blaze
   vector-like data structure with an additional 'dilation' (step-size between
   the elements of the underlying vector)
+- `blaze::DilatedSubmatrix<...>`: a view representing a sub-matrix of any Blaze
+  matrix-like data structure with two additional argumnts: 'rowdilation' and 
+  'columndilation' (step-size between the rows and the columns of the underlying
+  matrix, respectively)
 
 ### Operations
 

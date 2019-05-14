@@ -1061,8 +1061,8 @@ inline decltype(auto) dilatedsubmatrix( DilatedSubmatrix<MT,SO,DF,I2,J2,M2,N2,Ro
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 + M1 * RowDilation1 <= M2 * RowDilation2, "Invalid DilatedSubmatrix specification" );
-   BLAZE_STATIC_ASSERT_MSG( J1 + N1 * ColumnDilation1 <= N2 * ColumnDilation2, "Invalid DilatedSubmatrix specification" );
+   BLAZE_STATIC_ASSERT_MSG( I1 + M1 * RowDilation1 <= M2 * RowDilation2, "Invalid dilatedsubmatrix specification" );
+   BLAZE_STATIC_ASSERT_MSG( J1 + N1 * ColumnDilation1 <= N2 * ColumnDilation2, "Invalid dilatedsubmatrix specification" );
 
    return dilatedsubmatrix<I1*RowDilation2+I2,J1*ColumnDilation2+J2,M1,N1,RowDilation1*RowDilation2,
       ColumnDilation1*ColumnDilation2>( sm.operand(), args... );
@@ -1103,8 +1103,8 @@ inline decltype(auto) dilatedsubmatrix( const DilatedSubmatrix<MT,SO,DF,I2,J2,M2
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 + M1 * RowDilation1 <= M2 * RowDilation2, "Invalid DilatedSubmatrix specification" );
-   BLAZE_STATIC_ASSERT_MSG( J1 + N1 * ColumnDilation1 <= N2 * ColumnDilation2, "Invalid DilatedSubmatrix specification" );
+   BLAZE_STATIC_ASSERT_MSG( I1 + M1 * RowDilation1 <= M2 * RowDilation2, "Invalid dilatedsubmatrix specification" );
+   BLAZE_STATIC_ASSERT_MSG( J1 + N1 * ColumnDilation1 <= N2 * ColumnDilation2, "Invalid dilatedsubmatrix specification" );
 
    return dilatedsubmatrix<I1*RowDilation2+I2,J1*ColumnDilation2+J2,M1,N1,RowDilation1*RowDilation2,
       ColumnDilation1*ColumnDilation2>( sm.operand(), args... );
@@ -1145,8 +1145,8 @@ inline decltype(auto) dilatedsubmatrix( DilatedSubmatrix<MT,SO,DF,I2,J2,M2,N2,Ro
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 + M1 * RowDilation1 <= M2 * RowDilation2, "Invalid DilatedSubmatrix specification" );
-   BLAZE_STATIC_ASSERT_MSG( J1 + N1 * ColumnDilation1 <= N2 * ColumnDilation2, "Invalid DilatedSubmatrix specification" );
+   BLAZE_STATIC_ASSERT_MSG( I1 + M1 * RowDilation1 <= M2 * RowDilation2, "Invalid dilatedsubmatrix specification" );
+   BLAZE_STATIC_ASSERT_MSG( J1 + N1 * ColumnDilation1 <= N2 * ColumnDilation2, "Invalid dilatedsubmatrix specification" );
 
    return dilatedsubmatrix<I1*RowDilation2+I2,J1*ColumnDilation2+J2,M1,N1,RowDilation1*RowDilation2,
       ColumnDilation1*ColumnDilation2>( sm.operand(), args... );
@@ -1187,15 +1187,15 @@ inline decltype(auto) dilatedsubmatrix( DilatedSubmatrix<MT,SO,DF>& sm, RSAs... 
       if( ( I + M * RowDilation > sm.rows( ) * sm.rowdilation( ) ) ||
          ( J + N * ColumnDilation > sm.columns( ) * sm.columndilation( ) ) )
       {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid DilatedSubmatrix specification" );
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubmatrix specification" );
       }
    }
    else {
       BLAZE_USER_ASSERT( I + M * RowDilation <= sm.rows( ) * sm.rowdilation( ),
-         "Invalid DilatedSubmatrix specification" );
+         "Invalid dilatedsubmatrix specification" );
       BLAZE_USER_ASSERT(
          J + N * ColumnDilation <= sm.columns( ) * sm.columndilation( ),
-         "Invalid DilatedSubmatrix specification" );
+         "Invalid dilatedsubmatrix specification" );
    }
 
    return dilatedsubmatrix( sm.operand( ), sm.row( ) + I * sm.rowdilation( ),
@@ -1239,12 +1239,12 @@ inline decltype(auto) dilatedsubmatrix( const DilatedSubmatrix<MT,SO,DF>& sm, RS
    if( isChecked ) {
       if( ( I + M * RowDilation > sm.rows( ) * sm.rowdilation( ) ) ||
          ( J + N * ColumnDilation > sm.columns( ) * sm.columndilation( ) ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid DilatedSubmatrix specification" );
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubmatrix specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( I + M * RowDilation <= sm.rows( ) * sm.rowdilation( ) , "Invalid DilatedSubmatrix specification" );
-      BLAZE_USER_ASSERT( J + N * ColumnDilation <= sm.columns( ) * sm.columndilation( ) , "Invalid DilatedSubmatrix specification" );
+      BLAZE_USER_ASSERT( I + M * RowDilation <= sm.rows( ) * sm.rowdilation( ) , "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( J + N * ColumnDilation <= sm.columns( ) * sm.columndilation( ) , "Invalid dilatedsubmatrix specification" );
    }
 
    return dilatedsubmatrix( sm.operand( ), sm.row( ) + I * sm.rowdilation( ),
@@ -1288,12 +1288,12 @@ inline decltype(auto) dilatedsubmatrix( DilatedSubmatrix<MT,SO,DF>&& sm, RSAs...
    if( isChecked ) {
       if( ( I + M * RowDilation > sm.rows( ) * sm.rowdilation( ) ) ||
          ( J + N * ColumnDilation > sm.columns( ) * sm.columndilation( ) ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid DilatedSubmatrix specification" );
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubmatrix specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( I + M * RowDilation <= sm.rows( ) * sm.rowdilation( ) , "Invalid DilatedSubmatrix specification" );
-      BLAZE_USER_ASSERT( J + N * ColumnDilation <= sm.columns( ) * sm.columndilation( ), "Invalid DilatedSubmatrix specification" );
+      BLAZE_USER_ASSERT( I + M * RowDilation <= sm.rows( ) * sm.rowdilation( ) , "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( J + N * ColumnDilation <= sm.columns( ) * sm.columndilation( ), "Invalid dilatedsubmatrix specification" );
    }
 
    return dilatedsubmatrix( sm.operand( ), sm.row( ) + I * sm.rowdilation( ),
@@ -1338,12 +1338,12 @@ inline decltype(auto)
       if( ( row + m * rowdilation > sm.rows( ) * sm.rowdilation( ) ) ||
          ( column + n * columndilation > sm.columns( ) * sm.columndilation( ) ) )
       {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid DilatedSubmatrix specification" );
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubmatrix specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( row    + m * rowdilation <= sm.rows() * sm.rowdilation()   , "Invalid DilatedSubmatrix specification" );
-      BLAZE_USER_ASSERT( column + n * columndilation <= sm.columns() * sm.columndilation(), "Invalid DilatedSubmatrix specification" );
+      BLAZE_USER_ASSERT( row    + m * rowdilation <= sm.rows() * sm.rowdilation()   , "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( column + n * columndilation <= sm.columns() * sm.columndilation(), "Invalid dilatedsubmatrix specification" );
    }
 
    return dilatedsubmatrix( sm.operand( ), sm.row( ) + row * sm.rowdilation( ), sm.column( ) + column * sm.columndilation( ), m, n,
@@ -1386,12 +1386,12 @@ inline decltype(auto)
    if( isChecked ) {
       if( ( row + m * rowdilation > sm.rows( ) * sm.rowdilation( ) ) ||
          ( column + n * columndilation > sm.columns( ) * sm.columndilation( ) ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid DilatedSubmatrix specification" );
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubmatrix specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( row    + m * rowdilation <= sm.rows() * sm.rowdilation() , "Invalid DilatedSubmatrix specification" );
-      BLAZE_USER_ASSERT( column + n * columndilation <= sm.columns() * sm.columndilation(), "Invalid DilatedSubmatrix specification" );
+      BLAZE_USER_ASSERT( row    + m * rowdilation <= sm.rows() * sm.rowdilation() , "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( column + n * columndilation <= sm.columns() * sm.columndilation(), "Invalid dilatedsubmatrix specification" );
    }
 
    return dilatedsubmatrix( sm.operand(), sm.row( ) + row * sm.rowdilation( ), sm.column( ) + column * sm.columndilation( ), m, n,
@@ -1434,12 +1434,12 @@ inline decltype(auto)
    if( isChecked ) {
       if( ( row + m * rowdilation > sm.rows( ) * sm.rowdilation( ) ) ||
          ( column + n * columndilation > sm.columns( ) * sm.columndilation( ) ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid DilatedSubmatrix specification" );
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubmatrix specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( row    + m * rowdilation <= sm.rows() * sm.rowdilation()   , "Invalid DilatedSubmatrix specification" );
-      BLAZE_USER_ASSERT( column + n * columndilation <= sm.columns() * sm.columndilation(), "Invalid DilatedSubmatrix specification" );
+      BLAZE_USER_ASSERT( row    + m * rowdilation <= sm.rows() * sm.rowdilation()   , "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( column + n * columndilation <= sm.columns() * sm.columndilation(), "Invalid dilatedsubmatrix specification" );
    }
 
    return dilatedsubmatrix( sm.operand(), sm.row( ) + row * sm.rowdilation( ), sm.column( ) + column * sm.columndilation( ), m, n,
@@ -1494,7 +1494,8 @@ inline decltype(auto) dilatedsubvector( const MatVecMultExpr<VT>& vector, RSAs..
                    :( ( IsUpper_v<MT> )?( left.columns() - column )
                                        :( left.columns() ) ) );
 
-   return dilatedsubmatrix( left, sd.offset(), column, sd.size(), n, sd.dilation(), 1UL ) * dilatedsubvector( right, column, n, sd.dilation() );
+   return dilatedsubmatrix( left, sd.offset(), column, sd.size(), n, sd.dilation(), 1UL ) *
+      dilatedsubvector( right, column, n, sd.dilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2238,7 +2239,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t i=0UL; i<n; ++i ) {
-         if( sm.rows() <= size_t( indices[i]*sm.rowdilation() ) ) {
+         if( sm.rows() <= size_t( indices[i] ) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row specification" );
          }
       }
@@ -3120,7 +3121,7 @@ inline decltype(auto)
 
    if( isChecked ) {
       for( size_t j=0UL; j<n; ++j ) {
-         if( sm.columns() <= size_t( indices[j]*sm.columndilation() ) ) {
+         if( sm.columns() <= size_t( indices[j]) ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid column specification" );
          }
       }
@@ -3645,8 +3646,8 @@ inline bool isSymmetric( const DilatedSubmatrix<MT,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< DilatedSubmatrix<MT,SO,DF,CSAs...> >;
 
-   if( IsSymmetric_v< MT > && sm.row( ) == sm.column( ) &&
-      sm.rows( ) == sm.columns( ) && sm.rowdilation( ) == sm.columndilation( ) )
+   if( IsSymmetric_v< MT > && sm.row() == sm.column() &&
+      sm.rows() == sm.columns() && sm.rowdilation() == sm.columndilation() )
       return true;
    else return isSymmetric( static_cast<const BaseType&>( sm ) );
 }
@@ -3683,8 +3684,8 @@ inline bool isHermitian( const DilatedSubmatrix<MT,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< DilatedSubmatrix<MT,SO,DF,CSAs...> >;
 
-   if( IsHermitian_v< MT > && sm.row( ) == sm.column( ) &&
-      sm.rows( ) == sm.columns( ) && sm.rowdilation( ) == sm.columndilation( ) )
+   if( IsHermitian_v< MT > && sm.row() == sm.column() &&
+      sm.rows() == sm.columns() && sm.rowdilation() == sm.columndilation() )
       return true;
    else return isHermitian( static_cast<const BaseType&>( sm ) );
 }
@@ -3731,8 +3732,8 @@ inline bool isLower( const DilatedSubmatrix<MT,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< DilatedSubmatrix<MT,SO,DF,CSAs...> >;
 
-   if( IsLower_v< MT > && sm.row( ) == sm.column( ) &&
-      sm.rows( ) == sm.columns( ) && sm.rowdilation( ) == sm.columndilation( ) )
+   if( IsLower_v< MT > && sm.row() == sm.column() &&
+      sm.rows() == sm.columns() && sm.rowdilation() == sm.columndilation() )
       return true;
    else return isLower( static_cast<const BaseType&>( sm ) );
 }
@@ -3778,8 +3779,8 @@ inline bool isUniLower( const DilatedSubmatrix<MT,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< DilatedSubmatrix<MT,SO,DF,CSAs...> >;
 
-   if( IsUniLower_v< MT > && sm.row( ) == sm.column( ) &&
-      sm.rows( ) == sm.columns( ) && sm.rowdilation( ) == sm.columndilation( ) )
+   if( IsUniLower_v< MT > && sm.row() == sm.column() &&
+      sm.rows() == sm.columns() && sm.rowdilation() == sm.columndilation() )
       return true;
    else return isUniLower( static_cast<const BaseType&>( sm ) );
 }
@@ -3825,8 +3826,8 @@ inline bool isStrictlyLower( const DilatedSubmatrix<MT,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< DilatedSubmatrix<MT,SO,DF,CSAs...> >;
 
-   if( IsStrictlyLower_v< MT > && sm.row( ) == sm.column( ) &&
-      sm.rows( ) == sm.columns( ) && sm.rowdilation( ) == sm.columndilation( ) )
+   if( IsStrictlyLower_v< MT > && sm.row() == sm.column() &&
+      sm.rows() == sm.columns() && sm.rowdilation() == sm.columndilation() )
       return true;
    else return isStrictlyLower( static_cast<const BaseType&>( sm ) );
 }
@@ -3873,8 +3874,8 @@ inline bool isUpper( const DilatedSubmatrix<MT,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< DilatedSubmatrix<MT,SO,DF,CSAs...> >;
 
-   if( IsUpper_v< MT > && sm.row( ) == sm.column( ) &&
-      sm.rows( ) == sm.columns( ) && sm.rowdilation( ) == sm.columndilation( ) )
+   if( IsUpper_v< MT > && sm.row() == sm.column() &&
+      sm.rows() == sm.columns() && sm.rowdilation() == sm.columndilation() )
       return true;
    else return isUpper( static_cast<const BaseType&>( sm ) );
 }
@@ -3920,8 +3921,8 @@ inline bool isUniUpper( const DilatedSubmatrix<MT,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< DilatedSubmatrix<MT,SO,DF,CSAs...> >;
 
-   if( IsUniUpper_v< MT > && sm.row( ) == sm.column( ) &&
-      sm.rows( ) == sm.columns( ) && sm.rowdilation( ) == sm.columndilation( ) )
+   if( IsUniUpper_v< MT > && sm.row() == sm.column() &&
+      sm.rows() == sm.columns() && sm.rowdilation() == sm.columndilation() )
       return true;
    else return isUniUpper( static_cast<const BaseType&>( sm ) );
 }
@@ -3967,8 +3968,8 @@ inline bool isStrictlyUpper( const DilatedSubmatrix<MT,SO,DF,CSAs...>& sm )
 {
    using BaseType = BaseType_t< DilatedSubmatrix<MT,SO,DF,CSAs...> >;
 
-   if( IsStrictlyUpper_v< MT > && sm.row( ) == sm.column( ) &&
-      sm.rows( ) == sm.columns( ) && sm.rowdilation( ) == sm.columndilation( ) )
+   if( IsStrictlyUpper_v< MT > && sm.row() == sm.column() &&
+      sm.rows() == sm.columns() && sm.rowdilation() == sm.columndilation() )
       return true;
    else return isStrictlyUpper( static_cast<const BaseType&>( sm ) );
 }
@@ -3995,9 +3996,9 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time DilatedSubmatrix arguments
 inline bool isSame( const DilatedSubmatrix<MT,SO,DF,CSAs...>& a, const Matrix<MT,SO>& b ) noexcept
 {
-   return ( isSame( a.operand( ), ~b ) && ( a.rows( ) == ( ~b ).rows( ) ) &&
-      ( a.columns( ) == ( ~b ).columns( ) ) && ( a.rowdilation( ) == 1UL ) &&
-      ( a.columndilation( ) == 1UL ) );
+   return ( isSame( a.operand(), ~b ) && ( a.rows() == ( ~b ).rows() ) &&
+      ( a.columns() == ( ~b ).columns() ) && ( a.rowdilation() == 1UL ) &&
+      ( a.columndilation() == 1UL ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4022,9 +4023,9 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time DilatedSubmatrix arguments
 inline bool isSame( const Matrix<MT,SO>& a, const DilatedSubmatrix<MT,SO,DF,CSAs...>& b ) noexcept
 {
-   return ( isSame( ~a, b.operand( ) ) && ( ( ~a ).rows( ) == b.rows( ) ) &&
-      ( ( ~a ).columns( ) == b.columns( ) ) && ( a.rowdilation( ) == 1UL ) &&
-      ( a.columndilation( ) == 1UL ) );
+   return ( isSame( ~a, b.operand() ) && ( ( ~a ).rows() == b.rows() ) &&
+      ( ( ~a ).columns() == b.columns() ) && ( b.rowdilation() == 1UL ) &&
+      ( b.columndilation() == 1UL ) );
 }
 /*! \endcond */
 //*************************************************************************************************

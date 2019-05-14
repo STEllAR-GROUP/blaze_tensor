@@ -45,10 +45,15 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/constraints/ColumnMajorMatrix.h>
 #include <blaze/math/constraints/DenseMatrix.h>
+#include <blaze/math/constraints/RowMajorMatrix.h>
 #include <blaze/math/DynamicMatrix.h>
-#include <blaze_tensor/math/DilatedSubmatrix.h>
+#include <blaze/math/typetraits/IsRowMajorMatrix.h>
+#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blazetest/system/Types.h>
+
+#include <blaze_tensor/math/DilatedSubmatrix.h>
 
 
 namespace blazetest {
@@ -137,10 +142,11 @@ class DenseTest
    using MT    = blaze::DynamicMatrix<int,blaze::rowMajor>;  //!< Row-major dynamic matrix type
    using OMT   = MT::OppositeType;                           //!< Column-major dynamic matrix type
    using DSMT = blaze::DilatedSubmatrix<MT, blaze::rowMajor, true>;
-   using RMT  = blaze::Rows<MT>;
-   using CRMT  = blaze::Columns<RMT>;
-   using ODSMT = blaze::DilatedSubmatrix<OMT>;       //!< Dense DilatedSubmatrix type for column-major matrices.
-   //using UOSMT = blaze::DilatedSubmatrix<OMT>;     //!< Unaligned dense DilatedSubmatrix type for column-major matrices.
+   using CRMT  = blaze::Columns<blaze::Rows<MT>>;
+   using RCMT  = blaze::Rows<blaze::Columns<MT>>;
+   using ODSMT = blaze::DilatedSubmatrix<OMT>;
+   using OCRMT  = blaze::Columns<blaze::Rows<OMT>>;
+
    //**********************************************************************************************
 
    //**Member variables****************************************************************************
@@ -164,10 +170,9 @@ class DenseTest
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT    );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OMT   );
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( DSMT  );
-   //BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RMT  );
-   //BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( CRMT  );
-   //BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ODSMT );
-   //BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( UOSMT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( RCMT  );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ODSMT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( OCRMT );
    /*! \endcond */
    //**********************************************************************************************
 };

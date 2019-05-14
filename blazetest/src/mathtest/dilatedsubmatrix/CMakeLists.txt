@@ -33,7 +33,8 @@
 set(category DilatedSubmatrix)
 
 set(tests
-    DenseTest
+    DenseTest1
+    DenseTest2
     IncludeTest
 )
 
