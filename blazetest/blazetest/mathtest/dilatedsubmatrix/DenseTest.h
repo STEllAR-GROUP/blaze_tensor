@@ -53,6 +53,7 @@
 #include <blaze/math/typetraits/IsColumnMajorMatrix.h>
 #include <blazetest/system/Types.h>
 
+#include <blaze_tensor/math/DilatedSubvector.h>
 #include <blaze_tensor/math/DilatedSubmatrix.h>
 
 
@@ -139,13 +140,12 @@ class DenseTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using MT    = blaze::DynamicMatrix<int,blaze::rowMajor>;  //!< Row-major dynamic matrix type
-   using OMT   = MT::OppositeType;                           //!< Column-major dynamic matrix type
-   using DSMT = blaze::DilatedSubmatrix<MT, blaze::rowMajor, true>;
-   using CRMT  = blaze::Columns<blaze::Rows<MT>>;
-   using RCMT  = blaze::Rows<blaze::Columns<MT>>;
-   using ODSMT = blaze::DilatedSubmatrix<OMT>;
-   using OCRMT  = blaze::Columns<blaze::Rows<OMT>>;
+   using MT    = blaze::DynamicMatrix<int,blaze::rowMajor>;          //!< Row-major dynamic matrix type
+   using OMT   = MT::OppositeType;                                   //!< Column-major dynamic matrix type
+   using DSMT  = blaze::DilatedSubmatrix<MT, blaze::rowMajor, true>; //!< Dense dilated submatrix type for row-major matrices.
+   using RCMT  = blaze::Rows<blaze::Columns<MT>>;                    //!< Dense rows of columns type for row-major matrices.
+   using ODSMT = blaze::DilatedSubmatrix<OMT>;                       //!< Dense dilated submatrix type for column-major matrices.
+   using OCRMT = blaze::Columns<blaze::Rows<OMT>>;                   //!< Dense columns pf rows type for column-major matrices.
 
    //**********************************************************************************************
 

@@ -88,8 +88,8 @@ DenseTest::DenseTest()
    testNonZeros();
    testReset();
    testClear();
-   //testTranspose();
-   //testCTranspose();
+   testTranspose();
+   testCTranspose();
    testIsDefault();
    testIsSame();
    testDilatedSubmatrix();
@@ -4806,51 +4806,51 @@ void DenseTest::testRow()
          DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
          auto row1 = row( sm1, 1UL );
-         //auto row2 = row( sm2, 1UL );
+         auto row2 = row( sm2, 1UL );
 
-         //if( row1 != row2 ) {
-         //   std::ostringstream oss;
-         //   oss << " Test: " << test_ << "\n"
-         //       << " Error: Row function failed\n"
-         //       << " Details:\n"
-         //       << "   Result:\n" << row1 << "\n"
-         //       << "   Expected result:\n" << row2 << "\n";
-         //   throw std::runtime_error( oss.str() );
-         //}
+         if( row1 != row2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Row function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row1 << "\n"
+                << "   Expected result:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
-         //if( row1[1] != row2[1] ) {
-         //   std::ostringstream oss;
-         //   oss << " Test: " << test_ << "\n"
-         //       << " Error: Subscript operator access failed\n"
-         //       << " Details:\n"
-         //       << "   Result: " << row1[1] << "\n"
-         //       << "   Expected result: " << row2[1] << "\n";
-         //   throw std::runtime_error( oss.str() );
-         //}
+         if( row1[1] != row2[1] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << row1[1] << "\n"
+                << "   Expected result: " << row2[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
-         //if( *row1.begin() != *row2.begin() ) {
-         //   std::ostringstream oss;
-         //   oss << " Test: " << test_ << "\n"
-         //       << " Error: Iterator access failed\n"
-         //       << " Details:\n"
-         //       << "   Result: " << *row1.begin() << "\n"
-         //       << "   Expected result: " << *row2.begin() << "\n";
-         //   throw std::runtime_error( oss.str() );
-         //}
+         if( *row1.begin() != *row2.begin() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *row1.begin() << "\n"
+                << "   Expected result: " << *row2.begin() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
-//
-//      try {
-//         DSMT sm1  = dilatedsubmatrix( mat1_, 8UL, 16UL, 8UL, 16UL, 2UL, 2UL );
-//         auto row8 = row( sm1, 8UL );
-//
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Setup of out-of-bounds row succeeded\n"
-//             << " Details:\n"
-//             << "   Result:\n" << row8 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//      catch( std::invalid_argument& ) {}
+
+      try {
+         DSMT sm1  = dilatedsubmatrix( mat1_, 8UL, 16UL, 8UL, 16UL, 2UL, 2UL );
+         auto row8 = row( sm1, 8UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << row8 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -4872,51 +4872,51 @@ void DenseTest::testRow()
             column_indices.data(), column_indices.size() );
          ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
          auto  row1 = row( sm1, 1UL );
-         //auto  row2 = row( sm2, 1UL );
-//
-//         if( row1 != row2 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Row function failed\n"
-//                << " Details:\n"
-//                << "   Result:\n" << row1 << "\n"
-//                << "   Expected result:\n" << row2 << "\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         if( row1[1] != row2[1] ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Subscript operator access failed\n"
-//                << " Details:\n"
-//                << "   Result: " << row1[1] << "\n"
-//                << "   Expected result: " << row2[1] << "\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         if( *row1.begin() != *row2.begin() ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator access failed\n"
-//                << " Details:\n"
-//                << "   Result: " << *row1.begin() << "\n"
-//                << "   Expected result: " << *row2.begin() << "\n";
-//            throw std::runtime_error( oss.str() );
-//         }
+         auto  row2 = row( sm2, 1UL );
+
+         if( row1 != row2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Row function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << row1 << "\n"
+                << "   Expected result:\n" << row2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( row1[1] != row2[1] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << row1[1] << "\n"
+                << "   Expected result: " << row2[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *row1.begin() != *row2.begin() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *row1.begin() << "\n"
+                << "   Expected result: " << *row2.begin() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
-//
-//      try {
-//         ODSMT sm1   = dilatedsubmatrix( tmat1_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//         auto  row16 = row( sm1, 16UL );
-//
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Setup of out-of-bounds row succeeded\n"
-//             << " Details:\n"
-//             << "   Result:\n" << row16 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//      catch( std::invalid_argument& ) {}
+
+      try {
+         ODSMT sm1   = dilatedsubmatrix( tmat1_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+         auto  row16 = row( sm1, 16UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds row succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << row16 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************
@@ -5106,51 +5106,51 @@ void DenseTest::testColumn()
          DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
          auto col1 = column( sm1, 1UL );
-         //auto col2 = column( sm2, 1UL );
+         auto col2 = column( sm2, 1UL );
 
-         //if( col1 != col2 ) {
-         //   std::ostringstream oss;
-         //   oss << " Test: " << test_ << "\n"
-         //       << " Error: Column function failed\n"
-         //       << " Details:\n"
-         //       << "   Result:\n" << col1 << "\n"
-         //       << "   Expected result:\n" << col2 << "\n";
-         //   throw std::runtime_error( oss.str() );
-         //}
+         if( col1 != col2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Column function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col1 << "\n"
+                << "   Expected result:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
-         //if( col1[1] != col2[1] ) {
-         //   std::ostringstream oss;
-         //   oss << " Test: " << test_ << "\n"
-         //       << " Error: Subscript operator access failed\n"
-         //       << " Details:\n"
-         //       << "   Result: " << col1[1] << "\n"
-         //       << "   Expected result: " << col2[1] << "\n";
-         //   throw std::runtime_error( oss.str() );
-         //}
+         if( col1[1] != col2[1] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << col1[1] << "\n"
+                << "   Expected result: " << col2[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
 
-         //if( *col1.begin() != *col2.begin() ) {
-         //   std::ostringstream oss;
-         //   oss << " Test: " << test_ << "\n"
-         //       << " Error: Iterator access failed\n"
-         //       << " Details:\n"
-         //       << "   Result: " << *col1.begin() << "\n"
-         //       << "   Expected result: " << *col2.begin() << "\n";
-         //   throw std::runtime_error( oss.str() );
-         //}
+         if( *col1.begin() != *col2.begin() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *col1.begin() << "\n"
+                << "   Expected result: " << *col2.begin() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
-//
-//      try {
-//         DSMT sm1   = dilatedsubmatrix( mat1_, 8UL, 16UL, 8UL, 16UL, 2UL, 2UL );
-//         auto col16 = column( sm1, 16UL );
-//
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Setup of out-of-bounds column succeeded\n"
-//             << " Details:\n"
-//             << "   Result:\n" << col16 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//      catch( std::invalid_argument& ) {}
+
+      try {
+         DSMT sm1   = dilatedsubmatrix( mat1_, 8UL, 16UL, 8UL, 16UL, 2UL, 2UL );
+         auto col16 = column( sm1, 16UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << col16 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 
 
@@ -5172,51 +5172,51 @@ void DenseTest::testColumn()
             column_indices.data(), column_indices.size() );
          ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
          auto  col1 = column( sm1, 1UL );
-//         auto  col2 = column( sm2, 1UL );
-//
-//         if( col1 != col2 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Column function failed\n"
-//                << " Details:\n"
-//                << "   Result:\n" << col1 << "\n"
-//                << "   Expected result:\n" << col2 << "\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         if( col1[1] != col2[1] ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Subscript operator access failed\n"
-//                << " Details:\n"
-//                << "   Result: " << col1[1] << "\n"
-//                << "   Expected result: " << col2[1] << "\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         if( *col1.begin() != *col2.begin() ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator access failed\n"
-//                << " Details:\n"
-//                << "   Result: " << *col1.begin() << "\n"
-//                << "   Expected result: " << *col2.begin() << "\n";
-//            throw std::runtime_error( oss.str() );
-//         }
+         auto  col2 = column( sm2, 1UL );
+
+         if( col1 != col2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Column function failed\n"
+                << " Details:\n"
+                << "   Result:\n" << col1 << "\n"
+                << "   Expected result:\n" << col2 << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( col1[1] != col2[1] ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Subscript operator access failed\n"
+                << " Details:\n"
+                << "   Result: " << col1[1] << "\n"
+                << "   Expected result: " << col2[1] << "\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         if( *col1.begin() != *col2.begin() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator access failed\n"
+                << " Details:\n"
+                << "   Result: " << *col1.begin() << "\n"
+                << "   Expected result: " << *col2.begin() << "\n";
+            throw std::runtime_error( oss.str() );
+         }
       }
-//
-//      try {
-//         AOSMT sm1  = dilatedsubmatrix<aligned>( tmat1_, 16UL, 8UL, 16UL, 8UL );
-//         auto  col8 = column( sm1, 8UL );
-//
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Setup of out-of-bounds column succeeded\n"
-//             << " Details:\n"
-//             << "   Result:\n" << col8 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//      catch( std::invalid_argument& ) {}
+
+      try {
+         ODSMT sm1  = dilatedsubmatrix( tmat1_, 16UL, 8UL, 16UL, 8UL, 2UL, 2UL );
+         auto  col8 = column( sm1, 8UL );
+
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Setup of out-of-bounds column succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << col8 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
    }
 }
 //*************************************************************************************************

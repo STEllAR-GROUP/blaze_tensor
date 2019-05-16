@@ -1636,7 +1636,7 @@ inline decltype(auto) row( DilatedSubmatrix<MT,SO,DF,I2,J,M,N,RowDilation,Column
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 < M*RowDilation, "Invalid row access index" );
+   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
 
    return dilatedsubvector<J,N,ColumnDilation>( row<I1*RowDilation+I2>( sm.operand(), args... ), unchecked );
 }
@@ -1671,7 +1671,7 @@ inline decltype(auto) row( const DilatedSubmatrix<MT,SO,DF,I2,J,M,N>& sm, RRAs..
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 < M*RowDilation, "Invalid row access index" );
+   BLAZE_STATIC_ASSERT_MSG( I1 < M, "Invalid row access index" );
 
    return dilatedsubvector<J,N,ColumnDilation>( row<I1*RowDilation+I2>( sm.operand(), args... ), unchecked );
 }
@@ -1706,7 +1706,7 @@ inline decltype(auto) row( DilatedSubmatrix<MT,SO,DF,I2,J,M,N>&& sm, RRAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 < M *RowDilation, "Invalid row access index" );
+   BLAZE_STATIC_ASSERT_MSG( I1 < M , "Invalid row access index" );
 
    return dilatedsubvector<J,N,ColumnDilation>( row<I1*RowDilation+I2>( sm.operand(), args... ), unchecked );
 }
@@ -1744,12 +1744,12 @@ inline decltype(auto) row( DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,ColumnD
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( index >= M * RowDilation ) ) {
+      if( ( index >= M ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( index < M * RowDilation, "Invalid row access index" );
+      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
    }
 
    return dilatedsubvector<J,N,ColumnDilation>( row( sm.operand(), I+index*RowDilation, args... ), unchecked );
@@ -1789,12 +1789,12 @@ inline decltype(auto) row( const DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,C
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( index >= M * RowDilation) ) {
+      if( ( index >= M ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( index < M * RowDilation, "Invalid row access index" );
+      BLAZE_USER_ASSERT( index < M, "Invalid row access index" );
    }
 
    return dilatedsubvector<J,N,ColumnDilation>( row( sm.operand(), I+index*RowDilation, args... ), unchecked );
@@ -1834,12 +1834,12 @@ inline decltype(auto) row( DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,ColumnD
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( index >= M * RowDilation ) ) {
+      if( ( index >= M ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( index < M * RowDilation, "Invalid row access index" );
+      BLAZE_USER_ASSERT( index < M , "Invalid row access index" );
    }
 
    return dilatedsubvector<J,N,ColumnDilation>( row( sm.operand(), I+index*RowDilation, args... ), unchecked );
@@ -1874,12 +1874,12 @@ inline decltype(auto) row( DilatedSubmatrix<MT,SO,DF>& sm, RRAs... args )
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( rd.row() >= sm.rows() * sm.rowdilation() ) ) {
+      if( ( rd.row() >= sm.rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( rd.row() < sm.rows() * sm.rowdilation(), "Invalid row access index" );
+      BLAZE_USER_ASSERT( rd.row() < sm.rows() , "Invalid row access index" );
    }
 
    const size_t index( rd.row() * sm.rowdilation() + sm.row() );
@@ -1917,12 +1917,12 @@ inline decltype(auto) row( const DilatedSubmatrix<MT,SO,DF>& sm, RRAs... args )
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( rd.row() >= sm.rows() * sm.rowdilation() ) ) {
+      if( ( rd.row() >= sm.rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( rd.row() < sm.rows() * sm.rowdilation(), "Invalid row access index" );
+      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
    }
 
    const size_t index( rd.row() * sm.rowdilation() + sm.row() );
@@ -1960,12 +1960,12 @@ inline decltype(auto) row( DilatedSubmatrix<MT,SO,DF>&& sm, RRAs... args )
    constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( rd.row() >= sm.rows() * sm.rowdilation() ) ) {
+      if( ( rd.row() >= sm.rows() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( rd.row() < sm.rows() * sm.rowdilation(), "Invalid row access index" );
+      BLAZE_USER_ASSERT( rd.row() < sm.rows(), "Invalid row access index" );
    }
 
    const size_t index( rd.row() * sm.rowdilation() + sm.row() );
@@ -2115,7 +2115,7 @@ inline decltype(auto) rows( DilatedSubmatrix<MT,SO,DF>& sm, RRAs... args )
    if( isChecked ) {
       static constexpr size_t indices[] = { I1, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( sm.rows() <= indices[i]*sm.rowdilation() ) {
+         if( sm.rows() <= indices[i] * sm.rowdilation() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
          }
       }
@@ -2156,7 +2156,7 @@ inline decltype(auto) rows( const DilatedSubmatrix<MT,SO,DF>& sm, RRAs... args )
    if( isChecked ) {
       static constexpr size_t indices[] = { I1, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( sm.rows() <= indices[i]*sm.rowdilation() ) {
+         if( sm.rows() <= indices[i] * sm.rowdilation() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
          }
       }
@@ -2197,7 +2197,7 @@ inline decltype(auto) rows( DilatedSubmatrix<MT,SO,DF>&& sm, RRAs... args )
    if( isChecked ) {
       static constexpr size_t indices[] = { I1, Is... };
       for( size_t i=0UL; i<sizeof...(Is)+1UL; ++i ) {
-         if( sm.rows() <= indices[i]*sm.rowdilation() ) {
+         if( sm.rows() <= indices[i] * sm.rowdilation() ) {
             BLAZE_THROW_INVALID_ARGUMENT( "Invalid row access index" );
          }
       }
@@ -2518,7 +2518,7 @@ inline decltype(auto) column( DilatedSubmatrix<MT,SO,DF,I2,J,M,N,RowDilation,Col
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 < N*ColumnDilation, "Invalid column access index" );
+   BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
 
    return dilatedsubvector<I2,M,RowDilation>( column<I1*ColumnDilation+J>( sm.operand(), args... ), unchecked );
 }
@@ -2553,7 +2553,7 @@ inline decltype(auto) column( const DilatedSubmatrix<MT,SO,DF,I2,J,M,N,RowDilati
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 < N*ColumnDilation, "Invalid column access index" );
+   BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
 
    return dilatedsubvector<I2,M,RowDilation>( column<I1*ColumnDilation+J>( sm.operand(), args... ), unchecked );
 }
@@ -2588,7 +2588,7 @@ inline decltype(auto) column( DilatedSubmatrix<MT,SO,DF,I2,J,M,N,RowDilation,Col
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_STATIC_ASSERT_MSG( I1 < N*ColumnDilation, "Invalid column access index" );
+   BLAZE_STATIC_ASSERT_MSG( I1 < N, "Invalid column access index" );
 
    return dilatedsubvector<I2,M,RowDilation>( column<I1*ColumnDilation+J>( sm.operand(), args... ), unchecked );
 }
@@ -2626,12 +2626,12 @@ inline decltype(auto) column( DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,Colu
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( index >= N*ColumnDilation ) ) {
+      if( ( index >= N ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( index < N*ColumnDilation, "Invalid column access index" );
+      BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
    }
 
    return dilatedsubvector<I,M,RowDilation>( column( sm.operand(), J+index*ColumnDilation, args... ), unchecked );
@@ -2671,12 +2671,12 @@ inline decltype(auto) column( const DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilatio
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( index >= N*ColumnDilation ) ) {
+      if( ( index >= N ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( index < N*ColumnDilation, "Invalid column access index" );
+      BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
    }
 
    return dilatedsubvector<I,M,RowDilation>( column( sm.operand(), J+index*ColumnDilation, args... ), unchecked );
@@ -2716,12 +2716,12 @@ inline decltype(auto) column( DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,Colu
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( index >= N * ColumnDilation ) ) {
+      if( ( index >= N ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( index < N * ColumnDilation, "Invalid column access index" );
+      BLAZE_USER_ASSERT( index < N, "Invalid column access index" );
    }
 
    return dilatedsubvector<I,M,RowDilation>( column( sm.operand(), J+index*ColumnDilation, args... ), unchecked );
@@ -2756,12 +2756,12 @@ inline decltype(auto) column( DilatedSubmatrix<MT,SO,DF>& sm, RCAs... args )
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( cd.column() >= sm.columns() * sm.columndilation() ) ) {
+      if( ( cd.column() >= sm.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( cd.column() < sm.columns() * sm.columndilation(), "Invalid column access index" );
+      BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
    }
 
    const size_t index( cd.column() * sm.columndilation() + sm.column() );
@@ -2799,12 +2799,12 @@ inline decltype(auto) column( const DilatedSubmatrix<MT,SO,DF>& sm, RCAs... args
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( cd.column() >= sm.columns() * sm.columndilation() ) ) {
+      if( ( cd.column() >= sm.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( cd.column() < sm.columns() * sm.columndilation(), "Invalid column access index" );
+      BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
    }
 
    const size_t index( cd.column() * sm.columndilation() + sm.column() );
@@ -2842,12 +2842,12 @@ inline decltype(auto) column( DilatedSubmatrix<MT,SO,DF>&& sm, RCAs... args )
    constexpr bool isChecked( !Contains_v< TypeList<RCAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( ( cd.column() >= sm.columns() * sm.columndilation() ) ) {
+      if( ( cd.column() >= sm.columns() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid column access index" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( cd.column() < sm.columns() * sm.columndilation(), "Invalid column access index" );
+      BLAZE_USER_ASSERT( cd.column() < sm.columns(), "Invalid column access index" );
    }
 
    const size_t index( cd.column() * sm.columndilation() + sm.column() );

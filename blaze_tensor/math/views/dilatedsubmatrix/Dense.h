@@ -138,7 +138,7 @@ class DilatedSubmatrix<MT,false,true,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = DilatedSubmatrixData<CSAs...>;               //!< The type of the DilatedSubmatrixData base class.
+   using DataType = DilatedSubmatrixData<CSAs...>;        //!< The type of the DilatedSubmatrixData base class.
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
@@ -154,14 +154,14 @@ class DilatedSubmatrix<MT,false,true,CSAs...>
    //! Type of this DilatedSubmatrix instance.
    using This = DilatedSubmatrix<MT,false,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,false>;       //!< Base type of this DilatedSubmatrix instance.
-   using ViewedType    = MT;                            //!< The type viewed by this DilatedSubmatrix instance.
+   using BaseType      = DenseMatrix<This,false>;              //!< Base type of this DilatedSubmatrix instance.
+   using ViewedType    = MT;                                   //!< The type viewed by this DilatedSubmatrix instance.
    using ResultType    = DilatedSubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<MT>;             //!< Type of the DilatedSubmatrix elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the DilatedSubmatrix elements.
-   using ReturnType    = ReturnType_t<MT>;              //!< Return type for expression template evaluations
+   using OppositeType  = OppositeType_t<ResultType>;           //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;          //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;                    //!< Type of the DilatedSubmatrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;             //!< SIMD type of the DilatedSubmatrix elements.
+   using ReturnType    = ReturnType_t<MT>;                     //!< Return type for expression template evaluations
    using CompositeType = const DilatedSubmatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant dilatedsubmatrix value.
@@ -693,12 +693,12 @@ class DilatedSubmatrix<MT,false,true,CSAs...>
 // matrix) a \a std::invalid_argument exception is thrown. The checks can be skipped by providing
 // the optional \a blaze::unchecked argument.
 */
-template< typename MT         // Type of the dense matrix
-        , size_t... CSAs >    // Compile time DilatedSubmatrix arguments
-template< typename... RSAs >  // Runtime DilatedSubmatrix arguments
+template< typename MT           // Type of the dense matrix
+        , size_t... CSAs >      // Compile time DilatedSubmatrix arguments
+template< typename... RSAs >    // Runtime DilatedSubmatrix arguments
 inline DilatedSubmatrix<MT,false,true,CSAs...>::DilatedSubmatrix( MT& matrix, RSAs... args )
-   : DataType  ( args... )  // Base class initialization
-   , matrix_   ( matrix  )  // The matrix containing the DilatedSubmatrix
+   : DataType  ( args... )      // Base class initialization
+   , matrix_   ( matrix  )      // The matrix containing the DilatedSubmatrix
 {
    if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
       if( ( row() + ( rows() - 1 ) * rowdilation() + 1 > matrix_.rows() ) ||
@@ -982,7 +982,7 @@ inline typename DilatedSubmatrix<MT,false,true,CSAs...>::ConstIterator
    DilatedSubmatrix<MT,false,true,CSAs...>::cbegin( size_t i ) const
 {
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense DilatedSubmatrix row access index" );
-   return ConstIterator( matrix_.cbegin( row() + i * rowdilation()) + column(), rowdilation(), columndilation()  );
+   return ConstIterator( matrix_.cbegin( row() + i * rowdilation()) + column(), rowdilation(), columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2184,12 +2184,12 @@ inline void DilatedSubmatrix<MT,false,true,CSAs...>::assign( const DenseMatrix<M
 
    constexpr size_t block( BLOCK_SIZE );
 
-   for( size_t ii=0UL; ii<rows(); ii+=block*rowdilation() ) {
-      const size_t iend( ( rows()<(ii+block*rowdilation()) )?( rows() ):( ii+block*rowdilation() ) );
-      for( size_t jj=0UL; jj<columns(); jj+=block*columndilation() ) {
-         const size_t jend( ( columns()<(jj+block*columndilation()) )?( columns() ):( jj+block*columndilation() ) );
-         for( size_t i=ii; i<iend; i+=rowdilation() ) {
-            for( size_t j=jj; j<jend; j+=columndilation() ) {
+   for( size_t ii=0UL; ii<rows(); ii+=block ) {
+      const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
+      for( size_t jj=0UL; jj<columns(); jj+=block ) {
+         const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
+         for( size_t i=ii; i<iend; i++ ) {
+            for( size_t j=jj; j<jend; j++) {
                (*this)(i,j) = (~rhs)(i,j);
             }
          }
@@ -2267,12 +2267,12 @@ inline void DilatedSubmatrix<MT,false,true,CSAs...>::addAssign( const DenseMatri
 
    constexpr size_t block( BLOCK_SIZE );
 
-   for( size_t ii=0UL; ii<rows(); ii+=block*rowdilation() ) {
-      const size_t iend( ( rows()<(ii+block*rowdilation()) )?( rows() ):( ii+block*rowdilation() ) );
-      for( size_t jj=0UL; jj<columns(); jj+=block*columndilation() ) {
-         const size_t jend( ( columns()<(jj+block*columndilation()) )?( columns() ):( jj+block*columndilation() ) );
-         for( size_t i=ii; i<iend; i+=rowdilation() ) {
-            for( size_t j=jj; j<jend; j+=columndilation() ) {
+   for( size_t ii=0UL; ii<rows(); ii+=block ) {
+      const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
+      for( size_t jj=0UL; jj<columns(); jj+=block ) {
+         const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
+         for( size_t i=ii; i<iend; i++ ) {
+            for( size_t j=jj; j<jend; j++ ) {
                (*this)(i,j) += (~rhs)(i,j);
             }
          }
@@ -2350,12 +2350,12 @@ inline void DilatedSubmatrix<MT,false,true,CSAs...>::subAssign( const DenseMatri
 
    constexpr size_t block( BLOCK_SIZE );
 
-   for( size_t ii=0UL; ii<rows(); ii+=block*rowdilation() ) {
-      const size_t iend( ( rows()<(ii+block*rowdilation()) )?( rows() ):( ii+block*rowdilation() ) );
-      for( size_t jj=0UL; jj<columns(); jj+=block*columndilation() ) {
-         const size_t jend( ( columns()<(jj+block*columndilation()) )?( columns() ):( jj+block*columndilation() ) );
-         for( size_t i=ii; i<iend; i+=rowdilation() ) {
-            for( size_t j=jj; j<jend; j+=columndilation() ) {
+   for( size_t ii=0UL; ii<rows(); ii+=block ) {
+      const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
+      for( size_t jj=0UL; jj<columns(); jj+=block ) {
+         const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
+         for( size_t i=ii; i<iend; i++ ) {
+            for( size_t j=jj; j<jend; j++ ) {
                (*this)(i,j) -= (~rhs)(i,j);
             }
          }
@@ -2427,12 +2427,12 @@ inline void DilatedSubmatrix<MT,false,true,CSAs...>::schurAssign( const DenseMat
 
    constexpr size_t block( BLOCK_SIZE );
 
-   for( size_t ii=0UL; ii<rows(); ii+=block*rowdilation() ) {
-      const size_t iend( ( rows()<(ii+block*rowdilation()) )?( rows() ):( ii+block*rowdilation() ) );
-      for( size_t jj=0UL; jj<columns(); jj+=block*columndilation() ) {
-         const size_t jend( ( columns()<(jj+block*columndilation()) )?( columns() ):( jj+block*columndilation() ) );
-         for( size_t i=ii; i<iend; i+=rowdilation() ) {
-            for( size_t j=jj; j<jend; j+=columndilation() ) {
+   for( size_t ii=0UL; ii<rows(); ii+=block ) {
+      const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
+      for( size_t jj=0UL; jj<columns(); jj+=block ) {
+         const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
+         for( size_t i=ii; i<iend; i++ ) {
+            for( size_t j=jj; j<jend; j++ ) {
                (*this)(i,j) *= (~rhs)(i,j);
             }
          }
@@ -2469,7 +2469,7 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = DilatedSubmatrixData<CSAs...>;               //!< The type of the DilatedSubmatrixData base class.
+   using DataType = DilatedSubmatrixData<CSAs...>;        //!< The type of the DilatedSubmatrixData base class.
    using Operand  = If_t< IsExpression_v<MT>, MT, MT& >;  //!< Composite data type of the matrix expression.
    //**********************************************************************************************
 
@@ -2485,14 +2485,14 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
    //! Type of this DilatedSubmatrix instance.
    using This = DilatedSubmatrix<MT,true,true,CSAs...>;
 
-   using BaseType      = DenseMatrix<This,true>;        //!< Base type of this DilatedSubmatrix instance.
-   using ViewedType    = MT;                            //!< The type viewed by this DilatedSubmatrix instance.
+   using BaseType      = DenseMatrix<This,true>;               //!< Base type of this DilatedSubmatrix instance.
+   using ViewedType    = MT;                                   //!< The type viewed by this DilatedSubmatrix instance.
    using ResultType    = DilatedSubmatrixTrait_t<MT,CSAs...>;  //!< Result type for expression template evaluations.
-   using OppositeType  = OppositeType_t<ResultType>;    //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;   //!< Transpose type for expression template evaluations.
-   using ElementType   = ElementType_t<MT>;             //!< Type of the dilatedsubmatrix elements.
-   using SIMDType      = SIMDTrait_t<ElementType>;      //!< SIMD type of the dilatedsubmatrix elements.
-   using ReturnType    = ReturnType_t<MT>;              //!< Return type for expression template evaluations
+   using OppositeType  = OppositeType_t<ResultType>;           //!< Result type with opposite storage order for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;          //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<MT>;                    //!< Type of the dilatedsubmatrix elements.
+   using SIMDType      = SIMDTrait_t<ElementType>;             //!< SIMD type of the dilatedsubmatrix elements.
+   using ReturnType    = ReturnType_t<MT>;                     //!< Return type for expression template evaluations
    using CompositeType = const DilatedSubmatrix&;              //!< Data type for composite expression templates.
 
    //! Reference to a constant dilatedsubmatrix value.
@@ -2558,7 +2558,7 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
       // \param isMemoryAligned Memory .
       */
       inline DilatedSubmatrixIterator( IteratorType iterator, size_t rowdilation, size_t columndilation )
-         : iterator_ ( iterator        )  // Iterator to the current dilatedsubmatrix element
+         : iterator_ ( iterator )  // Iterator to the current dilatedsubmatrix element
          , rowdilation_ ( rowdilation )   // row step-size of the underlying dilated submatrix
          , columndilation_ ( columndilation )   // column step-size of the underlying dilated submatrix
       {}
@@ -2571,7 +2571,7 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
       */
       template< typename IteratorType2 >
       inline DilatedSubmatrixIterator( const DilatedSubmatrixIterator<IteratorType2>& it )
-         : iterator_ ( it.base()      )  // Iterator to the current dilatedsubmatrix element
+         : iterator_ ( it.base() )  // Iterator to the current dilatedsubmatrix element
          , rowdilation_ ( it.rowdilation() )   // row step-size of the underlying dilated submatrix
          , columndilation_ ( it.columndilation() )   // column step-size of the underlying dilated submatrix
       {}
@@ -2750,7 +2750,7 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
       // \return The incremented iterator.
       */
       friend inline const DilatedSubmatrixIterator operator+( const DilatedSubmatrixIterator& it, size_t inc ) {
-         return DilatedSubmatrixIterator( it.iterator_ + inc*it.rowdilation_, it.rowdilation_, it.columndilation_  );
+         return DilatedSubmatrixIterator( it.iterator_ + inc*it.rowdilation_, it.rowdilation_, it.columndilation_ );
       }
       //*******************************************************************************************
 
@@ -2762,7 +2762,7 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
       // \return The incremented iterator.
       */
       friend inline const DilatedSubmatrixIterator operator+( size_t inc, const DilatedSubmatrixIterator& it ) {
-         return DilatedSubmatrixIterator( it.iterator_ + inc*it.rowdilation_, it.rowdilation_, it.columndilation_  );
+         return DilatedSubmatrixIterator( it.iterator_ + inc*it.rowdilation_, it.rowdilation_, it.columndilation_ );
       }
       //*******************************************************************************************
 
@@ -2774,7 +2774,7 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
       // \return The decremented iterator.
       */
       friend inline const DilatedSubmatrixIterator operator-( const DilatedSubmatrixIterator& it, size_t dec ) {
-         return DilatedSubmatrixIterator( it.iterator_ - dec*it.rowdilation_, it.rowdilation_, it.columndilation_  );
+         return DilatedSubmatrixIterator( it.iterator_ - dec*it.rowdilation_, it.rowdilation_, it.columndilation_ );
       }
       //*******************************************************************************************
 
@@ -3037,8 +3037,10 @@ inline DilatedSubmatrix<MT,true,true,CSAs...>::DilatedSubmatrix( MT& matrix, RSA
       }
    }
    else {
-      BLAZE_USER_ASSERT( row() + ( rows() - 1 ) * rowdilation() + 1    <= matrix_.rows()   , "Invalid dilatedsubmatrix specification" );
-      BLAZE_USER_ASSERT( column() + ( columns() - 1 ) * columndilation() + 1 <= matrix_.columns(), "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( row() + ( rows() - 1 ) * rowdilation() + 1    <= matrix_.rows()   ,
+         "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( column() + ( columns() - 1 ) * columndilation() + 1 <= matrix_.columns(),
+         "Invalid dilatedsubmatrix specification" );
    }
 }
 /*! \endcond */
@@ -3495,7 +3497,7 @@ inline DilatedSubmatrix<MT,true,true,CSAs...>&
       return *this;
 
    if( rows() != rhs.rows() || columns() != rhs.columns() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "DilatedSubmatrix sizes do not match" );
+      BLAZE_THROW_INVALID_ARGUMENT( "dilatedsubmatrix sizes do not match" );
    }
 
    if( !tryAssign( matrix_, rhs, row(), column() ) ) {
@@ -4476,12 +4478,12 @@ inline void DilatedSubmatrix<MT,true,true,CSAs...>::assign( const DenseMatrix<MT
 
    constexpr size_t block( BLOCK_SIZE );
 
-   for( size_t jj=0UL; jj<columns(); jj+=block*columndilation() ) {
-      const size_t jend( ( columns()<(jj+block*columndilation()) )?( columns() ):( jj+block*columndilation() ) );
-      for( size_t ii=0UL; ii<rows(); ii+=block*rowdilation() ) {
-         const size_t iend( ( rows()<(ii+block*rowdilation()) )?( rows() ):( ii+block*rowdilation() ) );
-         for( size_t j=jj; j<jend; j+=columndilation() ) {
-            for( size_t i=ii; i<iend; i+=rowdilation() ) {
+   for( size_t jj=0UL; jj<columns(); jj+=block ) {
+      const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block) );
+      for( size_t ii=0UL; ii<rows(); ii+=block ) {
+         const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
+         for( size_t j=jj; j<jend; j++ ) {
+            for( size_t i=ii; i<iend; i++ ) {
                (*this)(i,j) = (~rhs)(i,j);
             }
          }
@@ -4589,13 +4591,13 @@ inline void DilatedSubmatrix<MT,true,true,CSAs...>::addAssign( const DenseMatrix
 
    constexpr size_t block( BLOCK_SIZE );
 
-   for( size_t jj=0UL; jj<columns(); jj+=block*columndilation() ) {
-      const size_t jend( ( columns()<(jj+block*columndilation()) )?( columns() ):( jj+block*columndilation() ) );
-      for( size_t ii=0UL; ii<rows(); ii+=block*rowdilation() ) {
-         const size_t iend( ( rows()<(ii+block*rowdilation()) )?( rows() ):( ii+block*rowdilation() ) );
-         for( size_t j=jj; j<jend; j+=columndilation() ) {
-            for( size_t i=ii; i<iend; i+=rowdilation() ) {
-               (*this)(row()+i,column()+j) += (~rhs)(i,j);
+   for( size_t jj=0UL; jj<columns(); jj+=block ) {
+      const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
+      for( size_t ii=0UL; ii<rows(); ii+=block ) {
+         const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
+         for( size_t j=jj; j<jend; j++ ) {
+            for( size_t i=ii; i<iend; i++ ) {
+               (*this)(i,j) += (~rhs)(i,j);
             }
          }
       }
@@ -4730,12 +4732,12 @@ inline void DilatedSubmatrix<MT,true,true,CSAs...>::subAssign( const DenseMatrix
 
    constexpr size_t block( BLOCK_SIZE );
 
-   for( size_t jj=0UL; jj<columns(); jj+=block*columndilation() ) {
-      const size_t jend( ( columns()<(jj+block*columndilation()) )?( columns() ):( jj+block*columndilation() ) );
-      for( size_t ii=0UL; ii<rows(); ii+=block*rowdilation() ) {
-         const size_t iend( ( rows()<(ii+block*rowdilation()) )?( rows() ):( ii+block*rowdilation() ) );
-         for( size_t j=jj; j<jend; j+=columndilation() ) {
-            for( size_t i=ii; i<iend; i+=rowdilation() ) {
+   for( size_t jj=0UL; jj<columns(); jj+=block ) {
+      const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
+      for( size_t ii=0UL; ii<rows(); ii+=block ) {
+         const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
+         for( size_t j=jj; j<jend; j++) {
+            for( size_t i=ii; i<iend; i++ ) {
                (*this)(i,j) -= (~rhs)(i,j);
             }
          }
@@ -4865,12 +4867,12 @@ inline void DilatedSubmatrix<MT,true,true,CSAs...>::schurAssign( const DenseMatr
 
    constexpr size_t block( BLOCK_SIZE );
 
-   for( size_t jj=0UL; jj<columns(); jj+=block*columndilation() ) {
-      const size_t jend( ( columns()<(jj+block*columndilation()) )?( columns() ):( jj+block*columndilation() ) );
-      for( size_t ii=0UL; ii<rows(); ii+=block*rowdilation() ) {
-         const size_t iend( ( rows()<(ii+block*rowdilation()) )?( rows() ):( ii+block*rowdilation() ) );
-         for( size_t j=jj; j<jend; j+=columndilation() ) {
-            for( size_t i=ii; i<iend; i+=rowdilation() ) {
+   for( size_t jj=0UL; jj<columns(); jj+=block ) {
+      const size_t jend( ( columns()<(jj+block) )?( columns() ):( jj+block ) );
+      for( size_t ii=0UL; ii<rows(); ii+=block ) {
+         const size_t iend( ( rows()<(ii+block) )?( rows() ):( ii+block ) );
+         for( size_t j=jj; j<jend; j++ ) {
+            for( size_t i=ii; i<iend; i++ ) {
                (*this)(i,j) *= (~rhs)(i,j);
             }
          }
@@ -4966,10 +4968,6 @@ inline void DilatedSubmatrix<MT,true,true,CSAs...>::schurAssign( const DenseMatr
 
 ///*! \endcond */
 ////*************************************************************************************************
-//
-//
-//
-//
 
 } // namespace blaze
 

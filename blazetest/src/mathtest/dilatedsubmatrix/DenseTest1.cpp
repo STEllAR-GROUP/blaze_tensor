@@ -427,23 +427,23 @@ void DenseTest::testAssignment()
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-      //sm1 = dilatedsubmatrix( mat1, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      sm1 = dilatedsubmatrix( mat1, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
       sm2 = dilatedsubmatrix( mat2, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-      //checkRows   ( sm1,  8UL );
-      //checkColumns( sm1, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
       checkRows   ( sm2,  8UL );
       checkColumns( sm2, 16UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -458,23 +458,23 @@ void DenseTest::testAssignment()
          blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
-      //sm1 = dilatedsubmatrix( mat1_, 12UL, 16UL, 8UL, 16UL, 3UL, 2UL  );
+      sm1 = dilatedsubmatrix( mat1_, 12UL, 16UL, 8UL, 16UL, 3UL, 2UL  );
       sm2 = dilatedsubmatrix( mat2_, 12UL, 16UL, 8UL, 16UL, 3UL, 2UL  );
 
-      //checkRows   ( sm1,  8UL );
-      //checkColumns( sm1, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
       checkRows   ( sm2,  8UL );
       checkColumns( sm2, 16UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -591,114 +591,114 @@ void DenseTest::testAssignment()
       }
    }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix assignment (mixed type)";
+   {
+      test_ = "Row-major/column-major dense matrix assignment (mixed type)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 16UL );
-   //   randomize( mat, short(randmin), short(randmax) );
+      blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 16UL );
+      randomize( mat, short(randmin), short(randmax) );
 
-   //   sm1 = mat;
-   //   sm2 = mat;
+      sm1 = mat;
+      sm2 = mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix assignment (aligned/padded)";
+   {
+      test_ = "Row-major/column-major dense matrix assignment (aligned/padded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,columnMajor>;
-   //   std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
-   //   AlignedPadded mat( memory.get(), 8UL, 16UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,columnMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
+      AlignedPadded mat( memory.get(), 8UL, 16UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 = mat;
-   //   sm2 = mat;
+      sm1 = mat;
+      sm2 = mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix assignment (unaligned/unpadded)";
+   {
+      test_ = "Row-major/column-major dense matrix assignment (unaligned/unpadded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-         //RCMT sm1 = blaze::rows( blaze::columns( mat1_, column_indices.data(),
-         //                           column_indices.size() ),
-         //   row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,columnMajor>;
-   //   std::unique_ptr<int[]> memory( new int[129UL] );
-   //   UnalignedUnpadded mat( memory.get()+1UL, 8UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,columnMajor>;
+      std::unique_ptr<int[]> memory( new int[129UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 = mat;
-   //   sm2 = mat;
+      sm1 = mat;
+      sm2 = mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    //=====================================================================================
    // Column-major homogeneous assignment
@@ -895,23 +895,23 @@ void DenseTest::testAssignment()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //sm1 = dilatedsubmatrix( mat1, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+      sm1 = dilatedsubmatrix( mat1, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
       sm2 = dilatedsubmatrix( mat2, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 16UL );
-      //checkColumns( sm1,  8UL );
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
       checkRows   ( sm2, 16UL );
       checkColumns( sm2,  8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -927,139 +927,139 @@ void DenseTest::testAssignment()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //sm1 = dilatedsubmatrix( tmat1_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
+      sm1 = dilatedsubmatrix( tmat1_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
       sm2 = dilatedsubmatrix( tmat2_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 16UL );
-      //checkColumns( sm1,  8UL );
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
       checkRows   ( sm2, 16UL );
       checkColumns( sm2,  8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
-//   //=====================================================================================
-//   // Column-major dense matrix assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "Column-major/row-major dense matrix assignment (mixed type)";
-//
-//      initialize();
-//
-//      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-//      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
-//
-//      OCRMT sm1 = blaze::columns(
-//         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-//         column_indices.data(), column_indices.size() );
-//      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      blaze::DynamicMatrix<short,rowMajor> mat( 16UL, 8UL );
-//      randomize( mat, short(randmin), short(randmax) );
-//
-//      sm1 = mat;
-//      sm2 = mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-   //{
-   //   test_ = "Column-major/row-major dense matrix assignment (aligned/padded)";
+   //=====================================================================================
+   // Column-major dense matrix assignment
+   //=====================================================================================
 
-   //   initialize();
+   {
+      test_ = "Column-major/row-major dense matrix assignment (mixed type)";
 
-   //   auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-   //   auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+      initialize();
 
-   //   OCRMT sm1 = blaze::columns(
-   //      blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-   //      column_indices.data(), column_indices.size() );
-   //   ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
 
-   //   using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,rowMajor>;
-   //   std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
-   //   AlignedPadded mat( memory.get(), 16UL, 8UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-   //   sm1 = mat;
-   //   sm2 = mat;
+      blaze::DynamicMatrix<short,rowMajor> mat( 16UL, 8UL );
+      randomize( mat, short(randmin), short(randmax) );
 
-   //   checkRows   ( sm1, 16UL );
-   //   checkColumns( sm1,  8UL );
-   //   checkRows   ( sm2, 16UL );
-   //   checkColumns( sm2,  8UL );
+      sm1 = mat;
+      sm2 = mat;
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
 
-//   {
-//      test_ = "Column-major/row-major dense matrix assignment (unaligned/unpadded)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[129UL] );
-//      UnalignedUnpadded mat( memory.get()+1UL, 16UL, 8UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 = mat;
-//      sm2 = mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
+   {
+      test_ = "Column-major/row-major dense matrix assignment (aligned/padded)";
+
+      initialize();
+
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,rowMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
+      AlignedPadded mat( memory.get(), 16UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 = mat;
+      sm2 = mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major dense matrix assignment (unaligned/unpadded)";
+
+      initialize();
+
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,rowMajor>;
+      std::unique_ptr<int[]> memory( new int[129UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 16UL, 8UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 = mat;
+      sm2 = mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
    {
       test_ = "Column-major/column-major dense matrix assignment (mixed type)";
 
@@ -1212,23 +1212,23 @@ void DenseTest::testAddAssign()
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //sm1 += dilatedsubmatrix( mat1, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
+      sm1 += dilatedsubmatrix( mat1, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
       sm2 += dilatedsubmatrix( mat2, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //checkRows   ( sm1,  8UL );
-      //checkColumns( sm1, 4UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 4UL );
       checkRows   ( sm2,  8UL );
       checkColumns( sm2, 4UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Addition assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -1244,23 +1244,23 @@ void DenseTest::testAddAssign()
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //sm1 += dilatedsubmatrix( mat1_, 12UL, 16UL, 8UL, 4UL, 2UL, 3UL );
+      sm1 += dilatedsubmatrix( mat1_, 12UL, 16UL, 8UL, 4UL, 2UL, 3UL );
       sm2 += dilatedsubmatrix( mat2_, 12UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //checkRows   ( sm1,  8UL );
-      //checkColumns( sm1,  4UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1,  4UL );
       checkRows   ( sm2,  8UL );
       checkColumns( sm2,  4UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Addition assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -1377,114 +1377,114 @@ void DenseTest::testAddAssign()
       }
    }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix addition assignment (mixed type)";
+   {
+      test_ = "Row-major/column-major dense matrix addition assignment (mixed type)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 16UL );
-   //   randomize( mat, short(randmin), short(randmax) );
+      blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 16UL );
+      randomize( mat, short(randmin), short(randmax) );
 
-   //   sm1 += mat;
-   //   sm2 += mat;
+      sm1 += mat;
+      sm2 += mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Addition assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix addition assignment (aligned/padded)";
+   {
+      test_ = "Row-major/column-major dense matrix addition assignment (aligned/padded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,columnMajor>;
-   //   std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
-   //   AlignedPadded mat( memory.get(), 8UL, 16UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,columnMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
+      AlignedPadded mat( memory.get(), 8UL, 16UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 += mat;
-   //   sm2 += mat;
+      sm1 += mat;
+      sm2 += mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Addition assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix addition assignment (unaligned/unpadded)";
+   {
+      test_ = "Row-major/column-major dense matrix addition assignment (unaligned/unpadded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,columnMajor>;
-   //   std::unique_ptr<int[]> memory( new int[129UL] );
-   //   UnalignedUnpadded mat( memory.get()+1UL, 8UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,columnMajor>;
+      std::unique_ptr<int[]> memory( new int[129UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 += mat;
-   //   sm2 += mat;
+      sm1 += mat;
+      sm2 += mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Addition assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    //=====================================================================================
    // Column-major dilatedsubmatrix addition assignment
@@ -1508,23 +1508,23 @@ void DenseTest::testAddAssign()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //sm1 += dilatedsubmatrix( mat1, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+      sm1 += dilatedsubmatrix( mat1, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
       sm2 += dilatedsubmatrix( mat2, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 16UL );
-      //checkColumns( sm1,  8UL );
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
       checkRows   ( sm2, 16UL );
       checkColumns( sm2,  8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Addition assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -1540,23 +1540,23 @@ void DenseTest::testAddAssign()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //sm1 += dilatedsubmatrix( tmat1_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
+      sm1 += dilatedsubmatrix( tmat1_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
       sm2 += dilatedsubmatrix( tmat2_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 16UL );
-      //checkColumns( sm1,  8UL );
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
       checkRows   ( sm2, 16UL );
       checkColumns( sm2,  8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Addition assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -1564,114 +1564,114 @@ void DenseTest::testAddAssign()
    // Column-major dense matrix addition assignment
    //=====================================================================================
 
-   //{
-   //   test_ = "Column-major/row-major dense matrix addition assignment (mixed type)";
+   {
+      test_ = "Column-major/row-major dense matrix addition assignment (mixed type)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-   //   auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
 
-   //   OCRMT sm1 = blaze::columns(
-   //      blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-   //      column_indices.data(), column_indices.size() );
-   //   ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-   //   blaze::DynamicMatrix<short,rowMajor> mat( 16UL, 8UL );
-   //   randomize( mat, short(randmin), short(randmax) );
+      blaze::DynamicMatrix<short,rowMajor> mat( 16UL, 8UL );
+      randomize( mat, short(randmin), short(randmax) );
 
-   //   sm1 += mat;
-   //   sm2 += mat;
+      sm1 += mat;
+      sm2 += mat;
 
-   //   checkRows   ( sm1, 16UL );
-   //   checkColumns( sm1,  8UL );
-   //   checkRows   ( sm2, 16UL );
-   //   checkColumns( sm2,  8UL );
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Addition assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-//   {
-//      test_ = "Column-major/row-major dense matrix addition assignment (aligned/padded)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+   {
+      test_ = "Column-major/row-major dense matrix addition assignment (aligned/padded)";
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,rowMajor>;
-//      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
-//      AlignedPadded mat( memory.get(), 16UL, 8UL, 16UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 += mat;
-//      sm2 += mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "Column-major/row-major dense matrix addition assignment (unaligned/unpadded)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+      initialize();
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[129UL] );
-//      UnalignedUnpadded mat( memory.get()+1UL, 16UL, 8UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 += mat;
-//      sm2 += mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,rowMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
+      AlignedPadded mat( memory.get(), 16UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 += mat;
+      sm2 += mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major dense matrix addition assignment (unaligned/unpadded)";
+
+      initialize();
+
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,rowMajor>;
+      std::unique_ptr<int[]> memory( new int[129UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 16UL, 8UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 += mat;
+      sm2 += mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Column-major/column-major dense matrix addition assignment (mixed type)";
@@ -1827,23 +1827,23 @@ void DenseTest::testSubAssign()
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //sm1 -= dilatedsubmatrix( mat1, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
+      sm1 -= dilatedsubmatrix( mat1, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
       sm2 -= dilatedsubmatrix( mat2, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //checkRows   ( sm1,  8UL );
-      //checkColumns( sm1,  4UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1,  4UL );
       checkRows   ( sm2,  8UL );
       checkColumns( sm2,  4UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Subtraction assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -1859,23 +1859,23 @@ void DenseTest::testSubAssign()
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //sm1 -= dilatedsubmatrix( mat1_, 12UL, 16UL, 8UL, 4UL, 2UL, 3UL );
+      sm1 -= dilatedsubmatrix( mat1_, 12UL, 16UL, 8UL, 4UL, 2UL, 3UL );
       sm2 -= dilatedsubmatrix( mat2_, 12UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //checkRows   ( sm1,  8UL );
-      //checkColumns( sm1,  4UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1,  4UL );
       checkRows   ( sm2,  8UL );
       checkColumns( sm2,  4UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Subtraction assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -1992,114 +1992,114 @@ void DenseTest::testSubAssign()
       }
    }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix subtraction assignment (mixed type)";
+   {
+      test_ = "Row-major/column-major dense matrix subtraction assignment (mixed type)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 16UL );
-   //   randomize( mat, short(randmin), short(randmax) );
+      blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 16UL );
+      randomize( mat, short(randmin), short(randmax) );
 
-   //   sm1 -= mat;
-   //   sm2 -= mat;
+      sm1 -= mat;
+      sm2 -= mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Subtraction assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix subtraction assignment (aligned/padded)";
+   {
+      test_ = "Row-major/column-major dense matrix subtraction assignment (aligned/padded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,columnMajor>;
-   //   std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
-   //   AlignedPadded mat( memory.get(), 8UL, 16UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,columnMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
+      AlignedPadded mat( memory.get(), 8UL, 16UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 -= mat;
-   //   sm2 -= mat;
+      sm1 -= mat;
+      sm2 -= mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Subtraction assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix subtraction assignment (unaligned/unpadded)";
+   {
+      test_ = "Row-major/column-major dense matrix subtraction assignment (unaligned/unpadded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,columnMajor>;
-   //   std::unique_ptr<int[]> memory( new int[129UL] );
-   //   UnalignedUnpadded mat( memory.get()+1UL, 8UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,columnMajor>;
+      std::unique_ptr<int[]> memory( new int[129UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 -= mat;
-   //   sm2 -= mat;
+      sm1 -= mat;
+      sm2 -= mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Subtraction assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    //=====================================================================================
    // Column-major dilatedsubmatrix subtraction assignment
@@ -2123,23 +2123,23 @@ void DenseTest::testSubAssign()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //sm1 -= dilatedsubmatrix( mat1, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+      sm1 -= dilatedsubmatrix( mat1, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
       sm2 -= dilatedsubmatrix( mat2, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 16UL );
-      //checkColumns( sm1,  8UL );
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
       checkRows   ( sm2, 16UL );
       checkColumns( sm2,  8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Subtraction assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -2155,23 +2155,23 @@ void DenseTest::testSubAssign()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //sm1 -= dilatedsubmatrix( tmat1_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
+      sm1 -= dilatedsubmatrix( tmat1_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
       sm2 -= dilatedsubmatrix( tmat2_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 16UL );
-      //checkColumns( sm1,  8UL );
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
       checkRows   ( sm2, 16UL );
       checkColumns( sm2,  8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Subtraction assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -2179,114 +2179,114 @@ void DenseTest::testSubAssign()
    // Column-major dense matrix subtraction assignment
    //=====================================================================================
 
-//   {
-//      test_ = "Column-major/row-major dense matrix subtraction assignment (mixed type)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+   {
+      test_ = "Column-major/row-major dense matrix subtraction assignment (mixed type)";
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      blaze::DynamicMatrix<short,rowMajor> mat( 16UL, 8UL );
-//      randomize( mat, short(randmin), short(randmax) );
-//
-//      sm1 -= mat;
-//      sm2 -= mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "Column-major/row-major dense matrix subtraction assignment (aligned/padded)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+      initialize();
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,rowMajor>;
-//      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
-//      AlignedPadded mat( memory.get(), 16UL, 8UL, 16UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 -= mat;
-//      sm2 -= mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "Column-major/row-major dense matrix subtraction assignment (unaligned/unpadded)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[129UL] );
-//      UnalignedUnpadded mat( memory.get()+1UL, 16UL, 8UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 -= mat;
-//      sm2 -= mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      blaze::DynamicMatrix<short,rowMajor> mat( 16UL, 8UL );
+      randomize( mat, short(randmin), short(randmax) );
+
+      sm1 -= mat;
+      sm2 -= mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major dense matrix subtraction assignment (aligned/padded)";
+
+      initialize();
+
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      using AlignedPadded = blaze::CustomMatrix<int,blaze::aligned,padded,rowMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
+      AlignedPadded mat( memory.get(), 16UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 -= mat;
+      sm2 -= mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major dense matrix subtraction assignment (unaligned/unpadded)";
+
+      initialize();
+
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      using UnalignedUnpadded = blaze::CustomMatrix<int,blaze::unaligned,unpadded,rowMajor>;
+      std::unique_ptr<int[]> memory( new int[129UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 16UL, 8UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 -= mat;
+      sm2 -= mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    {
       test_ = "Column-major/column-major dense matrix subtraction assignment (mixed type)";
@@ -2442,23 +2442,23 @@ void DenseTest::testSchurAssign()
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //sm1 %= dilatedsubmatrix( mat1, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
+      sm1 %= dilatedsubmatrix( mat1, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
       sm2 %= dilatedsubmatrix( mat2, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //checkRows   ( sm1,  8UL );
-      //checkColumns( sm1,  4UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1,  4UL );
       checkRows   ( sm2,  8UL );
       checkColumns( sm2,  4UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Schur product assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -2474,23 +2474,23 @@ void DenseTest::testSchurAssign()
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //sm1 %= dilatedsubmatrix( mat1_, 12UL, 16UL, 8UL, 4UL, 2UL, 3UL );
+      sm1 %= dilatedsubmatrix( mat1_, 12UL, 16UL, 8UL, 4UL, 2UL, 3UL );
       sm2 %= dilatedsubmatrix( mat2_, 12UL, 16UL, 8UL, 4UL, 2UL, 3UL );
 
-      //checkRows   ( sm1,  8UL );
-      //checkColumns( sm1,  4UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1,  4UL );
       checkRows   ( sm2,  8UL );
       checkColumns( sm2,  4UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Schur product assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -2606,114 +2606,114 @@ void DenseTest::testSchurAssign()
       }
    }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix Schur product assignment (mixed type)";
+   {
+      test_ = "Row-major/column-major dense matrix Schur product assignment (mixed type)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 16UL );
-   //   randomize( mat, short(randmin), short(randmax) );
+      blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 16UL );
+      randomize( mat, short(randmin), short(randmax) );
 
-   //   sm1 %= mat;
-   //   sm2 %= mat;
+      sm1 %= mat;
+      sm2 %= mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Schur product assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix Schur product assignment (aligned/padded)";
+   {
+      test_ = "Row-major/column-major dense matrix Schur product assignment (aligned/padded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
-   //   std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
-   //   AlignedPadded mat( memory.get(), 8UL, 16UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
+      AlignedPadded mat( memory.get(), 8UL, 16UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 %= mat;
-   //   sm2 %= mat;
+      sm1 %= mat;
+      sm2 %= mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Schur product assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix Schur product assignment (unaligned/unpadded)";
+   {
+      test_ = "Row-major/column-major dense matrix Schur product assignment (unaligned/unpadded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 8UL, 8UL, 3UL );
-   //   auto column_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto row_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto column_indices = generate_indices( 16UL, 16UL, 2UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 8UL, 16UL, 8UL, 16UL, 3UL, 2UL );
 
-   //   using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
-   //   std::unique_ptr<int[]> memory( new int[129UL] );
-   //   UnalignedUnpadded mat( memory.get()+1UL, 8UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
+      std::unique_ptr<int[]> memory( new int[129UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 %= mat;
-   //   sm2 %= mat;
+      sm1 %= mat;
+      sm2 %= mat;
 
-   //   checkRows   ( sm1,  8UL );
-   //   checkColumns( sm1, 16UL );
-   //   checkRows   ( sm2,  8UL );
-   //   checkColumns( sm2, 16UL );
+      checkRows   ( sm1,  8UL );
+      checkColumns( sm1, 16UL );
+      checkRows   ( sm2,  8UL );
+      checkColumns( sm2, 16UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Schur product assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    //=====================================================================================
    // Column-major dilatedsubmatrix Schur product assignment
@@ -2737,23 +2737,23 @@ void DenseTest::testSchurAssign()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //sm1 %= dilatedsubmatrix( mat1, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+      sm1 %= dilatedsubmatrix( mat1, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
       sm2 %= dilatedsubmatrix( mat2, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 16UL );
-      //checkColumns( sm1,  8UL );
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
       checkRows   ( sm2, 16UL );
       checkColumns( sm2,  8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Schur product assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -2769,139 +2769,139 @@ void DenseTest::testSchurAssign()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
 
-      //sm1 %= dilatedsubmatrix( tmat1_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
+      sm1 %= dilatedsubmatrix( tmat1_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
       sm2 %= dilatedsubmatrix( tmat2_, 16UL, 12UL, 16UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 16UL );
-      //checkColumns( sm1,  8UL );
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
       checkRows   ( sm2, 16UL );
       checkColumns( sm2,  8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Schur product assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
-//   //=====================================================================================
-//   // Column-major dense matrix Schur product assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "Column-major/row-major dense matrix Schur product assignment (mixed type)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+   //=====================================================================================
+   // Column-major dense matrix Schur product assignment
+   //=====================================================================================
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      blaze::DynamicMatrix<short,rowMajor> mat( 16UL, 8UL );
-//      randomize( mat, short(randmin), short(randmax) );
-//
-//      sm1 %= mat;
-//      sm2 %= mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Schur product assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "Column-major/row-major dense matrix Schur product assignment (aligned/padded)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+   {
+      test_ = "Column-major/row-major dense matrix Schur product assignment (mixed type)";
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
-//      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
-//      AlignedPadded mat( memory.get(), 16UL, 8UL, 16UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 %= mat;
-//      sm2 %= mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Schur product assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "Column-major/row-major dense matrix Schur product assignment (unaligned/unpadded)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 16UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+      initialize();
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[129UL] );
-//      UnalignedUnpadded mat( memory.get()+1UL, 16UL, 8UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 %= mat;
-//      sm2 %= mat;
-//
-//      checkRows   ( sm1, 16UL );
-//      checkColumns( sm1,  8UL );
-//      checkRows   ( sm2, 16UL );
-//      checkColumns( sm2,  8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Schur product assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      blaze::DynamicMatrix<short,rowMajor> mat( 16UL, 8UL );
+      randomize( mat, short(randmin), short(randmax) );
+
+      sm1 %= mat;
+      sm2 %= mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major dense matrix Schur product assignment (aligned/padded)";
+
+      initialize();
+
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 256UL ) );
+      AlignedPadded mat( memory.get(), 16UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 %= mat;
+      sm2 %= mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major dense matrix Schur product assignment (unaligned/unpadded)";
+
+      initialize();
+
+      auto row_indices = generate_indices( 16UL, 16UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 16UL, 8UL, 2UL, 3UL );
+
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
+      std::unique_ptr<int[]> memory( new int[129UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 16UL, 8UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 %= mat;
+      sm2 %= mat;
+
+      checkRows   ( sm1, 16UL );
+      checkColumns( sm1,  8UL );
+      checkRows   ( sm2, 16UL );
+      checkColumns( sm2,  8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur product assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
    {
       test_ = "Column-major/column-major dense matrix Schur product assignment (mixed type)";
 
@@ -3056,23 +3056,23 @@ void DenseTest::testMultAssign()
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
 
-      //sm1 *= dilatedsubmatrix( mat1, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
+      sm1 *= dilatedsubmatrix( mat1, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
       sm2 *= dilatedsubmatrix( mat2, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 8UL );
-      //checkColumns( sm1, 8UL );
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
       checkRows   ( sm2, 8UL );
       checkColumns( sm2, 8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Multiplication assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -3088,23 +3088,23 @@ void DenseTest::testMultAssign()
          row_indices.data(), row_indices.size() );
       DSMT sm2 = dilatedsubmatrix( mat2_, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
 
-      //sm1 *= dilatedsubmatrix( mat1_, 24UL, 16UL, 8UL, 8UL, 2UL, 3UL );
+      sm1 *= dilatedsubmatrix( mat1_, 24UL, 16UL, 8UL, 8UL, 2UL, 3UL );
       sm2 *= dilatedsubmatrix( mat2_, 24UL, 16UL, 8UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 8UL );
-      //checkColumns( sm1, 8UL );
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
       checkRows   ( sm2, 8UL );
       checkColumns( sm2, 8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Multiplication assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -3221,114 +3221,114 @@ void DenseTest::testMultAssign()
       }
    }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix multiplication assignment (mixed type)";
+   {
+      test_ = "Row-major/column-major dense matrix multiplication assignment (mixed type)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 16UL, 8UL, 2UL );
-   //   auto column_indices = generate_indices( 16UL, 8UL, 3UL );
+      auto row_indices = generate_indices( 16UL, 8UL, 2UL );
+      auto column_indices = generate_indices( 16UL, 8UL, 3UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
 
-   //   blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 8UL );
-   //   randomize( mat, short(randmin), short(randmax) );
+      blaze::DynamicMatrix<short,columnMajor> mat( 8UL, 8UL );
+      randomize( mat, short(randmin), short(randmax) );
 
-   //   sm1 *= mat;
-   //   sm2 *= mat;
+      sm1 *= mat;
+      sm2 *= mat;
 
-   //   checkRows   ( sm1, 8UL );
-   //   checkColumns( sm1, 8UL );
-   //   checkRows   ( sm2, 8UL );
-   //   checkColumns( sm2, 8UL );
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Multiplication assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix multiplication assignment (aligned/padded)";
+   {
+      test_ = "Row-major/column-major dense matrix multiplication assignment (aligned/padded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 16UL, 8UL, 2UL );
-   //   auto column_indices = generate_indices( 16UL, 8UL, 3UL );
+      auto row_indices = generate_indices( 16UL, 8UL, 2UL );
+      auto column_indices = generate_indices( 16UL, 8UL, 3UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
 
-   //   using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
-   //   std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 128UL ) );
-   //   AlignedPadded mat( memory.get(), 8UL, 8UL, 16UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,columnMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 128UL ) );
+      AlignedPadded mat( memory.get(), 8UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 *= mat;
-   //   sm2 *= mat;
+      sm1 *= mat;
+      sm2 *= mat;
 
-   //   checkRows   ( sm1, 8UL );
-   //   checkColumns( sm1, 8UL );
-   //   checkRows   ( sm2, 8UL );
-   //   checkColumns( sm2, 8UL );
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Multiplication assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
-   //{
-   //   test_ = "Row-major/column-major dense matrix multiplication assignment (unaligned/unpadded)";
+   {
+      test_ = "Row-major/column-major dense matrix multiplication assignment (unaligned/unpadded)";
 
-   //   initialize();
+      initialize();
 
-   //   auto row_indices = generate_indices( 16UL, 8UL, 2UL );
-   //   auto column_indices = generate_indices( 16UL, 8UL, 3UL );
+      auto row_indices = generate_indices( 16UL, 8UL, 2UL );
+      auto column_indices = generate_indices( 16UL, 8UL, 3UL );
 
-   //   RCMT sm1 = blaze::rows(
-   //      blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
-   //      row_indices.data(), row_indices.size() );
-   //   DSMT sm2 = dilatedsubmatrix( mat2_, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
+      RCMT sm1 = blaze::rows(
+         blaze::columns( mat1_, column_indices.data(), column_indices.size() ),
+         row_indices.data(), row_indices.size() );
+      DSMT sm2 = dilatedsubmatrix( mat2_, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
 
-   //   using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
-   //   std::unique_ptr<int[]> memory( new int[65UL] );
-   //   UnalignedUnpadded mat( memory.get()+1UL, 8UL, 8UL );
-   //   randomize( mat, int(randmin), int(randmax) );
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,columnMajor>;
+      std::unique_ptr<int[]> memory( new int[65UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 8UL );
+      randomize( mat, int(randmin), int(randmax) );
 
-   //   sm1 *= mat;
-   //   sm2 *= mat;
+      sm1 *= mat;
+      sm2 *= mat;
 
-   //   checkRows   ( sm1, 8UL );
-   //   checkColumns( sm1, 8UL );
-   //   checkRows   ( sm2, 8UL );
-   //   checkColumns( sm2, 8UL );
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
 
-   //   if( sm1 != sm2 || mat1_ != mat2_ ) {
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Multiplication assignment failed\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << sm1 << "\n"
-   //          << "   Expected result:\n" << sm2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
 
    //=====================================================================================
    // Column-major dilatedsubmatrix multiplication assignment
@@ -3352,23 +3352,23 @@ void DenseTest::testMultAssign()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 8UL, 8UL, 2UL, 3UL );
 
-      //sm1 *= dilatedsubmatrix( mat1, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
+      sm1 *= dilatedsubmatrix( mat1, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
       sm2 *= dilatedsubmatrix( mat2, 16UL, 16UL, 8UL, 8UL, 2UL, 3UL );
 
-      //checkRows   ( sm1, 8UL );
-      //checkColumns( sm1, 8UL );
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
       checkRows   ( sm2, 8UL );
       checkColumns( sm2, 8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Multiplication assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
    {
@@ -3384,23 +3384,23 @@ void DenseTest::testMultAssign()
          column_indices.data(), column_indices.size() );
       ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 8UL, 8UL, 2UL, 3UL );
 
-      //sm1 *= dilatedsubmatrix( tmat1_, 16UL, 24UL, 8UL, 8UL, 1UL, 1UL );
+      sm1 *= dilatedsubmatrix( tmat1_, 16UL, 24UL, 8UL, 8UL, 1UL, 1UL );
       sm2 *= dilatedsubmatrix( tmat2_, 16UL, 24UL, 8UL, 8UL, 1UL, 1UL );
 
-      //checkRows   ( sm1, 8UL );
-      //checkColumns( sm1, 8UL );
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
       checkRows   ( sm2, 8UL );
       checkColumns( sm2, 8UL );
 
-      //if( sm1 != sm2 || mat1_ != mat2_ ) {
-      //   std::ostringstream oss;
-      //   oss << " Test: " << test_ << "\n"
-      //       << " Error: Multiplication assignment failed\n"
-      //       << " Details:\n"
-      //       << "   Result:\n" << sm1 << "\n"
-      //       << "   Expected result:\n" << sm2 << "\n";
-      //   throw std::runtime_error( oss.str() );
-      //}
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
    }
 
 
@@ -3408,115 +3408,115 @@ void DenseTest::testMultAssign()
    // Column-major dense matrix multiplication assignment
    //=====================================================================================
 
-//   {
-//      test_ = "Column-major/row-major dense matrix multiplication assignment (mixed type)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 8UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+   {
+      test_ = "Column-major/row-major dense matrix multiplication assignment (mixed type)";
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 8UL, 8UL, 2UL, 3UL );
-//
-//      blaze::DynamicMatrix<short,rowMajor> mat( 8UL, 8UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 *= mat;
-//      sm2 *= mat;
-//
-//      checkRows   ( sm1, 8UL );
-//      checkColumns( sm1, 8UL );
-//      checkRows   ( sm2, 8UL );
-//      checkColumns( sm2, 8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "Column-major/row-major dense matrix multiplication assignment (aligned/padded)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 8UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+      initialize();
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 8UL, 8UL, 2UL, 3UL );
-//
-//      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
-//      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 128UL ) );
-//      AlignedPadded mat( memory.get(), 8UL, 8UL, 16UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 *= mat;
-//      sm2 *= mat;
-//
-//      checkRows   ( sm1, 8UL );
-//      checkColumns( sm1, 8UL );
-//      checkRows   ( sm2, 8UL );
-//      checkColumns( sm2, 8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "Column-major/row-major dense matrix multiplication assignment (unaligned/unpadded)";
-//
-//      initialize();
-//
-      //auto row_indices = generate_indices( 16UL, 8UL, 2UL );
-      //auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+      auto row_indices = generate_indices( 16UL, 8UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
 
-      //OCRMT sm1 = blaze::columns(
-      //   blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
-      //   column_indices.data(), column_indices.size() );
-      //ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 8UL, 8UL, 2UL, 3UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[65UL] );
-//      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 8UL );
-//      randomize( mat, int(randmin), int(randmax) );
-//
-//      sm1 *= mat;
-//      sm2 *= mat;
-//
-//      checkRows   ( sm1, 8UL );
-//      checkColumns( sm1, 8UL );
-//      checkRows   ( sm2, 8UL );
-//      checkColumns( sm2, 8UL );
-//
-//      if( sm1 != sm2 || mat1_ != mat2_ ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << sm1 << "\n"
-//             << "   Expected result:\n" << sm2 << "\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 8UL, 8UL, 2UL, 3UL );
+
+      blaze::DynamicMatrix<short,rowMajor> mat( 8UL, 8UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 *= mat;
+      sm2 *= mat;
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major dense matrix multiplication assignment (aligned/padded)";
+
+      initialize();
+
+      auto row_indices = generate_indices( 16UL, 8UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 8UL, 8UL, 2UL, 3UL );
+
+      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 128UL ) );
+      AlignedPadded mat( memory.get(), 8UL, 8UL, 16UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 *= mat;
+      sm2 *= mat;
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "Column-major/row-major dense matrix multiplication assignment (unaligned/unpadded)";
+
+      initialize();
+
+      auto row_indices = generate_indices( 16UL, 8UL, 2UL );
+      auto column_indices = generate_indices( 8UL, 8UL, 3UL );
+
+      OCRMT sm1 = blaze::columns(
+         blaze::rows( tmat1_, row_indices.data(), row_indices.size() ),
+         column_indices.data(), column_indices.size() );
+      ODSMT sm2 = dilatedsubmatrix( tmat2_, 16UL, 8UL, 8UL, 8UL, 2UL, 3UL );
+
+      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
+      std::unique_ptr<int[]> memory( new int[65UL] );
+      UnalignedUnpadded mat( memory.get()+1UL, 8UL, 8UL );
+      randomize( mat, int(randmin), int(randmax) );
+
+      sm1 *= mat;
+      sm2 *= mat;
+
+      checkRows   ( sm1, 8UL );
+      checkColumns( sm1, 8UL );
+      checkRows   ( sm2, 8UL );
+      checkColumns( sm2, 8UL );
+
+      if( sm1 != sm2 || mat1_ != mat2_ ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << sm1 << "\n"
+             << "   Expected result:\n" << sm2 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
    {
       test_ = "Column-major/column-major dense matrix multiplication assignment (mixed type)";
 
