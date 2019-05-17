@@ -52,5 +52,6 @@
 // #include <blaze_tensor/math/Rows.h>
 #include <blaze_tensor/math/Subtensor.h>
 #include <blaze_tensor/math/DilatedSubvector.h>
+#include <blaze_tensor/math/DilatedSubmatrix.h>
 
 #endif

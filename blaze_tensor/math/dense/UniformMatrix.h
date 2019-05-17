@@ -1,15 +1,25 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/HybridVector.h
-//  \brief Header file for the HybridVector class template
+//  \file blaze_tensor/math/dense/UniformMatrix.h
+//  \brief Header file for the implementation of a uniform matrix
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
+//  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
+//  forms, with or without modification, are permitted provided that the following conditions
+//  are met:
 //
-//  * The names of its contributors may not be used to endorse or promote products derived
-//    from this software without specific prior written permission.
+//  1. Redistributions of source code must retain the above copyright notice, this list of
+//     conditions and the following disclaimer.
+//  2. Redistributions in binary form must reproduce the above copyright notice, this list
+//     of conditions and the following disclaimer in the documentation and/or other materials
+//     provided with the distribution.
+//  3. Neither the names of the Blaze development group nor the names of its contributors
+//     may be used to endorse or promote products derived from this software without specific
+//     prior written permission.
 //
 //  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
 //  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -24,37 +34,33 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_HYBRIDVECTOR_H_
-#define _BLAZE_TENSOR_MATH_DENSE_HYBRIDVECTOR_H_
+#ifndef _BLAZE_TENSOR_MATH_DENSE_UNIFORMMATRIX_H_
+#define _BLAZE_TENSOR_MATH_DENSE_UNIFORMMATRIX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/HybridVector.h>
-#include <blaze_tensor/math/traits/DilatedSubvectorTrait.h>
+#include <blaze/math/dense/UniformMatrix.h>
+#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  DILATEDSUBVECTORTRAIT SPECIALIZATIONS
+//  DILATEDSUBMATRIXTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct DilatedSubvectorTraitEval2< VT, inf, inf, inf
-                          , EnableIf_t< IsDenseVector_v<VT> &&
-                                        ( Size_v<VT,0UL> != DefaultSize_v ||
-                                          MaxSize_v<VT,0UL> != DefaultMaxSize_v ) > >
+template< typename MT, size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation >
+struct DilatedSubmatrixTraitEval1< MT, I, J, M, N, RowDilation, ColumnDilation
+                          , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
 {
-   static constexpr size_t N = max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> );
-
-   using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
+   using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

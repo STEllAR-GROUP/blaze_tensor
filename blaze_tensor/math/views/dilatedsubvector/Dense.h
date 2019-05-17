@@ -183,7 +183,7 @@ class DilatedSubvector<VT,TF,true,CSAs...>
       */
       inline DilatedSubvectorIterator()
          : iterator_ (       )   // Iterator to the current dilatedsubvector element
-         , dilation_ ( 0     )   // step-size of the underlying dilated subvector
+         , dilation_ ( 1     )   // step-size of the underlying dilated subvector
       {}
       //*******************************************************************************************
 
