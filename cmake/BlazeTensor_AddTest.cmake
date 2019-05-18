@@ -38,7 +38,7 @@ function(add_blaze_tensor_test name)
    cmake_parse_arguments(${name} "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
 
    add_executable(${name} "${${name}_SOURCES}")
-   target_link_libraries(${name} BlazeTensor)
+   target_link_libraries(${name} PUBLIC BlazeTensor)
    target_compile_definitions(${name} INTERFACE blaze::blaze)
 
    if(${name}_FOLDER)

@@ -579,7 +579,6 @@ class DilatedSubvector<VT,TF,true,CSAs...>
    BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE   ( VT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE( VT );
    BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE  ( VT );
-   BLAZE_CONSTRAINT_MUST_NOT_BE_SUBVECTOR_TYPE  ( VT );
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( VT, TF );
    //**********************************************************************************************
 };
