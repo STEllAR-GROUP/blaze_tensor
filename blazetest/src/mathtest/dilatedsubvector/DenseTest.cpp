@@ -134,7 +134,7 @@ void DenseTest::testConstructors()
 
          for( size_t dilation = 1UL; dilation < maxsize; ++dilation ) {
 
-            while( start + size * dilation >= vec1_.size() ) --size;
+            while( start + (size - 1) * dilation >= vec1_.size() ) --size;
             auto indices = generate_indices( start, size, dilation );
 
             const ASVT sv1 = blaze::elements( vec1_, indices.data(), indices.size() );
@@ -1865,9 +1865,9 @@ void DenseTest::testIterator()
    {
       test_ = "Iterator default constructor";
 
-      ASVT::Iterator it{};
+      USVT::Iterator it{};
 
-      if( it != ASVT::Iterator() ) {
+      if( it != USVT::Iterator() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed iterator default constructor\n";
@@ -1879,9 +1879,9 @@ void DenseTest::testIterator()
    {
       test_ = "ConstIterator default constructor";
 
-      ASVT::ConstIterator it{};
+      USVT::ConstIterator it{};
 
-      if( it != ASVT::ConstIterator() ) {
+      if( it != USVT::ConstIterator() ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Failed iterator default constructor\n";

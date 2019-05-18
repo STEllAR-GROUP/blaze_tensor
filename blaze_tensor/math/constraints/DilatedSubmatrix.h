@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/UniformVector.h
-//  \brief Header file for the implementation of a uniform vector
+//  \file blaze_tensor/math/constraints/DilatedSubmatrix.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
@@ -33,35 +33,54 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_UNIFORMVECTOR_H_
-#define _BLAZE_TENSOR_MATH_DENSE_UNIFORMVECTOR_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_DILATEDSUBMATRIX_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_DILATEDSUBMATRIX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/UniformVector.h>
-#include <blaze_tensor/math/traits/DilatedSubvectorTrait.h>
+#include <blaze_tensor/math/typetraits/IsDilatedSubmatrix.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  DILATEDSUBVECTORTRAIT SPECIALIZATIONS
+//  MUST_BE_DILATEDSUBMATRIX_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, size_t I, size_t N, size_t Dilation >
-struct DilatedSubvectorTraitEval1< VT, I, N, Dilation
-                          , EnableIf_t< IsUniform_v<VT> && !IsZero_v<VT> > >
-{
-   using Type = UniformVector< RemoveConst_t< ElementType_t<VT> >, TransposeFlag_v<VT> >;
-};
-/*! \endcond */
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a dilatedsubmatrix type (i.e. a dense or sparse dilatedsubmatrix),
+// a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_DILATEDSUBMATRIX_TYPE(T) \
+   static_assert( ::blaze::IsDilatedSubmatrix_v<T>, "Non-dilatedsubmatrix type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_SUBMATRIX_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a dilatedsubmatrix type (i.e. a dense or sparse dilatedsubmatrix), a
+// compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_DILATEDSUBMATRIX_TYPE(T) \
+   static_assert( !::blaze::IsDilatedSubmatrix_v<T>, "DilatedSubmatrix type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -4,7 +4,8 @@
 //  \brief Header file for all forward declarations for views
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -46,6 +47,7 @@
 #include <blaze_tensor/math/expressions/Forward.h>
 #include <blaze_tensor/math/views/columnslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/dilatedsubvector/BaseTemplate.h>
+#include <blaze_tensor/math/views/dilatedsubmatrix/BaseTemplate.h>
 #include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/rowslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/subtensor/BaseTemplate.h>
@@ -75,6 +77,24 @@ decltype(auto) dilatedsubvector( const Vector<VT,TF>&, size_t, size_t, size_t, R
 
 template< typename VT, bool TF, typename... RSAs >
 decltype(auto) dilatedsubvector( Vector<VT,TF>&&, size_t, size_t, size_t, RSAs... );
+
+template< size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation, typename MT, bool SO, typename... RSAs >
+decltype(auto) dilatedsubmatrix( Matrix<MT,SO>&, RSAs... );
+
+template< size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation, typename MT, bool SO, typename... RSAs >
+decltype(auto) dilatedsubmatrix( const Matrix<MT,SO>&, RSAs... );
+
+template< size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation, typename MT, bool SO, typename... RSAs >
+decltype(auto) dilatedsubmatrix( Matrix<MT,SO>&&, RSAs... );
+
+template< typename MT, bool SO, typename... RSAs >
+decltype(auto) dilatedsubmatrix( Matrix<MT,SO>&, size_t, size_t, size_t, size_t, size_t, size_t, RSAs... );
+
+template< typename MT, bool SO, typename... RSAs >
+decltype(auto) dilatedsubmatrix( const Matrix<MT,SO>&, size_t, size_t, size_t, size_t, size_t, size_t, RSAs... );
+
+template< typename MT, bool SO, typename... RSAs >
+decltype(auto) dilatedsubmatrix( Matrix<MT,SO>&&, size_t, size_t, size_t, size_t, size_t, size_t, RSAs... );
 
 
 // template< size_t I, size_t... Is, typename TT, typename... RRAs >

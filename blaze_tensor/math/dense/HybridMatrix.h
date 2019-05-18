@@ -1,15 +1,25 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/HybridVector.h
-//  \brief Header file for the HybridVector class template
+//  \file blaze_tensor/math/dense/HybridMatrix.h
+//  \brief Header file for the implementation of a fixed-size matrix
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
+//  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
+//  forms, with or without modification, are permitted provided that the following conditions
+//  are met:
 //
-//  * The names of its contributors may not be used to endorse or promote products derived
-//    from this software without specific prior written permission.
+//  1. Redistributions of source code must retain the above copyright notice, this list of
+//     conditions and the following disclaimer.
+//  2. Redistributions in binary form must reproduce the above copyright notice, this list
+//     of conditions and the following disclaimer in the documentation and/or other materials
+//     provided with the distribution.
+//  3. Neither the names of the Blaze development group nor the names of its contributors
+//     may be used to endorse or promote products derived from this software without specific
+//     prior written permission.
 //
 //  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
 //  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -24,37 +34,40 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_HYBRIDVECTOR_H_
-#define _BLAZE_TENSOR_MATH_DENSE_HYBRIDVECTOR_H_
+#ifndef _BLAZE_TENSOR_MATH_DENSE_HYBRIDMATRIX_H_
+#define _BLAZE_TENSOR_MATH_DENSE_HYBRIDMATRIX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/HybridVector.h>
-#include <blaze_tensor/math/traits/DilatedSubvectorTrait.h>
+#include <blaze/math/dense/HybridMatrix.h>
+#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  DILATEDSUBVECTORTRAIT SPECIALIZATIONS
+//  DILATEDSUBMATRIXTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename VT >
-struct DilatedSubvectorTraitEval2< VT, inf, inf, inf
-                          , EnableIf_t< IsDenseVector_v<VT> &&
-                                        ( Size_v<VT,0UL> != DefaultSize_v ||
-                                          MaxSize_v<VT,0UL> != DefaultMaxSize_v ) > >
+template< typename MT >
+struct DilatedSubmatrixTraitEval2< MT, inf, inf, inf, inf, inf, inf
+                          , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                        ( ( Size_v<MT,0UL> != DefaultSize_v &&
+                                            Size_v<MT,1UL> != DefaultSize_v ) ||
+                                          ( MaxSize_v<MT,0UL> != DefaultMaxSize_v &&
+                                            MaxSize_v<MT,1UL> != DefaultMaxSize_v ) ) > >
 {
-   static constexpr size_t N = max( Size_v<VT,0UL>, MaxSize_v<VT,0UL> );
+   static constexpr size_t M = max( Size_v<MT,0UL>, MaxSize_v<MT,0UL> );
+   static constexpr size_t N = max( Size_v<MT,1UL>, MaxSize_v<MT,1UL> );
 
-   using Type = HybridVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
+   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************
