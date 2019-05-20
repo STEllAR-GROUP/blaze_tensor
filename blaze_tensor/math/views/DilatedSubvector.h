@@ -1088,7 +1088,7 @@ inline decltype(auto)
 // This function returns an expression representing the specified dilatedsubvector of the given dilatedsubvector.
 */
 template< typename VT         // Type of the vector
-        , bool AF             // Alignment flag
+        , AlignmentFlag AF    // Alignment flag
         , bool TF             // Transpose flag
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time dilatedsubvector arguments
@@ -1101,15 +1101,15 @@ inline decltype(auto)
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( sv.offset() + index + size * dilation > sv.size() ) {
+      if( index + ( size - 1 ) * dilation + 1 > sv.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubvector specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( sv.offset() + index + size * dilation <= sv.size(), "Invalid dilatedsubvector specification" );
+      BLAZE_USER_ASSERT( index + ( size - 1 ) * dilation + 1 <= sv.size(), "Invalid dilatedsubvector specification" );
    }
 
-   return dilatedsubvector( sv.operand(), sv.offset() + index, size, dilation(), args... );
+   return dilatedsubvector( sv.operand(), sv.offset() + index, size, dilation, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1131,7 +1131,7 @@ inline decltype(auto)
 // dilatedsubvector.
 */
 template< typename VT         // Type of the vector
-        , bool AF             // Alignment flag
+        , AlignmentFlag AF    // Alignment flag
         , bool TF             // Transpose flag
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time dilatedsubvector arguments
@@ -1144,12 +1144,12 @@ inline decltype(auto)
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( sv.offset() + index + size * dilation > sv.size() ) {
+      if( index + ( size - 1 ) * dilation + 1 > sv.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubvector specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( sv.offset() + index + size * dilation <= sv.size(), "Invalid dilatedsubvector specification" );
+      BLAZE_USER_ASSERT( index + ( size - 1 ) * dilation + 1 <= sv.size(), "Invalid dilatedsubvector specification" );
    }
 
    return dilatedsubvector( sv.operand(), sv.offset() + index, size, dilation, args... );
@@ -1174,7 +1174,7 @@ inline decltype(auto)
 // dilatedsubvector.
 */
 template< typename VT         // Type of the vector
-        , bool AF             // Alignment flag
+        , AlignmentFlag AF    // Alignment flag
         , bool TF             // Transpose flag
         , bool DF             // Density flag
         , size_t... CSAs      // Compile time dilatedsubvector arguments
@@ -1187,12 +1187,13 @@ inline decltype(auto)
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if( sv.offset() + index + size * dilation > sv.size() ) {
+      if( index + ( size - 1 ) * dilation + 1 > sv.size() )
+      {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubvector specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( sv.offset() + index + size * dilation <= sv.size(), "Invalid dilatedsubvector specification" );
+      BLAZE_USER_ASSERT( index + ( size - 1 ) * dilation + 1 <= sv.size(), "Invalid dilatedsubvector specification" );
    }
 
    return dilatedsubvector( sv.operand(), sv.offset() + index, size, dilation, args... );

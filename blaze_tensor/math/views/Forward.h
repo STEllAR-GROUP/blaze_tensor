@@ -91,15 +91,15 @@ template< typename VT, bool TF, bool DF, size_t... CSAs, typename... RSAs >
 inline decltype(auto) dilatedsubvector( DilatedSubvector<VT,TF,DF,CSAs...>&& sv,
    size_t index, size_t size, size_t dilation, RSAs... args);
 
-template< typename VT, bool AF, bool TF, bool DF, size_t... CSAs, typename... RSAs >
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs, typename... RSAs >
 inline decltype(auto) dilatedsubvector( Subvector<VT,AF,TF,DF,CSAs...>& sv,
    size_t index, size_t size, size_t dilation, RSAs... args);
 
-template< typename VT, bool AF, bool TF, bool DF, size_t... CSAs, typename... RSAs >
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs, typename... RSAs >
 inline decltype(auto) dilatedsubvector( const Subvector<VT,AF,TF,DF,CSAs...>& sv,
    size_t index, size_t size, size_t dilation, RSAs... args);
 
-template< typename VT, bool AF, bool TF, bool DF, size_t... CSAs, typename... RSAs >
+template< typename VT, AlignmentFlag AF, bool TF, bool DF, size_t... CSAs, typename... RSAs >
 inline decltype(auto) dilatedsubvector( Subvector<VT,AF,TF,DF,CSAs...>&& sv,
    size_t index, size_t size, size_t dilation, RSAs... args);
 
