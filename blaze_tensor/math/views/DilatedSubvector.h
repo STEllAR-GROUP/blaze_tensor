@@ -1073,6 +1073,135 @@ inline decltype(auto)
 
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific dilatedsubvector of another dilatedsubvector.
+// \ingroup dilatedsubvector
+//
+// \param sv The given dilatedsubvector.
+// \param index The index of the first element of the dilatedsubvector.
+// \param size The size of the dilatedsubvector.
+// \param args The optional dilatedsubvector arguments.
+// \return View on the specified dilatedsubvector of the other dilatedsubvector.
+// \exception std::invalid_argument Invalid dilatedsubvector specification.
+//
+// This function returns an expression representing the specified dilatedsubvector of the given dilatedsubvector.
+*/
+template< typename VT         // Type of the vector
+        , AlignmentFlag AF    // Alignment flag
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time dilatedsubvector arguments
+        , typename... RSAs >  // Optional dilatedsubvector arguments
+inline decltype(auto)
+   dilatedsubvector( Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, size_t dilation, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( index + ( size - 1 ) * dilation + 1 > sv.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubvector specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index + ( size - 1 ) * dilation + 1 <= sv.size(), "Invalid dilatedsubvector specification" );
+   }
+
+   return dilatedsubvector( sv.operand(), sv.offset() + index, size, dilation, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific dilatedsubvector of another constant dilatedsubvector.
+// \ingroup dilatedsubvector
+//
+// \param sv The given constant dilatedsubvector.
+// \param index The index of the first element of the dilatedsubvector.
+// \param size The size of the dilatedsubvector.
+// \param args The optional dilatedsubvector arguments.
+// \return View on the specified dilatedsubvector of the other dilatedsubvector.
+// \exception std::invalid_argument Invalid dilatedsubvector specification.
+//
+// This function returns an expression representing the specified dilatedsubvector of the given constant
+// dilatedsubvector.
+*/
+template< typename VT         // Type of the vector
+        , AlignmentFlag AF    // Alignment flag
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time dilatedsubvector arguments
+        , typename... RSAs >  // Optional dilatedsubvector arguments
+inline decltype(auto)
+   dilatedsubvector( const Subvector<VT,AF,TF,DF,CSAs...>& sv, size_t index, size_t size, size_t dilation, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( index + ( size - 1 ) * dilation + 1 > sv.size() ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubvector specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index + ( size - 1 ) * dilation + 1 <= sv.size(), "Invalid dilatedsubvector specification" );
+   }
+
+   return dilatedsubvector( sv.operand(), sv.offset() + index, size, dilation, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific dilatedsubvector of another temporary dilatedsubvector.
+// \ingroup dilatedsubvector
+//
+// \param sv The given temporary dilatedsubvector.
+// \param index The index of the first element of the dilatedsubvector.
+// \param size The size of the dilatedsubvector.
+// \param args The optional dilatedsubvector arguments.
+// \return View on the specified dilatedsubvector of the other dilatedsubvector.
+// \exception std::invalid_argument Invalid dilatedsubvector specification.
+//
+// This function returns an expression representing the specified dilatedsubvector of the given temporary
+// dilatedsubvector.
+*/
+template< typename VT         // Type of the vector
+        , AlignmentFlag AF    // Alignment flag
+        , bool TF             // Transpose flag
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time dilatedsubvector arguments
+        , typename... RSAs >  // Optional dilatedsubvector arguments
+inline decltype(auto)
+   dilatedsubvector( Subvector<VT,AF,TF,DF,CSAs...>&& sv, size_t index, size_t size, size_t dilation, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( index + ( size - 1 ) * dilation + 1 > sv.size() )
+      {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubvector specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( index + ( size - 1 ) * dilation + 1 <= sv.size(), "Invalid dilatedsubvector specification" );
+   }
+
+   return dilatedsubvector( sv.operand(), sv.offset() + index, size, dilation, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
 
 //=================================================================================================
 //
