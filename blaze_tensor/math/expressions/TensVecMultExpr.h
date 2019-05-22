@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/DenseMatrix.h
-//  \brief Header file for all basic DenseMatrix functionality
+//  \file blaze/math/expressions/MatVecMultExpr.h
+//  \brief Header file for the MatVecMultExpr base class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,33 +34,43 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSETENSOR_H_
-#define _BLAZE_TENSOR_MATH_DENSETENSOR_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSVECMULTEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSVECMULTEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/DenseMatrix.h>
+#include <blaze/math/expressions/MultExpr.h>
 
-#include <blaze_tensor/math/Tensor.h>
-#include <blaze_tensor/math/dense/DenseTensor.h>
-#include <blaze_tensor/math/expressions/DMatExpandExpr.h>
-#include <blaze_tensor/math/expressions/DMatRavelExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
-#include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
-#include <blaze_tensor/math/expressions/DTensDVecMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensMapExpr.h>
-#include <blaze_tensor/math/expressions/DTensRavelExpr.h>
-#include <blaze_tensor/math/expressions/DTensScalarDivExpr.h>
-#include <blaze_tensor/math/expressions/DTensScalarMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensSerialExpr.h>
-#include <blaze_tensor/math/expressions/DTensTransExpr.h>
-#include <blaze_tensor/math/expressions/DenseTensor.h>
-#include <blaze_tensor/math/smp/DenseTensor.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  CLASS DEFINITION
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Base class for all matrix/vector multiplication expression templates.
+// \ingroup math
+//
+// The MatVecMultExpr class serves as a tag for all expression templates that implement a
+// matrix/vector multiplication. All classes, that represent a matrix/vector multiplication
+// and that are used within the expression template environment of the Blaze library have
+// to derive publicly from this class in order to qualify as matrix/vector multiplication
+// expression template. Only in case a class is derived publicly from the MatVecMultExpr
+// base class, the IsMatVecMultExpr type trait recognizes the class as valid matrix/vector
+// multiplication expression template.
+*/
+template< typename VT >  // Vector base type of the expression
+struct TensVecMultExpr
+   : public MultExpr<VT>
+{};
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

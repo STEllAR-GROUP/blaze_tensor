@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/UniformMatrix.h
-//  \brief Header file for the implementation of a uniform matrix
+//  \file blaze/math/constraints/MatVecMultExpr.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
@@ -34,42 +34,37 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_UNIFORMMATRIX_H_
-#define _BLAZE_TENSOR_MATH_DENSE_UNIFORMMATRIX_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSVECMULTEXPR_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSVECMULTEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/UniformMatrix.h>
-#include <blaze/math/dense/UniformVector.h>
-#include <blaze/math/traits/ExpandTrait.h>
-
-#include <blaze_tensor/math/dense/Forward.h>
-#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
-#include <blaze_tensor/math/traits/RavelTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze_tensor/math/typetraits/IsTensor.h>
+#include <blaze_tensor/math/typetraits/IsTensVecMultExpr.h>
+#include <blaze/math/typetraits/Size.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  EXPANDTRAIT SPECIALIZATIONS
+//  MUST_BE_MATVECMULTEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T  // Type to be expanded
-        , size_t E >  // Compile time expansion
-struct ExpandTraitEval1< T, E
-                       , EnableIf_t< IsMatrix_v<T> && IsRowMajorMatrix_v<T> &&
-                                     IsUniform_v<T> && !IsZero_v<T> > >
-{
-   using Type = UniformTensor< ElementType_t<T> >;
-};
-/*! \endcond */
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a matrix/vector multiplication expression (i.e. a type
+// derived from the MatVecMultExpr base class), a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_TENSVECMULTEXPR_TYPE(T) \
+   static_assert( ::blaze::IsTensVecMultExpr_v<T>, "Non-tensor/vector multiplication expression type detected" )
 //*************************************************************************************************
 
 
@@ -77,37 +72,19 @@ struct ExpandTraitEval1< T, E
 
 //=================================================================================================
 //
-//  RAVELTRAIT SPECIALIZATIONS
+//  MUST_NOT_BE_TENSVECMULTEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct RavelTraitEval1< T
-                    , EnableIf_t< IsDenseMatrix_v<T> && IsUniform_v<T> && !IsZero_v<T> > >
-{
-   using Type = UniformVector< ElementType_t<T>, rowVector >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//=================================================================================================
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
 //
-//  DILATEDSUBMATRIXTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation >
-struct DilatedSubmatrixTraitEval1< MT, I, J, M, N, RowDilation, ColumnDilation
-                          , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
-{
-   using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
-};
-/*! \endcond */
+// In case the given data type \a T is a matrix/vector multiplication expression (i.e. a type
+// derived from the MatVecMultExpr base class), a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_TENSVECMULTEXPR_TYPE(T) \
+   static_assert( !::blaze::IsTensVecMultExpr_v<T>, "Tensor/vector multiplication expression type detected" )
 //*************************************************************************************************
 
 
@@ -115,29 +92,24 @@ struct DilatedSubmatrixTraitEval1< MT, I, J, M, N, RowDilation, ColumnDilation
 
 //=================================================================================================
 //
-//  MULTTRAIT SPECIALIZATIONS
+//  MUST_FORM_VALID_TENSVECMULTEXPR CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2 >
-struct MultTraitEval2< T1, T2
-                     , EnableIf_t< IsTensor_v<T1> &&
-                                   IsColumnVector_v<T2> &&
-                                   IsUniform_v<T1> &&
-                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
-{
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t M = ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> );
-   static constexpr size_t N = ( Size_v<T1,1UL> != DefaultSize_v ? Size_v<T1,1UL> : Size_v<T2,0UL> );
-
-   using Type = UniformMatrix< MultTrait_t<ET1,ET2>, true >;
-};
-
-/*! \endcond */
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data types \a T1 and \a T2 do not form a valid matrix/vector multiplication,
+// a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSVECMULTEXPR(T1,T2) \
+   static_assert( ::blaze::IsTensor_v<T1> && \
+                  ::blaze::IsColumnVector_v<T2> && \
+                  ( ( ::blaze::Size_v<T1,2UL> == -1L ) || \
+                    ( ::blaze::Size_v<T2,0UL> == -1L ) || \
+                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,0UL> ) ) \
+                , "Invalid Tensor/vector multiplication expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

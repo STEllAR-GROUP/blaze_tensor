@@ -1,11 +1,9 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/UniformMatrix.h
-//  \brief Header file for the implementation of a uniform matrix
+//  \file blaze/math/typetraits/IsMatVecMultExpr.h
+//  \brief Header file for the IsMatVecMultExpr type trait class
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
-//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -34,110 +32,106 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_UNIFORMMATRIX_H_
-#define _BLAZE_TENSOR_MATH_DENSE_UNIFORMMATRIX_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSVECMULTEXPR_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSVECMULTEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/UniformMatrix.h>
-#include <blaze/math/dense/UniformVector.h>
-#include <blaze/math/traits/ExpandTrait.h>
-
-#include <blaze_tensor/math/dense/Forward.h>
-#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
-#include <blaze_tensor/math/traits/RavelTrait.h>
+#include <blaze_tensor/math/expressions/TensVecMultExpr.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  EXPANDTRAIT SPECIALIZATIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T  // Type to be expanded
-        , size_t E >  // Compile time expansion
-struct ExpandTraitEval1< T, E
-                       , EnableIf_t< IsMatrix_v<T> && IsRowMajorMatrix_v<T> &&
-                                     IsUniform_v<T> && !IsZero_v<T> > >
-{
-   using Type = UniformTensor< ElementType_t<T> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  RAVELTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
+/*!\brief Auxiliary helper struct for the IsMatVecMultExpr type trait.
+// \ingroup math_type_traits
+*/
 template< typename T >
-struct RavelTraitEval1< T
-                    , EnableIf_t< IsDenseMatrix_v<T> && IsUniform_v<T> && !IsZero_v<T> > >
+struct IsTensVecMultExprHelper
 {
-   using Type = UniformVector< ElementType_t<T>, rowVector >;
+ private:
+   //**********************************************************************************************
+   static T* create();
+
+   template< typename VT >
+   static TrueType test( const TensVecMultExpr<VT>* );
+
+   //template< typename TT >
+   //static TrueType test( const volatile TensTransExpr<TT>* );
+
+   static FalseType test( ... );
+   //**********************************************************************************************
+
+ public:
+   //**********************************************************************************************
+   using Type = decltype( test( create() ) );
+   //**********************************************************************************************
 };
 /*! \endcond */
 //*************************************************************************************************
 
 
-//=================================================================================================
+//*************************************************************************************************
+/*!\brief Compile time check whether the given type is a matrix/vector multiplication expression
+//        template.
+// \ingroup math_type_traits
 //
-//  DILATEDSUBMATRIXTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
+// This type trait class tests whether or not the given type \a Type is a matrix/vector
+// multiplication expression template. In order to qualify as a valid matrix/vector
+// multiplication expression template, the given type has to derive publicly from the
+// MatVecMultExpr base class. In case the given type is a valid matrix/vector multiplication
+// expression template, the \a value member constant is set to \a true, the nested type
+// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise
+// \a value is set to \a false, \a Type is \a FalseType, and the class derives from
+// \a FalseType.
+*/
+template< typename T >
+struct IsTensVecMultExpr
+   : public IsTensVecMultExprHelper<T>::Type
+{};
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation >
-struct DilatedSubmatrixTraitEval1< MT, I, J, M, N, RowDilation, ColumnDilation
-                          , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
-{
-   using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
-};
+/*!\brief Specialization of the IsMatVecMultExpr type trait for references.
+// \ingroup math_type_traits
+*/
+template< typename T >
+struct IsTensVecMultExpr<T&>
+   : public FalseType
+{};
 /*! \endcond */
 //*************************************************************************************************
 
 
-
-
-//=================================================================================================
-//
-//  MULTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2 >
-struct MultTraitEval2< T1, T2
-                     , EnableIf_t< IsTensor_v<T1> &&
-                                   IsColumnVector_v<T2> &&
-                                   IsUniform_v<T1> &&
-                                   !( IsZero_v<T1> || IsZero_v<T2> ) > >
-{
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+/*!\brief Auxiliary variable template for the IsMatVecMultExpr type trait.
+// \ingroup type_traits
+//
+// The IsMatVecMultExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsMatVecMultExpr class template. For instance, given the type \a T the
+// following two statements are identical:
 
-   static constexpr size_t M = ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> );
-   static constexpr size_t N = ( Size_v<T1,1UL> != DefaultSize_v ? Size_v<T1,1UL> : Size_v<T2,0UL> );
-
-   using Type = UniformMatrix< MultTrait_t<ET1,ET2>, true >;
-};
-
-/*! \endcond */
+   \code
+   constexpr bool value1 = blaze::IsMatVecMultExpr<T>::value;
+   constexpr bool value2 = blaze::IsMatVecMultExpr_v<T>;
+   \endcode
+*/
+template< typename T >
+constexpr bool IsTensVecMultExpr_v = IsTensVecMultExpr<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze
