@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/tensh/expressions/DTensDVecMultExpr.h
+//  \file blaze_tensor/math/expressions/DTensDVecMultExpr.h
 //  \brief Header file for the dense tensor/dense vector multiplication expression
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
@@ -15,7 +15,7 @@
 //  1. Redistributions of source code must retain the above copyright notice, this list of
 //     conditions and the following disclaimer.
 //  2. Redistributions in binary form must reproduce the above copyright notice, this list
-//     of conditions and the following disclaimer in the documentation and/or other tenserials
+//     of conditions and the following disclaimer in the documentation and/or other materials
 //     provided with the distribution.
 //  3. Neither the names of the Blaze development group nor the names of its contributors
 //     may be used to endorse or promote products derived from this software without specific
@@ -46,15 +46,16 @@
 #include <blaze/math/blas/trmv.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/constraints/ColumnVector.h>
+#include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
 //#include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
-//#include <blaze/math/constraints/RowMajorTensor.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
-//#include <blaze/math/expressions/MatMatMultExpr.h>
+#include <blaze/math/expressions/MatMatMultExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
@@ -70,13 +71,8 @@
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsExpression.h>
-//#include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsSIMDCombinable.h>
-//#include <blaze/math/typetraits/IsStrictlyLower.h>
-//#include <blaze/math/typetraits/IsStrictlyUpper.h>
-//#include <blaze/math/typetraits/IsTriangular.h>
-//#include <blaze/math/typetraits/IsUpper.h>
 #include <blaze/math/typetraits/RequiresEvaluation.h>
 #include <blaze/math/views/Check.h>
 #include <blaze/system/BLAS.h>
@@ -102,8 +98,12 @@
 #include <blaze_tensor/config/BLAS.h>
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/constraints/TensVecMultExpr.h>
-#include <blaze_tensor/math/expressions/DTensDVecMultExpr.h>
+#include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/expressions/TensVecMultExpr.h>
+#include <blaze_tensor/math/traits/MultTrait.h>
+#include <blaze_tensor/math/views/PageSlice.h>
+#include <blaze_tensor/math/views/RowSlice.h>
+#include <blaze_tensor/math/views/Subtensor.h>
 #include <blaze_tensor/system/Thresholds.h>
 
 namespace blaze {
@@ -124,7 +124,7 @@ namespace blaze {
 template< typename TT    // Type of the left-hand side dense tensor
         , typename VT >  // Type of the right-hand side dense vector
 class DTensDVecMultExpr
-   : public TensVecMultExpr< DenseVector< DTensDVecMultExpr<TT,VT>, false > >
+   : public TensVecMultExpr< DenseMatrix< DTensDVecMultExpr<TT,VT>, false > >
    , private Computation
 {
  private:
@@ -202,8 +202,8 @@ class DTensDVecMultExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DTensDVecMultExpr<TT,VT>;      //!< Type of this DTensDVecMultExpr instance.
-   using BaseType      = DenseVector<This,false>;      //!< Base type of this DTensDVecMultExpr instance.
+   using This          = DTensDVecMultExpr<TT,VT>;     //!< Type of this DTensDVecMultExpr instance.
+   using BaseType      = DenseMatrix<This,false>;       //!< Base type of this DTensDVecMultExpr instance.
    using ResultType    = MultTrait_t<TRT,VRT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
@@ -239,7 +239,7 @@ class DTensDVecMultExpr
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
+   //static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -257,7 +257,7 @@ class DTensDVecMultExpr
    //**********************************************************************************************
 
    //**Subscript operator**************************************************************************
-   /*!\brief Subscript operator for the direct access to the vector elements.
+   /*!\brief Subscript operator for the direct access to the matrix elements.
    //
    // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
@@ -266,7 +266,7 @@ class DTensDVecMultExpr
       BLAZE_INTERNAL_ASSERT( i < tens_.pages(), "Invalid row access index" );
       BLAZE_INTERNAL_ASSERT( j < tens_.rows() , "Invalid column access index" );
 
-      return pageslice( tens_, index, unchecked ) * vec_;
+      return row( pageslice( tens_, i, unchecked), j, unchecked ) * vec_;
    }
    //**********************************************************************************************
 
@@ -278,7 +278,7 @@ class DTensDVecMultExpr
    // \exception std::out_of_range Invalid vector access index.
    */
    inline ReturnType at( size_t i, size_t j ) const {
-      if( j >= tens_.pages() ) {
+      if( i >= tens_.pages() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
       }
       if( j >= tens_.rows() ) {
@@ -385,7 +385,7 @@ class DTensDVecMultExpr
 
    //**Assignment to dense vectors*****************************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Assignment of a dense tensor-dense vector multiplication to a dense row-major matrix
+   /*!\brief Assignment of a dense tensor-dense vector multiplication to a dense column-major matrix
    //        (\f$ \vec{y}=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -397,7 +397,7 @@ class DTensDVecMultExpr
    // vector multiplication expression to a dense vector.
    */
    template< typename MT1 >  // Type of the target dense vector
-   friend inline void assign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
+   friend inline void assign( DenseMatrix<MT1,false>& lhs, const DTensDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1084,7 +1084,7 @@ class DTensDVecMultExpr
    // dense vector multiplication expression to a dense vector.
    */
    template< typename MT1 >  // Type of the target dense matrix
-   friend inline void addAssign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
+   friend inline void addAssign( DenseMatrix<MT1,false>& lhs, const DTensDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1740,7 +1740,7 @@ class DTensDVecMultExpr
    // dense vector multiplication expression to a dense vector.
    */
    template< typename MT1 >  // Type of the target dense matrix
-   friend inline void subAssign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
+   friend inline void subAssign( DenseMatrix<MT1,false>& lhs, const DTensDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -2382,9 +2382,9 @@ class DTensDVecMultExpr
    // No special implementation for the subtraction assignment to sparse vectors.
    //**********************************************************************************************
 
-   //**Multiplication assignment to dense vectors**************************************************
+   //**Schur assignment to dense vectors**************************************************
    /*! \cond BLAZE_INTERNAL */
-   /*!\brief Multiplication assignment of a dense tensor-dense vector multiplication to a dense vector
+   /*!\brief Multiplication assignment of a dense tensor-dense vector multiplication to a dense matrix
    //        (\f$ \vec{y}*=A*\vec{x} \f$).
    // \ingroup dense_vector
    //
@@ -2395,59 +2395,23 @@ class DTensDVecMultExpr
    // This function implements the performance optimized multiplication assignment of a dense
    // tensor-dense vector multiplication expression to a dense vector.
    */
-   template< typename MT1 >  // Type of the target dense matrix
-   friend inline void multAssign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
+   template< typename MT1  // Type of the target dense matrix
+              , bool SO >    // Storage order of the target dense matrix
+   friend inline void schurAssign( DenseMatrix<MT1,false>& lhs, const DTensDVecMultExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
-      //BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      multAssign( ~lhs, tmp );
+      schurAssign( ~lhs, tmp );
    }
    /*! \endcond */
-   //**********************************************************************************************
-
-   //**Multiplication assignment to sparse vectors*************************************************
-   // No special implementation for the multiplication assignment to sparse vectors.
-   //**********************************************************************************************
-
-   //**Division assignment to dense vectors********************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief Division assignment of a dense tensor-dense vector multiplication to a dense vector
-   //        (\f$ \vec{y}/=A*\vec{x} \f$).
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side multiplication expression divisor.
-   // \return void
-   //
-   // This function implements the performance optimized division assignment of a dense tensor-
-   // dense vector multiplication expression to a dense vector.
-   */
-   template< typename MT1 >  // Type of the target dense matrix
-   friend inline void divAssign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
-      //BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-
-      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()) , "Invalid matrix sizes" );
-
-      const ResultType tmp( serial( rhs ) );
-      divAssign( ~lhs, tmp );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**Division assignment to sparse vectors*******************************************************
-   // No special implementation for the division assignment to sparse vectors.
    //**********************************************************************************************
 
    //**SMP assignment to dense vectors*************************************************************
@@ -2466,7 +2430,7 @@ class DTensDVecMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT1 >  // Type of the target dense matrix
-   friend inline auto smpAssign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
+   friend inline auto smpAssign( DenseMatrix<MT1,false>& lhs, const DTensDVecMultExpr& rhs )
       -> EnableIf_t< UseSMPAssign_v<MT1> >
    {
       BLAZE_FUNCTION_TRACE;
@@ -2545,7 +2509,7 @@ class DTensDVecMultExpr
    // expression specific parallel evaluation strategy is selected.
    */
    template< typename MT1 >  // Type of the target dense matrix
-   friend inline auto smpAddAssign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
+   friend inline auto smpAddAssign( DenseMatrix<MT1,false>& lhs, const DTensDVecMultExpr& rhs )
       -> EnableIf_t< UseSMPAssign_v<MT1> >
    {
       BLAZE_FUNCTION_TRACE;
@@ -2591,7 +2555,7 @@ class DTensDVecMultExpr
    // in case the expression specific parallel evaluation strategy is selected.
    */
    template< typename MT1 >  // Type of the target dense matrix
-   friend inline auto smpSubAssign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
+   friend inline auto smpSubAssign( DenseMatrix<MT1,false>& lhs, const DTensDVecMultExpr& rhs )
       -> EnableIf_t< UseSMPAssign_v<MT1> >
    {
       BLAZE_FUNCTION_TRACE;
@@ -2636,20 +2600,22 @@ class DTensDVecMultExpr
    // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
-   template< typename MT1 >  // Type of the target dense matrix
-   friend inline auto smpMultAssign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
+   template< typename MT1   // Type of the target dense matrix
+             , bool SO >    // Storage order of the target dense matrix
+   friend inline auto smpSchurAssign( DenseMatrix<MT1,false>& lhs, const DTensDVecMultExpr& rhs )
       -> EnableIf_t< UseSMPAssign_v<MT1> >
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
-      //BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpMultAssign( ~lhs, tmp );
+      smpSchurAssign( ~lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2658,49 +2624,12 @@ class DTensDVecMultExpr
    // No special implementation for the SMP multiplication assignment to sparse vectors.
    //**********************************************************************************************
 
-   //**SMP division assignment to dense vectors****************************************************
-   /*! \cond BLAZE_INTERNAL */
-   /*!\brief SMP division assignment of a dense tensor-dense vector multiplication to a dense
-   //        vector (\f$ \vec{y}/=A*\vec{x} \f$).
-   // \ingroup dense_vector
-   //
-   // \param lhs The target left-hand side dense vector.
-   // \param rhs The right-hand side multiplication expression divisor.
-   // \return void
-   //
-   // This function implements the performance optimized SMP division assignment of a dense
-   // tensor-dense vector multiplication expression to a dense vector. Due to the explicit
-   // application of the SFINAE principle, this function can only be selected by the compiler
-   // in case the expression specific parallel evaluation strategy is selected.
-   */
-   template< typename MT1 >  // Type of the target dense vector
-   friend inline auto smpDivAssign( DenseMatrix<MT1,true>& lhs, const DTensDVecMultExpr& rhs )
-      -> EnableIf_t< UseSMPAssign_v<MT1> >
-   {
-      BLAZE_FUNCTION_TRACE;
-
-      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
-      //BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-
-      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
-
-      const ResultType tmp( rhs );
-      smpDivAssign( ~lhs, tmp );
-   }
-   /*! \endcond */
-   //**********************************************************************************************
-
-   //**SMP division assignment to sparse vectors***************************************************
-   // No special implementation for the SMP division assignment to sparse vectors.
-   //**********************************************************************************************
-
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( TT );
-   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( TT );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT );
-   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE      ( TT );
+   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_TENSOR_TYPE  ( TT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE      ( VT );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE     ( VT );
    BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSVECMULTEXPR( TT, VT );
    /*! \endcond */
    //**********************************************************************************************
@@ -5309,7 +5238,7 @@ class DTensDVecMultExpr
 
 //=================================================================================================
 //
-//  GLOBAL BINARY ARITHTETIC OPERATORS
+//  GLOBAL BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
 
@@ -5321,7 +5250,7 @@ class DTensDVecMultExpr
 // \param tens The left-hand side row-major dense tensor for the multiplication.
 // \param vec The right-hand side dense vector for the multiplication.
 // \return The resulting vector.
-// \exception std::invalid_argument Tensor and vector sizes do not tensch.
+// \exception std::invalid_argument Tensor and vector sizes do not match.
 //
 // This operator represents the multiplication between a row-major dense tensor and a dense vector:
 
@@ -5340,7 +5269,7 @@ class DTensDVecMultExpr
 // dense tensor type \a TT and the dense vector type \a VT as well as the two element types
 // \a TT::ElementType and \a VT::ElementType have to be supported by the MultTrait class
 // template.\n
-// In case the current size of the vector \a vec doesn't tensch the current number of columns
+// In case the current size of the vector \a vec doesn't match the current number of columns
 // of the tensor \a tens, a \a std::invalid_argument is thrown.
 */
 template< typename TT    // Type of the left-hand side dense tensor

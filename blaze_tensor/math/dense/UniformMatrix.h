@@ -45,10 +45,15 @@
 #include <blaze/math/dense/UniformMatrix.h>
 #include <blaze/math/dense/UniformVector.h>
 #include <blaze/math/traits/ExpandTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
 
 #include <blaze_tensor/math/dense/Forward.h>
 #include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
+#include <blaze_tensor/math/traits/MultTrait.h>
 #include <blaze_tensor/math/traits/RavelTrait.h>
+#include <blaze_tensor/math/typetraits/IsDenseTensor.h>
+#include <blaze_tensor/math/typetraits/IsTensor.h>
 
 
 namespace blaze {
@@ -131,10 +136,7 @@ struct MultTraitEval2< T1, T2
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;
 
-   static constexpr size_t M = ( Size_v<T1,0UL> != DefaultSize_v ? Size_v<T1,0UL> : Size_v<T2,0UL> );
-   static constexpr size_t N = ( Size_v<T1,1UL> != DefaultSize_v ? Size_v<T1,1UL> : Size_v<T2,0UL> );
-
-   using Type = UniformMatrix< MultTrait_t<ET1,ET2>, true >;
+   using Type = UniformMatrix< MultTrait_t<ET1,ET2>, false >;
 };
 
 /*! \endcond */

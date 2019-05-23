@@ -1,9 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsMatVecMultExpr.h
-//  \brief Header file for the IsMatVecMultExpr type trait class
+//  \file blaze_tensor/math/typetraits/IsTensVecMultExpr.h
+//  \brief Header file for the IsTensVecMultExpr type trait class
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -41,6 +43,7 @@
 //*************************************************************************************************
 
 #include <blaze_tensor/math/expressions/TensVecMultExpr.h>
+#include <blaze_tensor/math/expressions/TensTransExpr.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
 
@@ -68,8 +71,8 @@ struct IsTensVecMultExprHelper
    template< typename VT >
    static TrueType test( const TensVecMultExpr<VT>* );
 
-   //template< typename TT >
-   //static TrueType test( const volatile TensTransExpr<TT>* );
+   template< typename TT >
+   static TrueType test( const volatile TensTransExpr<TT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************

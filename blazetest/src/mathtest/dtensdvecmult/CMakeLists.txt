@@ -35,6 +35,12 @@ set(category DTensDVecMult)
 
 set(tests
     AliasingTest
+    T2x3x4aV4a
+    T2x3x4aV4b
+    T2x3x4aVDa
+    T2x3x4aVDb
+    TDaV4a
+    TDaV4b
 )
 
 foreach(test ${tests})

@@ -1,9 +1,9 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/expressions/MatVecMultExpr.h
-//  \brief Header file for the MatVecMultExpr base class
+//  \file src/mathtest/dtensdvecmult/T2x3x4aVDa.cpp
+//  \brief Source file for the T2x3x4aVDa dense tensor/dense vector multiplication math test
 //
-//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
@@ -34,43 +34,60 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSVECMULTEXPR_H_
-#define _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSVECMULTEXPR_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/expressions/MultExpr.h>
+#include <cstdlib>
+#include <iostream>
+#include <blaze/math/DynamicVector.h>
+#include <blazetest/mathtest/creator/StaticTensor.h>
+#include <blazetest/mathtest/dtensdvecmult/OperationTest.h>
+#include <blazetest/system/MathTest.h>
 
+#include <blaze_tensor/math/dense/DynamicMatrix.h>
+#include <blaze_tensor/math/dense/DynamicVector.h>
+#include <blaze_tensor/math/StaticTensor.h>
 
-namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DEFINITION
+//  MAIN FUNCTION
 //
 //=================================================================================================
 
-//*************************************************************************************************
-/*!\brief Base class for all matrix/vector multiplication expression templates.
-// \ingroup math
-//
-// The MatVecMultExpr class serves as a tag for all expression templates that implement a
-// matrix/vector multiplication. All classes, that represent a matrix/vector multiplication
-// and that are used within the expression template environment of the Blaze library have
-// to derive publicly from this class in order to qualify as matrix/vector multiplication
-// expression template. Only in case a class is derived publicly from the MatVecMultExpr
-// base class, the IsMatVecMultExpr type trait recognizes the class as valid matrix/vector
-// multiplication expression template.
-*/
-template< typename MT >  // Matrix base type of the expression
-struct TensVecMultExpr
-   : public MultExpr<MT>
-{};
-//*************************************************************************************************
-
-} // namespace blaze
-
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
 #endif
+
+//*************************************************************************************************
+int main()
+
+{
+   std::cout << "   Running 'T2x3x4aVDa'..." << std::endl;
+
+   using blazetest::mathtest::TypeA;
+
+   try
+   {
+      // Tensor type definitions
+      using T2x3x4a = blaze::StaticTensor<TypeA,2UL,3UL,4UL>;
+      using VDa     = blaze::DynamicVector<TypeA>;
+
+      // Creator type definitions
+      using CT2x3x4a = blazetest::Creator<T2x3x4a>;
+      using CVDa     = blazetest::Creator<VDa>;
+
+      // Running the tests
+      RUN_DTENSDVECMULT_OPERATION_TEST( CT2x3x4a(), CVDa( 4UL ) );
+   }
+   catch( std::exception& ex ) {
+      std::cerr << "\n\n ERROR DETECTED during dense tensor/dense vector multiplication:\n"
+                << ex.what() << "\n";
+      return EXIT_FAILURE;
+   }
+
+   return EXIT_SUCCESS;
+}
+//*************************************************************************************************
