@@ -43,10 +43,55 @@
 //*************************************************************************************************
 
 #include <blaze/math/dense/UniformMatrix.h>
+#include <blaze/math/dense/UniformVector.h>
+#include <blaze/math/traits/ExpandTrait.h>
+
+#include <blaze_tensor/math/dense/Forward.h>
 #include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
+#include <blaze_tensor/math/traits/RavelTrait.h>
 
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  EXPANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T  // Type to be expanded
+        , size_t E >  // Compile time expansion
+struct ExpandTraitEval1< T, E
+                       , EnableIf_t< IsMatrix_v<T> && IsRowMajorMatrix_v<T> &&
+                                     IsUniform_v<T> && !IsZero_v<T> > >
+{
+   using Type = UniformTensor< ElementType_t<T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  RAVELTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T >
+struct RavelTraitEval1< T
+                    , EnableIf_t< IsDenseMatrix_v<T> && IsUniform_v<T> && !IsZero_v<T> > >
+{
+   using Type = UniformVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //=================================================================================================
 //
@@ -64,6 +109,7 @@ struct DilatedSubmatrixTraitEval1< MT, I, J, M, N, RowDilation, ColumnDilation
 };
 /*! \endcond */
 //*************************************************************************************************
+
 
 } // namespace blaze
 

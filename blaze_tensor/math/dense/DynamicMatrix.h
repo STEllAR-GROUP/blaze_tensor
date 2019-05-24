@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -42,10 +43,54 @@
 //*************************************************************************************************
 
 #include <blaze/math/dense/DynamicMatrix.h>
-#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
+#include <blaze/math/traits/ExpandTrait.h>
 
+#include <blaze_tensor/math/dense/Forward.h>
+#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
+#include <blaze_tensor/math/traits/RavelTrait.h>
 
 namespace blaze {
+
+//=================================================================================================
+//
+//  EXPANDTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T  // Type to be expanded
+        , size_t E >  // Compile time expansion
+struct ExpandTraitEval2< T, E
+                       , EnableIf_t< IsDenseMatrix_v<T> &&
+                                     ( ( E == inf ) ||
+                                       ( ( Size_v<T,0UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,0UL> == DefaultMaxSize_v ) &&
+                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,1UL> == DefaultMaxSize_v ) ) ) > >
+{
+   using Type = DynamicTensor< ElementType_t<T> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T > // Type to be expanded
+struct RavelTraitEval2< T
+                       , EnableIf_t< IsDenseMatrix_v<T> &&
+                                     ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,0UL> == DefaultMaxSize_v ) &&
+                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,1UL> == DefaultMaxSize_v ) ) ) > >
+{
+   using Type = DynamicVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
 
 
 //=================================================================================================
@@ -68,6 +113,7 @@ struct DilatedSubmatrixTraitEval2< MT, inf, inf, inf, inf, inf, inf
 };
 /*! \endcond */
 //*************************************************************************************************
+
 
 } // namespace blaze
 
