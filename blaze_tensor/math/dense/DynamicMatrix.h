@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -45,6 +46,7 @@
 #include <blaze/math/traits/ExpandTrait.h>
 
 #include <blaze_tensor/math/dense/Forward.h>
+#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
 #include <blaze_tensor/math/traits/RavelTrait.h>
 
 namespace blaze {
@@ -86,6 +88,28 @@ struct RavelTraitEval2< T
                                          ( MaxSize_v<T,1UL> == DefaultMaxSize_v ) ) ) > >
 {
    using Type = DynamicVector< ElementType_t<T>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+//=================================================================================================
+//
+//  DILATEDSUBMATRIXTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT >
+struct DilatedSubmatrixTraitEval2< MT, inf, inf, inf, inf, inf, inf
+                          , EnableIf_t< IsDenseMatrix_v<MT> &&
+                                        ( Size_v<MT,0UL> == DefaultSize_v ||
+                                          Size_v<MT,1UL> == DefaultSize_v ) &&
+                                        ( MaxSize_v<MT,0UL> == DefaultMaxSize_v ||
+                                          MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
+{
+   using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
 };
 /*! \endcond */
 //*************************************************************************************************

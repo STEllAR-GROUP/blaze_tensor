@@ -1,11 +1,10 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/UniformMatrix.h
-//  \brief Header file for the implementation of a uniform matrix
+//  \file blaze_tensor/math/constraints/DilatedSubmatrix.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
-//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -34,42 +33,34 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_UNIFORMMATRIX_H_
-#define _BLAZE_TENSOR_MATH_DENSE_UNIFORMMATRIX_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_DILATEDSUBMATRIX_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_DILATEDSUBMATRIX_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/UniformMatrix.h>
-#include <blaze/math/dense/UniformVector.h>
-#include <blaze/math/traits/ExpandTrait.h>
-
-#include <blaze_tensor/math/dense/Forward.h>
-#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
-#include <blaze_tensor/math/traits/RavelTrait.h>
+#include <blaze_tensor/math/typetraits/IsDilatedSubmatrix.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  EXPANDTRAIT SPECIALIZATIONS
+//  MUST_BE_DILATEDSUBMATRIX_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T  // Type to be expanded
-        , size_t E >  // Compile time expansion
-struct ExpandTraitEval1< T, E
-                       , EnableIf_t< IsMatrix_v<T> && IsRowMajorMatrix_v<T> &&
-                                     IsUniform_v<T> && !IsZero_v<T> > >
-{
-   using Type = UniformTensor< ElementType_t<T> >;
-};
-/*! \endcond */
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a dilatedsubmatrix type (i.e. a dense or sparse dilatedsubmatrix),
+// a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_DILATEDSUBMATRIX_TYPE(T) \
+   static_assert( ::blaze::IsDilatedSubmatrix_v<T>, "Non-dilatedsubmatrix type detected" )
 //*************************************************************************************************
 
 
@@ -77,39 +68,20 @@ struct ExpandTraitEval1< T, E
 
 //=================================================================================================
 //
-//  RAVELTRAIT SPECIALIZATIONS
+//  MUST_NOT_BE_SUBMATRIX_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T >
-struct RavelTraitEval1< T
-                    , EnableIf_t< IsDenseMatrix_v<T> && IsUniform_v<T> && !IsZero_v<T> > >
-{
-   using Type = UniformVector< ElementType_t<T>, rowVector >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-//=================================================================================================
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
 //
-//  DILATEDSUBMATRIXTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
+// In case the given data type \a T is a dilatedsubmatrix type (i.e. a dense or sparse dilatedsubmatrix), a
+// compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_DILATEDSUBMATRIX_TYPE(T) \
+   static_assert( !::blaze::IsDilatedSubmatrix_v<T>, "DilatedSubmatrix type detected" )
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT, size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation >
-struct DilatedSubmatrixTraitEval1< MT, I, J, M, N, RowDilation, ColumnDilation
-                          , EnableIf_t< IsUniform_v<MT> && !IsZero_v<MT> > >
-{
-   using Type = UniformMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 } // namespace blaze
 

@@ -5,6 +5,7 @@
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -46,6 +47,7 @@
 #include <blaze/math/traits/ExpandTrait.h>
 
 #include <blaze_tensor/math/dense/Forward.h>
+#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
 #include <blaze_tensor/math/traits/RavelTrait.h>
 
 
@@ -103,6 +105,23 @@ struct RavelTraitEval2< T
 //*************************************************************************************************
 
 
+//=================================================================================================
+//
+//  DILATEDSUBMATRIXTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename MT, size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation >
+struct DilatedSubmatrixTraitEval2< MT, I, J, M, N, RowDilation, ColumnDilation
+                          , EnableIf_t< I != inf && J != inf && M != inf && N != inf && RowDilation != inf
+                                       && ColumnDilation != inf && IsDenseMatrix_v<MT> > >
+{
+   using Type = StaticMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;
+};
+/*! \endcond */
+//*************************************************************************************************
 
 
 } // namespace blaze

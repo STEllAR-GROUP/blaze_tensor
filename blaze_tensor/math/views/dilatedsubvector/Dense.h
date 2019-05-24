@@ -183,7 +183,7 @@ class DilatedSubvector<VT,TF,true,CSAs...>
       */
       inline DilatedSubvectorIterator()
          : iterator_ (       )   // Iterator to the current dilatedsubvector element
-         , dilation_ ( 0     )   // step-size of the underlying dilated subvector
+         , dilation_ ( 1     )   // step-size of the underlying dilated subvector
       {}
       //*******************************************************************************************
 
@@ -618,12 +618,14 @@ inline DilatedSubvector<VT,TF,true,CSAs...>::DilatedSubvector( VT& vector, RSAs.
    , vector_   ( vector  )  // The vector containing the dilatedsubvector
 {
    if( !Contains_v< TypeList<RSAs...>, Unchecked > ) {
-      if( offset() + size()*dilation() > vector.size() ) {
+      if( offset() + ( size() - 1 ) * dilation() + 1 > vector.size() ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubvector specification" );
       }
    }
    else {
-      BLAZE_USER_ASSERT( offset() + size()*dilation() <= vector.size(), "Invalid dilatedsubvector specification" );
+      BLAZE_USER_ASSERT(
+         offset() + ( size() - 1 ) * dilation() + 1 <= vector.size(),
+         "Invalid dilatedsubvector specification" );
    }
 }
 /*! \endcond */
@@ -1553,7 +1555,7 @@ inline bool
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset() + size()*dilation() > alias->offset() ) &&
-            ( offset() < alias->offset() + alias->size()*alias->dilation() ) );
+            ( offset() < alias->offset() + (alias->size() - 1) * alias->dilation() + 1) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1604,7 +1606,7 @@ inline bool
 {
    return ( vector_.isAliased( &alias->vector_ ) &&
             ( offset() + size()*dilation() > alias->offset() ) &&
-            ( offset() < alias->offset() + alias->size()*alias->dilation() ) );
+            ( offset() < alias->offset() + (alias->size() - 1) * alias->dilation() + 1) );
 }
 /*! \endcond */
 //*************************************************************************************************
