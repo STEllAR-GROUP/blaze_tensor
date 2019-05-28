@@ -102,28 +102,28 @@ struct DilatedSubmatrixTraitEval2< MT, inf, inf, inf, inf, inf, inf
 //
 //=================================================================================================
 
-////*************************************************************************************************
-///*! \cond BLAZE_INTERNAL */
-//template< typename T1, typename T2 >
-//struct MultTraitEval2< T1, T2
-//                     , EnableIf_t< IsTensor_v<T1> &&
-//                                   IsColumnVector_v<T2> &&
-//                                   ( Size_v<T1,0UL> == DefaultSize_v ||
-//                                     Size_v<T2,0UL> == DefaultSize_v ) &&
-//                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ||
-//                                     MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
-//{
-//   using ET1 = ElementType_t<T1>;
-//   using ET2 = ElementType_t<T2>;
-//
-//   static constexpr size_t M = ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> );
-//   static constexpr size_t N = ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ? MaxSize_v<T1,1UL> : MaxSize_v<T2,0UL> );
-//
-//   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, false >;
-//};
-//
-///*! \endcond */
-////*************************************************************************************************
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename T1, typename T2 >
+struct MultTraitEval2< T1, T2
+                     , EnableIf_t< IsTensor_v<T1> &&
+                                   IsColumnVector_v<T2> &&
+                                   ( Size_v<T1,0UL> == DefaultSize_v ||
+                                     Size_v<T2,0UL> == DefaultSize_v ) &&
+                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v &&
+                                     MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t M = ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> );
+   static constexpr size_t N = ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ? MaxSize_v<T1,1UL> : MaxSize_v<T2,0UL> );
+
+   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, false >;
+};
+
+/*! \endcond */
+//*************************************************************************************************
 
 } // namespace blaze
 

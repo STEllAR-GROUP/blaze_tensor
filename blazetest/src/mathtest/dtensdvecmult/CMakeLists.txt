@@ -39,6 +39,7 @@ set(tests
     T2x3x4aV4b
     T2x3x4aVDa
     T2x3x4aVDb
+    T2x3x4aVHa
     TDaV4a
     TDaV4b
 )

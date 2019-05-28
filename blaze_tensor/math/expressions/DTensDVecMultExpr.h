@@ -48,7 +48,7 @@
 #include <blaze/math/constraints/ColumnVector.h>
 #include <blaze/math/constraints/DenseMatrix.h>
 #include <blaze/math/constraints/DenseVector.h>
-//#include <blaze/math/constraints/MatMatMultExpr.h>
+#include <blaze/math/constraints/MatMatMultExpr.h>
 #include <blaze/math/constraints/RequiresEvaluation.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
@@ -56,6 +56,7 @@
 #include <blaze/math/expressions/DenseVector.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/MatMatMultExpr.h>
+#include <blaze/math/expressions/MatScalarMultExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/shims/Reset.h>
 #include <blaze/math/shims/Serial.h>
@@ -116,7 +117,7 @@ namespace blaze {
 
 //*************************************************************************************************
 /*!\brief Expression object for dense tensor-dense vector multiplications.
-// \ingroup dense_vector_expression
+// \ingroup dense_matrix_expression
 //
 // The DTensDVecMultExpr class represents the compile time expression for multiplications
 // between row-major dense tensors and dense vectors.
@@ -239,7 +240,7 @@ class DTensDVecMultExpr
 
    //**SIMD properties*****************************************************************************
    //! The number of elements packed within a single SIMD element.
-   //static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
@@ -1006,7 +1007,7 @@ class DTensDVecMultExpr
    //**********************************************************************************************
 
    //**BLAS-based assignment to dense vectors******************************************************
-#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_TENSOR_VECTOR_MULTIPLICATION
    ///*! \cond BLAZE_INTERNAL */
    ///*!\brief BLAS-based assignment of a dense tensor-dense vector multiplication
    ////        (\f$ \vec{y}=A*\vec{x} \f$).
@@ -1687,7 +1688,7 @@ class DTensDVecMultExpr
    //**********************************************************************************************
 
    //**BLAS-based addition assignment to dense vectors*********************************************
-#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_TENSOR_VECTOR_MULTIPLICATION
    ///*! \cond BLAZE_INTERNAL */
    ///*!\brief BLAS-based addition assignment of a tensor-vector multiplication
    ////        (\f$ \vec{y}+=A*\vec{x} \f$).
@@ -2343,7 +2344,7 @@ class DTensDVecMultExpr
    //**********************************************************************************************
 
    //**BLAS-based subtraction assignment to dense vectors******************************************
-#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_TENSOR_VECTOR_MULTIPLICATION
    ///*! \cond BLAZE_INTERNAL */
    ///*!\brief BLAS-based subtraction assignment of a tensor-vector multiplication
    ////        (\f$ \vec{y}-=A*\vec{x} \f$).
@@ -2402,7 +2403,7 @@ class DTensDVecMultExpr
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
@@ -2608,7 +2609,7 @@ class DTensDVecMultExpr
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
-      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
@@ -2641,380 +2642,393 @@ class DTensDVecMultExpr
 
 //=================================================================================================
 //
-//  DVECSCALARMULTEXPR SPECIALIZATION
+//  DMatScalarMultExpr SPECIALIZATION
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Expression object for scaled dense tensor-dense vector multiplications.
+// \ingroup dense_matrix_expression
 //
-////*************************************************************************************************
-///*! \cond BLAZE_INTERNAL */
-///*!\brief Expression object for scaled dense tensor-dense vector multiplications.
-//// \ingroup dense_vector_expression
-////
-//// This specialization of the DVecScalarMultExpr class represents the compile time expression
-//// for scaled multiplications between a row-major dense tensor and a non-transpose dense vector.
-//*/
-//template< typename TT    // Type of the left-hand side dense tensor
-//        , typename VT    // Type of the right-hand side dense vector
-//        , typename ST >  // Type of the scalar value
-//class DVecScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
-//   : public VecScalarMultExpr< DenseVector< DVecScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >, false > >
-//   , private Computation
-//{
-// private:
-//   //**Type definitions****************************************************************************
-//   using MVM = DTensDVecMultExpr<TT,VT>;  //!< Type of the dense tensor-dense vector multiplication expression.
-//   using RES = ResultType_t<MVM>;        //!< Result type of the dense tensor-dense vector multiplication expression.
-//   using TRT = ResultType_t<TT>;         //!< Result type of the left-hand side dense tensor expression.
-//   using VRT = ResultType_t<VT>;         //!< Result type of the right-hand side dense vector expression.
-//   using TET = ElementType_t<TRT>;       //!< Element type of the left-hand side dense tensor expression.
-//   using VET = ElementType_t<VRT>;       //!< Element type of the right-hand side dense vector expression.
-//   using TCT = CompositeType_t<TT>;      //!< Composite type of the left-hand side dense tensor expression.
-//   using VCT = CompositeType_t<VT>;      //!< Composite type of the right-hand side dense vector expression.
-//   //**********************************************************************************************
-//
-//   //**********************************************************************************************
-//   //! Compilation switch for the composite type of the right-hand side dense tensor expression.
-//   static constexpr bool evaluateTensor =
-//      ( ( IsComputation_v<TT> && IsSame_v<TET,VET> &&
-//          IsBLASCompatible_v<TET> ) || RequiresEvaluation_v<TT> );
-//   //**********************************************************************************************
-//
-//   //**********************************************************************************************
-//   //! Compilation switch for the composite type of the right-hand side dense vector expression.
-//   static constexpr bool evaluateVector = ( IsComputation_v<VT> || RequiresEvaluation_v<TT> );
-//   //**********************************************************************************************
-//
-//   //**********************************************************************************************
-//   //! Helper variable template for the explicit application of the SFINAE principle.
-//   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
-//       In case either the tensor or the vector operand requires an intermediate evaluation, the
-//       variable will be set to 1, otherwise it will be 0. */
-//   template< typename T1 >
-//   static constexpr bool UseSMPAssign_v = ( evaluateTensor || evaluateVector );
-//   //**********************************************************************************************
-//
-//   //**********************************************************************************************
-//   //! Helper variable template for the explicit application of the SFINAE principle.
-//   /*! In case the tensor type, the two involved vector types, and the scalar type are suited
-//       for a BLAS kernel, the variable will be set to 1, otherwise it will be 0. */
-//   template< typename T1, typename T2, typename T3, typename T4 >
-//   static constexpr bool UseBlasKernel_v =
-//      ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION &&
-//        IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
-//        IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
-//        IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
-//        !IsDiagonal_v<T2> &&
-//        T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-//        IsBLASCompatible_v< ElementType_t<T1> > &&
-//        IsBLASCompatible_v< ElementType_t<T2> > &&
-//        IsBLASCompatible_v< ElementType_t<T3> > &&
-//        IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
-//        IsSame_v< ElementType_t<T1>, ElementType_t<T3> > &&
-//        !( IsBuiltin_v< ElementType_t<T1> > && IsComplex_v<T4> ) );
-//   //**********************************************************************************************
-//
-//   //**********************************************************************************************
-//   //! Helper variable template for the explicit application of the SFINAE principle.
-//   /*! In case the two involved vector types, the tensor type, and the scalar type are suited
-//       for a vectorized computation of the scaled vector/tensor multiplication, the variable
-//       will be set to 1, otherwise it will be 0. */
-//   template< typename T1, typename T2, typename T3, typename T4 >
-//   static constexpr bool UseVectorizedDefaultKernel_v =
-//      ( useOptimizedKernels &&
-//        !IsDiagonal_v<T2> &&
-//        T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
-//        IsSIMDCombinable_v< ElementType_t<T1>
-//                          , ElementType_t<T2>
-//                          , ElementType_t<T3>
-//                          , T4 > &&
-//        HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
-//        HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > );
-//   //**********************************************************************************************
-//
-// public:
-//   //**Type definitions****************************************************************************
-//   using This          = DVecScalarMultExpr<MVM,ST,false>;  //!< Type of this DVecScalarMultExpr instance.
-//   using BaseType      = DenseVector<This,false>;           //!< Base type of this DVecScalarMultExpr instance.
-//   using ResultType    = MultTrait_t<RES,ST>;               //!< Result type for expression template evaluations.
-//   using TransposeType = TransposeType_t<ResultType>;       //!< Transpose type for expression template evaluations.
-//   using ElementType   = ElementType_t<ResultType>;         //!< Resulting element type.
-//   using SIMDType      = SIMDTrait_t<ElementType>;          //!< Resulting SIMD element type.
-//   using ReturnType    = const ElementType;                 //!< Return type for expression template evaluations.
-//   using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
-//
-//   //! Composite type of the left-hand side dense vector expression.
-//   using LeftOperand = const DTensDVecMultExpr<TT,VT>;
-//
-//   //! Composite type of the right-hand side scalar value.
-//   using RightOperand = ST;
-//
-//   //! Type for the assignment of the dense tensor operand of the left-hand side expression.
-//   using LT = If_t< evaluateTensor, const TRT, TCT >;
-//
-//   //! Type for the assignment of the dense vector operand of the left-hand side expression.
-//   using RT = If_t< evaluateVector, const VRT, VCT >;
-//   //**********************************************************************************************
-//
-//   //**Compilation flags***************************************************************************
-//   //! Compilation switch for the expression template evaluation strategy.
-//   static constexpr bool simdEnabled =
-//      ( !IsDiagonal_v<TT> &&
-//        TT::simdEnabled && VT::simdEnabled &&
-//        IsSIMDCombinable_v<TET,VET,ST> &&
-//        HasSIMDAdd_v<TET,VET> &&
-//        HasSIMDMult_v<TET,VET> );
-//
-//   //! Compilation switch for the expression template assignment strategy.
-//   static constexpr bool smpAssignable =
-//      ( !evaluateTensor && TT::smpAssignable && !evaluateVector && VT::smpAssignable );
-//   //**********************************************************************************************
-//
-//   //**SIMD properties*****************************************************************************
-//   //! The number of elements packed within a single SIMD element.
-//   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
-//   //**********************************************************************************************
-//
-//   //**Constructor*********************************************************************************
-//   /*!\brief Constructor for the DVecScalarMultExpr class.
-//   //
-//   // \param vector The left-hand side dense vector of the multiplication expression.
-//   // \param scalar The right-hand side scalar of the multiplication expression.
-//   */
-//   explicit inline DVecScalarMultExpr( const MVM& vector, ST scalar )
-//      : vector_( vector )  // Left-hand side dense vector of the multiplication expression
-//      , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
-//   {}
-//   //**********************************************************************************************
-//
-//   //**Subscript operator**************************************************************************
-//   /*!\brief Subscript operator for the direct access to the vector elements.
-//   //
-//   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-//   // \return The resulting value.
-//   */
-//   inline ReturnType operator[]( size_t index ) const {
-//      BLAZE_INTERNAL_ASSERT( index < vector_.size(), "Invalid vector access index" );
-//      return vector_[index] * scalar_;
-//   }
-//   //**********************************************************************************************
-//
-//   //**At function*********************************************************************************
-//   /*!\brief Checked access to the vector elements.
-//   //
-//   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
-//   // \return The resulting value.
-//   // \exception std::out_of_range Invalid vector access index.
-//   */
-//   inline ReturnType at( size_t index ) const {
-//      if( index >= vector_.size() ) {
-//         BLAZE_THROW_OUT_OF_RANGE( "Invalid vector access index" );
-//      }
-//      return (*this)[index];
-//   }
-//   //**********************************************************************************************
-//
-//   //**Size function*******************************************************************************
-//   /*!\brief Returns the current size/dimension of the vector.
-//   //
-//   // \return The size of the vector.
-//   */
-//   inline size_t size() const {
-//      return vector_.size();
-//   }
-//   //**********************************************************************************************
-//
-//   //**Left operand access*************************************************************************
-//   /*!\brief Returns the left-hand side dense vector operand.
-//   //
-//   // \return The left-hand side dense vector operand.
-//   */
-//   inline LeftOperand leftOperand() const {
-//      return vector_;
-//   }
-//   //**********************************************************************************************
-//
-//   //**Right operand access************************************************************************
-//   /*!\brief Returns the right-hand side scalar operand.
-//   //
-//   // \return The right-hand side scalar operand.
-//   */
-//   inline RightOperand rightOperand() const {
-//      return scalar_;
-//   }
-//   //**********************************************************************************************
-//
-//   //**********************************************************************************************
-//   /*!\brief Returns whether the expression can alias with the given address \a alias.
-//   //
-//   // \param alias The alias to be checked.
-//   // \return \a true in case the expression can alias, \a false otherwise.
-//   */
-//   template< typename T >
-//   inline bool canAlias( const T* alias ) const {
-//      return vector_.canAlias( alias );
-//   }
-//   //**********************************************************************************************
-//
-//   //**********************************************************************************************
-//   /*!\brief Returns whether the expression is aliased with the given address \a alias.
-//   //
-//   // \param alias The alias to be checked.
-//   // \return \a true in case an alias effect is detected, \a false otherwise.
-//   */
-//   template< typename T >
-//   inline bool isAliased( const T* alias ) const {
-//      return vector_.isAliased( alias );
-//   }
-//   //**********************************************************************************************
-//
-//   //**********************************************************************************************
-//   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
-//   //
-//   // \return \a true in case the operands are aligned, \a false if not.
-//   */
-//   inline bool isAligned() const {
-//      return vector_.isAligned();
-//   }
-//   //**********************************************************************************************
-//
-//   //**********************************************************************************************
-//   /*!\brief Returns whether the expression can be used in SMP assignments.
-//   //
-//   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
-//   */
-//   inline bool canSMPAssign() const noexcept {
-//      LeftOperand_t<MVM> A( vector_.leftOperand() );
-//      return ( !BLAZE_BLAS_MODE ||
-//               !BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION ||
-//               !BLAZE_BLAS_IS_PARALLEL ||
-//               ( IsComputation_v<TT> && !evaluateTensor ) ||
-//               ( A.rows() * A.columns() < DTENSDVECMULT_THRESHOLD ) ) &&
-//             ( size() > SMP_DTENSDVECMULT_THRESHOLD );
-//   }
-//   //**********************************************************************************************
-//
-// private:
-//   //**Member variables****************************************************************************
-//   LeftOperand  vector_;  //!< Left-hand side dense vector of the multiplication expression.
-//   RightOperand scalar_;  //!< Right-hand side scalar of the multiplication expression.
-//   //**********************************************************************************************
-//
-//   //**Assignment to dense vectors*****************************************************************
-//   /*!\brief Assignment of a scaled dense tensor-dense vector multiplication to a dense vector
-//   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be assigned.
-//   // \return void
-//   //
-//   // This function implements the performance optimized assignment of a scaled dense tensor-
-//   // dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline void assign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
-//      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
-//
-//      if( left.rows() == 0UL ) {
-//         return;
-//      }
-//      else if( left.columns() == 0UL ) {
-//         reset( ~lhs );
-//         return;
-//      }
-//
-//      LT A( serial( left  ) );  // Evaluation of the left-hand side dense tensor operand
-//      RT x( serial( right ) );  // Evaluation of the right-hand side dense vector operand
-//
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()   , "Invalid number of rows"    );
-//      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns(), "Invalid number of columns" );
-//      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
-//
-//      DVecScalarMultExpr::selectAssignKernel( ~lhs, A, x, rhs.scalar_ );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Assignment to dense vectors (kernel selection)**********************************************
-//   /*!\brief Selection of the kernel for an assignment of a scaled dense tensor-dense vector
-//   //        multiplication to a dense vector (\f$ \vec{y}=A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline void selectAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//   {
-//      if( ( IsDiagonal_v<TT1> ) ||
-//          ( IsComputation_v<TT> && !evaluateTensor ) ||
-//          ( A.rows() * A.columns() < DTENSDVECMULT_THRESHOLD ) )
-//         selectSmallAssignKernel( y, A, x, scalar );
-//      else
-//         selectBlasAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Default assignment to dense vectors*********************************************************
-//   /*!\brief Default assignment of a scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function implements the default assignment kernel for the scaled dense tensor-dense
-//   // vector multiplication.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectDefaultAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseVectorizedDefaultKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      y.assign( A * x * scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Default assignment to dense vectors (small tensors)****************************************
-//   /*!\brief Default assignment of a small scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function relays to the default implementation of the assignment of a scaled dense
-//   // tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectSmallAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseVectorizedDefaultKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      selectDefaultAssignKernel( y, A, x, scalar );
-//   }
+// This specialization of the DMatScalarMultExpr class represents the compile time expression
+// for scaled multiplications between a row-major dense tensor and a non-transpose dense vector.
+*/
+template< typename TT    // Type of the left-hand side dense tensor
+        , typename VT    // Type of the right-hand side dense vector
+        , typename ST >  // Type of the scalar value
+class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
+   : public MatScalarMultExpr< DenseMatrix< DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >, false > >
+   , private Computation
+{
+ private:
+   //**Type definitions****************************************************************************
+   using MVM = DTensDVecMultExpr<TT,VT>; //!< Type of the dense tensor-dense vector multiplication expression.
+   using RES = ResultType_t<MVM>;        //!< Result type of the dense tensor-dense vector multiplication expression.
+   using TRT = ResultType_t<TT>;         //!< Result type of the left-hand side dense tensor expression.
+   using VRT = ResultType_t<VT>;         //!< Result type of the right-hand side dense vector expression.
+   using TET = ElementType_t<TRT>;       //!< Element type of the left-hand side dense tensor expression.
+   using VET = ElementType_t<VRT>;       //!< Element type of the right-hand side dense vector expression.
+   using TCT = CompositeType_t<TT>;      //!< Composite type of the left-hand side dense tensor expression.
+   using VCT = CompositeType_t<VT>;      //!< Composite type of the right-hand side dense vector expression.
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense tensor expression.
+   static constexpr bool evaluateTensor =
+      ( ( IsComputation_v<TT> && IsSame_v<TET,VET> &&
+          IsBLASCompatible_v<TET> ) || RequiresEvaluation_v<TT> );
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Compilation switch for the composite type of the right-hand side dense vector expression.
+   static constexpr bool evaluateVector = ( IsComputation_v<VT> || RequiresEvaluation_v<TT> );
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! This variable template is a helper for the selection of the parallel evaluation strategy.
+       In case either the tensor or the vector operand requires an intermediate evaluation, the
+       variable will be set to 1, otherwise it will be 0. */
+   template< typename T1 >
+   static constexpr bool UseSMPAssign_v = ( evaluateTensor || evaluateVector );
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! In case the tensor type, the two involved vector types, and the scalar type are suited
+       for a BLAS kernel, the variable will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3, typename T4 >
+   static constexpr bool UseBlasKernel_v =
+      ( BLAZE_BLAS_MODE && BLAZE_USE_BLAS_TENSOR_VECTOR_MULTIPLICATION &&
+        IsContiguous_v<T1> && HasMutableDataAccess_v<T1> &&
+        IsContiguous_v<T2> && HasConstDataAccess_v<T2> &&
+        IsContiguous_v<T3> && HasConstDataAccess_v<T3> &&
+        !IsDiagonal_v<T2> &&
+        T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+        IsBLASCompatible_v< ElementType_t<T1> > &&
+        IsBLASCompatible_v< ElementType_t<T2> > &&
+        IsBLASCompatible_v< ElementType_t<T3> > &&
+        IsSame_v< ElementType_t<T1>, ElementType_t<T2> > &&
+        IsSame_v< ElementType_t<T1>, ElementType_t<T3> > &&
+        !( IsBuiltin_v< ElementType_t<T1> > && IsComplex_v<T4> ) );
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   //! Helper variable template for the explicit application of the SFINAE principle.
+   /*! In case the two involved vector types, the tensor type, and the scalar type are suited
+       for a vectorized computation of the scaled vector/tensor multiplication, the variable
+       will be set to 1, otherwise it will be 0. */
+   template< typename T1, typename T2, typename T3, typename T4 >
+   static constexpr bool UseVectorizedDefaultKernel_v =
+      ( useOptimizedKernels &&
+        !IsDiagonal_v<T2> &&
+        T1::simdEnabled && T2::simdEnabled && T3::simdEnabled &&
+        IsSIMDCombinable_v< ElementType_t<T1>
+                          , ElementType_t<T2>
+                          , ElementType_t<T3>
+                          , T4 > &&
+        HasSIMDAdd_v< ElementType_t<T2>, ElementType_t<T3> > &&
+        HasSIMDMult_v< ElementType_t<T2>, ElementType_t<T3> > );
+   //**********************************************************************************************
+
+ public:
+   //**Type definitions****************************************************************************
+   using This          = DMatScalarMultExpr<MVM,ST,false>;  //!< Type of this DMatScalarMultExpr instance.
+   using BaseType      = DenseMatrix<This,false>;           //!< Base type of this DMatScalarMultExpr instance.
+   using ResultType    = MultTrait_t<RES,ST>;               //!< Result type for expression template evaluations.
+   using TransposeType = TransposeType_t<ResultType>;       //!< Transpose type for expression template evaluations.
+   using ElementType   = ElementType_t<ResultType>;         //!< Resulting element type.
+   using SIMDType      = SIMDTrait_t<ElementType>;          //!< Resulting SIMD element type.
+   using ReturnType    = const ElementType;                 //!< Return type for expression template evaluations.
+   using CompositeType = const ResultType;                  //!< Data type for composite expression templates.
+
+   //! Composite type of the left-hand side dense vector expression.
+   using LeftOperand = const DTensDVecMultExpr<TT,VT>;
+
+   //! Composite type of the right-hand side scalar value.
+   using RightOperand = ST;
+
+   //! Type for the assignment of the dense tensor operand of the left-hand side expression.
+   using LT = If_t< evaluateTensor, const TRT, TCT >;
+
+   //! Type for the assignment of the dense vector operand of the left-hand side expression.
+   using RT = If_t< evaluateVector, const VRT, VCT >;
+   //**********************************************************************************************
+
+   //**Compilation flags***************************************************************************
+   //! Compilation switch for the expression template evaluation strategy.
+   static constexpr bool simdEnabled =
+      ( TT::simdEnabled && VT::simdEnabled &&
+        IsSIMDCombinable_v<TET,VET,ST> &&
+        HasSIMDAdd_v<TET,VET> &&
+        HasSIMDMult_v<TET,VET> );
+
+   //! Compilation switch for the expression template assignment strategy.
+   static constexpr bool smpAssignable =
+      ( !evaluateTensor && TT::smpAssignable && !evaluateVector && VT::smpAssignable );
+   //**********************************************************************************************
+
+   //**SIMD properties*****************************************************************************
+   //! The number of elements packed within a single SIMD element.
+   static constexpr size_t SIMDSIZE = SIMDTrait<ElementType>::size;
+   //**********************************************************************************************
+
+   //**Constructor*********************************************************************************
+   /*!\brief Constructor for the DMatScalarMultExpr class.
+   //
+   // \param vector The left-hand side dense vector of the multiplication expression.
+   // \param scalar The right-hand side scalar of the multiplication expression.
+   */
+   explicit inline DMatScalarMultExpr( const MVM& matrix, ST scalar )
+      : matrix_( matrix )  // Left-hand side dense matrix of the multiplication expression
+      , scalar_( scalar )  // Right-hand side scalar of the multiplication expression
+   {}
+   //**********************************************************************************************
+
+   //**Subscript operator**************************************************************************
+   /*!\brief Subscript operator for the direct access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   */
+   inline ReturnType operator()( size_t i, size_t j ) const {
+      BLAZE_INTERNAL_ASSERT( i < matrix_.rows(), "Invalid row access index" );
+      BLAZE_INTERNAL_ASSERT( j < matrix_.columns() , "Invalid column access index" );
+      return matrix_(i,j) * scalar_;
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the vector elements.
+   //
+   // \param index Access index. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid vector access index.
+   */
+   inline ReturnType at( size_t i, size_t j ) const {
+      if( i >= matrix_.rows() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+      }
+      if( j >= matrix_.columns() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+      }
+      return (*this)(i,j);
+   }
+   //**********************************************************************************************
+
+   //**Rows function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the matrix.
+   //
+   // \return The rows of the matrix.
+   */
+   inline size_t rows() const {
+      return matrix_.rows();
+   }
+   //**********************************************************************************************
+
+   //**Columns function*******************************************************************************
+   /*!\brief Returns the current size/dimension of the matrix.
+   //
+   // \return The columns of the matrix.
+   */
+   inline size_t columns() const {
+      return matrix_.columns();
+   }
+   //**********************************************************************************************
+
+   //**Left operand access*************************************************************************
+   /*!\brief Returns the left-hand side dense vector operand.
+   //
+   // \return The left-hand side dense vector operand.
+   */
+   inline LeftOperand leftOperand() const {
+      return matrix_;
+   }
+   //**********************************************************************************************
+
+   //**Right operand access************************************************************************
+   /*!\brief Returns the right-hand side scalar operand.
+   //
+   // \return The right-hand side scalar operand.
+   */
+   inline RightOperand rightOperand() const {
+      return scalar_;
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can alias with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case the expression can alias, \a false otherwise.
+   */
+   template< typename T >
+   inline bool canAlias( const T* alias ) const {
+      return matrix_.canAlias( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression is aliased with the given address \a alias.
+   //
+   // \param alias The alias to be checked.
+   // \return \a true in case an alias effect is detected, \a false otherwise.
+   */
+   template< typename T >
+   inline bool isAliased( const T* alias ) const {
+      return matrix_.isAliased( alias );
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the operands of the expression are properly aligned in memory.
+   //
+   // \return \a true in case the operands are aligned, \a false if not.
+   */
+   inline bool isAligned() const {
+      return matrix_.isAligned();
+   }
+   //**********************************************************************************************
+
+   //**********************************************************************************************
+   /*!\brief Returns whether the expression can be used in SMP assignments.
+   //
+   // \return \a true in case the expression can be used in SMP assignments, \a false if not.
+   */
+   inline bool canSMPAssign() const noexcept {
+      LeftOperand_t<MVM> A( matrix_.leftOperand() );
+      return ( !BLAZE_BLAS_MODE ||
+               !BLAZE_USE_BLAS_TENSOR_VECTOR_MULTIPLICATION ||
+               !BLAZE_BLAS_IS_PARALLEL ||
+               ( IsComputation_v<TT> && !evaluateTensor ) ||
+               ( A.pages() * A.rows() * A.columns() < DTENSDVECMULT_THRESHOLD ) ) &&
+               ( rows() * columns() > SMP_DTENSDVECMULT_THRESHOLD );
+   }
+   //**********************************************************************************************
+
+ private:
+   //**Member variables****************************************************************************
+   LeftOperand  matrix_;  //!< Left-hand side dense vector of the multiplication expression.
+   RightOperand scalar_;  //!< Right-hand side scalar of the multiplication expression.
+   //**********************************************************************************************
+
+   //**Assignment to dense vectors*****************************************************************
+   /*!\brief Assignment of a scaled dense tensor-dense vector multiplication to a dense vector
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side scaled multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized assignment of a scaled dense tensor-
+   // dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1 >  // Type of the target dense vector
+   friend inline void assign( DenseMatrix<MT1,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+
+      LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
+
+      if( left.pages() == 0UL || left.rows() == 0UL ) {
+         return;
+      }
+      else if( left.columns() == 0UL ) {
+         reset( ~lhs );
+         return;
+      }
+
+      LT A( serial( left  ) );  // Evaluation of the left-hand side dense tensor operand
+      RT x( serial( right ) );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( A.pages()   == left.pages()     , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+
+      DMatScalarMultExpr::selectAssignKernel( ~lhs, A, x, rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**Assignment to dense vectors (kernel selection)**********************************************
+   /*!\brief Selection of the kernel for an assignment of a scaled dense tensor-dense vector
+   //        multiplication to a dense vector (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename MT1    // Type of the left-hand side target matrix
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST1 >  // Type of the scalar value
+   static inline void selectAssignKernel( MT1& y, const TT1& A, const VT1& x, ST1 scalar )
+   {
+      if( A.pages() * A.rows() * A.columns() < DTENSDVECMULT_THRESHOLD )
+         selectSmallAssignKernel( y, A, x, scalar );
+      else
+         selectBlasAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Default assignment to dense vectors*********************************************************
+   /*!\brief Default assignment of a scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default assignment kernel for the scaled dense tensor-dense
+   // vector multiplication.
+   */
+   template< typename MT1    // Type of the left-hand side target matrix
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectDefaultAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      y.assign( A * x * scalar );
+   }
+   //**********************************************************************************************
+
+   //**Default assignment to dense vectors (small tensors)****************************************
+   /*!\brief Default assignment of a small scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a scaled dense
+   // tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectSmallAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      selectDefaultAssignKernel( y, A, x, scalar );
+   }
 //   //**********************************************************************************************
 //
 //   //**Vectorized default assignment to dense vectors (small tensors)*****************************
@@ -3223,33 +3237,33 @@ class DTensDVecMultExpr
 //         }
 //      }
 //   }
-//   //**********************************************************************************************
-//
-//   //**Default assignment to dense vectors (large tensors)****************************************
-//   /*!\brief Default assignment of a large scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function relays to the default implementation of the assignment of a scaled dense
-//   // tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectLargeAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseVectorizedDefaultKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      selectDefaultAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
+   //**********************************************************************************************
+
+   //**Default assignment to dense vectors (large tensors)****************************************
+   /*!\brief Default assignment of a large scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a scaled dense
+   // tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectLargeAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      selectDefaultAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
 //   //**Vectorized default assignment to dense vectors (large tensors)*****************************
 //   /*!\brief Vectorized default assignment of a large scaled dense tensor-dense vector
 //   //        multiplication (\f$ \vec{y}=s*A*\vec{x} \f$).
@@ -3515,35 +3529,35 @@ class DTensDVecMultExpr
 //         y[i] *= scalar;
 //      }
 //   }
-//   //**********************************************************************************************
-//
-//   //**BLAS-based assignment to dense vectors (default)********************************************
-//   /*!\brief Default assignment of a scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function relays to the default implementation of the assignment of a large scaled
-//   // dense tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectBlasAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseBlasKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      selectLargeAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**BLAS-based assignment to dense vectors******************************************************
-//#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
+   //**********************************************************************************************
+
+   //**BLAS-based assignment to dense vectors (default)********************************************
+   /*!\brief Default assignment of a scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense matrix.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the assignment of a large scaled
+   // dense tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1    // Type of the left-hand side target matrix
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectBlasAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseBlasKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      selectLargeAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**BLAS-based assignment to dense vectors******************************************************
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_TENSOR_VECTOR_MULTIPLICATION
 //   /*!\brief BLAS-based assignment of a scaled dense tensor-dense vector multiplication
 //   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
 //   // \ingroup dense_vector
@@ -3574,163 +3588,163 @@ class DTensDVecMultExpr
 //         gemv( y, A, x, ET(scalar), ET(0) );
 //      }
 //   }
-//#endif
-//   //**********************************************************************************************
-//
-//   //**Assignment to sparse vectors****************************************************************
-//   /*!\brief Assignment of a scaled dense tensor-dense vector multiplication to a sparse vector
-//   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side sparse vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be assigned.
-//   // \return void
-//   //
-//   // This function implements the performance optimized assignment of a scaled dense tensor-
-//   // dense vector multiplication expression to a sparse vector.
-//   */
-//   template< typename VT1 >  // Type of the target sparse vector
-//   friend inline void assign( SparseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      const ResultType tmp( serial( rhs ) );
-//      assign( ~lhs, tmp );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Addition assignment to dense vectors********************************************************
-//   /*!\brief Addition assignment of a scaled dense tensor-dense vector multiplication to a dense
-//   //        vector (\f$ \vec{y}+=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be added.
-//   // \return void
-//   //
-//   // This function implements the performance optimized addition assignment of a scaled dense
-//   // tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline void addAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
-//      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
-//
-//      if( left.rows() == 0UL || left.columns() == 0UL ) {
-//         return;
-//      }
-//
-//      LT A( serial( left  ) );  // Evaluation of the left-hand side dense tensor operand
-//      RT x( serial( right ) );  // Evaluation of the right-hand side dense vector operand
-//
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()   , "Invalid number of rows"    );
-//      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns(), "Invalid number of columns" );
-//      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
-//
-//      DVecScalarMultExpr::selectAddAssignKernel( ~lhs, A, x, rhs.scalar_ );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Addition assignment to dense vectors (kernel selection)*************************************
-//   /*!\brief Selection of the kernel for an addition assignment of a scaled dense tensor-dense
-//   //        vector multiplication to a dense vector (\f$ \vec{y}+=A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline void selectAddAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//   {
-//      if( ( IsDiagonal_v<TT1> ) ||
-//          ( IsComputation_v<TT> && !evaluateTensor ) ||
-//          ( A.rows() * A.columns() < DTENSDVECMULT_THRESHOLD ) )
-//         selectSmallAddAssignKernel( y, A, x, scalar );
-//      else
-//         selectBlasAddAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Default addition assignment to dense vectors************************************************
-//   /*!\brief Default addition assignment of a scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}+=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function implements the default addition assignment kernel for the scaled dense tensor-
-//   // dense vector multiplication.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline void selectDefaultAddAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//   {
-//      y.addAssign( A * x * scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Default addition assignment to dense vectors (small tensors)*******************************
-//   /*!\brief Default addition assignment of a small scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}+=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function relays to the default implementation of the addition assignment of a scaled
-//   // dense tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectSmallAddAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseVectorizedDefaultKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      selectDefaultAddAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Vectorized default addition assignment to dense vectors (small tensors)********************
-//   /*!\brief Vectorized default addition assignment of a small scaled dense tensor-dense vector
-//   //        multiplication (\f$ \vec{y}+=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function implements the vectorized default addition assignment kernel for the scaled
-//   // dense tensor-dense vector multiplication. This kernel is optimized for small tensors.
+#endif
+   //**********************************************************************************************
+
+   //**Assignment to sparse vectors****************************************************************
+   /*!\brief Assignment of a scaled dense tensor-dense vector multiplication to a sparse vector
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side scaled multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized assignment of a scaled dense tensor-
+   // dense vector multiplication expression to a sparse vector.
+   */
+   //template< typename VT1 >  // Type of the target sparse vector
+   //friend inline void assign( SparseVector<VT1,false>& lhs, const DMatScalarMultExpr& rhs )
+   //{
+   //   BLAZE_FUNCTION_TRACE;
+
+   //   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
+   //   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
+   //   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+   //   BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+
+   //   const ResultType tmp( serial( rhs ) );
+   //   assign( ~lhs, tmp );
+   //}
+   //**********************************************************************************************
+
+   //**Addition assignment to dense vectors********************************************************
+   /*!\brief Addition assignment of a scaled dense tensor-dense vector multiplication to a dense
+   //        vector (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side scaled multiplication expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized addition assignment of a scaled dense
+   // tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1 >  // Type of the target dense vector
+   friend inline void addAssign( DenseMatrix<MT1,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+
+      LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
+
+      if( left.pages() == 0UL || left.rows() == 0UL || left.columns() == 0UL ) {
+         return;
+      }
+
+      LT A( serial( left  ) );  // Evaluation of the left-hand side dense tensor operand
+      RT x( serial( right ) );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( A.pages()   == left.pages()     , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+
+      DMatScalarMultExpr::selectAddAssignKernel( ~lhs, A, x, rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**Addition assignment to dense vectors (kernel selection)*************************************
+   /*!\brief Selection of the kernel for an addition assignment of a scaled dense tensor-dense
+   //        vector multiplication to a dense vector (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline void selectAddAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+   {
+      if( A.pages() * A.rows() * A.columns() < DTENSDVECMULT_THRESHOLD )
+         selectSmallAddAssignKernel( y, A, x, scalar );
+      else
+         selectBlasAddAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense vectors************************************************
+   /*!\brief Default addition assignment of a scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default addition assignment kernel for the scaled dense tensor-
+   // dense vector multiplication.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline void selectDefaultAddAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+   {
+      y.addAssign( A * x * scalar );
+   }
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense vectors (small tensors)*******************************
+   /*!\brief Default addition assignment of a small scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a scaled
+   // dense tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectSmallAddAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      selectDefaultAddAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (small tensors)********************
+   /*!\brief Vectorized default addition assignment of a small scaled dense tensor-dense vector
+   //        multiplication (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment kernel for the scaled
+   // dense tensor-dense vector multiplication. This kernel is optimized for small tensors.
 //   */
 //   template< typename VT1    // Type of the left-hand side target vector
 //           , typename TT1    // Type of the left-hand side tensor operand
@@ -3924,46 +3938,46 @@ class DTensDVecMultExpr
 //         }
 //      }
 //   }
-//   //**********************************************************************************************
-//
-//   //**Default addition assignment to dense vectors (large tensors)*******************************
-//   /*!\brief Default addition assignment of a large scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}+=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function relays to the default implementation of the addition assignment of a scaled
-//   // dense tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectLargeAddAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseVectorizedDefaultKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      selectDefaultAddAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Vectorized default addition assignment to dense vectors (large tensors)********************
-//   /*!\brief Vectorized default addition assignment of a large scaled dense tensor-dense vector
-//   //        multiplication (\f$ \vec{y}+=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function implements the vectorized default addition assignment kernel for the scaled
-//   // dense tensor-dense vector multiplication. This kernel is optimized for large tensors.
+   //**********************************************************************************************
+
+   //**Default addition assignment to dense vectors (large tensors)*******************************
+   /*!\brief Default addition assignment of a large scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a scaled
+   // dense tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectLargeAddAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      selectDefaultAddAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default addition assignment to dense vectors (large tensors)********************
+   /*!\brief Vectorized default addition assignment of a large scaled dense tensor-dense vector
+   //        multiplication (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment kernel for the scaled
+   // dense tensor-dense vector multiplication. This kernel is optimized for large tensors.
 //   */
 //   template< typename VT1    // Type of the left-hand side target vector
 //           , typename TT1    // Type of the left-hand side tensor operand
@@ -4195,35 +4209,35 @@ class DTensDVecMultExpr
 //         }
 //      }
 //   }
-//   //**********************************************************************************************
-//
-//   //**BLAS-based addition assignment to dense vectors (default)***********************************
-//   /*!\brief Default addition assignment of a scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}+=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function relays to the default implementation of the addition assignment of a large
-//   // scaled dense tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectBlasAddAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseBlasKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      selectLargeAddAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**BLAS-based addition assignment to dense vectors*********************************************
-//#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
+   //**********************************************************************************************
+
+   //**BLAS-based addition assignment to dense vectors (default)***********************************
+   /*!\brief Default addition assignment of a scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the addition assignment of a large
+   // scaled dense tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1    // Type of the left-hand side target matrix
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectBlasAddAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseBlasKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      selectLargeAddAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**BLAS-based addition assignment to dense vectors*********************************************
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_TENSOR_VECTOR_MULTIPLICATION
 //   /*!\brief BLAS-based addition assignment of a scaled dense tensor-dense vector multiplication
 //   //        (\f$ \vec{y}+=s*A*\vec{x} \f$).
 //   // \ingroup dense_vector
@@ -4255,140 +4269,140 @@ class DTensDVecMultExpr
 //         gemv( y, A, x, ET(scalar), ET(1) );
 //      }
 //   }
-//#endif
-//   //**********************************************************************************************
-//
-//   //**Addition assignment to sparse vectors*******************************************************
-//   // No special implementation for the addition assignment to sparse vectors.
-//   //**********************************************************************************************
-//
-//   //**Subtraction assignment to dense vectors*****************************************************
-//   /*!\brief Subtraction assignment of a scaled dense tensor-dense vector multiplication to a
-//   //        dense vector (\f$ \vec{y}-=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be subtracted.
-//   // \return void
-//   //
-//   // This function implements the performance optimized subtraction assignment of a scaled
-//   // dense tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline void subAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
-//      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
-//
-//      if( left.rows() == 0UL || left.columns() == 0UL ) {
-//         return;
-//      }
-//
-//      LT A( serial( left  ) );  // Evaluation of the left-hand side dense tensor operand
-//      RT x( serial( right ) );  // Evaluation of the right-hand side dense vector operand
-//
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()   , "Invalid number of rows"    );
-//      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns(), "Invalid number of columns" );
-//      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
-//
-//      DVecScalarMultExpr::selectSubAssignKernel( ~lhs, A, x, rhs.scalar_ );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Subtraction assignment to dense vectors (kernel selection)**********************************
-//   /*!\brief Selection of the kernel for a subtraction assignment of a scaled dense tensor-dense
-//   //        vector multiplication to a dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline void selectSubAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//   {
-//      if( ( IsDiagonal_v<TT1> ) ||
-//          ( IsComputation_v<TT> && !evaluateTensor ) ||
-//          ( A.rows() * A.columns() < DTENSDVECMULT_THRESHOLD ) )
-//         selectSmallSubAssignKernel( y, A, x, scalar );
-//      else
-//         selectBlasSubAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Default subtraction assignment to dense vectors*********************************************
-//   /*!\brief Default subtraction assignment of a scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}-=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function implements the default subtraction assignment kernel for the scaled dense
-//   // tensor-dense vector multiplication.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline void selectDefaultSubAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//   {
-//      y.subAssign( A * x * scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Default subtraction assignment to dense vectors (small tensors)****************************
-//   /*!\brief Default subtraction assignment of a small scaled dense tensor-dense vector
-//   //        multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function relays to the default implementation of the subtraction assignment of a
-//   // scaled dense tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectSmallSubAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseVectorizedDefaultKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      selectDefaultSubAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Vectorized default subtraction assignment to dense vectors (small tensors)*****************
-//   /*!\brief Vectorized default subtraction assignment of a small scaled dense tensor-dense vector
-//   //        multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function implements the vectorized default subtraction assignment kernel for the scaled
-//   // dense tensor-dense vector multiplication. This kernel is optimized for small tensors.
-//   */
+#endif
+   //**********************************************************************************************
+
+   //**Addition assignment to sparse vectors*******************************************************
+   // No special implementation for the addition assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense vectors*****************************************************
+   /*!\brief Subtraction assignment of a scaled dense tensor-dense vector multiplication to a
+   //        dense vector (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side scaled multiplication expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized subtraction assignment of a scaled
+   // dense tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1 >  // Type of the target dense vector
+   friend inline void subAssign( DenseMatrix<MT1,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+
+      LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
+
+      if( left.pages() == 0UL || left.rows() == 0UL || left.columns() == 0UL ) {
+         return;
+      }
+
+      LT A( serial( left  ) );  // Evaluation of the left-hand side dense tensor operand
+      RT x( serial( right ) );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( A.pages()   == left.pages()     , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+
+      DMatScalarMultExpr::selectSubAssignKernel( ~lhs, A, x, rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**Subtraction assignment to dense vectors (kernel selection)**********************************
+   /*!\brief Selection of the kernel for a subtraction assignment of a scaled dense tensor-dense
+   //        vector multiplication to a dense vector (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline void selectSubAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+   {
+      if( A.pages() * A.rows() * A.columns() < DTENSDVECMULT_THRESHOLD )
+         selectSmallSubAssignKernel( y, A, x, scalar );
+      else
+         selectBlasSubAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense vectors*********************************************
+   /*!\brief Default subtraction assignment of a scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense matrix.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the default subtraction assignment kernel for the scaled dense
+   // tensor-dense vector multiplication.
+   */
+   template< typename MT1    // Type of the left-hand side target matrix
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline void selectDefaultSubAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+   {
+      y.subAssign( A * x * scalar );
+   }
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense vectors (small tensors)****************************
+   /*!\brief Default subtraction assignment of a small scaled dense tensor-dense vector
+   //        multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense matrix.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a
+   // scaled dense tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1    // Type of the left-hand side target matrix
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectSmallSubAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      selectDefaultSubAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**Vectorized default subtraction assignment to dense vectors (small tensors)*****************
+   /*!\brief Vectorized default subtraction assignment of a small scaled dense tensor-dense vector
+   //        multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment kernel for the scaled
+   // dense tensor-dense vector multiplication. This kernel is optimized for small tensors.
+   */
 //   template< typename VT1    // Type of the left-hand side target vector
 //           , typename TT1    // Type of the left-hand side tensor operand
 //           , typename VT2    // Type of the right-hand side vector operand
@@ -4581,31 +4595,31 @@ class DTensDVecMultExpr
 //         }
 //      }
 //   }
-//   //**********************************************************************************************
-//
-//   //**Default subtraction assignment to dense vectors (large tensors)****************************
-//   /*!\brief Default subtraction assignment of a large scaled dense tensor-dense vector
-//   //        multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function relays to the default implementation of the subtraction assignment of a
-//   // scaled dense tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectLargeSubAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseVectorizedDefaultKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      selectDefaultSubAssignKernel( y, A, x, scalar );
-//   }
+   //**********************************************************************************************
+
+   //**Default subtraction assignment to dense vectors (large tensors)****************************
+   /*!\brief Default subtraction assignment of a large scaled dense tensor-dense vector
+   //        multiplication (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a
+   // scaled dense tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectLargeSubAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      selectDefaultSubAssignKernel( y, A, x, scalar );
+   }
 //   //**********************************************************************************************
 //
 //   //**Vectorized default subtraction assignment to dense vectors (large tensors)*****************
@@ -4852,35 +4866,35 @@ class DTensDVecMultExpr
 //         }
 //      }
 //   }
-//   //**********************************************************************************************
-//
-//   //**BLAS-based subtraction assignment to dense vectors (default)********************************
-//   /*!\brief Default subtraction assignment of a scaled dense tensor-dense vector multiplication
-//   //        (\f$ \vec{y}-=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param y The target left-hand side dense vector.
-//   // \param A The left-hand side dense tensor operand.
-//   // \param x The right-hand side dense vector operand.
-//   // \param scalar The scaling factor.
-//   // \return void
-//   //
-//   // This function relays to the default implementation of the subtraction assignment of a large
-//   // scaled dense tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1    // Type of the left-hand side target vector
-//           , typename TT1    // Type of the left-hand side tensor operand
-//           , typename VT2    // Type of the right-hand side vector operand
-//           , typename ST2 >  // Type of the scalar value
-//   static inline auto selectBlasSubAssignKernel( VT1& y, const TT1& A, const VT2& x, ST2 scalar )
-//      -> DisableIf_t< UseBlasKernel_v<VT1,TT1,VT2,ST2> >
-//   {
-//      selectLargeSubAssignKernel( y, A, x, scalar );
-//   }
-//   //**********************************************************************************************
-//
-//   //**BLAS-based subtraction assignment to dense vectors******************************************
-//#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_MATRIX_VECTOR_MULTIPLICATION
+   //**********************************************************************************************
+
+   //**BLAS-based subtraction assignment to dense vectors (default)********************************
+   /*!\brief Default subtraction assignment of a scaled dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \param scalar The scaling factor.
+   // \return void
+   //
+   // This function relays to the default implementation of the subtraction assignment of a large
+   // scaled dense tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1    // Type of the right-hand side vector operand
+           , typename ST2 >  // Type of the scalar value
+   static inline auto selectBlasSubAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
+      -> DisableIf_t< UseBlasKernel_v<MT1,TT1,VT1,ST2> >
+   {
+      selectLargeSubAssignKernel( y, A, x, scalar );
+   }
+   //**********************************************************************************************
+
+   //**BLAS-based subtraction assignment to dense vectors******************************************
+#if BLAZE_BLAS_MODE && BLAZE_USE_BLAS_TENSOR_VECTOR_MULTIPLICATION
 //   /*!\brief BLAS-based subtraction assignment of a scaled dense tensor-dense vector multiplication
 //   //        (\f$ \vec{y}-=s*A*\vec{x} \f$).
 //   // \ingroup dense_vector
@@ -4912,138 +4926,106 @@ class DTensDVecMultExpr
 //         gemv( y, A, x, ET(-scalar), ET(1) );
 //      }
 //   }
-//#endif
-//   //**********************************************************************************************
-//
-//   //**Subtraction assignment to sparse vectors****************************************************
-//   // No special implementation for the subtraction assignment to sparse vectors.
-//   //**********************************************************************************************
-//
-//   //**Multiplication assignment to dense vectors**************************************************
-//   /*!\brief Multiplication assignment of a scaled dense tensor-dense vector multiplication to a
-//   //        dense vector (\f$ \vec{y}*=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be multiplied.
-//   // \return void
-//   //
-//   // This function implements the performance optimized multiplication assignment of a scaled
-//   // dense tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline void multAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      const ResultType tmp( serial( rhs ) );
-//      multAssign( ~lhs, tmp );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Multiplication assignment to sparse vectors*************************************************
-//   // No special implementation for the multiplication assignment to sparse vectors.
-//   //**********************************************************************************************
-//
-//   //**Division assignment to dense vectors********************************************************
-//   /*!\brief Division assignment of a scaled dense tensor-dense vector multiplication to a dense
-//   //        vector (\f$ \vec{y}/=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression divisor.
-//   // \return void
-//   //
-//   // This function implements the performance optimized division assignment of a scaled dense
-//   // tensor-dense vector multiplication expression to a dense vector.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline void divAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      const ResultType tmp( serial( rhs ) );
-//      divAssign( ~lhs, tmp );
-//   }
-//   //**********************************************************************************************
-//
-//   //**Division assignment to sparse vectors*******************************************************
-//   // No special implementation for the division assignment to sparse vectors.
-//   //**********************************************************************************************
-//
-//   //**SMP assignment to dense vectors*************************************************************
-//   /*!\brief SMP assignment of a scaled dense tensor-dense vector multiplication to a dense vector
-//   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be assigned.
-//   // \return void
-//   //
-//   // This function implements the performance optimized SMP assignment of a scaled dense tensor-
-//   // dense vector multiplication expression to a dense vector. Due to the explicit application
-//   // of the SFINAE principle, this function can only be selected by the compiler in case the
-//   // expression specific parallel evaluation strategy is selected.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline auto smpAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//      -> EnableIf_t< UseSMPAssign_v<VT1> >
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
-//      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
-//
-//      if( left.rows() == 0UL ) {
-//         return;
-//      }
-//      else if( left.columns() == 0UL ) {
-//         reset( ~lhs );
-//         return;
-//      }
-//
-//      LT A( left  );  // Evaluation of the left-hand side dense tensor operand
-//      RT x( right );  // Evaluation of the right-hand side dense vector operand
-//
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()   , "Invalid number of rows"    );
-//      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns(), "Invalid number of columns" );
-//      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
-//
-//      smpAssign( ~lhs, A * x * rhs.scalar_ );
-//   }
-//   //**********************************************************************************************
-//
-//   //**SMP assignment to sparse vectors************************************************************
-//   /*!\brief SMP assignment of a scaled dense tensor-dense vector multiplication to a sparse vector
-//   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side sparse vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be assigned.
-//   // \return void
-//   //
-//   // This function implements the performance optimized SMP assignment of a scaled dense tensor-
-//   // dense vector multiplication expression to a sparse vector. Due to the explicit application
-//   // of the SFINAE principle, this function can only be selected by the compiler in case the
-//   // expression specific parallel evaluation strategy is selected.
+#endif
+   //**********************************************************************************************
+
+   //**Subtraction assignment to sparse vectors****************************************************
+   // No special implementation for the subtraction assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**Schur assignment to dense vectors**************************************************
+   /*!\brief Multiplication assignment of a scaled dense tensor-dense vector multiplication to a
+   //        dense vector (\f$ \vec{y}*=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side scaled multiplication expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized multiplication assignment of a scaled
+   // dense tensor-dense vector multiplication expression to a dense vector.
+   */
+   template< typename MT1   // Type of the target dense matrix
+              , bool SO >   // Storage order of the target dense matrix
+   friend inline void schurAssign( DenseMatrix<MT1,false>& lhs, const DMatScalarMultExpr& rhs )
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_COLUMN_MAJOR_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const ResultType tmp( serial( rhs ) );
+      schurAssign( ~lhs, tmp );
+   }
+   //**********************************************************************************************
+
+   //**SMP assignment to dense vectors*************************************************************
+   /*!\brief SMP assignment of a scaled dense tensor-dense vector multiplication to a dense vector
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side scaled multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a scaled dense tensor-
+   // dense vector multiplication expression to a dense vector. Due to the explicit application
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
+   */
+   template< typename MT1 >  // Type of the target dense vector
+   friend inline auto smpAssign( DenseMatrix<MT1,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT1> >
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+
+      LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
+
+      if( left.pages() == 0UL || left.rows() == 0UL) {
+         return;
+      }
+      else if( left.columns() == 0UL ) {
+         reset( ~lhs );
+         return;
+      }
+
+      LT A( left  );  // Evaluation of the left-hand side dense tensor operand
+      RT x( right );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( A.pages()   == left.pages()     , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+
+      smpAssign( ~lhs, A * x * rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**SMP assignment to sparse matrices************************************************************
+   /*!\brief SMP assignment of a scaled dense tensor-dense vector multiplication to a sparse vector
+   //        (\f$ \vec{y}=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side sparse vector.
+   // \param rhs The right-hand side scaled multiplication expression to be assigned.
+   // \return void
+   //
+   // This function implements the performance optimized SMP assignment of a scaled dense tensor-
+   // dense vector multiplication expression to a sparse vector. Due to the explicit application
+   // of the SFINAE principle, this function can only be selected by the compiler in case the
+   // expression specific parallel evaluation strategy is selected.
 //   */
 //   template< typename VT1 >  // Type of the target sparse vector
-//   friend inline auto smpAssign( SparseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
+//   friend inline auto smpAssign( SparseVector<VT1,false>& lhs, const DMatScalarMultExpr& rhs )
 //      -> EnableIf_t< UseSMPAssign_v<VT1> >
 //   {
 //      BLAZE_FUNCTION_TRACE;
@@ -5057,179 +5039,150 @@ class DTensDVecMultExpr
 //      const ResultType tmp( rhs );
 //      smpAssign( ~lhs, tmp );
 //   }
-//   //**********************************************************************************************
-//
-//   //**SMP addition assignment to dense vectors****************************************************
-//   /*!\brief SMP addition assignment of a scaled dense tensor-dense vector multiplication to a
-//   //        dense vector (\f$ \vec{y}+=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be added.
-//   // \return void
-//   //
-//   // This function implements the performance optimized SMP addition assignment of a scaled
-//   // dense tensor-dense vector multiplication expression to a dense vector. Due to the explicit
-//   // application of the SFINAE principle, this function can only be selected by the compiler in
-//   // case the expression specific parallel evaluation strategy is selected.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline auto smpAddAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//      -> EnableIf_t< UseSMPAssign_v<VT1> >
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
-//      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
-//
-//      if( left.rows() == 0UL || left.columns() == 0UL ) {
-//         return;
-//      }
-//
-//      LT A( left  );  // Evaluation of the left-hand side dense tensor operand
-//      RT x( right );  // Evaluation of the right-hand side dense vector operand
-//
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()   , "Invalid number of rows"    );
-//      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns(), "Invalid number of columns" );
-//      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
-//
-//      smpAddAssign( ~lhs, A * x * rhs.scalar_ );
-//   }
-//   //**********************************************************************************************
-//
-//   //**SMP addition assignment to sparse vectors***************************************************
-//   // No special implementation for the SMP addition assignment to sparse vectors.
-//   //**********************************************************************************************
-//
-//   //**SMP subtraction assignment to dense vectors*************************************************
-//   /*!\brief SMP subtraction assignment of a scaled dense tensor-dense vector multiplication to a
-//   //        dense vector (\f$ \vec{y}-=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be subtracted.
-//   // \return void
-//   //
-//   // This function implements the performance optimized SMP subtraction assignment of a scaled
-//   // dense tensor-dense vector multiplication expression to a dense vector. Due to the explicit
-//   // application of the SFINAE principle, this function can only be selected by the compiler in
-//   // case the expression specific parallel evaluation strategy is selected.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline auto smpSubAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//      -> EnableIf_t< UseSMPAssign_v<VT1> >
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      LeftOperand_t<MVM>  left ( rhs.vector_.leftOperand()  );
-//      RightOperand_t<MVM> right( rhs.vector_.rightOperand() );
-//
-//      if( left.rows() == 0UL || left.columns() == 0UL ) {
-//         return;
-//      }
-//
-//      LT A( left  );  // Evaluation of the left-hand side dense tensor operand
-//      RT x( right );  // Evaluation of the right-hand side dense vector operand
-//
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()   , "Invalid number of rows"    );
-//      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns(), "Invalid number of columns" );
-//      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()  , "Invalid vector size"       );
-//      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).size() , "Invalid vector size"       );
-//
-//      smpSubAssign( ~lhs, A * x * rhs.scalar_ );
-//   }
-//   //**********************************************************************************************
-//
-//   //**SMP subtraction assignment to sparse vectors************************************************
-//   // No special implementation for the SMP subtraction assignment to sparse vectors.
-//   //**********************************************************************************************
-//
-//   //**SMP multiplication assignment to dense vectors**********************************************
-//   /*!\brief SMP multiplication assignment of a scaled dense tensor-dense vector multiplication
-//   //        to a dense vector (\f$ \vec{y}*=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression to be multiplied.
-//   // \return void
-//   //
-//   // This function implements the performance optimized SMP multiplication assignment of a scaled
-//   // dense tensor-dense vector multiplication expression to a dense vector. Due to the explicit
-//   // application of the SFINAE principle, this function can only be selected by the compiler in
-//   // case the expression specific parallel evaluation strategy is selected.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline auto smpMultAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//      -> EnableIf_t< UseSMPAssign_v<VT1> >
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      const ResultType tmp( rhs );
-//      smpMultAssign( ~lhs, tmp );
-//   }
-//   //**********************************************************************************************
-//
-//   //**SMP multiplication assignment to sparse vectors*********************************************
-//   // No special implementation for the SMP multiplication assignment to sparse vectors.
-//   //**********************************************************************************************
-//
-//   //**SMP division assignment to dense vectors****************************************************
-//   /*!\brief SMP division assignment of a scaled dense tensor-dense vector multiplication to a
-//   //        dense vector (\f$ \vec{y}/=s*A*\vec{x} \f$).
-//   // \ingroup dense_vector
-//   //
-//   // \param lhs The target left-hand side dense vector.
-//   // \param rhs The right-hand side scaled multiplication expression division.
-//   // \return void
-//   //
-//   // This function implements the performance optimized SMP division assignment of a scaled
-//   // dense tensor-dense vector multiplication expression to a dense vector. Due to the explicit
-//   // application of the SFINAE principle, this function can only be selected by the compiler in
-//   // case the expression specific parallel evaluation strategy is selected.
-//   */
-//   template< typename VT1 >  // Type of the target dense vector
-//   friend inline auto smpDivAssign( DenseVector<VT1,false>& lhs, const DVecScalarMultExpr& rhs )
-//      -> EnableIf_t< UseSMPAssign_v<VT1> >
-//   {
-//      BLAZE_FUNCTION_TRACE;
-//
-//      BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE  ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
-//      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
-//
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
-//
-//      const ResultType tmp( rhs );
-//      smpDivAssign( ~lhs, tmp );
-//   }
-//   //**********************************************************************************************
-//
-//   //**SMP division assignment to sparse vectors***************************************************
-//   // No special implementation for the SMP division assignment to sparse vectors.
-//   //**********************************************************************************************
-//
-//   //**Compile time checks*************************************************************************
-//   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( MVM );
-//   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( MVM );
-//   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE ( TT );
-//   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( TT );
-//   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT );
-//   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT );
-//   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
-//   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
-//   //**********************************************************************************************
-//};
+   //**********************************************************************************************
+
+   //**SMP addition assignment to dense vectors****************************************************
+   /*!\brief SMP addition assignment of a scaled dense tensor-dense vector multiplication to a
+   //        dense vector (\f$ \vec{y}+=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side scaled multiplication expression to be added.
+   // \return void
+   //
+   // This function implements the performance optimized SMP addition assignment of a scaled
+   // dense tensor-dense vector multiplication expression to a dense vector. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler in
+   // case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename MT1 >  // Type of the target dense vector
+   friend inline auto smpAddAssign( DenseMatrix<MT1,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT1> >
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+
+      LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
+
+      if( left.pages() == 0UL || left.rows() == 0UL) {
+         return;
+      }
+      else if( left.columns() == 0UL ) {
+         reset( ~lhs );
+         return;
+      }
+
+      LT A( left  );  // Evaluation of the left-hand side dense tensor operand
+      RT x( right );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( A.pages()   == left.pages()     , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+
+      smpAddAssign( ~lhs, A * x * rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**SMP addition assignment to sparse vectors***************************************************
+   // No special implementation for the SMP addition assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to dense vectors*************************************************
+   /*!\brief SMP subtraction assignment of a scaled dense tensor-dense vector multiplication to a
+   //        dense vector (\f$ \vec{y}-=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side scaled multiplication expression to be subtracted.
+   // \return void
+   //
+   // This function implements the performance optimized SMP subtraction assignment of a scaled
+   // dense tensor-dense vector multiplication expression to a dense vector. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler in
+   // case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename MT1 >  // Type of the target dense vector
+   friend inline auto smpSubAssign( DenseMatrix<MT1,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT1> >
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+
+      LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
+      RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
+
+      if( left.pages() == 0UL || left.rows() == 0UL || left.columns() == 0UL ) {
+         return;
+      }
+
+      LT A( left  );  // Evaluation of the left-hand side dense tensor operand
+      RT x( right );  // Evaluation of the right-hand side dense vector operand
+
+      BLAZE_INTERNAL_ASSERT( A.pages()   == left.pages()     , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+
+      smpSubAssign( ~lhs, A * x * rhs.scalar_ );
+   }
+   //**********************************************************************************************
+
+   //**SMP subtraction assignment to sparse vectors************************************************
+   // No special implementation for the SMP subtraction assignment to sparse vectors.
+   //**********************************************************************************************
+
+   //**SMP schur assignment to dense matrices**********************************************
+   /*!\brief SMP multiplication assignment of a scaled dense tensor-dense vector multiplication
+   //        to a dense vector (\f$ \vec{y}*=s*A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param lhs The target left-hand side dense vector.
+   // \param rhs The right-hand side scaled multiplication expression to be multiplied.
+   // \return void
+   //
+   // This function implements the performance optimized SMP multiplication assignment of a scaled
+   // dense tensor-dense vector multiplication expression to a dense vector. Due to the explicit
+   // application of the SFINAE principle, this function can only be selected by the compiler in
+   // case the expression specific parallel evaluation strategy is selected.
+   */
+   template< typename MT1 >  // Type of the target dense vector
+   friend inline auto smpMultAssign( DenseMatrix<MT1,false>& lhs, const DMatScalarMultExpr& rhs )
+      -> EnableIf_t< UseSMPAssign_v<MT1> >
+   {
+      BLAZE_FUNCTION_TRACE;
+
+      BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( ResultType );
+      BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
+      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType );
+
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+
+      const ResultType tmp( rhs );
+      smpMultAssign( ~lhs, tmp );
+   }
+   //**********************************************************************************************
+
+
+   //**Compile time checks*************************************************************************
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE    ( MVM );
+   BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( MVM );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE    ( TT );
+   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( TT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_VECTOR_TYPE ( VT );
+   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( VT );
+   BLAZE_CONSTRAINT_MUST_BE_NUMERIC_TYPE( ST );
+   BLAZE_CONSTRAINT_MUST_BE_SAME_TYPE( ST, RightOperand );
+   //**********************************************************************************************
+};
 ///*! \endcond */
 ////*************************************************************************************************
 
@@ -5295,24 +5248,24 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING BINARY ARITHTETIC OPERATORS
+//  GLOBAL RESTRUCTURING BINARY ARITHMETIC OPERATORS
 //
 //=================================================================================================
 
-////*************************************************************************************************
-///*! \cond BLAZE_INTERNAL */
-///*!\brief Multiplication operator for the multiplication of a tensor-matrix multiplication
-////        expression and a dense vector (\f$ \vec{y}=(A*B)*\vec{x} \f$).
-//// \ingroup dense_vector
-////
-//// \param tens The left-hand side dense tensor-tensor multiplication.
-//// \param vec The right-hand side dense vector for the multiplication.
-//// \return The resulting vector.
-////
-//// This operator implements a performance optimized treatment of the multiplication of a
-//// tensor-tensor multiplication expression and a dense vector. It restructures the expression
-//// \f$ \vec{x}=(A*B)*\vec{x} \f$ to the expression \f$ \vec{y}=A*(B*\vec{x}) \f$.
-//*/
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Multiplication operator for the multiplication of a tensor-matrix multiplication
+//        expression and a dense vector (\f$ \vec{y}=(A*B)*\vec{x} \f$).
+// \ingroup dense_vector
+//
+// \param tens The left-hand side dense tensor-tensor multiplication.
+// \param vec The right-hand side dense vector for the multiplication.
+// \return The resulting vector.
+//
+// This operator implements a performance optimized treatment of the multiplication of a
+// tensor-tensor multiplication expression and a dense vector. It restructures the expression
+// \f$ \vec{x}=(A*B)*\vec{x} \f$ to the expression \f$ \vec{y}=A*(B*\vec{x}) \f$.
+*/
 //template< typename TT    // Tensor base type of the left-hand side expression
 //        , typename VT >  // Type of the right-hand side dense vector
 //inline decltype(auto)
@@ -5322,8 +5275,8 @@ inline decltype(auto)
 //
 //   return (~tens).leftOperand() * ( (~tens).rightOperand() * vec );
 //}
-///*! \endcond */
-////*************************************************************************************************
+/*! \endcond */
+//*************************************************************************************************
 
 
 

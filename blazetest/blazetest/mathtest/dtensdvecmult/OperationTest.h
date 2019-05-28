@@ -295,6 +295,8 @@ OperationTest<TT,VT>::OperationTest( const Creator<TT>& creator1, const Creator<
    testSubmatrixOperation( Not< IsUniform<DRE> >() );
    testRowOperation      ( Not< IsUniform<DRE> >() );
    testColumnOperation   ( Not< IsUniform<DRE> >() );
+   //testRowsOperation      ( Not< IsUniform<DRE> >() ); // needs pageslices
+   //testColumnsOperation   ( Not< IsUniform<DRE> >() ); // needs rowslices
 }
 //*************************************************************************************************
 
@@ -1025,8 +1027,8 @@ void OperationTest<TT,VT>::testScaledOperation( T scalar )
       throw std::invalid_argument( "Invalid scalar parameter" );
 
 
-#if BLAZETEST_MATHTEST_TEST_SCALED_OPERATION
-   if( BLAZETEST_MATHTEST_TEST_SCALED_OPERATION > 1 )
+//#if BLAZETEST_MATHTEST_TEST_SCALED_OPERATION
+//   if( BLAZETEST_MATHTEST_TEST_SCALED_OPERATION > 1 )
    {
       //=====================================================================================
       // Self-scaling (v*=s)
@@ -1606,7 +1608,7 @@ void OperationTest<TT,VT>::testScaledOperation( T scalar )
          checkResults<TT>();
       }
    }
-#endif
+//#endif
 }
 //*************************************************************************************************
 
@@ -1799,170 +1801,170 @@ void OperationTest<TT,VT>::testTransOperation()
 // and division assignment. In case any error resulting from the multiplication or the
 // subsequent assignment is detected, a \a std::runtime_error exception is thrown.
 */
-//template< typename TT    // Type of the left-hand side dense tensor
-//        , typename VT >  // Type of the right-hand side dense vector
-//void OperationTest<TT,VT>::testCTransOperation()
-//{
+template< typename TT    // Type of the left-hand side dense tensor
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<TT,VT>::testCTransOperation()
+{
 //#if BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION
-//   if( BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION > 1 )
-//   {
-//      //=====================================================================================
-//      // Conjugate transpose multiplication
-//      //=====================================================================================
-//
-//      // Conjugate transpose multiplication with the given tensor/vector
-//      {
-//         test_  = "Conjugate transpose multiplication with the given tensor/vector";
-//         error_ = "Failed multiplication operation";
-//
-//         try {
-//            initTransposeResults();
-//            tdres_   = ctrans( lhs_ * rhs_ );
-//            trefres_ = ctrans( reflhs_ * refrhs_ );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkTransposeResults<TT>();
-//      }
-//
-//      // Conjugate transpose multiplication with evaluated tensor/vector
-//      {
-//         test_  = "Conjugate transpose multiplication with evaluated tensor/vector";
-//         error_ = "Failed multiplication operation";
-//
-//         try {
-//            initTransposeResults();
-//            tdres_   = ctrans( eval( lhs_ ) * eval( rhs_ ) );
-//            trefres_ = ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkTransposeResults<TT>();
-//      }
-//
-//
-//      //=====================================================================================
-//      // Conjugate transpose multiplication with addition assignment
-//      //=====================================================================================
-//
-//      // Conjugate transpose multiplication with addition assignment with the given tensor/vector
-//      {
-//         test_  = "Conjugate transpose multiplication with addition assignment with the given tensor/vector";
-//         error_ = "Failed addition assignment operation";
-//
-//         try {
-//            initTransposeResults();
-//            tdres_   += ctrans( lhs_ * rhs_ );
-//            trefres_ += ctrans( reflhs_ * refrhs_ );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkTransposeResults<TT>();
-//      }
-//
-//      // Conjugate transpose multiplication with addition assignment with evaluated tensor/vector
-//      {
-//         test_  = "Conjugate transpose multiplication with addition assignment with evaluated tensor/vector";
-//         error_ = "Failed addition assignment operation";
-//
-//         try {
-//            initTransposeResults();
-//            tdres_   += ctrans( eval( lhs_ ) * eval( rhs_ ) );
-//            trefres_ += ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkTransposeResults<TT>();
-//      }
-//
-//
-//      //=====================================================================================
-//      // Conjugate transpose multiplication with subtraction assignment
-//      //=====================================================================================
-//
-//      // Conjugate transpose multiplication with subtraction assignment with the given tensor/vector
-//      {
-//         test_  = "Conjugate transpose multiplication with subtraction assignment with the given tensor/vector";
-//         error_ = "Failed subtraction assignment operation";
-//
-//         try {
-//            initTransposeResults();
-//            tdres_   -= ctrans( lhs_ * rhs_ );
-//            trefres_ -= ctrans( reflhs_ * refrhs_ );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkTransposeResults<TT>();
-//      }
-//
-//      // Conjugate transpose multiplication with subtraction assignment with evaluated tensor/vector
-//      {
-//         test_  = "Conjugate transpose multiplication with subtraction assignment with evaluated tensor/vector";
-//         error_ = "Failed subtraction assignment operation";
-//
-//         try {
-//            initTransposeResults();
-//            tdres_   -= ctrans( eval( lhs_ ) * eval( rhs_ ) );
-//            trefres_ -= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkTransposeResults<TT>();
-//      }
-//
-//
-//      //=====================================================================================
-//      // Conjugate transpose multiplication with multiplication assignment
-//      //=====================================================================================
-//
-//      // Conjugate transpose multiplication with multiplication assignment with the given tensor/vector
-//      {
-//         test_  = "Conjugate transpose multiplication with multiplication assignment with the given tensor/vector";
-//         error_ = "Failed multiplication assignment operation";
-//
-//         try {
-//            initTransposeResults();
-//            tdres_   %= ctrans( lhs_ * rhs_ );
-//            trefres_ %= ctrans( reflhs_ * refrhs_ );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkTransposeResults<TT>();
-//      }
-//
-//      // Conjugate transpose multiplication with multiplication assignment with evaluated tensor/vector
-//      {
-//         test_  = "Conjugate transpose multiplication with multiplication assignment with evaluated tensor/vector";
-//         error_ = "Failed multiplication assignment operation";
-//
-//         try {
-//            initTransposeResults();
-//            tdres_   %= ctrans( eval( lhs_ ) * eval( rhs_ ) );
-//            trefres_ %= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkTransposeResults<TT>();
-//      }
-//   }
-////#endif
-//}
+   //if( BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION > 1 )
+   {
+      //=====================================================================================
+      // Conjugate transpose multiplication
+      //=====================================================================================
+
+      // Conjugate transpose multiplication with the given tensor/vector
+      {
+         test_  = "Conjugate transpose multiplication with the given tensor/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initTransposeResults();
+            tdres_   = ctrans( lhs_ * rhs_ );
+            //trefres_ = ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TT>( ex );
+         }
+
+         //checkTransposeResults<TT>();
+      }
+
+      // Conjugate transpose multiplication with evaluated tensor/vector
+      {
+         test_  = "Conjugate transpose multiplication with evaluated tensor/vector";
+         error_ = "Failed multiplication operation";
+
+         try {
+            initTransposeResults();
+            tdres_   = ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            trefres_ = ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TT>( ex );
+         }
+
+         checkTransposeResults<TT>();
+      }
+
+
+   //   //=====================================================================================
+   //   // Conjugate transpose multiplication with addition assignment
+   //   //=====================================================================================
+
+   //   // Conjugate transpose multiplication with addition assignment with the given tensor/vector
+   //   {
+   //      test_  = "Conjugate transpose multiplication with addition assignment with the given tensor/vector";
+   //      error_ = "Failed addition assignment operation";
+
+   //      try {
+   //         initTransposeResults();
+   //         tdres_   += ctrans( lhs_ * rhs_ );
+   //         trefres_ += ctrans( reflhs_ * refrhs_ );
+   //      }
+   //      catch( std::exception& ex ) {
+   //         convertException<TT>( ex );
+   //      }
+
+   //      checkTransposeResults<TT>();
+   //   }
+
+   //   // Conjugate transpose multiplication with addition assignment with evaluated tensor/vector
+   //   {
+   //      test_  = "Conjugate transpose multiplication with addition assignment with evaluated tensor/vector";
+   //      error_ = "Failed addition assignment operation";
+
+   //      try {
+   //         initTransposeResults();
+   //         tdres_   += ctrans( eval( lhs_ ) * eval( rhs_ ) );
+   //         trefres_ += ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+   //      }
+   //      catch( std::exception& ex ) {
+   //         convertException<TT>( ex );
+   //      }
+
+   //      checkTransposeResults<TT>();
+   //   }
+
+
+   //   //=====================================================================================
+   //   // Conjugate transpose multiplication with subtraction assignment
+   //   //=====================================================================================
+
+   //   // Conjugate transpose multiplication with subtraction assignment with the given tensor/vector
+   //   {
+   //      test_  = "Conjugate transpose multiplication with subtraction assignment with the given tensor/vector";
+   //      error_ = "Failed subtraction assignment operation";
+
+   //      try {
+   //         initTransposeResults();
+   //         tdres_   -= ctrans( lhs_ * rhs_ );
+   //         trefres_ -= ctrans( reflhs_ * refrhs_ );
+   //      }
+   //      catch( std::exception& ex ) {
+   //         convertException<TT>( ex );
+   //      }
+
+   //      checkTransposeResults<TT>();
+   //   }
+
+   //   // Conjugate transpose multiplication with subtraction assignment with evaluated tensor/vector
+   //   {
+   //      test_  = "Conjugate transpose multiplication with subtraction assignment with evaluated tensor/vector";
+   //      error_ = "Failed subtraction assignment operation";
+
+   //      try {
+   //         initTransposeResults();
+   //         tdres_   -= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+   //         trefres_ -= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+   //      }
+   //      catch( std::exception& ex ) {
+   //         convertException<TT>( ex );
+   //      }
+
+   //      checkTransposeResults<TT>();
+   //   }
+
+
+   //   //=====================================================================================
+   //   // Conjugate transpose multiplication with multiplication assignment
+   //   //=====================================================================================
+
+   //   // Conjugate transpose multiplication with multiplication assignment with the given tensor/vector
+   //   {
+   //      test_  = "Conjugate transpose multiplication with multiplication assignment with the given tensor/vector";
+   //      error_ = "Failed multiplication assignment operation";
+
+   //      try {
+   //         initTransposeResults();
+   //         tdres_   %= ctrans( lhs_ * rhs_ );
+   //         trefres_ %= ctrans( reflhs_ * refrhs_ );
+   //      }
+   //      catch( std::exception& ex ) {
+   //         convertException<TT>( ex );
+   //      }
+
+   //      checkTransposeResults<TT>();
+   //   }
+
+   //   // Conjugate transpose multiplication with multiplication assignment with evaluated tensor/vector
+   //   {
+   //      test_  = "Conjugate transpose multiplication with multiplication assignment with evaluated tensor/vector";
+   //      error_ = "Failed multiplication assignment operation";
+
+   //      try {
+   //         initTransposeResults();
+   //         tdres_   %= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+   //         trefres_ %= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+   //      }
+   //      catch( std::exception& ex ) {
+   //         convertException<TT>( ex );
+   //      }
+
+   //      checkTransposeResults<TT>();
+   //   }
+   }
+//#endif
+}
 //*************************************************************************************************
 
 
