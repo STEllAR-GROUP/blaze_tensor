@@ -88,6 +88,7 @@
 #include <blaze_tensor/math/expressions/MatExpandExpr.h>
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
+#include <blaze_tensor/math/expressions/Tensor.h>
 #include <blaze_tensor/math/expressions/TensReduceExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
@@ -96,6 +97,8 @@
 #include <blaze_tensor/math/expressions/TensTensMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
 #include <blaze_tensor/math/expressions/TensTransExpr.h>
+#include <blaze_tensor/math/expressions/TensVecMultExpr.h>
+//#include <blaze_tensor/math/expressions/TVecTensMultExpr.h>
 #include <blaze_tensor/math/views/columnslice/ColumnSliceData.h>
 #include <blaze_tensor/math/views/pageslice/PageSliceData.h>
 #include <blaze_tensor/math/views/rowslice/RowSliceData.h>
@@ -1696,13 +1699,13 @@ inline decltype(auto)
 
 //=================================================================================================
 //
-//  GLOBAL RESTRUCTURING FUNCTIONS (SUBVECTOR)
+//  GLOBAL RESTRUCTURING FUNCTIONS (SUBVECTOR/SUBMATRIX)
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific subvector of the given tensor/vector multiplication.
+/*!\brief Creating a view on a specific submatrix of the given tensor/vector multiplication.
 // \ingroup subtensor
 //
 // \param vector The constant tensor/vector multiplication.
@@ -1712,34 +1715,26 @@ inline decltype(auto)
 // This function returns an expression representing the specified subvector of the given
 // tensor/vector multiplication.
 */
-// template< AlignmentFlag AF    // Alignment flag
-//         , size_t... CSAs      // Compile time subvector arguments
-//         , typename VT         // Vector base type of the expression
-//         , typename... RSAs >  // Runtime subvector arguments
-// inline decltype(auto) subvector( const MatVecMultExpr<VT>& vector, RSAs... args )
-// {
-//    BLAZE_FUNCTION_TRACE;
-//
-//    using TT = RemoveReference_t< LeftOperand_t< VectorType_t<VT> > >;
-//
-//    const SubvectorData<CSAs...> sd( args... );
-//
-//    BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
-//    BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
-//
-//    const size_t column( ( IsUpper_v<TT> )
-//                         ?( ( !AF && IsStrictlyUpper_v<TT> )?( sd.offset() + 1UL ):( sd.offset() ) )
-//                         :( 0UL ) );
-//    const size_t n( ( IsLower_v<TT> )
-//                    ?( ( IsUpper_v<TT> )?( sd.size() )
-//                                        :( ( IsStrictlyLower_v<TT> && sd.size() > 0UL )
-//                                           ?( sd.offset() + sd.size() - 1UL )
-//                                           :( sd.offset() + sd.size() ) ) )
-//                    :( ( IsUpper_v<TT> )?( left.columns() - column )
-//                                        :( left.columns() ) ) );
-//
-//    return subtensor<AF>( left, sd.offset(), column, sd.size(), n ) * subvector<AF>( right, column, n );
-// }
+ template< AlignmentFlag AF    // Alignment flag
+         , size_t... CSAs      // Compile time submatrix arguments
+         , typename MT         // Vector base type of the expression
+         , typename... RSAs >  // Runtime submatrix arguments
+ inline decltype(auto) submatrix( const TensVecMultExpr<MT>& matrix, RSAs... args )
+ {
+    BLAZE_FUNCTION_TRACE;
+
+    using TT = RemoveReference_t< LeftOperand_t< MatrixType_t<MT> > >;
+
+    const SubmatrixData<CSAs...> sm( args... );
+
+    BLAZE_DECLTYPE_AUTO( left , (~matrix).leftOperand()  );
+    BLAZE_DECLTYPE_AUTO( right, (~matrix).rightOperand() );
+
+    const size_t column( 0UL );
+    const size_t n( left.columns() );
+
+    return subtensor<AF>( left, sm.row(), sm.column(), column, sm.rows(), sm.columns(), n ) * subvector<AF>( right, column, n );
+ }
 /*! \endcond */
 //*************************************************************************************************
 

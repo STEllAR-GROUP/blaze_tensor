@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/StaticVector.h
-//  \brief Header file for the implementation of a fixed-size vector
+//  \file blaze_tensor/math/Vector.h
+//  \brief Header file for all basic Vector functionality
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,40 +34,16 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_STATICVECTOR_H_
-#define _BLAZE_TENSOR_MATH_DENSE_STATICVECTOR_H_
+#ifndef _BLAZE_TENSOR_MATH_VECTOR_H_
+#define _BLAZE_TENSOR_MATH_VECTOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/StaticVector.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze_tensor/math/traits/DilatedSubvectorTrait.h>
+#include <blaze/math/Vector.h>
 
 
-
-namespace blaze {
-
-//=================================================================================================
-//
-//  DILATEDSUBVECTORTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, size_t I, size_t N, size_t Dilation >
-struct DilatedSubvectorTraitEval2< VT, I, N, Dilation
-                          , EnableIf_t< I != inf && N != inf && Dilation != inf &&
-                                        IsDenseVector_v<VT> > >
-{
-   using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-} // namespace blaze
 
 #endif

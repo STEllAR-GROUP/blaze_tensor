@@ -59,6 +59,7 @@
 #include <blaze_tensor/math/expressions/TensTensMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
 #include <blaze_tensor/math/expressions/TensTransExpr.h>
+#include <blaze_tensor/math/expressions/TensVecMultExpr.h>
 #include <blaze_tensor/math/expressions/Tensor.h>
 #include <blaze_tensor/math/views/Forward.h>
 #include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
@@ -743,6 +744,38 @@ inline decltype(auto) pageslice( const MatExpandExpr<MT,CEAs...>& tensor, RSAs..
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS (ROW)
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of row of the given tensor/vector multiplication.
+// \ingroup pageslice
+//
+// \param matrix The constant tensor/vector multiplication.
+// \param args The runtime element arguments.
+// \return View on the specified row of the multiplication.
+//
+// This function returns an expression representing the specified elements of the given
+// matrix/vector multiplication.
+*/
+template< size_t... CEAs      // Compile time element arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... REAs >  // Runtime element arguments
+inline decltype(auto) row( const TensVecMultExpr<MT>& matrix, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans(pageslice<CEAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand());
+}
+/*! \endcond */
+//*************************************************************************************************
 
 
 

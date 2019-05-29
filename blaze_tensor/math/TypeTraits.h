@@ -43,6 +43,7 @@
 
 #include <blaze/math/TypeTraits.h>
 
+#include <blaze_tensor/math/typetraits/HasMult.h>
 #include <blaze_tensor/math/typetraits/IsColumnMajorTensor.h>
 #include <blaze_tensor/math/typetraits/IsColumnSlice.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>

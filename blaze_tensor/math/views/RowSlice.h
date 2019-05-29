@@ -59,6 +59,7 @@
 #include <blaze_tensor/math/expressions/TensTensMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
 #include <blaze_tensor/math/expressions/TensTransExpr.h>
+#include <blaze_tensor/math/expressions/TensVecMultExpr.h>
 #include <blaze_tensor/math/expressions/Tensor.h>
 #include <blaze_tensor/math/views/Forward.h>
 #include <blaze_tensor/math/views/rowslice/BaseTemplate.h>
@@ -738,6 +739,38 @@ inline decltype(auto) rowslice( const MatExpandExpr<TT,CEAs...>& tensor, CSAs...
    MAYBE_UNUSED( args... );
 
    return expand( trans( row( (~tensor).operand(), 0UL ) ), (~tensor).expansion() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+//=================================================================================================
+//
+//  GLOBAL RESTRUCTURING FUNCTIONS (COLUMN)
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a selection of column of the given tensor/vector multiplication.
+// \ingroup rowslice
+//
+// \param matrix The constant tensor/vector multiplication.
+// \param args The runtime element arguments.
+// \return View on the specified row of the multiplication.
+//
+// This function returns an expression representing the specified elements of the given
+// matrix/vector multiplication.
+*/
+template< size_t... CEAs      // Compile time element arguments
+        , typename MT         // Matrix base type of the expression
+        , typename... REAs >  // Runtime element arguments
+inline decltype(auto) column( const TensVecMultExpr<MT>& matrix, REAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans(rowslice<CEAs...>( (~matrix).leftOperand(), args... )) * (~matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

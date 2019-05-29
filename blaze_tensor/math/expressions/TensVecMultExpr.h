@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/StaticVector.h
-//  \brief Header file for the implementation of a fixed-size vector
+//  \file blaze/math/expressions/MatVecMultExpr.h
+//  \brief Header file for the MatVecMultExpr base class
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,38 +34,41 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_STATICVECTOR_H_
-#define _BLAZE_TENSOR_MATH_DENSE_STATICVECTOR_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSVECMULTEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSVECMULTEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/StaticVector.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze_tensor/math/traits/DilatedSubvectorTrait.h>
-
+#include <blaze/math/expressions/MultExpr.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  DILATEDSUBVECTORTRAIT SPECIALIZATIONS
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, size_t I, size_t N, size_t Dilation >
-struct DilatedSubvectorTraitEval2< VT, I, N, Dilation
-                          , EnableIf_t< I != inf && N != inf && Dilation != inf &&
-                                        IsDenseVector_v<VT> > >
-{
-   using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
-};
-/*! \endcond */
+/*!\brief Base class for all matrix/vector multiplication expression templates.
+// \ingroup math
+//
+// The MatVecMultExpr class serves as a tag for all expression templates that implement a
+// matrix/vector multiplication. All classes, that represent a matrix/vector multiplication
+// and that are used within the expression template environment of the Blaze library have
+// to derive publicly from this class in order to qualify as matrix/vector multiplication
+// expression template. Only in case a class is derived publicly from the MatVecMultExpr
+// base class, the IsMatVecMultExpr type trait recognizes the class as valid matrix/vector
+// multiplication expression template.
+*/
+template< typename MT >  // Matrix base type of the expression
+struct TensVecMultExpr
+   : public MultExpr<MT>
+{};
 //*************************************************************************************************
 
 } // namespace blaze
