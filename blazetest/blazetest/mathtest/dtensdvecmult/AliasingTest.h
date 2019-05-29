@@ -79,7 +79,7 @@ class AliasingTest
    //**Type definitions****************************************************************************
    using DVec  = blaze::DynamicVector<int,blaze::columnVector>;      //!< Dense column vector type.
    using DTens = blaze::DynamicTensor<int>;                          //!< Dense tensor type.
-   using RMat  = blaze::StaticMatrix<int,2UL,3UL,blaze::columnMajor>;//!< Result column major matrix type.
+   using RVec  = blaze::StaticVector<int,3UL,blaze::columnVector>;   //!< Result column vector type.
    //**********************************************************************************************
 
  public:
@@ -116,14 +116,10 @@ class AliasingTest
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   DTens dA2x3x4_;
-   DTens dB2x4x3_;
-   DVec da4_;
-   DVec db4_;
+   DTens dB3x3x3_;
    DVec dc3_;
    DVec dd3_;
-   DVec de3_;
-   RMat result_;
+   RVec res_;
 
    std::string test_;  //!< Label of the currently performed test.
    //@}

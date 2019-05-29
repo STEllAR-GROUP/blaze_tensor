@@ -285,13 +285,13 @@ OperationTest<TT,VT>::OperationTest( const Creator<TT>& creator1, const Creator<
    testScaledOperation( 2.0 );
    testScaledOperation( Scalar( 2 ) );
    testTransOperation();
-   //testCTransOperation();
-   //testAbsOperation();
-   //testConjOperation();
-   //testRealOperation();
-   //testImagOperation();
-   //testEvalOperation();
-   //testSerialOperation();
+   testCTransOperation();
+   testAbsOperation();
+   testConjOperation();
+   testRealOperation();
+   testImagOperation();
+   testEvalOperation();
+   testSerialOperation();
    testSubmatrixOperation( Not< IsUniform<DRE> >() );
    testRowOperation      ( Not< IsUniform<DRE> >() );
    testColumnOperation   ( Not< IsUniform<DRE> >() );
@@ -1805,8 +1805,8 @@ template< typename TT    // Type of the left-hand side dense tensor
         , typename VT >  // Type of the right-hand side dense vector
 void OperationTest<TT,VT>::testCTransOperation()
 {
-//#if BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION
-   //if( BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION > 1 )
+#if BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CTRANS_OPERATION > 1 )
    {
       //=====================================================================================
       // Conjugate transpose multiplication
@@ -1820,13 +1820,13 @@ void OperationTest<TT,VT>::testCTransOperation()
          try {
             initTransposeResults();
             tdres_   = ctrans( lhs_ * rhs_ );
-            //trefres_ = ctrans( reflhs_ * refrhs_ );
+            trefres_ = ctrans( reflhs_ * refrhs_ );
          }
          catch( std::exception& ex ) {
             convertException<TT>( ex );
          }
 
-         //checkTransposeResults<TT>();
+         checkTransposeResults<TT>();
       }
 
       // Conjugate transpose multiplication with evaluated tensor/vector
@@ -1847,123 +1847,123 @@ void OperationTest<TT,VT>::testCTransOperation()
       }
 
 
-   //   //=====================================================================================
-   //   // Conjugate transpose multiplication with addition assignment
-   //   //=====================================================================================
+      //=====================================================================================
+      // Conjugate transpose multiplication with addition assignment
+      //=====================================================================================
 
-   //   // Conjugate transpose multiplication with addition assignment with the given tensor/vector
-   //   {
-   //      test_  = "Conjugate transpose multiplication with addition assignment with the given tensor/vector";
-   //      error_ = "Failed addition assignment operation";
+      // Conjugate transpose multiplication with addition assignment with the given tensor/vector
+      {
+         test_  = "Conjugate transpose multiplication with addition assignment with the given tensor/vector";
+         error_ = "Failed addition assignment operation";
 
-   //      try {
-   //         initTransposeResults();
-   //         tdres_   += ctrans( lhs_ * rhs_ );
-   //         trefres_ += ctrans( reflhs_ * refrhs_ );
-   //      }
-   //      catch( std::exception& ex ) {
-   //         convertException<TT>( ex );
-   //      }
+         try {
+            initTransposeResults();
+            tdres_   += ctrans( lhs_ * rhs_ );
+            trefres_ += ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TT>( ex );
+         }
 
-   //      checkTransposeResults<TT>();
-   //   }
+         checkTransposeResults<TT>();
+      }
 
-   //   // Conjugate transpose multiplication with addition assignment with evaluated tensor/vector
-   //   {
-   //      test_  = "Conjugate transpose multiplication with addition assignment with evaluated tensor/vector";
-   //      error_ = "Failed addition assignment operation";
+      // Conjugate transpose multiplication with addition assignment with evaluated tensor/vector
+      {
+         test_  = "Conjugate transpose multiplication with addition assignment with evaluated tensor/vector";
+         error_ = "Failed addition assignment operation";
 
-   //      try {
-   //         initTransposeResults();
-   //         tdres_   += ctrans( eval( lhs_ ) * eval( rhs_ ) );
-   //         trefres_ += ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
-   //      }
-   //      catch( std::exception& ex ) {
-   //         convertException<TT>( ex );
-   //      }
+         try {
+            initTransposeResults();
+            tdres_   += ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            trefres_ += ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TT>( ex );
+         }
 
-   //      checkTransposeResults<TT>();
-   //   }
-
-
-   //   //=====================================================================================
-   //   // Conjugate transpose multiplication with subtraction assignment
-   //   //=====================================================================================
-
-   //   // Conjugate transpose multiplication with subtraction assignment with the given tensor/vector
-   //   {
-   //      test_  = "Conjugate transpose multiplication with subtraction assignment with the given tensor/vector";
-   //      error_ = "Failed subtraction assignment operation";
-
-   //      try {
-   //         initTransposeResults();
-   //         tdres_   -= ctrans( lhs_ * rhs_ );
-   //         trefres_ -= ctrans( reflhs_ * refrhs_ );
-   //      }
-   //      catch( std::exception& ex ) {
-   //         convertException<TT>( ex );
-   //      }
-
-   //      checkTransposeResults<TT>();
-   //   }
-
-   //   // Conjugate transpose multiplication with subtraction assignment with evaluated tensor/vector
-   //   {
-   //      test_  = "Conjugate transpose multiplication with subtraction assignment with evaluated tensor/vector";
-   //      error_ = "Failed subtraction assignment operation";
-
-   //      try {
-   //         initTransposeResults();
-   //         tdres_   -= ctrans( eval( lhs_ ) * eval( rhs_ ) );
-   //         trefres_ -= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
-   //      }
-   //      catch( std::exception& ex ) {
-   //         convertException<TT>( ex );
-   //      }
-
-   //      checkTransposeResults<TT>();
-   //   }
+         checkTransposeResults<TT>();
+      }
 
 
-   //   //=====================================================================================
-   //   // Conjugate transpose multiplication with multiplication assignment
-   //   //=====================================================================================
+      //=====================================================================================
+      // Conjugate transpose multiplication with subtraction assignment
+      //=====================================================================================
 
-   //   // Conjugate transpose multiplication with multiplication assignment with the given tensor/vector
-   //   {
-   //      test_  = "Conjugate transpose multiplication with multiplication assignment with the given tensor/vector";
-   //      error_ = "Failed multiplication assignment operation";
+      // Conjugate transpose multiplication with subtraction assignment with the given tensor/vector
+      {
+         test_  = "Conjugate transpose multiplication with subtraction assignment with the given tensor/vector";
+         error_ = "Failed subtraction assignment operation";
 
-   //      try {
-   //         initTransposeResults();
-   //         tdres_   %= ctrans( lhs_ * rhs_ );
-   //         trefres_ %= ctrans( reflhs_ * refrhs_ );
-   //      }
-   //      catch( std::exception& ex ) {
-   //         convertException<TT>( ex );
-   //      }
+         try {
+            initTransposeResults();
+            tdres_   -= ctrans( lhs_ * rhs_ );
+            trefres_ -= ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TT>( ex );
+         }
 
-   //      checkTransposeResults<TT>();
-   //   }
+         checkTransposeResults<TT>();
+      }
 
-   //   // Conjugate transpose multiplication with multiplication assignment with evaluated tensor/vector
-   //   {
-   //      test_  = "Conjugate transpose multiplication with multiplication assignment with evaluated tensor/vector";
-   //      error_ = "Failed multiplication assignment operation";
+      // Conjugate transpose multiplication with subtraction assignment with evaluated tensor/vector
+      {
+         test_  = "Conjugate transpose multiplication with subtraction assignment with evaluated tensor/vector";
+         error_ = "Failed subtraction assignment operation";
 
-   //      try {
-   //         initTransposeResults();
-   //         tdres_   %= ctrans( eval( lhs_ ) * eval( rhs_ ) );
-   //         trefres_ %= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
-   //      }
-   //      catch( std::exception& ex ) {
-   //         convertException<TT>( ex );
-   //      }
+         try {
+            initTransposeResults();
+            tdres_   -= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            trefres_ -= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TT>( ex );
+         }
 
-   //      checkTransposeResults<TT>();
-   //   }
+         checkTransposeResults<TT>();
+      }
+
+
+      //=====================================================================================
+      // Conjugate transpose multiplication with multiplication assignment
+      //=====================================================================================
+
+      // Conjugate transpose multiplication with multiplication assignment with the given tensor/vector
+      {
+         test_  = "Conjugate transpose multiplication with multiplication assignment with the given tensor/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   %= ctrans( lhs_ * rhs_ );
+            trefres_ %= ctrans( reflhs_ * refrhs_ );
+         }
+         catch( std::exception& ex ) {
+            convertException<TT>( ex );
+         }
+
+         checkTransposeResults<TT>();
+      }
+
+      // Conjugate transpose multiplication with multiplication assignment with evaluated tensor/vector
+      {
+         test_  = "Conjugate transpose multiplication with multiplication assignment with evaluated tensor/vector";
+         error_ = "Failed multiplication assignment operation";
+
+         try {
+            initTransposeResults();
+            tdres_   %= ctrans( eval( lhs_ ) * eval( rhs_ ) );
+            trefres_ %= ctrans( eval( reflhs_ ) * eval( refrhs_ ) );
+         }
+         catch( std::exception& ex ) {
+            convertException<TT>( ex );
+         }
+
+         checkTransposeResults<TT>();
+      }
    }
-//#endif
+#endif
 }
 //*************************************************************************************************
 
@@ -1983,12 +1983,12 @@ template< typename TT    // Type of the left-hand side dense tensor
         , typename VT >  // Type of the right-hand side dense vector
 void OperationTest<TT,VT>::testAbsOperation()
 {
-//#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
-//   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
-//   {
+#if BLAZETEST_MATHTEST_TEST_ABS_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_ABS_OPERATION > 1 )
+   {
       testCustomOperation( blaze::Abs(), "abs" );
-//   }
-//#endif
+   }
+#endif
 }
 //*************************************************************************************************
 
@@ -2004,17 +2004,17 @@ void OperationTest<TT,VT>::testAbsOperation()
 // assignment. In case any error resulting from the multiplication or the subsequent
 // assignment is detected, a \a std::runtime_error exception is thrown.
 */
-//template< typename TT    // Type of the left-hand side dense tensor
-//        , typename VT >  // Type of the right-hand side dense vector
-//void OperationTest<TT,VT>::testConjOperation()
-//{
-//#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
-//   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
-//   {
-//      testCustomOperation( blaze::Conj(), "conj" );
-//   }
-//#endif
-//}
+template< typename TT    // Type of the left-hand side dense tensor
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<TT,VT>::testConjOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_CONJ_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_CONJ_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Conj(), "conj" );
+   }
+#endif
+}
 //*************************************************************************************************
 
 
@@ -2029,17 +2029,17 @@ void OperationTest<TT,VT>::testAbsOperation()
 // case any error resulting from the multiplication or the subsequent assignment is detected,
 // a \a std::runtime_error exception is thrown.
 */
-//template< typename TT    // Type of the left-hand side dense tensor
-//        , typename VT >  // Type of the right-hand side dense vector
-//void OperationTest<TT,VT>::testRealOperation()
-//{
-//#if BLAZETEST_MATHTEST_TEST_REAL_OPERATION
-//   if( BLAZETEST_MATHTEST_TEST_REAL_OPERATION > 1 )
-//   {
-//      testCustomOperation( blaze::Real(), "real" );
-//   }
-//#endif
-//}
+template< typename TT    // Type of the left-hand side dense tensor
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<TT,VT>::testRealOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_REAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_REAL_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Real(), "real" );
+   }
+#endif
+}
 //*************************************************************************************************
 
 
@@ -2054,17 +2054,17 @@ void OperationTest<TT,VT>::testAbsOperation()
 // case any error resulting from the multiplication or the subsequent assignment is detected,
 // a \a std::runtime_error exception is thrown.
 */
-//template< typename TT    // Type of the left-hand side dense tensor
-//        , typename VT >  // Type of the right-hand side dense vector
-//void OperationTest<TT,VT>::testImagOperation()
-//{
-//#if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
-//   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
-//   {
-//      testCustomOperation( blaze::Imag(), "imag" );
-//   }
-//#endif
-//}
+template< typename TT    // Type of the left-hand side dense tensor
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<TT,VT>::testImagOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_IMAG_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_IMAG_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Imag(), "imag" );
+   }
+#endif
+}
 //*************************************************************************************************
 
 
@@ -2079,17 +2079,17 @@ void OperationTest<TT,VT>::testAbsOperation()
 // assignment. In case any error resulting from the multiplication or the subsequent
 // assignment is detected, a \a std::runtime_error exception is thrown.
 */
-//template< typename TT    // Type of the left-hand side dense tensor
-//        , typename VT >  // Type of the right-hand side dense vector
-//void OperationTest<TT,VT>::testEvalOperation()
-//{
-//#if BLAZETEST_MATHTEST_TEST_EVAL_OPERATION
-//   if( BLAZETEST_MATHTEST_TEST_EVAL_OPERATION > 1 )
-//   {
-//      testCustomOperation( blaze::Eval(), "eval" );
-//   }
-//#endif
-//}
+template< typename TT    // Type of the left-hand side dense tensor
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<TT,VT>::testEvalOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_EVAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_EVAL_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Eval(), "eval" );
+   }
+#endif
+}
 //*************************************************************************************************
 
 
@@ -2104,17 +2104,17 @@ void OperationTest<TT,VT>::testAbsOperation()
 // assignment. In case any error resulting from the multiplication or the subsequent
 // assignment is detected, a \a std::runtime_error exception is thrown.
 */
-//template< typename TT    // Type of the left-hand side dense tensor
-//        , typename VT >  // Type of the right-hand side dense vector
-//void OperationTest<TT,VT>::testSerialOperation()
-//{
-//#if BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION
-//   if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
-//   {
-//      testCustomOperation( blaze::Serial(), "serial" );
-//   }
-//#endif
-//}
+template< typename TT    // Type of the left-hand side dense tensor
+        , typename VT >  // Type of the right-hand side dense vector
+void OperationTest<TT,VT>::testSerialOperation()
+{
+#if BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION
+   if( BLAZETEST_MATHTEST_TEST_SERIAL_OPERATION > 1 )
+   {
+      testCustomOperation( blaze::Serial(), "serial" );
+   }
+#endif
+}
 //*************************************************************************************************
 
 
@@ -2836,299 +2836,141 @@ void OperationTest<TT,VT>::testCustomOperation( OP op, const std::string& name )
 
       checkResults<TT>();
    }
-//
-//   // Customized multiplication with evaluated tensor/vector
-//   {
-//      test_  = "Customized multiplication with evaluated tensor/vector (" + name + ")";
-//      error_ = "Failed multiplication operation";
-//
-//      try {
-//         initResults();
-//         dres_   = op( eval( lhs_ ) * eval( rhs_ ) );
-//         sres_   = op( eval( lhs_ ) * eval( rhs_ ) );
-//         refres_ = op( eval( reflhs_ ) * eval( refrhs_ ) );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TT>( ex );
-//      }
-//
-//      checkResults<TT>();
-//
-//      try {
-//         initResults();
-//         dres_   = op( eval( olhs_ ) * eval( rhs_ ) );
-//         sres_   = op( eval( olhs_ ) * eval( rhs_ ) );
-//         refres_ = op( eval( reflhs_ ) * eval( refrhs_ ) );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TTT>( ex );
-//      }
-//
-//      checkResults<TTT>();
-//   }
-//
-//
-//   //=====================================================================================
-//   // Customized multiplication with addition assignment
-//   //=====================================================================================
-//
-//   // Customized multiplication with addition assignment with the given tensor/vector
-//   {
-//      test_  = "Customized multiplication with addition assignment with the given tensor/vector (" + name + ")";
-//      error_ = "Failed addition assignment operation";
-//
-//      try {
-//         initResults();
-//         dres_   += op( lhs_ * rhs_ );
-//         sres_   += op( lhs_ * rhs_ );
-//         refres_ += op( reflhs_ * refrhs_ );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TT>( ex );
-//      }
-//
-//      checkResults<TT>();
-//
-//      try {
-//         initResults();
-//         dres_   += op( olhs_ * rhs_ );
-//         sres_   += op( olhs_ * rhs_ );
-//         refres_ += op( reflhs_ * refrhs_ );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TTT>( ex );
-//      }
-//
-//      checkResults<TTT>();
-//   }
-//
-//   // Customized multiplication with addition assignment with evaluated tensor/vector
-//   {
-//      test_  = "Customized multiplication with addition assignment with evaluated tensor/vector (" + name + ")";
-//      error_ = "Failed addition assignment operation";
-//
-//      try {
-//         initResults();
-//         dres_   += op( eval( lhs_ ) * eval( rhs_ ) );
-//         sres_   += op( eval( lhs_ ) * eval( rhs_ ) );
-//         refres_ += op( eval( reflhs_ ) * eval( refrhs_ ) );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TT>( ex );
-//      }
-//
-//      checkResults<TT>();
-//
-//      try {
-//         initResults();
-//         dres_   += op( eval( olhs_ ) * eval( rhs_ ) );
-//         sres_   += op( eval( olhs_ ) * eval( rhs_ ) );
-//         refres_ += op( eval( reflhs_ ) * eval( refrhs_ ) );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TTT>( ex );
-//      }
-//
-//      checkResults<TTT>();
-//   }
-//
-//
-//   //=====================================================================================
-//   // Customized multiplication with subtraction assignment
-//   //=====================================================================================
-//
-//   // Customized multiplication with subtraction assignment with the given tensor/vector
-//   {
-//      test_  = "Customized multiplication with subtraction assignment with the given tensor/vector (" + name + ")";
-//      error_ = "Failed subtraction assignment operation";
-//
-//      try {
-//         initResults();
-//         dres_   -= op( lhs_ * rhs_ );
-//         sres_   -= op( lhs_ * rhs_ );
-//         refres_ -= op( reflhs_ * refrhs_ );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TT>( ex );
-//      }
-//
-//      checkResults<TT>();
-//
-//      try {
-//         initResults();
-//         dres_   -= op( olhs_ * rhs_ );
-//         sres_   -= op( olhs_ * rhs_ );
-//         refres_ -= op( reflhs_ * refrhs_ );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TTT>( ex );
-//      }
-//
-//      checkResults<TTT>();
-//   }
-//
-//   // Customized multiplication with subtraction assignment with evaluated tensor/vector
-//   {
-//      test_  = "Customized multiplication with subtraction assignment with evaluated tensor/vector (" + name + ")";
-//      error_ = "Failed subtraction assignment operation";
-//
-//      try {
-//         initResults();
-//         dres_   -= op( eval( lhs_ ) * eval( rhs_ ) );
-//         sres_   -= op( eval( lhs_ ) * eval( rhs_ ) );
-//         refres_ -= op( eval( reflhs_ ) * eval( refrhs_ ) );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TT>( ex );
-//      }
-//
-//      checkResults<TT>();
-//
-//      try {
-//         initResults();
-//         dres_   -= op( eval( olhs_ ) * eval( rhs_ ) );
-//         sres_   -= op( eval( olhs_ ) * eval( rhs_ ) );
-//         refres_ -= op( eval( reflhs_ ) * eval( refrhs_ ) );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TTT>( ex );
-//      }
-//
-//      checkResults<TTT>();
-//   }
-//
-//
-//   //=====================================================================================
-//   // Customized multiplication with multiplication assignment
-//   //=====================================================================================
-//
-//   // Customized multiplication with multiplication assignment with the given tensor/vector
-//   {
-//      test_  = "Customized multiplication with multiplication assignment with the given tensor/vector (" + name + ")";
-//      error_ = "Failed multiplication assignment operation";
-//
-//      try {
-//         initResults();
-//         dres_   *= op( lhs_ * rhs_ );
-//         sres_   *= op( lhs_ * rhs_ );
-//         refres_ *= op( reflhs_ * refrhs_ );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TT>( ex );
-//      }
-//
-//      checkResults<TT>();
-//
-//      try {
-//         initResults();
-//         dres_   *= op( olhs_ * rhs_ );
-//         sres_   *= op( olhs_ * rhs_ );
-//         refres_ *= op( reflhs_ * refrhs_ );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TTT>( ex );
-//      }
-//
-//      checkResults<TTT>();
-//   }
-//
-//   // Customized multiplication with multiplication assignment with evaluated tensor/vector
-//   {
-//      test_  = "Customized multiplication with multiplication assignment with evaluated tensor/vector (" + name + ")";
-//      error_ = "Failed multiplication assignment operation";
-//
-//      try {
-//         initResults();
-//         dres_   *= op( eval( lhs_ ) * eval( rhs_ ) );
-//         sres_   *= op( eval( lhs_ ) * eval( rhs_ ) );
-//         refres_ *= op( eval( reflhs_ ) * eval( refrhs_ ) );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TT>( ex );
-//      }
-//
-//      checkResults<TT>();
-//
-//      try {
-//         initResults();
-//         dres_   *= op( eval( olhs_ ) * eval( rhs_ ) );
-//         sres_   *= op( eval( olhs_ ) * eval( rhs_ ) );
-//         refres_ *= op( eval( reflhs_ ) * eval( refrhs_ ) );
-//      }
-//      catch( std::exception& ex ) {
-//         convertException<TTT>( ex );
-//      }
-//
-//      checkResults<TTT>();
-//   }
-//
-//
-//   //=====================================================================================
-//   // Customized multiplication with division assignment
-//   //=====================================================================================
-//
-//   if( !blaze::IsUniform_v<VT> && !blaze::IsUniform_v<TT> && blaze::isDivisor( op( lhs_ * rhs_ ) ) )
-//   {
-//      // Customized multiplication with division assignment with the given tensor/vector
-//      {
-//         test_  = "Customized multiplication with division assignment with the given tensor/vector (" + name + ")";
-//         error_ = "Failed division assignment operation";
-//
-//         try {
-//            initResults();
-//            dres_   /= op( lhs_ * rhs_ );
-//            sres_   /= op( lhs_ * rhs_ );
-//            refres_ /= op( reflhs_ * refrhs_ );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkResults<TT>();
-//
-//         try {
-//            initResults();
-//            dres_   /= op( olhs_ * rhs_ );
-//            sres_   /= op( olhs_ * rhs_ );
-//            refres_ /= op( reflhs_ * refrhs_ );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TTT>( ex );
-//         }
-//
-//         checkResults<TTT>();
-//      }
-//
-//      // Customized multiplication with division assignment with evaluated tensor/vector
-//      {
-//         test_  = "Customized multiplication with division assignment with evaluated tensor/vector (" + name + ")";
-//         error_ = "Failed division assignment operation";
-//
-//         try {
-//            initResults();
-//            dres_   /= op( eval( lhs_ ) * eval( rhs_ ) );
-//            sres_   /= op( eval( lhs_ ) * eval( rhs_ ) );
-//            refres_ /= op( eval( reflhs_ ) * eval( refrhs_ ) );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TT>( ex );
-//         }
-//
-//         checkResults<TT>();
-//
-//         try {
-//            initResults();
-//            dres_   /= op( eval( olhs_ ) * eval( rhs_ ) );
-//            sres_   /= op( eval( olhs_ ) * eval( rhs_ ) );
-//            refres_ /= op( eval( reflhs_ ) * eval( refrhs_ ) );
-//         }
-//         catch( std::exception& ex ) {
-//            convertException<TTT>( ex );
-//         }
-//
-//         checkResults<TTT>();
-//      }
-   //}
+
+   // Customized multiplication with evaluated tensor/vector
+   {
+      test_  = "Customized multiplication with evaluated tensor/vector (" + name + ")";
+      error_ = "Failed multiplication operation";
+
+      try {
+         initResults();
+         dres_   = op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ = op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TT>( ex );
+      }
+
+      checkResults<TT>();
+   }
+
+
+   //=====================================================================================
+   // Customized multiplication with addition assignment
+   //=====================================================================================
+
+   // Customized multiplication with addition assignment with the given tensor/vector
+   {
+      test_  = "Customized multiplication with addition assignment with the given tensor/vector (" + name + ")";
+      error_ = "Failed addition assignment operation";
+
+      try {
+         initResults();
+         dres_   += op( lhs_ * rhs_ );
+         refres_ += op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TT>( ex );
+      }
+
+      checkResults<TT>();
+   }
+
+   // Customized multiplication with addition assignment with evaluated tensor/vector
+   {
+      test_  = "Customized multiplication with addition assignment with evaluated tensor/vector (" + name + ")";
+      error_ = "Failed addition assignment operation";
+
+      try {
+         initResults();
+         dres_   += op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ += op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TT>( ex );
+      }
+
+      checkResults<TT>();
+   }
+
+
+   //=====================================================================================
+   // Customized multiplication with subtraction assignment
+   //=====================================================================================
+
+   // Customized multiplication with subtraction assignment with the given tensor/vector
+   {
+      test_  = "Customized multiplication with subtraction assignment with the given tensor/vector (" + name + ")";
+      error_ = "Failed subtraction assignment operation";
+
+      try {
+         initResults();
+         dres_   -= op( lhs_ * rhs_ );
+         refres_ -= op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TT>( ex );
+      }
+
+      checkResults<TT>();
+   }
+
+   // Customized multiplication with subtraction assignment with evaluated tensor/vector
+   {
+      test_  = "Customized multiplication with subtraction assignment with evaluated tensor/vector (" + name + ")";
+      error_ = "Failed subtraction assignment operation";
+
+      try {
+         initResults();
+         dres_   -= op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ -= op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TT>( ex );
+      }
+
+      checkResults<TT>();
+   }
+
+
+   //=====================================================================================
+   // Customized multiplication with schur assignment
+   //=====================================================================================
+
+   // Customized multiplication with schur assignment with the given tensor/vector
+   {
+      test_  = "Customized multiplication with schur assignment with the given tensor/vector (" + name + ")";
+      error_ = "Failed schur assignment operation";
+
+      try {
+         initResults();
+         dres_   %= op( lhs_ * rhs_ );
+         refres_ %= op( reflhs_ * refrhs_ );
+      }
+      catch( std::exception& ex ) {
+         convertException<TT>( ex );
+      }
+
+      checkResults<TT>();
+   }
+
+   // Customized multiplication with multiplication assignment with evaluated tensor/vector
+   {
+      test_  = "Customized multiplication with multiplication assignment with evaluated tensor/vector (" + name + ")";
+      error_ = "Failed multiplication assignment operation";
+
+      try {
+         initResults();
+         dres_   %= op( eval( lhs_ ) * eval( rhs_ ) );
+         refres_ %= op( eval( reflhs_ ) * eval( refrhs_ ) );
+      }
+      catch( std::exception& ex ) {
+         convertException<TT>( ex );
+      }
+
+      checkResults<TT>();
+   }
+
 }
 //*************************************************************************************************
 

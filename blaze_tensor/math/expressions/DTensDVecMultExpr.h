@@ -207,6 +207,7 @@ class DTensDVecMultExpr
    using BaseType      = DenseMatrix<This,false>;       //!< Base type of this DTensDVecMultExpr instance.
    using ResultType    = MultTrait_t<TRT,VRT>;         //!< Result type for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
    using ElementType   = ElementType_t<ResultType>;    //!< Resulting element type.
    using SIMDType      = SIMDTrait_t<ElementType>;     //!< Resulting SIMD element type.
    using ReturnType    = const ElementType;            //!< Return type for expression template evaluations.
