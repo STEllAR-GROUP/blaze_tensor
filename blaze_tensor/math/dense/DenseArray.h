@@ -137,7 +137,7 @@ inline auto operator==( const DenseArray<T1>& arr, T2 scalar )
    using CT1 = CompositeType_t<T1>;
 
    constexpr size_t N =
-      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions();
+      RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions();
 
    // Evaluation of the dense array operand
    CT1 A( ~arr );

@@ -276,7 +276,7 @@ template< typename F >
 void ArrayForEach2(
    size_t dim0, F const& f, size_t base1, size_t base2 )
 {
-   for( size_t i = 0; i != dims[0]; ++i ) {
+   for( size_t i = 0; i != dim0; ++i ) {
       f( i + base1, i + base2 );
    }
 }

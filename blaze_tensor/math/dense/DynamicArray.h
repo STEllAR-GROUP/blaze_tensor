@@ -549,7 +549,7 @@ inline DynamicArray<N, Type>::DynamicArray( InitFromValue, const Type& init, Dim
    \code
    using blaze::rowMajor;
 
-   blaze::DynamicArray<int> A{ { { 1, 2, 3 },
+   blaze::DynamicArray<3, int> A{ { { 1, 2, 3 },
                                   { 4, 5 },
                                   { 7, 8, 9 } },
                                 { { 1, 2, 3 },
@@ -588,7 +588,7 @@ inline DynamicArray<N, Type>::DynamicArray( nested_initializer_list< N, Type > l
 
    int* array = new int[20];
    // ... Initialization of the dynamic array
-   blaze::DynamicArray<int> v( 6UL, 4UL, 5UL, array );
+   blaze::DynamicArray<3, int> v( array, 6UL, 4UL, 5UL );
    delete[] array;
    \endcode
 
@@ -604,7 +604,16 @@ inline DynamicArray<N, Type>::DynamicArray( const Other* array, Dims... dims )
 {
    BLAZE_STATIC_ASSERT( N == sizeof...( dims ) );
 
-   ArrayForEach2( dims_, nn_, [&]( size_t i, size_t j ) { v_[i] = array[j]; } );
+   if( IsNothrowMoveAssignable_v< ValueType > ) {
+      ArrayForEach2( dims_, nn_, [&]( size_t i, size_t j ) {
+         v_[j] = std::move( array[i] );
+      } );
+   }
+   else {
+      ArrayForEach2( dims_, nn_, [&]( size_t i, size_t j ) {
+         v_[j] = array[i];
+      } );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1169,7 +1178,7 @@ inline typename DynamicArray<N, Type>::ConstIterator
 {
    BLAZE_STATIC_ASSERT( N - 2 == sizeof...( dims ) );
 
-   return ConstIterator( v_ + row_index( size_t i, dims... ) + dims_[0] );
+   return ConstIterator( v_ + row_index( i, dims... ) + dims_[0] );
 }
 //*************************************************************************************************
 
@@ -1235,7 +1244,7 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=(const Type& rhs)
    \code
    using blaze::rowMajor;
 
-   blaze::DynamicArray<int> A;
+   blaze::DynamicArray<3, int> A;
    A = { { { 1, 2, 3 },
            { 4, 5 },
            { 7, 8, 9 } } };
@@ -1581,7 +1590,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline void DynamicArray<N, Type>::reset()
 {
-   ArrayForEach( dims_, []( size_t i ) { blaze::clear( v_[i] ); } );
+   ArrayForEach( dims_, [&]( size_t i ) { blaze::clear( v_[i] ); } );
 }
 //*************************************************************************************************
 
@@ -1684,7 +1693,7 @@ void DynamicArray<N, Type>::resize( std::array< size_t, N > const& dims, bool pr
    const size_t nn( addPadding( dims[0] ) );
 
    size_t new_capacity = nn;
-   for( size_t i = 1; i < n; ++i ) {
+   for( size_t i = 1; i < N; ++i ) {
       new_capacity *= dims[i];
    }
 
@@ -2176,7 +2185,7 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::ctranspose( const T* indice
 // multiplication assignment operator:
 
    \code
-   blaze::DynamicArray<int> A;
+   blaze::DynamicArray<3, int> A;
    // ... Resizing and initialization
    A *= 4;        // Scaling of the array
    A.scale( 4 );  // Same effect as above
@@ -3037,7 +3046,7 @@ inline void clear( DynamicArray<N, Type>& m )
 // \a isDefault() function:
 
    \code
-   blaze::DynamicArray<int> A;
+   blaze::DynamicArray<3, int> A;
    // ... Resizing and initialization
    if( isDefault( A ) ) { ... }
    \endcode
@@ -3073,7 +3082,7 @@ inline bool isDefault( const DynamicArray<N, Type>& m )
 // function:
 
    \code
-   blaze::DynamicArray<int> A;
+   blaze::DynamicArray<3, int> A;
    // ... Resizing and initialization
    if( isIntact( A ) ) { ... }
    \endcode

@@ -368,7 +368,7 @@ BLAZE_ALWAYS_INLINE bool tryDiv( const Array<MT>& arr, std::array< size_t, N > c
    } );
 #endif
 
-   MAYBE_UNUSED( mat, dims, value );
+   MAYBE_UNUSED( arr, dims, value );
 
    return true;
 }
