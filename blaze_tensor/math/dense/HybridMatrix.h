@@ -42,11 +42,32 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/dense/HybridVector.h>
 #include <blaze/math/dense/HybridMatrix.h>
+
+#include <blaze_tensor/math/dense/Forward.h>
 #include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
+#include <blaze_tensor/math/traits/RavelTrait.h>
 
 
 namespace blaze {
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+// FIXME: this needs to go into math/adaptors/HybridMatrix.h
+template< typename T > // Type to be expanded
+struct RavelTraitEval2< T
+                       , EnableIf_t< IsDenseMatrix_v<T> &&
+                                     ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
+                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
+                                         ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) ) ) > >
+{
+   using Type = HybridVector< ElementType_t<T>, MaxSize_v<T,0UL> * MaxSize_v<T,1UL>, rowVector >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
 
 //=================================================================================================
 //

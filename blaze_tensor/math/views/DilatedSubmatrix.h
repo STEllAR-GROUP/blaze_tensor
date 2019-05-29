@@ -1449,6 +1449,152 @@ inline decltype(auto)
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific DilatedSubmatrix of another DilatedSubmatrix.
+// \ingroup DilatedSubmatrix
+//
+// \param sm The given DilatedSubmatrix
+// \param row The index of the first row of the DilatedSubmatrix.
+// \param column The index of the first column of the DilatedSubmatrix.
+// \param m The number of rows of the DilatedSubmatrix.
+// \param n The number of columns of the DilatedSubmatrix.
+// \param args The optional DilatedSubmatrix arguments.
+// \return View on the specified DilatedSubmatrix of the other DilatedSubmatrix.
+// \exception std::invalid_argument Invalid DilatedSubmatrix specification.
+//
+// This function returns an expression representing the specified DilatedSubmatrix of the given DilatedSubmatrix.
+*/
+template< typename MT         // Type of the sparse DilatedSubmatrix
+        , AlignmentFlag AF    // Alignment Flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time DilatedSubmatrix arguments
+        , typename... RSAs >  // Optional DilatedSubmatrix arguments
+inline decltype(auto)
+   dilatedsubmatrix( Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column,
+              size_t m, size_t n, size_t rowdilation, size_t columndilation, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( row + ( m - 1 ) * rowdilation + 1 > sm.rows() ) ||
+         ( column + ( n - 1 ) * columndilation + 1 > sm.columns() ) )
+      {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubmatrix specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( row    + ( m - 1 ) * rowdilation + 1 <= sm.rows() , "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( column + ( n - 1 ) * columndilation + 1 <= sm.columns() , "Invalid dilatedsubmatrix specification" );
+   }
+
+   return dilatedsubmatrix( sm.operand( ), sm.row( ) + row, sm.column( ) + column, m, n,
+      rowdilation, columndilation, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific DilatedSubmatrix of another constant DilatedSubmatrix.
+// \ingroup DilatedSubmatrix
+//
+// \param sm The given constant DilatedSubmatrix
+// \param row The index of the first row of the DilatedSubmatrix.
+// \param column The index of the first column of the DilatedSubmatrix.
+// \param m The number of rows of the DilatedSubmatrix.
+// \param n The number of columns of the DilatedSubmatrix.
+// \param args The optional DilatedSubmatrix arguments.
+// \return View on the specified DilatedSubmatrix of the other DilatedSubmatrix.
+// \exception std::invalid_argument Invalid DilatedSubmatrix specification.
+//
+// This function returns an expression representing the specified DilatedSubmatrix of the given constant
+// DilatedSubmatrix.
+*/
+template< typename MT         // Type of the sparse DilatedSubmatrix
+        , AlignmentFlag AF    // Alignment Flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time DilatedSubmatrix arguments
+        , typename... RSAs >  // Optional DilatedSubmatrix arguments
+inline decltype(auto)
+   dilatedsubmatrix( const Submatrix<MT,AF,SO,DF,CSAs...>& sm, size_t row, size_t column,
+              size_t m, size_t n, size_t rowdilation, size_t columndilation, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( row + ( m - 1 ) * rowdilation + 1 > sm.rows() ) ||
+         ( column + ( n - 1 ) * columndilation + 1 > sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubmatrix specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( row    + ( m - 1 ) * rowdilation + 1 <= sm.rows() , "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( column + ( n - 1 ) * columndilation + 1 <= sm.columns() , "Invalid dilatedsubmatrix specification" );
+   }
+
+   return dilatedsubmatrix( sm.operand( ), sm.row( ) + row, sm.column( ) + column, m, n,
+      rowdilation, columndilation, args...  );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific DilatedSubmatrix of another temporary DilatedSubmatrix.
+// \ingroup DilatedSubmatrix
+//
+// \param sm The given temporary DilatedSubmatrix
+// \param row The index of the first row of the DilatedSubmatrix.
+// \param column The index of the first column of the DilatedSubmatrix.
+// \param m The number of rows of the DilatedSubmatrix.
+// \param n The number of columns of the DilatedSubmatrix.
+// \param args The optional DilatedSubmatrix arguments.
+// \return View on the specified DilatedSubmatrix of the other DilatedSubmatrix.
+// \exception std::invalid_argument Invalid DilatedSubmatrix specification.
+//
+// This function returns an expression representing the specified DilatedSubmatrix of the given temporary
+// DilatedSubmatrix.
+*/
+template< typename MT         // Type of the sparse DilatedSubmatrix
+        , AlignmentFlag AF    // Alignment Flag
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , size_t... CSAs      // Compile time DilatedSubmatrix arguments
+        , typename... RSAs >  // Optional DilatedSubmatrix arguments
+inline decltype(auto)
+   dilatedsubmatrix( Submatrix<MT,AF,SO,DF,CSAs...>&& sm, size_t row, size_t column,
+              size_t m, size_t n, size_t rowdilation, size_t columndilation, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( row + ( m - 1 ) * rowdilation + 1 > sm.rows() ) ||
+         ( column + ( n - 1 ) * columndilation + 1 > sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubmatrix specification" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( row    + ( m - 1 ) * rowdilation + 1 <= sm.rows() , "Invalid dilatedsubmatrix specification" );
+      BLAZE_USER_ASSERT( column + ( n - 1 ) * columndilation + 1 <= sm.columns() , "Invalid dilatedsubmatrix specification" );
+   }
+
+   return dilatedsubmatrix( sm.operand( ), sm.row( ) + row, sm.column( ) + column, m, n,
+      rowdilation, columndilation, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
 
 
 //=================================================================================================

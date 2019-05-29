@@ -41,13 +41,12 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/DynamicMatrix.h>
-#include <blaze/math/traits/ExpandTrait.h>
-
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/Tensor.h>
+#include <blaze_tensor/math/dense/DynamicMatrix.h>
+#include <blaze_tensor/math/dense/HybridMatrix.h>
 #include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
@@ -3264,39 +3263,12 @@ struct BinaryMapTraitEval2< T1, T2, OP
 
 //=================================================================================================
 //
-//  EXPANDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T  // Type to be expanded
-        , size_t E >  // Compile time expansion
-struct ExpandTraitEval2< T, E
-                       , EnableIf_t< IsDenseMatrix_v<T> &&
-                                     ( ( E == inf ) ||
-                                       ( ( Size_v<T,0UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,0UL> == DefaultMaxSize_v ) &&
-                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,1UL> == DefaultMaxSize_v ) ) ) > >
-{
-   using Type = DynamicTensor< ElementType_t<T> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  RAVELTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-// FIXME: this needs to go into math/dense/DynamicMatrix.h
 template< typename T > // Type to be expanded
 struct RavelTraitEval2< T
                        , EnableIf_t< IsDenseTensor_v<T> &&
@@ -3308,43 +3280,6 @@ struct RavelTraitEval2< T
                                          ( MaxSize_v<T,2UL> == DefaultMaxSize_v ) ) ) > >
 {
    using Type = DynamicVector< ElementType_t<T>, rowVector >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T > // Type to be expanded
-struct RavelTraitEval2< T
-                       , EnableIf_t< IsDenseMatrix_v<T> &&
-                                     ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,0UL> == DefaultMaxSize_v ) &&
-                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,1UL> == DefaultMaxSize_v ) ) ) > >
-{
-   using Type = DynamicVector< ElementType_t<T>, rowVector >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-// FIXME: this needs to go into math/adaptors/HybridMatrix.h
-template< typename T > // Type to be expanded
-struct RavelTraitEval2< T
-                       , EnableIf_t< IsDenseMatrix_v<T> &&
-                                     ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
-                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) ) ) > >
-{
-   using Type = HybridVector< ElementType_t<T>, MaxSize_v<T,0UL> * MaxSize_v<T,1UL>, rowVector >;
 };
 /*! \endcond */
 //*************************************************************************************************
@@ -3425,22 +3360,6 @@ struct RavelTraitEval1< T
 };
 /*! \endcond */
 //*************************************************************************************************
-
-
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-// FIXME: this needs to go into math/dense/UniformMatrix.h
-template< typename T >
-struct RavelTraitEval1< T
-                    , EnableIf_t< IsDenseMatrix_v<T> && IsUniform_v<T> && !IsZero_v<T> > >
-{
-   using Type = UniformVector< ElementType_t<T>, rowVector >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
 
 
 

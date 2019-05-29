@@ -121,6 +121,7 @@
 // #include <blaze_tensor/math/typetraits/IsSparseTensor.h>
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/dense/Forward.h>
+#include <blaze_tensor/math/dense/StaticMatrix.h>
 #include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
@@ -3646,36 +3647,6 @@ struct BinaryMapTraitEval2< T1, T2, OP
 
 //=================================================================================================
 //
-//  EXPANDTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T  // Type to be expanded
-        , size_t E >  // Compile time expansion
-struct ExpandTraitEval2< T, E
-                       , EnableIf_t< IsDenseMatrix_v<T> &&
-                                     ( E != inf ) &&
-                                     ( Size_v<T,0UL> != DefaultSize_v ) &&
-                                     ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
-                                     ( Size_v<T,1UL> != DefaultSize_v ) &&
-                                     ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) > >
-{
-   static constexpr size_t O = ( E );
-   static constexpr size_t M = ( Size_v<T,0UL> );
-   static constexpr size_t N = ( Size_v<T,1UL> );
-
-   using Type = StaticTensor< ElementType_t<T>, O, M, N >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
 //  RAVELTRAIT SPECIALIZATIONS
 //
 //=================================================================================================
@@ -3693,25 +3664,6 @@ struct RavelTraitEval2< T
                                      ( MaxSize_v<T,2UL> != DefaultMaxSize_v ) > >
 {
    using Type = StaticVector< ElementType_t<T>, Size_v<T,0UL> * Size_v<T,1UL> * Size_v<T,2UL>, rowVector >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-// FIXME: this needs to go into math/dense/StaticMatrix.h
-template< typename T > // Type to be expanded
-struct RavelTraitEval2< T
-                       , EnableIf_t< IsDenseMatrix_v<T> &&
-                                     ( Size_v<T,0UL> != DefaultSize_v ) &&
-                                     ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
-                                     ( Size_v<T,1UL> != DefaultSize_v ) &&
-                                     ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) > >
-{
-   using Type = StaticVector< ElementType_t<T>, Size_v<T,0UL> * Size_v<T,1UL>, rowVector >;
 };
 /*! \endcond */
 //*************************************************************************************************
