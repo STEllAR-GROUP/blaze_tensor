@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/HybridMatrix.h
-//  \brief Header file for the implementation of a fixed-size matrix
+//  \file blaze/math/constraints/MatVecMultExpr.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
@@ -34,63 +34,37 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_HYBRIDMATRIX_H_
-#define _BLAZE_TENSOR_MATH_DENSE_HYBRIDMATRIX_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSVECMULTEXPR_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSVECMULTEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/HybridVector.h>
-#include <blaze/math/dense/HybridMatrix.h>
-
-#include <blaze_tensor/math/dense/Forward.h>
-#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
-#include <blaze_tensor/math/traits/RavelTrait.h>
+#include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze_tensor/math/typetraits/IsTensor.h>
+#include <blaze_tensor/math/typetraits/IsTensVecMultExpr.h>
+#include <blaze/math/typetraits/Size.h>
 
 
 namespace blaze {
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-// FIXME: this needs to go into math/adaptors/HybridMatrix.h
-template< typename T > // Type to be expanded
-struct RavelTraitEval2< T
-                       , EnableIf_t< IsDenseMatrix_v<T> &&
-                                     ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
-                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) ) ) > >
-{
-   using Type = HybridVector< ElementType_t<T>, MaxSize_v<T,0UL> * MaxSize_v<T,1UL>, rowVector >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
 //=================================================================================================
 //
-//  DILATEDSUBMATRIXTRAIT SPECIALIZATIONS
+//  MUST_BE_MATVECMULTEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct DilatedSubmatrixTraitEval2< MT, inf, inf, inf, inf, inf, inf
-                          , EnableIf_t< IsDenseMatrix_v<MT> &&
-                                        ( ( Size_v<MT,0UL> != DefaultSize_v &&
-                                            Size_v<MT,1UL> != DefaultSize_v ) ||
-                                          ( MaxSize_v<MT,0UL> != DefaultMaxSize_v &&
-                                            MaxSize_v<MT,1UL> != DefaultMaxSize_v ) ) > >
-{
-   static constexpr size_t M = max( Size_v<MT,0UL>, MaxSize_v<MT,0UL> );
-   static constexpr size_t N = max( Size_v<MT,1UL>, MaxSize_v<MT,1UL> );
-
-   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;
-};
-/*! \endcond */
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a matrix/vector multiplication expression (i.e. a type
+// derived from the MatVecMultExpr base class), a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_TENSVECMULTEXPR_TYPE(T) \
+   static_assert( ::blaze::IsTensVecMultExpr_v<T>, "Non-tensor/vector multiplication expression type detected" )
 //*************************************************************************************************
 
 
@@ -98,31 +72,44 @@ struct DilatedSubmatrixTraitEval2< MT, inf, inf, inf, inf, inf, inf
 
 //=================================================================================================
 //
-//  MULTTRAIT SPECIALIZATIONS
+//  MUST_NOT_BE_TENSVECMULTEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2 >
-struct MultTraitEval2< T1, T2
-                     , EnableIf_t< IsTensor_v<T1> &&
-                                   IsColumnVector_v<T2> &&
-                                   ( Size_v<T1,0UL> == DefaultSize_v ||
-                                     Size_v<T2,0UL> == DefaultSize_v ) &&
-                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v &&
-                                     MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
-{
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a matrix/vector multiplication expression (i.e. a type
+// derived from the MatVecMultExpr base class), a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_TENSVECMULTEXPR_TYPE(T) \
+   static_assert( !::blaze::IsTensVecMultExpr_v<T>, "Tensor/vector multiplication expression type detected" )
+//*************************************************************************************************
 
-   static constexpr size_t M = ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> );
-   static constexpr size_t N = ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ? MaxSize_v<T1,1UL> : MaxSize_v<T2,0UL> );
 
-   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, false >;
-};
 
-/*! \endcond */
+
+//=================================================================================================
+//
+//  MUST_FORM_VALID_TENSVECMULTEXPR CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data types \a T1 and \a T2 do not form a valid matrix/vector multiplication,
+// a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSVECMULTEXPR(T1,T2) \
+   static_assert( ::blaze::IsTensor_v<T1> && \
+                  ::blaze::IsColumnVector_v<T2> && \
+                  ( ( ::blaze::Size_v<T1,2UL> == -1L ) || \
+                    ( ::blaze::Size_v<T2,0UL> == -1L ) || \
+                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,0UL> ) ) \
+                , "Invalid Tensor/vector multiplication expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

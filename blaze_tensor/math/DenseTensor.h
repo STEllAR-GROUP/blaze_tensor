@@ -130,6 +130,7 @@
 #include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensSubExpr.h>
+#include <blaze_tensor/math/expressions/DTensDVecMultExpr.h>
 #include <blaze_tensor/math/expressions/DTensMapExpr.h>
 #include <blaze_tensor/math/expressions/DTensRavelExpr.h>
 #include <blaze_tensor/math/expressions/DTensScalarDivExpr.h>

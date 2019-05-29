@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/StaticVector.h
-//  \brief Header file for the implementation of a fixed-size vector
+//  \file src/mathtest/dtensdvecmult/T2x3x4aVHa.cpp
+//  \brief Source file for the T2x3x4aVHa dense tensor/dense vector multiplication math test
 //
-//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,40 +34,60 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_STATICVECTOR_H_
-#define _BLAZE_TENSOR_MATH_DENSE_STATICVECTOR_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/StaticVector.h>
-#include <blaze/math/typetraits/IsDenseVector.h>
-#include <blaze_tensor/math/traits/DilatedSubvectorTrait.h>
+#include <cstdlib>
+#include <iostream>
+#include <blaze/math/HybridVector.h>
+#include <blazetest/mathtest/creator/StaticTensor.h>
+#include <blazetest/mathtest/dtensdvecmult/OperationTest.h>
+#include <blazetest/system/MathTest.h>
 
+#include <blaze_tensor/math/dense/HybridMatrix.h>
+#include <blaze_tensor/math/dense/StaticVector.h>
+#include <blaze_tensor/math/StaticTensor.h>
 
-
-namespace blaze {
 
 //=================================================================================================
 //
-//  DILATEDSUBVECTORTRAIT SPECIALIZATIONS
+//  MAIN FUNCTION
 //
 //=================================================================================================
 
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename VT, size_t I, size_t N, size_t Dilation >
-struct DilatedSubvectorTraitEval2< VT, I, N, Dilation
-                          , EnableIf_t< I != inf && N != inf && Dilation != inf &&
-                                        IsDenseVector_v<VT> > >
-{
-   using Type = StaticVector< RemoveConst_t< ElementType_t<VT> >, N, TransposeFlag_v<VT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-} // namespace blaze
-
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
 #endif
+
+//*************************************************************************************************
+int main()
+
+{
+   std::cout << "   Running 'T2x3x4aVHa'..." << std::endl;
+
+   using blazetest::mathtest::TypeA;
+
+   try
+   {
+      // Tensor type definitions
+      using T2x3x4a = blaze::StaticTensor<TypeA,2UL,3UL,4UL>;
+      using VHa     = blaze::HybridVector<TypeA,4UL>;
+
+      // Creator type definitions
+      using CT2x3x4a = blazetest::Creator<T2x3x4a>;
+      using CVHa     = blazetest::Creator<VHa>;
+
+      // Running the tests
+      RUN_DTENSDVECMULT_OPERATION_TEST( CT2x3x4a(), CVHa( 4UL ) );
+   }
+   catch( std::exception& ex ) {
+      std::cerr << "\n\n ERROR DETECTED during dense tensor/dense vector multiplication:\n"
+                << ex.what() << "\n";
+      return EXIT_FAILURE;
+   }
+
+   return EXIT_SUCCESS;
+}
+//*************************************************************************************************

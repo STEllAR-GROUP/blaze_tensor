@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/dense/HybridMatrix.h
-//  \brief Header file for the implementation of a fixed-size matrix
+//  \file blaze/system/Thresholds.h
+//  \brief Header file for the thresholds for matrix/vector and matrix/matrix multiplications
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
@@ -34,97 +34,111 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_DENSE_HYBRIDMATRIX_H_
-#define _BLAZE_TENSOR_MATH_DENSE_HYBRIDMATRIX_H_
+#ifndef _BLAZE_TENSOR_SYSTEM_THRESHOLDS_H_
+#define _BLAZE_TENSOR_SYSTEM_THRESHOLDS_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/dense/HybridVector.h>
-#include <blaze/math/dense/HybridMatrix.h>
+#include <blaze/system/Debugging.h>
+#include <blaze/util/StaticAssert.h>
+#include <blaze/util/Types.h>
 
-#include <blaze_tensor/math/dense/Forward.h>
-#include <blaze_tensor/math/traits/DilatedSubmatrixTrait.h>
-#include <blaze_tensor/math/traits/RavelTrait.h>
+
+
+
+//=================================================================================================
+//
+//  THRESHOLDS
+//
+//=================================================================================================
+
+#include <blaze/config/Thresholds.h>
+#include <blaze_tensor/config/Thresholds.h>
+
 
 
 namespace blaze {
 
+//=================================================================================================
+//
+//  BLAS THRESHOLDS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Row-major dense matrix/dense vector multiplication threshold.
+// \ingroup config
+//
+// This debug value is used instead of the BLAZE_DTENSDVECMULT_THRESHOLD while the Blaze debug
+// mode is active. It specifies the threshold between the application of the custom Blaze kernels
+// and the BLAS kernels for the row-major dense matrix/dense vector multiplication. In case the
+// number of elements in the dense matrix is equal or higher than this value, the BLAS kernels
+// are preferred over the custom Blaze kernels. In case the number of elements in the dense
+// matrix is smaller, the Blaze kernels are used.
+*/
+constexpr size_t DTENSDVECMULT_DEBUG_THRESHOLD = 256UL;
+//*************************************************************************************************
+
+
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-// FIXME: this needs to go into math/adaptors/HybridMatrix.h
-template< typename T > // Type to be expanded
-struct RavelTraitEval2< T
-                       , EnableIf_t< IsDenseMatrix_v<T> &&
-                                     ( ( ( Size_v<T,0UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,0UL> != DefaultMaxSize_v ) &&
-                                         ( Size_v<T,1UL> == DefaultSize_v ) &&
-                                         ( MaxSize_v<T,1UL> != DefaultMaxSize_v ) ) ) > >
-{
-   using Type = HybridVector< ElementType_t<T>, MaxSize_v<T,0UL> * MaxSize_v<T,1UL>, rowVector >;
-};
+constexpr size_t DTENSDVECMULT_THRESHOLD  = ( BLAZE_DEBUG_MODE ? DTENSDVECMULT_DEBUG_THRESHOLD  : BLAZE_DTENSDVECMULT_THRESHOLD  );
+
 /*! \endcond */
 //*************************************************************************************************
 
 
 //=================================================================================================
 //
-//  DILATEDSUBMATRIXTRAIT SPECIALIZATIONS
+//  SMP THRESHOLDS
 //
 //=================================================================================================
+
+
+//*************************************************************************************************
+/*!\brief SMP row-major dense matrix/dense vector multiplication threshold.
+// \ingroup config
+//
+// This debug value is used instead of the BLAZE_SMP_DTENSDVECMULT_THRESHOLD while the Blaze
+// debug mode is active. It specifies when a row-major dense matrix/dense vector multiplication
+// can be executed in parallel. In case the number of elements of the target vector is larger or
+// equal to this threshold, the operation is executed in parallel. If the number of elements is
+// below this threshold the operation is executed single-threaded.
+*/
+constexpr size_t SMP_DTENSDVECMULT_DEBUG_THRESHOLD = 16UL;
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT >
-struct DilatedSubmatrixTraitEval2< MT, inf, inf, inf, inf, inf, inf
-                          , EnableIf_t< IsDenseMatrix_v<MT> &&
-                                        ( ( Size_v<MT,0UL> != DefaultSize_v &&
-                                            Size_v<MT,1UL> != DefaultSize_v ) ||
-                                          ( MaxSize_v<MT,0UL> != DefaultMaxSize_v &&
-                                            MaxSize_v<MT,1UL> != DefaultMaxSize_v ) ) > >
-{
-   static constexpr size_t M = max( Size_v<MT,0UL>, MaxSize_v<MT,0UL> );
-   static constexpr size_t N = max( Size_v<MT,1UL>, MaxSize_v<MT,1UL> );
-
-   using Type = HybridMatrix< RemoveConst_t< ElementType_t<MT> >, M, N, StorageOrder_v<MT> >;
-};
-/*! \endcond */
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MULTTRAIT SPECIALIZATIONS
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-template< typename T1, typename T2 >
-struct MultTraitEval2< T1, T2
-                     , EnableIf_t< IsTensor_v<T1> &&
-                                   IsColumnVector_v<T2> &&
-                                   ( Size_v<T1,0UL> == DefaultSize_v ||
-                                     Size_v<T2,0UL> == DefaultSize_v ) &&
-                                   ( MaxSize_v<T1,0UL> != DefaultMaxSize_v &&
-                                     MaxSize_v<T2,0UL> != DefaultMaxSize_v ) > >
-{
-   using ET1 = ElementType_t<T1>;
-   using ET2 = ElementType_t<T2>;
-
-   static constexpr size_t M = ( MaxSize_v<T1,0UL> != DefaultMaxSize_v ? MaxSize_v<T1,0UL> : MaxSize_v<T2,0UL> );
-   static constexpr size_t N = ( MaxSize_v<T1,1UL> != DefaultMaxSize_v ? MaxSize_v<T1,1UL> : MaxSize_v<T2,0UL> );
-
-   using Type = HybridMatrix< MultTrait_t<ET1,ET2>, M, N, false >;
-};
-
+constexpr size_t SMP_DTENSDVECMULT_THRESHOLD  = ( BLAZE_DEBUG_MODE ? SMP_DTENSDVECMULT_DEBUG_THRESHOLD  : BLAZE_SMP_DTENSDVECMULT_THRESHOLD  );
 /*! \endcond */
 //*************************************************************************************************
 
 } // namespace blaze
+
+
+
+
+//=================================================================================================
+//
+//  COMPILE TIME CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+namespace {
+
+BLAZE_STATIC_ASSERT( blaze::DTENSDVECMULT_THRESHOLD  > 0UL );
+
+BLAZE_STATIC_ASSERT( blaze::SMP_DTENSDVECMULT_THRESHOLD  >= 0UL );
+
+}
+/*! \endcond */
+//*************************************************************************************************
 
 #endif
