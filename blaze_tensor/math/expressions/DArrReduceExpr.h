@@ -455,8 +455,8 @@ class ReducedArray
    inline ReturnType at( Dims... dims ) const {
       constexpr size_t indices[] = {dims...};
 
-      ArrayDimForEach( dims_, [&]( size_t i ) {
-         if( indices[i] >= dims_[i + 1] ) {
+      ArrayDimForEach( dm_.dimensions(), [&]( size_t i ) {
+         if( indices[i] >= dm_.dimensions()[i] ) {
             BLAZE_THROW_OUT_OF_RANGE( "Invalid array access index" );
          }
       } );
@@ -575,7 +575,7 @@ class ReducedArray
    // \return \a true in case the expression can be used in SMP assignments, \a false if not.
    */
    inline bool canSMPAssign() const noexcept {
-      return dm_.canSMPAssign() || ( rows() * columns() > SMP_DMATREDUCE_THRESHOLD );
+      return dm_.canSMPAssign() || ( dimensions<1>() * dimensions<0>() > SMP_DMATREDUCE_THRESHOLD );
    }
    //**********************************************************************************************
 
@@ -958,7 +958,7 @@ inline ElementType_t<MT> darrayreduce( const DenseArray<MT>& dm, OP op )
 
    ET redux{};
 
-   ArrayForEachGrouped( ( ~dm ).dimensions(), 
+   ArrayForEachGrouped( ( ~dm ).dimensions(),
       [&]( std::array< size_t, N > const& dims ) {
          redux = op( redux, tmp( dims ) );
       } );

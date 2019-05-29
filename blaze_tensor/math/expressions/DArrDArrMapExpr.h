@@ -462,8 +462,8 @@ class DArrDArrMapExpr
    inline ReturnType at( Dims... dims ) const {
       constexpr size_t indices[] = {dims...};
 
-      ArrayDimForEach( dims_, [&]( size_t i ) {
-         if( indices[i] >= dims_[i + 1] ) {
+      ArrayDimForEach( lhs_.dimensions(), [&]( size_t i ) {
+         if( indices[i] >= lhs_.dimensions()[i] ) {
             BLAZE_THROW_OUT_OF_RANGE( "Invalid array access index" );
          }
       } );
