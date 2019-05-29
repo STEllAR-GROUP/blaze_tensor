@@ -331,11 +331,11 @@ inline decltype(auto) dilatedsubmatrix( Matrix<MT,SO>&& matrix, RSAs... args )
 
 // Please note that this function creates an unaligned dense or sparse DilatedSubmatrix. For instance,
 // the creation of the dense DilatedSubmatrix is equivalent to the following function call:
+*/
+//*************************************************************************************************
 
-*************************************************************************************************
 
-
-*************************************************************************************************
+//*************************************************************************************************
 /*!\brief Creating a view on a specific DilatedSubmatrix of the given matrix.
 // \ingroup DilatedSubmatrix
 //
