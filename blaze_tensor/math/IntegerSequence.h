@@ -41,8 +41,10 @@
 // Includes
 //*************************************************************************************************
 
+#include <tuple>
 #include <utility>
 #include <blaze/math/IntegerSequence.h>
+#include <blaze/util/StaticAssert.h>
 
 
 namespace blaze {
@@ -118,6 +120,56 @@ template< size_t Offset    // The offset for the shift operation
         , size_t ... Is >  // The indices to be selected
 using make_dilated_index_subsequence =
    decltype( subsequence<Is...>( dilate<Dilation>( shift<Offset>( make_index_sequence<N>() ) ) ) );
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Auxiliary function object allowing to split index sequences into two.
+// \ingroup math
+*/
+template< size_t... Is1, size_t... Is2, typename... Ts, typename... Dims >
+BLAZE_ALWAYS_INLINE decltype( auto ) fused_indices( index_sequence< Is1... >,
+   size_t index, index_sequence< Is2... >, std::tuple< Ts... > indices, Dims... dims )
+{
+   constexpr size_t N = sizeof...(Is1) + sizeof...(Is2) + sizeof...(Dims) + 1;
+   return std::array< size_t, N >{
+         size_t( std::get< Is1 >( indices ) )...,
+         index,
+         size_t( std::get< Is2 >( indices ) )...,
+         size_t( dims )...};
+}
+
+template< size_t M, typename... Dims >
+BLAZE_ALWAYS_INLINE decltype(auto) fused_indices( size_t index, Dims... dims )
+{
+   BLAZE_STATIC_ASSERT( M < sizeof...( Dims ) );
+
+   return fused_indices( make_index_sequence< M >{}, index,
+      make_shifted_index_sequence< M, sizeof...( Dims ) >{},
+      std::forward_as_tuple( dims... ) );
+}
+
+template< size_t N, size_t... Is >
+BLAZE_ALWAYS_INLINE decltype(auto) array_to_tuple( std::array< size_t, N > const& indices, index_sequence< Is... > )
+{
+   return std::forward_as_tuple( indices[Is]... );
+}
+
+template< size_t N >
+BLAZE_ALWAYS_INLINE decltype(auto) array_to_tuple(std::array< size_t, N > const& indices)
+{
+   return array_to_tuple( indices, make_index_sequence< N >{} );
+}
+
+template< size_t M, size_t N, typename... Dims >
+BLAZE_ALWAYS_INLINE decltype(auto) fused_indices( size_t index, std::array< size_t, N > const& indices, Dims... dims )
+{
+   BLAZE_STATIC_ASSERT( M < N );
+
+   return fused_indices(
+      make_index_sequence< M >{}, index, make_shifted_index_sequence< M, N >{},
+      array_to_tuple( indices ), dims... );
+}
 //*************************************************************************************************
 
 } // namespace blaze

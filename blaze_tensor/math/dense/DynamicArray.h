@@ -45,27 +45,31 @@
 
 #include <blaze/math/IntegerSequence.h>
 #include <blaze/math/dense/DynamicMatrix.h>
+#include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
+#include <blaze/math/traits/MapTrait.h>
+#include <blaze/math/traits/MultTrait.h>
+#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsContiguous.h>
 #include <blaze/math/typetraits/IsPadded.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsShrinkable.h>
-#include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/StaticAssert.h>
 
-#include <blaze_tensor/math/Forward.h>
-#include <blaze_tensor/math/InitializerList.h>
-#include <blaze_tensor/math/InitFromValue.h>
-#include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/Array.h>
+#include <blaze_tensor/math/Forward.h>
+#include <blaze_tensor/math/InitFromValue.h>
+#include <blaze_tensor/math/InitializerList.h>
+#include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseArray.h>
+#include <blaze_tensor/math/traits/ArraySliceTrait.h>
+#include <blaze_tensor/math/typetraits/IsArray.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
 #include <blaze_tensor/math/typetraits/IsRowMajorArray.h>
-#include <blaze_tensor/math/typetraits/IsArray.h>
 #include <blaze_tensor/util/ArrayForEach.h>
 
 namespace blaze {
@@ -3422,6 +3426,25 @@ struct DivTraitEval2< DynamicArray<N, ET1>, T2
                     , EnableIf_t< IsNumeric_v<T2> > >
 {
    using Type = DynamicArray< N, DivTrait_t<ET1,T2> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  ARRAYSLICETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< size_t M, size_t N, typename ET, size_t I >
+struct ArraySliceTraitEval2< M, DynamicArray<N, ET>, I >
+{
+   using Type = DynamicArray< N - 1, ET >;
 };
 /*! \endcond */
 //*************************************************************************************************

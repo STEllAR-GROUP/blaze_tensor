@@ -51,8 +51,9 @@ namespace blaze {
 //
 //=================================================================================================
 
+template< typename > struct Array;
+template< typename > struct Tensor;
 template< typename > struct DenseArray;
-
 template< typename > struct DenseTensor;
 
 template< typename > class DTensSerialExpr;
@@ -114,6 +115,12 @@ decltype(auto) map( const DenseTensor<TT>&, OP );
 
 template< typename TT1, typename TT2, typename OP >
 decltype(auto) map( const DenseTensor<TT1>&, const DenseTensor<TT2>&, OP );
+
+template< typename TT, typename OP >
+decltype(auto) map( const DenseArray<TT>&, OP );
+
+template< typename TT1, typename TT2, typename OP >
+decltype(auto) map( const DenseArray<TT1>&, const DenseArray<TT2>&, OP );
 
 template< typename TT, typename OP >
 decltype(auto) reduce( const DenseTensor<TT>&, OP );
