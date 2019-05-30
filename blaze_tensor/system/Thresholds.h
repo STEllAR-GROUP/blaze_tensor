@@ -113,7 +113,23 @@ constexpr size_t SMP_DTENSDVECMULT_DEBUG_THRESHOLD = 16UL;
 
 
 //*************************************************************************************************
+/*!\brief SMP row-major dense matrix/row-major dense matrix Schur product threshold.
+// \ingroup config
+//
+// This debug value is used instead of the BLAZE_SMP_DMATDMATSCHUR_THRESHOLD while the
+// Blaze debug mode is active. It specifies when a row-major dense matrix/row-major dense matrix
+// Schur product can be executed in parallel. This threshold affects both Schur products between
+// two row-major matrices or two column-major dense matrices. In case the number of elements of
+// the target matrix is larger or equal to this threshold, the operation is executed in parallel.
+// If the number of elements is below this threshold the operation is executed single-threaded.
+*/
+constexpr size_t SMP_DTENSDMATSCHUR_DEBUG_THRESHOLD = 256UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+constexpr size_t SMP_DTENSDMATSCHUR_THRESHOLD = ( BLAZE_DEBUG_MODE ? SMP_DTENSDMATSCHUR_DEBUG_THRESHOLD : BLAZE_SMP_DTENSDMATSCHUR_THRESHOLD  );
 constexpr size_t SMP_DTENSDVECMULT_THRESHOLD  = ( BLAZE_DEBUG_MODE ? SMP_DTENSDVECMULT_DEBUG_THRESHOLD  : BLAZE_SMP_DTENSDVECMULT_THRESHOLD  );
 /*! \endcond */
 //*************************************************************************************************
@@ -135,6 +151,7 @@ namespace {
 
 BLAZE_STATIC_ASSERT( blaze::DTENSDVECMULT_THRESHOLD  > 0UL );
 
+BLAZE_STATIC_ASSERT( blaze::SMP_DTENSDMATSCHUR_THRESHOLD >= 0UL );
 BLAZE_STATIC_ASSERT( blaze::SMP_DTENSDVECMULT_THRESHOLD  >= 0UL );
 
 }

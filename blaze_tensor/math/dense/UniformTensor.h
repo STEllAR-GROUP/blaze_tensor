@@ -65,6 +65,7 @@
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsColumnVector.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsResizable.h>
 #include <blaze/math/typetraits/IsRowVector.h>
 #include <blaze/math/typetraits/IsSMPAssignable.h>
@@ -1720,6 +1721,19 @@ template< typename T1, typename T2 >
 struct SchurTraitEval1< T1, T2
                       , EnableIf_t< IsTensor_v<T1> &&
                                     IsTensor_v<T2> &&
+                                    ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
+                                    !( IsZero_v<T1> || IsZero_v<T2> ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = UniformTensor< MultTrait_t<ET1,ET2> >;
+};
+
+template< typename T1, typename T2 >
+struct SchurTraitEval1< T1, T2
+                      , EnableIf_t< IsTensor_v<T1> &&
+                                    IsMatrix_v<T2> &&
                                     ( IsUniform_v<T1> && IsUniform_v<T2> ) &&
                                     !( IsZero_v<T1> || IsZero_v<T2> ) > >
 {

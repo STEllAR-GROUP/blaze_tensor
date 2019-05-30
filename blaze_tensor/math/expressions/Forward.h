@@ -53,6 +53,7 @@ namespace blaze {
 
 template< typename > struct DenseTensor;
 template< typename > class DTensSerialExpr;
+template< typename, typename, bool > class DTensDMatSchurExpr;
 template< typename, typename > class DTensDTensAddExpr;
 template< typename, typename > class DTensDTensMultExpr;
 template< typename, typename > class DTensDTensSchurExpr;
@@ -84,6 +85,9 @@ decltype(auto) operator*( const DenseTensor<TT>&, const DenseVector<VT,false>& )
 
 template< typename TT1, typename TT2 >
 decltype(auto) operator%( const DenseTensor<TT1>&, const DenseTensor<TT2>& );
+
+template< typename TT, typename MT, bool SO >
+decltype(auto) operator%(const DenseTensor<TT>&, const DenseMatrix<MT,SO>&);
 
 
 template< size_t O, size_t M, size_t N, typename MT, typename ... RTAs>

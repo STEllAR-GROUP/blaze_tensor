@@ -51,6 +51,7 @@
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
 #include <blaze_tensor/math/expressions/TensReduceExpr.h>
+#include <blaze_tensor/math/expressions/TensMatSchurExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
 #include <blaze_tensor/math/expressions/TensSerialExpr.h>
@@ -390,8 +391,33 @@ inline decltype(auto) pageslice( const SchurExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) *
+   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) %
           pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific pageslice of the given Schur product.
+// \ingroup pageslice
+//
+// \param tensor The constant Schur product.
+// \param args The runtime pageslice arguments.
+// \return View on the specified pageslice of the Schur product.
+//
+// This function returns an expression representing the specified pageslice of the given Schur product.
+*/
+template< size_t... CRAs      // Compile time pageslice arguments
+        , typename TT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime pageslice arguments
+inline decltype(auto) pageslice( const TensMatSchurExpr<TT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) %
+                              (~tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

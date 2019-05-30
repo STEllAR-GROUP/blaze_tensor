@@ -41,6 +41,8 @@
 // Includes
 //*************************************************************************************************
 
+#include <blaze/math/typetraits/IsDenseMatrix.h>
+
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/SMP.h>
@@ -3083,18 +3085,39 @@ template< typename T1, typename T2 >
 struct SchurTraitEval2< T1, T2
                       , EnableIf_t< IsDenseTensor_v<T1> &&
                                     IsDenseTensor_v<T2> &&
-                                    ( Size_v<T1,0UL> == DefaultSize_v ) &&
-                                    ( Size_v<T2,0UL> == DefaultSize_v ) &&
+                                  ((( Size_v<T1,0UL> == DefaultSize_v ) &&
                                     ( Size_v<T1,1UL> == DefaultSize_v ) &&
+                                    ( Size_v<T1,2UL> == DefaultSize_v )) &&
+                                   (( Size_v<T2,0UL> == DefaultSize_v ) &&
                                     ( Size_v<T2,1UL> == DefaultSize_v ) &&
-                                    ( Size_v<T1,2UL> == DefaultSize_v ) &&
-                                    ( Size_v<T2,2UL> == DefaultSize_v ) &&
-                                    ( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
-                                    ( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) &&
+                                    ( Size_v<T2,2UL> == DefaultSize_v ))) &&
+                                  ((( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
                                     ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) &&
+                                    ( MaxSize_v<T1,2UL> == DefaultMaxSize_v )) &&
+                                   (( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) &&
                                     ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ) &&
-                                    ( MaxSize_v<T1,2UL> == DefaultMaxSize_v ) &&
-                                    ( MaxSize_v<T2,2UL> == DefaultMaxSize_v ) > >
+                                    ( MaxSize_v<T2,2UL> == DefaultMaxSize_v ))) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   using Type = DynamicTensor< MultTrait_t<ET1,ET2> >;
+};
+
+template< typename T1, typename T2 >
+struct SchurTraitEval2< T1, T2
+                      , EnableIf_t< IsDenseTensor_v<T1> &&
+                                    IsDenseMatrix_v<T2> &&
+                                   ((( Size_v<T1,0UL> == DefaultSize_v ) &&
+                                     ( Size_v<T1,1UL> == DefaultSize_v ) &&
+                                     ( Size_v<T1,2UL> == DefaultSize_v )) ||
+                                    (( Size_v<T2,0UL> == DefaultSize_v ) &&
+                                     ( Size_v<T2,1UL> == DefaultSize_v ))) &&
+                                   ((( MaxSize_v<T1,0UL> == DefaultMaxSize_v ) &&
+                                     ( MaxSize_v<T1,1UL> == DefaultMaxSize_v ) &&
+                                     ( MaxSize_v<T1,2UL> == DefaultMaxSize_v )) ||
+                                    (( MaxSize_v<T2,0UL> == DefaultMaxSize_v ) &&
+                                     ( MaxSize_v<T2,1UL> == DefaultMaxSize_v ))) > >
 {
    using ET1 = ElementType_t<T1>;
    using ET2 = ElementType_t<T2>;

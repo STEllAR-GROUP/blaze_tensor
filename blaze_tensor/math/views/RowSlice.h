@@ -50,6 +50,7 @@
 #include <blaze_tensor/math/expressions/MatExpandExpr.h>
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
+#include <blaze_tensor/math/expressions/TensMatSchurExpr.h>
 #include <blaze_tensor/math/expressions/TensReduceExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
@@ -390,8 +391,33 @@ inline decltype(auto) rowslice( const SchurExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) *
+   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) %
           rowslice<CRAs...>( (~tensor).rightOperand(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific rowslice of the given Schur product.
+// \ingroup rowslice
+//
+// \param tensor The constant Schur product.
+// \param args The runtime rowslice arguments.
+// \return View on the specified rowslice of the Schur product.
+//
+// This function returns an expression representing the specified rowslice of the given Schur product.
+*/
+template< size_t... CRAs      // Compile time rowslice arguments
+        , typename TT         // Tensor base type of the expression
+        , typename... RRAs >  // Runtime rowslice arguments
+inline decltype(auto) rowslice( const TensMatSchurExpr<TT>& tensor, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) %
+                             (~tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

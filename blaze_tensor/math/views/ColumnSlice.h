@@ -390,7 +390,7 @@ inline decltype(auto) columnslice( const SchurExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) *
+   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) %
           columnslice<CRAs...>( (~tensor).rightOperand(), args... );
 }
 /*! \endcond */
