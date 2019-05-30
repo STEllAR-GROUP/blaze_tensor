@@ -185,14 +185,18 @@ inline TT1& operator*=( Array<TT1>&& lhs, const Array<TT2>& rhs )
 // assignment operator.
 */
 template< typename MT    // Type of the array
+        , size_t N       // Number of dimensions
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool trySet( const Array<MT>& mat, size_t k, size_t i, size_t j, const ET& value )
+BLAZE_ALWAYS_INLINE bool trySet( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
+#if defined(BLAZE_INTERNAL_ASSERTION)
+   auto const& arrdims = ( ~arr ).dimensions();
+   ArrayDimForEach( arrdims, [&]( size_t i ) {
+      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
+   } );
+#endif
 
-   MAYBE_UNUSED( mat, k, i, j, value );
+   MAYBE_UNUSED( arr, dims, value );
 
    return true;
 }
@@ -218,14 +222,18 @@ BLAZE_ALWAYS_INLINE bool trySet( const Array<MT>& mat, size_t k, size_t i, size_
 // assignment operator.
 */
 template< typename MT    // Type of the array
+        , size_t N       // Number of dimensions
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool tryAdd( const Array<MT>& mat, size_t k, size_t i, size_t j, const ET& value )
+BLAZE_ALWAYS_INLINE bool tryAdd( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
+#if defined(BLAZE_INTERNAL_ASSERTION)
+   auto const& arrdims = ( ~arr ).dimensions();
+   ArrayDimForEach( arrdims, [&]( size_t i ) {
+      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
+   } );
+#endif
 
-   MAYBE_UNUSED( mat, k, i, j, value );
+   MAYBE_UNUSED( arr, dims, value );
 
    return true;
 }
@@ -251,14 +259,18 @@ BLAZE_ALWAYS_INLINE bool tryAdd( const Array<MT>& mat, size_t k, size_t i, size_
 // assignment operator.
 */
 template< typename MT    // Type of the array
+        , size_t N       // Number of dimensions
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool trySub( const Array<MT>& mat, size_t k, size_t i, size_t j, const ET& value )
+BLAZE_ALWAYS_INLINE bool trySub( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( k < (~mat).pages(), "Invalid page access index" );
+#if defined(BLAZE_INTERNAL_ASSERTION)
+   auto const& arrdims = ( ~arr ).dimensions();
+   ArrayDimForEach( arrdims, [&]( size_t i ) {
+      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
+   } );
+#endif
 
-   MAYBE_UNUSED( mat, k, i, j, value );
+   MAYBE_UNUSED( arr, dims, value );
 
    return true;
 }
@@ -284,14 +296,18 @@ BLAZE_ALWAYS_INLINE bool trySub( const Array<MT>& mat, size_t k, size_t i, size_
 // assignment operator.
 */
 template< typename MT    // Type of the array
+        , size_t N       // Number of dimensions
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool tryMult( const Array<MT>& tens, size_t k, size_t i, size_t j, const ET& value )
+BLAZE_ALWAYS_INLINE bool tryMult( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~tens).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~tens).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( k < (~tens).pages(), "Invalid page access index" );
+#if defined(BLAZE_INTERNAL_ASSERTION)
+   auto const& arrdims = ( ~arr ).dimensions();
+   ArrayDimForEach( arrdims, [&]( size_t i ) {
+      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
+   } );
+#endif
 
-   MAYBE_UNUSED( tens, k, i, j, value );
+   MAYBE_UNUSED( arr, dims, value );
 
    return true;
 }
@@ -320,18 +336,19 @@ BLAZE_ALWAYS_INLINE bool tryMult( const Array<MT>& tens, size_t k, size_t i, siz
 // assignment operator.
 */
 template< typename MT    // Type of the array
+        , size_t N       // Number of dimensions
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool
-   tryMult( const Array<MT>& tens, size_t row, size_t column, size_t page, size_t o, size_t m, size_t n, const ET& value )
+   tryMult( const Array<MT>& arr, std::array< size_t, N > const& sizes, std::array< size_t, N > const& indices, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~tens).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~tens).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( page <= (~tens).pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~tens).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~tens).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( page + o <= (~tens).pages(), "Invalid number of pages" );
-
-   MAYBE_UNUSED( tens, page, row, column, o, m, n, value );
+//    BLAZE_INTERNAL_ASSERT( row <= (~tens).rows(), "Invalid row access index" );
+//    BLAZE_INTERNAL_ASSERT( column <= (~tens).columns(), "Invalid column access index" );
+//    BLAZE_INTERNAL_ASSERT( page <= (~tens).pages(), "Invalid page access index" );
+//    BLAZE_INTERNAL_ASSERT( row + m <= (~tens).rows(), "Invalid number of rows" );
+//    BLAZE_INTERNAL_ASSERT( column + n <= (~tens).columns(), "Invalid number of columns" );
+//    BLAZE_INTERNAL_ASSERT( page + o <= (~tens).pages(), "Invalid number of pages" );
+//
+//    MAYBE_UNUSED( tens, page, row, column, o, m, n, value );
 
    return true;
 }
@@ -357,14 +374,14 @@ BLAZE_ALWAYS_INLINE bool
 // assignment operator.
 */
 template< typename MT    // Type of the array
-        , size_t N       // number of dimensions
+        , size_t N       // Number of dimensions
         , typename ET >  // Type of the element
 BLAZE_ALWAYS_INLINE bool tryDiv( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& arrdims = ( ~arr ).dimensions();
    ArrayDimForEach( arrdims, [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i + 1], "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
    } );
 #endif
 
@@ -408,7 +425,7 @@ BLAZE_ALWAYS_INLINE bool
 
 #if defined(BLAZE_INTERNAL_ASSERTION)
    ArrayDimForEach( dims, [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( currdims[i] < dims[i + 1], "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( currdims[i] < dims[i], "Invalid array access index" );
    } );
 #endif
 
@@ -445,7 +462,7 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Array<MT>& lhs, const Array<VT>& rhs,
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
    ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i + 1], "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
    } );
 #endif
 
@@ -482,7 +499,7 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Array<TT1>& lhs, const Array<TT2>& 
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
    ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i + 1], "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
    } );
 #endif
 
@@ -519,7 +536,7 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Array<TT1>& lhs, const Array<TT2>& 
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
    ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i + 1], "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
    } );
 #endif
 
@@ -557,7 +574,7 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Array<TT1>& lhs, const Array<TT2>&
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
    ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i + 1], "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
    } );
 #endif
 
@@ -594,7 +611,7 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Array<TT1>& lhs, const Array<TT2>
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
    ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i + 1], "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
    } );
 #endif
 
@@ -631,7 +648,7 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Array<TT1>& lhs, const Array<TT2>& 
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
    ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i + 1], "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
    } );
 #endif
 

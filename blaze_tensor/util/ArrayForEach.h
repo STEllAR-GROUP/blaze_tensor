@@ -40,11 +40,12 @@
 #include <utility>
 
 #include <blaze/util/SmallArray.h>
+#include <blaze/util/StaticAssert.h>
 
 namespace blaze {
 
 template< size_t Shift = 1, size_t N >
-std::array< size_t, N - Shift > ArrayShift( std::array< size_t, N > const& dims )
+std::array< size_t, N - Shift > shiftDims( std::array< size_t, N > const& dims )
 {
    BLAZE_STATIC_ASSERT(N >= 2 && N > Shift);     // cannot shift more than elements
 
@@ -52,6 +53,26 @@ std::array< size_t, N - Shift > ArrayShift( std::array< size_t, N > const& dims 
    for( size_t i = 0; i != N - Shift; ++i ) {
       result[i] = dims[i];
    }
+   return result;
+}
+
+template< size_t M, size_t N >
+std::array< size_t, N + 1 > mergeDims( std::array< size_t, N > const& dims, size_t index )
+{
+   BLAZE_STATIC_ASSERT( M <= N );
+
+   std::array< size_t, N + 1 > result;
+
+   for( size_t i = 0; i != M; ++i ) {
+      result[i] = dims[i];
+   }
+
+   result[M] = index;
+
+   for( size_t i = M + 1; i != N; ++i ) {
+      result[i] = dims[i - 1];
+   }
+
    return result;
 }
 
@@ -95,7 +116,7 @@ void ArrayForEach(
    std::array< size_t, N > const& dims, F const& f, size_t base = 0 )
 {
    BLAZE_STATIC_ASSERT( N >= 2 );
-   std::array< size_t, N - 1 > shifted_dims = ArrayShift( dims );
+   std::array< size_t, N - 1 > shifted_dims = shiftDims( dims );
    for( size_t i = base * dims[N - 2], j = 0; j != dims[N - 1]; i += dims[N - 2], ++j) {
       ArrayForEach( shifted_dims, f, i );
    }
@@ -141,7 +162,7 @@ template< size_t N, typename F >
 void ArrayForEachPadded(
    std::array< size_t, 2 > const& dims, size_t nn, F const& f, size_t base = 0 )
 {
-   std::array< size_t, 1 > shifted_dims = ArrayShift( dims );
+   std::array< size_t, 1 > shifted_dims = shiftDims( dims );
    for( size_t i = base * nn, j = 0; j != dims[1]; i += nn, ++j ) {
       ArrayForEachPadded( shifted_dims, nn, f, i );
    }
@@ -152,7 +173,7 @@ void ArrayForEachPadded(
    std::array< size_t, N > const& dims, size_t nn, F const& f, size_t base = 0 )
 {
    BLAZE_STATIC_ASSERT( N >= 2 );
-   std::array< size_t, N - 1 > shifted_dims = ArrayShift( dims );
+   std::array< size_t, N - 1 > shifted_dims = shiftDims( dims );
    for( size_t i = base * dims[N - 2], j = 0; j != dims[N - 1]; i += dims[N - 2], ++j ) {
       ArrayForEachPadded( shifted_dims, nn, f, i );
    }
@@ -186,7 +207,7 @@ void ArrayForEachGrouped(
    std::array< size_t, N > const& dims, F const& f, std::array< size_t, M >& currdims )
 {
    BLAZE_STATIC_ASSERT( N > 2 );
-   std::array< size_t, N - 1 > shifted_dims = ArrayShift( dims );
+   std::array< size_t, N - 1 > shifted_dims = shiftDims( dims );
    for( currdims[N - 1] = 0; currdims[N - 1] != dims[N - 1]; ++currdims[N - 1] ) {
       ArrayForEachGrouped( shifted_dims, f, currdims );
    }
@@ -218,7 +239,7 @@ template< typename F, size_t M >
 void ArrayForEachGrouped(
    std::array< size_t, 2 > const& dims, size_t nn, F const& f, std::array< size_t, M >& currdims, size_t base = 0 )
 {
-   std::array< size_t, 1 > shifted_dims = ArrayShift( dims );
+   std::array< size_t, 1 > shifted_dims = shiftDims( dims );
    currdims[1] = 0;
    for( size_t i = base * nn; currdims[1] != dims[1]; i += nn, ++currdims[1]) {
       ArrayForEachGrouped( dims[0], f, currdims, i );
@@ -230,7 +251,7 @@ void ArrayForEachGrouped(
    std::array< size_t, N > const& dims, size_t nn, F const& f, std::array< size_t, M >& currdims, size_t base = 0 )
 {
    BLAZE_STATIC_ASSERT( N > 2 );
-   std::array< size_t, N - 1 > shifted_dims = ArrayShift( dims );
+   std::array< size_t, N - 1 > shifted_dims = shiftDims( dims );
    currdims[N - 1] = 0;
    for( size_t i = base * dims[N - 2]; currdims[N - 1] != dims[N - 1]; i += dims[N - 2], ++currdims[N - 1]) {
       ArrayForEachGrouped( shifted_dims, nn, f, currdims, i );
@@ -297,7 +318,7 @@ void ArrayForEach2(
    std::array< size_t, N > const& dims, size_t nn, F const& f, size_t base = 0 )
 {
    BLAZE_STATIC_ASSERT( N > 2 );
-   std::array< size_t, N - 1 > shifted_dims = ArrayShift( dims );
+   std::array< size_t, N - 1 > shifted_dims = shiftDims( dims );
    for( size_t i = base * dims[N - 2], j = 0; j != dims[N - 1]; i += dims[N - 2], ++j ) {
       ArrayForEach2( shifted_dims, nn, f, i );
    }
@@ -326,7 +347,7 @@ bool ArrayForEachGroupedAnyOf( std::array< size_t, N > const& dims, F const& f,
 {
    while( currdims[N - 1] != dims[N - 1] ) {
       currdims[N - 2] = 0;
-      if( ArrayForEachGroupedAnyOf( ArrayShift( dims ), f, currdims ) ) {
+      if( ArrayForEachGroupedAnyOf( shiftDims( dims ), f, currdims ) ) {
          return true;
       }
       ++currdims[N - 1];
@@ -367,7 +388,7 @@ bool ArrayForEachGroupedAllOf( std::array< size_t, N > const& dims, F const& f,
 {
    while( currdims[N - 1] != dims[N - 1] ) {
       currdims[N - 2] = 0;
-      if( !ArrayForEachGroupedAllOf( ArrayShift( dims ), f, currdims ) ) {
+      if( !ArrayForEachGroupedAllOf( shiftDims( dims ), f, currdims ) ) {
          return false;
       }
       ++currdims[N - 1];

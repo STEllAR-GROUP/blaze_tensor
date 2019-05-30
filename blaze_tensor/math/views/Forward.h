@@ -47,6 +47,7 @@
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 
 #include <blaze_tensor/math/expressions/Forward.h>
+#include <blaze_tensor/math/views/arrayslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/columnslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/dilatedsubmatrix/BaseTemplate.h>
 #include <blaze_tensor/math/views/dilatedsubvector/BaseTemplate.h>
@@ -249,6 +250,24 @@ inline decltype(auto) dilatedsubtensor( Subtensor<TT, AF, DF, CSAs...>&& st,
 // decltype(auto) columns( Tensor<TT>&&, const T*, size_t, RCAs... );
 
 template< size_t I, typename TT, typename... RRAs >
+decltype(auto) columnslice( Tensor<TT>&, RRAs... );
+
+template< size_t I, typename TT, typename... RRAs >
+decltype(auto) columnslice( const Tensor<TT>&, RRAs... );
+
+template< size_t I, typename TT, typename... RRAs >
+decltype(auto) columnslice( Tensor<TT>&&, RRAs... );
+
+template< typename TT, typename... RRAs >
+decltype(auto) columnslice( Tensor<TT>&, size_t, RRAs... );
+
+template< typename TT, typename... RRAs >
+decltype(auto) columnslice( const Tensor<TT>&, size_t, RRAs... );
+
+template< typename TT, typename... RRAs >
+decltype(auto) columnslice( Tensor<TT>&&, size_t, RRAs... );
+
+template< size_t I, typename TT, typename... RRAs >
 decltype(auto) pageslice( Tensor<TT>&, RRAs... );
 
 template< size_t I, typename TT, typename... RRAs >
@@ -265,6 +284,42 @@ decltype(auto) pageslice( const Tensor<TT>&, size_t, RRAs... );
 
 template< typename TT, typename... RRAs >
 decltype(auto) pageslice( Tensor<TT>&&, size_t, RRAs... );
+
+template< size_t I, typename TT, typename... RRAs >
+decltype(auto) rowslice( Tensor<TT>&, RRAs... );
+
+template< size_t I, typename TT, typename... RRAs >
+decltype(auto) rowslice( const Tensor<TT>&, RRAs... );
+
+template< size_t I, typename TT, typename... RRAs >
+decltype(auto) rowslice( Tensor<TT>&&, RRAs... );
+
+template< typename TT, typename... RRAs >
+decltype(auto) rowslice( Tensor<TT>&, size_t, RRAs... );
+
+template< typename TT, typename... RRAs >
+decltype(auto) rowslice( const Tensor<TT>&, size_t, RRAs... );
+
+template< typename TT, typename... RRAs >
+decltype(auto) rowslice( Tensor<TT>&&, size_t, RRAs... );
+
+template< size_t M, size_t I, typename AT, typename... RRAs >
+decltype(auto) arrayslice( Array<AT>&, RRAs... );
+
+template< size_t M, size_t I, typename AT, typename... RRAs >
+decltype(auto) arrayslice( const Array<AT>&, RRAs... );
+
+template< size_t M, size_t I, typename AT, typename... RRAs >
+decltype(auto) arrayslice( Array<AT>&&, RRAs... );
+
+template< size_t M, typename AT, typename... RRAs >
+decltype(auto) arrayslice( Array<AT>&, size_t, RRAs... );
+
+template< size_t M, typename AT, typename... RRAs >
+decltype(auto) arrayslice( const Array<AT>&, size_t, RRAs... );
+
+template< size_t M, typename AT, typename... RRAs >
+decltype(auto) arrayslice( Array<AT>&&, size_t, RRAs... );
 
 // template< size_t I, size_t... Is, typename TT, typename... RCAs >
 // decltype(auto) pages( Tensor<TT>&, RCAs... );
