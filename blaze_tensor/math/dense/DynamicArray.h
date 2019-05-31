@@ -197,14 +197,14 @@ class DynamicArray
    /*!\name Constructors */
    //@{
    explicit inline DynamicArray() noexcept;
-   template< typename... Dims >
+   template< typename... Dims, typename = EnableIf_t< sizeof...(Dims) == N - 1 > >
    explicit inline DynamicArray( size_t dim0, Dims... dims );
    explicit inline DynamicArray( std::array< size_t, N> const& dims );
    template< typename... Dims >
    explicit inline DynamicArray( InitFromValue, const Type& init, Dims... dims );
    explicit inline DynamicArray( nested_initializer_list< N, Type > list );
 
-   template< typename Other, typename... Dims >
+   template< typename Other, typename... Dims, typename = EnableIf_t< sizeof...(Dims) == N > >
    explicit inline DynamicArray( const Other* array, Dims... dims );
 
                                      inline DynamicArray( const DynamicArray& m );
@@ -434,7 +434,6 @@ class DynamicArray
    //@{
    template< typename... Dims >
    inline static std::array< size_t, N > initDimensions( Dims... dims ) noexcept;
-   inline static std::array< size_t, N > initDimensions( const std::array< size_t, N >& dims ) noexcept;
    inline static size_t addPadding( size_t value ) noexcept;
    inline size_t calcCapacity() const noexcept;
    template< typename... Dims >
@@ -500,7 +499,7 @@ inline DynamicArray<N, Type>::DynamicArray() noexcept
 */
 template< size_t N         // The dimensionality of the array
         , typename Type > // Data type of the array
-template< typename... Dims >
+template< typename... Dims, typename Enable >
 inline DynamicArray< N, Type >::DynamicArray( size_t dim0, Dims... dims )
    : dims_    ( initDimensions( dim0, dims... ) )   // The current dimensions of the array
    , nn_      ( addPadding( dims_[0] ) )  // The length of a padded row
@@ -535,7 +534,7 @@ inline DynamicArray<N, Type>::DynamicArray( InitFromValue, const Type& init, Dim
 {
    BLAZE_STATIC_ASSERT( N == sizeof...( dims ) );
 
-   ArrayForEach( dims_, [&]( size_t i ) { v_[i] = init; } );
+   ArrayForEach( dims_, nn_, [&]( size_t i ) { v_[i] = init; } );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -602,7 +601,7 @@ inline DynamicArray<N, Type>::DynamicArray( nested_initializer_list< N, Type > l
 */
 template< size_t N         // The dimensionality of the array
         , typename Type > // Data type of the array
-template< typename Other, typename... Dims >  // Data type of the initialization array
+template< typename Other, typename... Dims, typename Enable >  // Data type of the initialization array
 inline DynamicArray<N, Type>::DynamicArray( const Other* array, Dims... dims )
    : DynamicArray( dims... )
 {
@@ -635,10 +634,10 @@ inline DynamicArray<N, Type>::DynamicArray( const Other* array, Dims... dims )
 template< size_t N         // The dimensionality of the array
         , typename Type > // Data type of the array
 inline DynamicArray<N, Type>::DynamicArray( const DynamicArray& m )
-   : dims_ ( m.dims_ )                     // The current dimensions of the array
-   , nn_      ( m.nn_ )                    // The length of a padded row
+   : dims_    ( m.dims_ )                 // The current dimensions of the array
+   , nn_      ( m.nn_ )                   // The length of a padded row
    , capacity_( m.capacity_ )             // The maximum capacity of the array
-   , v_( allocate< Type >( capacity_ ) )   // The array elements
+   , v_( allocate< Type >( capacity_ ) )  // The array elements
 {
    smpAssign( *this, m );
 
@@ -675,10 +674,16 @@ inline DynamicArray<N, Type>::DynamicArray( DynamicArray&& m ) noexcept
 template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >    // Type of the foreign array
-inline DynamicArray<N, Type>::DynamicArray( const Array<MT>& m )
-   : DynamicArray( (~m).dimensions() )
+inline DynamicArray<N, Type>::DynamicArray( const Array<MT>& rhs )
+   : DynamicArray( (~rhs).dimensions() )
 {
-   smpAssign( *this, ~m );
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAssign( *this, tmp );
+   }
+   else {
+      smpAssign( *this, ~rhs );
+   }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -693,7 +698,7 @@ inline DynamicArray<N, Type>::DynamicArray( const Array<MT>& m )
 template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline DynamicArray<N, Type>::DynamicArray( const std::array<size_t, N>& dims )
-   : dims_( initDimensions( dims ) )         // The current dimensions of the array
+   : dims_    ( dims )         // The current dimensions of the array
    , nn_      ( addPadding( dims_[0] ) )     // The length of a padded row
    , capacity_( calcCapacity() )             // The maximum capacity of the array
    , v_( allocate< Type >( capacity_ ) )     // The array elements
@@ -756,8 +761,8 @@ inline typename DynamicArray<N, Type>::Reference
 #if defined(BLAZE_USER_ASSERTION)
    size_t indices[] = { size_t(dims)... };
 
-   ArrayDimForEach( dims_, [&]( size_t i ) {
-      BLAZE_USER_ASSERT( indices[N - i - 1] < dims_[i], "Invalid array access index" );
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -788,8 +793,8 @@ inline typename DynamicArray<N, Type>::ConstReference
 #if defined(BLAZE_USER_ASSERTION)
    size_t indices[] = { size_t(dims)... };
 
-   ArrayDimForEach( dims_, [&]( size_t i ) {
-      BLAZE_USER_ASSERT( indices[N - i - 1] < dims_[i], "Invalid array access index" );
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -815,8 +820,8 @@ inline typename DynamicArray<N, Type>::Reference
    DynamicArray<N, Type>::operator()( std::array< size_t, N > const& indices ) noexcept
 {
 #if defined(BLAZE_USER_ASSERTION)
-   ArrayDimForEach( dims_, [&]( size_t i ) {
-      BLAZE_USER_ASSERT( indices[i] < dims_[i], "Invalid array access index" );
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_USER_ASSERT( indices[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -842,8 +847,8 @@ inline typename DynamicArray<N, Type>::ConstReference
    DynamicArray<N, Type>::operator()( std::array< size_t, N > const& indices ) const noexcept
 {
 #if defined(BLAZE_USER_ASSERTION)
-   ArrayDimForEach( dims_, [&]( size_t i ) {
-      BLAZE_USER_ASSERT( indices[i] < dims_[i], "Invalid array access index" );
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_USER_ASSERT( indices[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -874,8 +879,8 @@ inline typename DynamicArray<N, Type>::Reference
 
    size_t indices[] = { size_t(dims)... };
 
-   ArrayDimForEach( dims_, [&]( size_t i ) {
-      if( indices[N - i - 1] >= dims_[i] ) {
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      if( indices[N - i - 1] >= dim ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid array access index" );
       }
    } );
@@ -907,8 +912,8 @@ inline typename DynamicArray<N, Type>::ConstReference
 
    size_t indices[] = { size_t(dims)... };
 
-   ArrayDimForEach( dims_, [&]( size_t i ) {
-      if( indices[N - i - 1] >= dims_[i] ) {
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      if( indices[N - i - 1] >= dim ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid array access index" );
       }
    } );
@@ -935,8 +940,8 @@ template< size_t N         // The dimensionality of the array
 inline typename DynamicArray<N, Type>::Reference
    DynamicArray<N, Type>::at( std::array< size_t, N > const& indices )
 {
-   ArrayDimForEach( dims_, [&]( size_t i ) {
-      if( indices[i] >= dims_[i] ) {
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      if( indices[i] >= dim ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid array access index" );
       }
    } );
@@ -963,8 +968,8 @@ template< size_t N         // The dimensionality of the array
 inline typename DynamicArray<N, Type>::ConstReference
    DynamicArray<N, Type>::at( std::array< size_t, N > const& indices ) const
 {
-   ArrayDimForEach( dims_, [&]( size_t i ) {
-      if( indices[i] >= dims_[i] ) {
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      if( indices[i] >= dim ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid array access index" );
       }
    } );
@@ -1230,7 +1235,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=(const Type& rhs)
 {
-   ArrayForEach( dims_, [&]( size_t i ) { v_[i] = rhs; } );
+   ArrayForEach( dims_, nn_, [&]( size_t i ) { v_[i] = rhs; } );
 
    return *this;
 }
@@ -1266,6 +1271,10 @@ inline DynamicArray<N, Type>&
    resize( list.dimensions(), false );
 
    list.transfer_data( *this );
+
+   if( IsVectorizable_v<Type> ) {
+      ArrayForEachPadded( dims_, nn_, [&]( size_t i ) { v_[i] = Type(); } );
+   }
 
    return *this;
 }
@@ -1528,6 +1537,15 @@ template< size_t N         // The dimensionality of the array
 template< typename... Dims >
 inline size_t DynamicArray<N, Type>::capacity( size_t i, Dims... dims ) const noexcept
 {
+   BLAZE_STATIC_ASSERT( N - 2 == sizeof...( Dims ) );
+
+#if defined(BLAZE_USER_ASSERTION)
+   size_t indices[] = { size_t(dims)..., i, 0 };
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
+   } );
+#endif
+
    MAYBE_UNUSED( dims... );
 
    BLAZE_USER_ASSERT( i < dimension<1>(), "Invalid row access index" );
@@ -1548,7 +1566,7 @@ inline size_t DynamicArray<N, Type>::nonZeros() const
 {
    size_t nonzeros( 0UL );
 
-   ArrayForEach( dims_, [&]( size_t i ) {
+   ArrayForEach( dims_, nn_, [&]( size_t i ) {
       if( !isDefault( v_[i] ) ) {
          ++nonzeros;
       }
@@ -1572,6 +1590,15 @@ template< size_t N         // The dimensionality of the array
 template< typename... Dims >
 inline size_t DynamicArray<N, Type>::nonZeros( size_t i, Dims... dims ) const
 {
+   BLAZE_STATIC_ASSERT( N - 2 == sizeof...( Dims ) );
+
+#if defined(BLAZE_USER_ASSERTION)
+   size_t indices[] = { size_t(dims)..., i, 0 };
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
+   } );
+#endif
+
    const size_t jstart = row_index( i, dims... );
    const size_t jend = jstart + dims_[0];
    size_t nonzeros( 0UL );
@@ -1594,7 +1621,8 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline void DynamicArray<N, Type>::reset()
 {
-   ArrayForEach( dims_, [&]( size_t i ) { blaze::clear( v_[i] ); } );
+   using blaze::clear;
+   ArrayForEach( dims_, nn_, [&]( size_t i ) { clear( v_[i] ); } );
 }
 //*************************************************************************************************
 
@@ -1690,7 +1718,7 @@ void DynamicArray<N, Type>::resize( std::array< size_t, N > const& dims, bool pr
 
    // return if no change is requested
    if( ArrayDimAllOf(
-          dims_, [&]( size_t i ) { return dims_[i] == dims[i]; } ) ) {
+          dims_, [&]( size_t i, size_t dim ) { return dim == dims[i]; } ) ) {
       return;
    }
 
@@ -1763,7 +1791,7 @@ inline void DynamicArray<N, Type>::extend( std::array< size_t, N > const& dims, 
 
    std::array< size_t, N > newdims;
    ArrayDimForEach(
-      dims_, [&]( size_t i ) { newdims[i] = dims_[i] + dims[i]; } );
+      dims_, [&]( size_t i, size_t dim ) { newdims[i] = dim + dims[i]; } );
    resize( newdims, preserve );
 }
 //*************************************************************************************************
@@ -1867,7 +1895,7 @@ inline size_t DynamicArray<N, Type>::addPadding( size_t value ) noexcept
 
 
 //*************************************************************************************************
-/*!\briefInitialize the dimensions array.
+/*!\brief Initialize the dimensions array.
 //
 // \param value The dimensions for this DynamicArray.
 // \return The dimensions array.
@@ -1889,23 +1917,6 @@ inline std::array< size_t, N > DynamicArray<N, Type>::initDimensions( Dims... di
       result[i] = indices[N - i - 1];
    }
    return result;
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\briefInitialize the dimensions array.
-//
-// \param value The dimensions for this DynamicArray.
-// \return The dimensions array.
-//
-// This function initializes the internal dimensions array.
-*/
-template< size_t N         // The dimensionality of the array
-        , typename Type >  // Data type of the array
-inline std::array< size_t , N > DynamicArray< N, Type >::initDimensions( const std::array< size_t, N >& dims ) noexcept
-{
-   return dims;
 }
 //*************************************************************************************************
 
@@ -2200,7 +2211,7 @@ template< size_t N         // The dimensionality of the array
 template< typename Other >  // Data type of the scalar value
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::scale( const Other& scalar )
 {
-   ArrayForEach( dims_, [&]( size_t i ) { v_[i] += scalar; } );
+   ArrayForEach( dims_, nn_, [&]( size_t i ) { v_[i] *= scalar; } );
    return *this;
 }
 //*************************************************************************************************
@@ -2383,6 +2394,12 @@ BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
+#if defined(BLAZE_INTERNAL_ASSERTION)
+   size_t indices[] = { size_t(dims)... };
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
+   } );
+#endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims ) ), "Invalid alignment detected" );
@@ -2417,6 +2434,12 @@ BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
+#if defined(BLAZE_INTERNAL_ASSERTION)
+   size_t indices[] = { size_t(dims)... };
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
+   } );
+#endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
 
    return loadu( v_ + index( dims... ) );
@@ -2480,6 +2503,12 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
+#if defined(BLAZE_INTERNAL_ASSERTION)
+   size_t indices[] = { size_t(dims)... };
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
+   } );
+#endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims... ) ), "Invalid alignment detected" );
@@ -2515,6 +2544,12 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
+#if defined(BLAZE_INTERNAL_ASSERTION)
+   size_t indices[] = { size_t(dims)... };
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
+   } );
+#endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
 
    storeu( v_ + index( dims... ), value );
@@ -2549,6 +2584,12 @@ BLAZE_ALWAYS_INLINE void
 
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
+#if defined(BLAZE_INTERNAL_ASSERTION)
+   size_t indices[] = { size_t(dims)... };
+   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
+   } );
+#endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims... ) ), "Invalid alignment detected" );
@@ -2575,7 +2616,7 @@ template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
    -> DisableIf_t< VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
    const size_t jpos( dims_[0] & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( dims_[0] - ( dims_[0] % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2607,7 +2648,7 @@ inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -2676,7 +2717,7 @@ template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
    -> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
 //    for (size_t k=0UL; k<o_; ++k) {
 //       for (size_t i=0UL; i<m_; ++i) {
@@ -2719,7 +2760,7 @@ inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -2771,7 +2812,7 @@ template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
    -> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
 //    for (size_t k=0UL; k<o_; ++k) {
 //       for (size_t i=0UL; i<m_; ++i) {
@@ -2814,7 +2855,7 @@ inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -2867,7 +2908,7 @@ template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
    -> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
 //    const size_t jpos( n_ & size_t(-2) );
 //    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2907,7 +2948,7 @@ inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
    constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
 
@@ -3068,7 +3109,7 @@ template< bool RF        // Relaxation flag
 inline bool isDefault( const DynamicArray<N, Type>& m )
 {
    auto const& dims = m.dimensions();
-   return ArrayDimAllOf( dims, [&]( size_t i ) { return dims[i] == 0; } );
+   return ArrayDimAllOf( dims, [&]( size_t, size_t dim ) { return dim == 0; } );
 }
 //*************************************************************************************************
 

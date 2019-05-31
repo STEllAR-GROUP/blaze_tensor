@@ -166,7 +166,10 @@ decltype(auto) norm_backend( const DenseArray<MT>& dm, Abs abs, Power power, Roo
    using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
-   if( ArrayDimAnyOf( ( ~dm ).dimensions(), []( size_t i ) { return i == 0; } ) ) return RT{};
+   if( ArrayDimAnyOf( ( ~dm ).dimensions(),
+          []( size_t i, size_t dim ) { return dim == 0; } ) ) {
+      return RT{};
+   }
 
    CT tmp( ~dm );
 

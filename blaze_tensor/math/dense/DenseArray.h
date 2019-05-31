@@ -64,7 +64,7 @@
 #include <blaze/util/typetraits/RemoveReference.h>
 
 // #include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
-// #include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
+#include <blaze_tensor/math/expressions/DArrDArrEqualExpr.h>
 #include <blaze_tensor/math/expressions/DArrDArrMapExpr.h>
 // #include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
 // #include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
@@ -477,8 +477,8 @@ bool isUniform_backend( const DenseArray<MT>& dm )
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   ArrayDimForEach( ( ~dm ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims_[i] != 0, "Invalid array dimension detected" );
+   ArrayDimForEach( ( ~dm ).dimensions(), [&]( size_t, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( dim != 0, "Invalid array dimension detected" );
    } );
 #endif
 
@@ -535,10 +535,10 @@ template< bool RF      // Relaxation flag
 bool isUniform( const DenseArray<MT>& dm )
 {
    if( IsUniform_v< MT > ||
-      ArrayDimAnyOf(
-         ( ~dm ).dimensions(), []( size_t i ) { return i == 0; } ) ||
-      ArrayDimAllOf(
-         ( ~dm ).dimensions(), []( size_t i ) { return i == 1; } ) ) {
+      ArrayDimAnyOf( ( ~dm ).dimensions(),
+         []( size_t, size_t dim ) { return dim == 0; } ) ||
+      ArrayDimAllOf( ( ~dm ).dimensions(),
+         []( size_t, size_t dim ) { return dim == 1; } ) ) {
       return true;
    }
 

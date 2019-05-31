@@ -41,6 +41,7 @@
 // Includes
 //*************************************************************************************************
 
+#include <array>
 #include <iomanip>
 #include <iosfwd>
 
@@ -48,6 +49,7 @@
 
 #include <blaze_tensor/math/expressions/Forward.h>
 #include <blaze_tensor/math/expressions/Array.h>
+#include <blaze_tensor/util/ArrayForEach.h>
 
 
 namespace blaze {
@@ -136,17 +138,17 @@ inline std::ostream& operator<<( std::ostream& os, const Array<MT>& m )
 {
    CompositeType_t<MT> tmp( ~m );
 
-//    for (size_t k = 0UL; k < tmp.pages(); ++k) {
-//       os << "(";
-//       for (size_t i = 0UL; i < tmp.rows(); ++i) {
-//          os << "(";
-//          for (size_t j = 0UL; j < tmp.columns(); ++j) {
-//             os << std::setw(12) << tmp(k, i, j) << " ";
-//          }
-//          os << ") ";
-//       }
-//       os << ")\n";
-//    }
+   ArrayForEachGrouped(
+      tmp.dimensions(),
+      [&]( std::array< size_t, MT::num_dimensions() > const& dims ) {
+         os << std::setw( 12 ) << tmp( dims ) << " ";
+      },
+      [&]( size_t ) { os << "("; },
+      [&]( size_t i ) {
+         os << ")";
+         if( i == 0 )
+            os << "\n";
+      } );
 
    return os;
 }
