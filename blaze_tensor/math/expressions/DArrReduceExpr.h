@@ -455,8 +455,8 @@ class ReducedArray
    inline ReturnType at( Dims... dims ) const {
       constexpr size_t indices[] = {dims...};
 
-      ArrayDimForEach( dm_.dimensions(), [&]( size_t i ) {
-         if( indices[i] >= dm_.dimensions()[i] ) {
+      ArrayDimForEach( dm_.dimensions(), [&]( size_t i, size_t dim ) {
+         if( indices[i] >= dim ) {
             BLAZE_THROW_OUT_OF_RANGE( "Invalid array access index" );
          }
       } );
@@ -949,8 +949,13 @@ inline ElementType_t<MT> darrayreduce( const DenseArray<MT>& dm, OP op )
 
    std::array< size_t, N > dims{};
 
-   if( ArrayDimAnyOf( ( ~dm ).dimensions(), []( size_t i ) { return i == 0; } ) ) return ET{};
-   if( ArrayDimAllOf( ( ~dm ).dimensions(), []( size_t i ) { return i == 1; } ) ) return ( ~dm )( dims );
+   if( ArrayDimAnyOf( ( ~dm ).dimensions(),
+          []( size_t, size_t dim ) { return dim == 0; } ) )
+      return ET{};
+
+   if( ArrayDimAllOf( ( ~dm ).dimensions(),
+          []( size_t, size_t dim ) { return dim == 1; } ) )
+      return ( ~dm )( dims );
 
    CT tmp( ~dm );
 

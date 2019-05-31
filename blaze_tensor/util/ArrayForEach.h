@@ -104,21 +104,30 @@ std::array< size_t, N + 1 > mergeDims( std::array< size_t, N > const& dims, size
 //
 template< typename F >
 void ArrayForEach(
-   std::array< size_t, 1 > const& dims, F const& f, size_t base = 0 )
+   size_t dim0, F const& f, size_t base = 0 )
 {
-   for( size_t i = 0; i != dims[0]; ++i ) {
+   for( size_t i = 0; i != dim0; ++i ) {
       f( i + base );
+   }
+}
+
+template< typename F >
+void ArrayForEach(
+   std::array< size_t, 2 > const& dims, size_t nn, F const& f, size_t base = 0 )
+{
+   for( size_t i = base * nn, j = 0; j != dims[1]; i += nn, ++j) {
+      ArrayForEach( dims[0], f, i );
    }
 }
 
 template< size_t N, typename F >
 void ArrayForEach(
-   std::array< size_t, N > const& dims, F const& f, size_t base = 0 )
+   std::array< size_t, N > const& dims, size_t nn, F const& f, size_t base = 0 )
 {
    BLAZE_STATIC_ASSERT( N >= 2 );
    std::array< size_t, N - 1 > shifted_dims = shiftDims( dims );
    for( size_t i = base * dims[N - 2], j = 0; j != dims[N - 1]; i += dims[N - 2], ++j) {
-      ArrayForEach( shifted_dims, f, i );
+      ArrayForEach( shifted_dims, nn, f, i );
    }
 }
 //*************************************************************************************************
@@ -219,6 +228,54 @@ void ArrayForEachGrouped(
 {
    std::array< size_t, N > currdims{};
    ArrayForEachGrouped( dims, f, currdims );
+}
+//*************************************************************************************************
+
+//*************************************************************************************************
+/*!\brief ArrayForEachGrouped function to iterate over arbitrary dimension data.
+// \ingroup util
+*/
+template< typename F, typename F1, typename F2, size_t M >
+void ArrayForEachGrouped(
+   size_t dim0, F const& f, F1 const& f1, F2 const& f2, std::array< size_t, M >& currdims )
+{
+   f1( 0 );
+   for( currdims[0] = 0; currdims[0] != dim0; ++currdims[0] ) {
+      f( currdims );
+   }
+   f2( 0 );
+}
+
+template< typename F, typename F1, typename F2, size_t M >
+void ArrayForEachGrouped(
+   std::array< size_t, 2 > const& dims, F const& f, F1 const& f1, F2 const& f2, std::array< size_t, M >& currdims )
+{
+   f1( 1 );
+   for( currdims[1] = 0; currdims[1] != dims[1]; ++currdims[1] ) {
+      ArrayForEachGrouped( dims[0], f, f1, f2, currdims );
+   }
+   f2( 1 );
+}
+
+template< size_t N, typename F, typename F1, typename F2, size_t M >
+void ArrayForEachGrouped(
+   std::array< size_t, N > const& dims, F const& f, F1 const& f1, F2 const& f2, std::array< size_t, M >& currdims )
+{
+   BLAZE_STATIC_ASSERT( N > 2 );
+   f1( N - 1 );
+   std::array< size_t, N - 1 > shifted_dims = shiftDims( dims );
+   for( currdims[N - 1] = 0; currdims[N - 1] != dims[N - 1]; ++currdims[N - 1] ) {
+      ArrayForEachGrouped( shifted_dims, f, f1, f2, currdims );
+   }
+   f2( N - 1 );
+}
+
+template< size_t N, typename F, typename F1, typename F2 >
+void ArrayForEachGrouped(
+   std::array< size_t, N > const& dims, F const& f, F1 const& f1, F2 const& f2 )
+{
+   std::array< size_t, N > currdims{};
+   ArrayForEachGrouped( dims, f, f1, f2, currdims );
 }
 //*************************************************************************************************
 
@@ -415,7 +472,7 @@ template< size_t N, typename F >
 void ArrayDimForEach( std::array< size_t, N > const& dims, F const& f)
 {
    for( size_t i = 0; i < N; ++i ) {
-      f(i);
+      f( i, dims[i] );
    }
 }
 //*************************************************************************************************
@@ -429,7 +486,7 @@ template< size_t N, typename F >
 bool ArrayDimAnyOf( std::array< size_t, N > const& dims, F const& f)
 {
    for( size_t i = 0; i < N; ++i ) {
-      if( f( dims[i] ) ) {
+      if( f( i, dims[i] ) ) {
          return true;
       }
    }
@@ -446,7 +503,7 @@ template< size_t N, typename F >
 bool ArrayDimAllOf( std::array< size_t, N > const& dims, F const& f)
 {
    for( size_t i = 0; i < N; ++i ) {
-      if( !f( dims[i] ) ) {
+      if( !f( i, dims[i] ) ) {
          return false;
       }
    }
@@ -463,7 +520,7 @@ template< size_t N, typename F >
 bool ArrayDimNoneOf( std::array< size_t, N > const& dims, F const& f)
 {
    for( size_t i = 0; i < N; ++i ) {
-      if( f( dims[i] ) ) {
+      if( f( i, dims[i] ) ) {
          return false;
       }
    }

@@ -556,8 +556,8 @@ inline typename ArraySlice<M,MT,CRAs...>::Reference
    ArraySlice<M,MT,CRAs...>::at( Dims... dims )
 {
    size_t indices[] = { size_t(dims)... };
-   ArrayDimForEach( dimensions(), [&]( size_t i ) {
-      if( indices[N - i - 1] >= dimensions()[i] ) {
+   ArrayDimForEach( dimensions(), [&]( size_t i, size_t dim ) {
+      if( indices[N - i - 1] >= dim ) {
          BLAZE_THROW_OUT_OF_RANGE("Invalid array access index");
       }
    } );
@@ -587,8 +587,8 @@ inline typename ArraySlice<M,MT,CRAs...>::ConstReference
    ArraySlice<M,MT,CRAs...>::at( Dims... dims) const
 {
    size_t indices[] = { size_t(dims)... };
-   ArrayDimForEach( dimensions(), [&]( size_t i ) {
-      if( indices[N - i - 1] >= dimensions()[i] ) {
+   ArrayDimForEach( dimensions(), [&]( size_t i, size_t dim ) {
+      if( indices[N - i - 1] >= dim ) {
          BLAZE_THROW_OUT_OF_RANGE("Invalid array access index");
       }
    } );

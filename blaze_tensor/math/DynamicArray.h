@@ -160,8 +160,10 @@ inline void Rand< DynamicArray<N, Type> >::randomize( DynamicArray<N, Type>& arr
 {
    using blaze::randomize;
 
-   ArrayForEach( array.dimensions(),
-      [v = array.data()]( size_t i ) { randomize( v[i] ); } );
+   ArrayForEachGrouped(
+      array.dimensions(), [&]( std::array< size_t, N > const& dims ) {
+         randomize( array( dims ) );
+      } );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -184,9 +186,10 @@ inline void Rand< DynamicArray< N, Type > >::randomize(
 {
    using blaze::randomize;
 
-   ArrayForEach( array.dimensions(), [v = array.data(), min, max]( size_t i ) {
-      randomize( v[i], min, max );
-   } );
+   ArrayForEachGrouped(
+      array.dimensions(), [&]( std::array< size_t, N > const& dims ) {
+         randomize( array( dims ), min, max );
+      } );
 }
 /*! \endcond */
 //*************************************************************************************************

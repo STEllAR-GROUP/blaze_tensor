@@ -191,8 +191,8 @@ BLAZE_ALWAYS_INLINE bool trySet( const Array<MT>& arr, std::array< size_t, N > c
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& arrdims = ( ~arr ).dimensions();
-   ArrayDimForEach( arrdims, [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
+   ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -228,8 +228,8 @@ BLAZE_ALWAYS_INLINE bool tryAdd( const Array<MT>& arr, std::array< size_t, N > c
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& arrdims = ( ~arr ).dimensions();
-   ArrayDimForEach( arrdims, [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
+   ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -265,8 +265,8 @@ BLAZE_ALWAYS_INLINE bool trySub( const Array<MT>& arr, std::array< size_t, N > c
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& arrdims = ( ~arr ).dimensions();
-   ArrayDimForEach( arrdims, [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
+   ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -302,8 +302,8 @@ BLAZE_ALWAYS_INLINE bool tryMult( const Array<MT>& arr, std::array< size_t, N > 
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& arrdims = ( ~arr ).dimensions();
-   ArrayDimForEach( arrdims, [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
+   ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -380,8 +380,8 @@ BLAZE_ALWAYS_INLINE bool tryDiv( const Array<MT>& arr, std::array< size_t, N > c
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& arrdims = ( ~arr ).dimensions();
-   ArrayDimForEach( arrdims, [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < arrdims[i], "Invalid array access index" );
+   ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -424,8 +424,8 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_STATIC_ASSERT( M == N );
 
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   ArrayDimForEach( dims, [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( currdims[i] < dims[i], "Invalid array access index" );
+   ArrayDimForEach( dims, [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( currdims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -461,8 +461,9 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Array<MT>& lhs, const Array<VT>& rhs,
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
+   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -498,8 +499,9 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Array<TT1>& lhs, const Array<TT2>& 
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
+   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -535,8 +537,9 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Array<TT1>& lhs, const Array<TT2>& 
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
+   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -573,8 +576,9 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Array<TT1>& lhs, const Array<TT2>&
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
+   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -610,8 +614,9 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Array<TT1>& lhs, const Array<TT2>
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
+   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 
@@ -647,8 +652,9 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Array<TT1>& lhs, const Array<TT2>& 
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
    auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i ) {
-      BLAZE_INTERNAL_ASSERT( dims[i] < rhsdims[i], "Invalid array access index" );
+   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+      BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
+      BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
 #endif
 

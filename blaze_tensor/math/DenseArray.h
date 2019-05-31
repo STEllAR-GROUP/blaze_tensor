@@ -119,7 +119,7 @@
 #include <blaze_tensor/math/Array.h>
 #include <blaze_tensor/math/dense/DenseArray.h>
 // #include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
-// #include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
+#include <blaze_tensor/math/expressions/DArrDArrEqualExpr.h>
 #include <blaze_tensor/math/expressions/DArrDArrMapExpr.h>
 // #include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
 // #include <blaze_tensor/math/expressions/DTensDTensSchurExpr.h>
