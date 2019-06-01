@@ -228,6 +228,33 @@ class ArraySlice
    template< typename MT2 > inline ArraySlice& operator+=( const Array<MT2>& rhs );
    template< typename MT2 > inline ArraySlice& operator-=( const Array<MT2>& rhs );
    template< typename MT2 > inline ArraySlice& operator%=( const Array<MT2>& rhs );
+
+   template< typename MT, bool TF, size_t M2 = N, typename = EnableIf_t< M2 == 1 > >
+   inline ArraySlice& operator= ( const Vector<MT, TF>& m );
+   template< typename MT, bool TF, size_t M2 = N, typename = EnableIf_t< M2 == 1 > >
+   inline ArraySlice& operator+=( const Vector<MT, TF>& m );
+   template< typename MT, bool TF, size_t M2 = N, typename = EnableIf_t< M2 == 1 > >
+   inline ArraySlice& operator-=( const Vector<MT, TF>& m );
+   template< typename MT, bool TF, size_t M2 = N, typename = EnableIf_t< M2 == 1 > >
+   inline ArraySlice& operator%=( const Vector<MT, TF>& m );
+
+   template< typename MT, bool SO, size_t M2 = N, typename = EnableIf_t< M2 == 2 > >
+   inline ArraySlice& operator= ( const Matrix<MT, SO>& m );
+   template< typename MT, bool SO, size_t M2 = N, typename = EnableIf_t< M2 == 2 > >
+   inline ArraySlice& operator+=( const Matrix<MT, SO>& m );
+   template< typename MT, bool SO, size_t M2 = N, typename = EnableIf_t< M2 == 2 > >
+   inline ArraySlice& operator-=( const Matrix<MT, SO>& m );
+   template< typename MT, bool SO, size_t M2 = N, typename = EnableIf_t< M2 == 2 > >
+   inline ArraySlice& operator%=( const Matrix<MT, SO>& m );
+
+   template< typename MT, size_t M2 = N, typename = EnableIf_t< M2 == 3 > >
+   inline ArraySlice& operator= ( const Tensor<MT>& m );
+   template< typename MT, size_t M2 = N, typename = EnableIf_t< M2 == 3 > >
+   inline ArraySlice& operator+=( const Tensor<MT>& m );
+   template< typename MT, size_t M2 = N, typename = EnableIf_t< M2 == 3 > >
+   inline ArraySlice& operator-=( const Tensor<MT>& m );
+   template< typename MT, size_t M2 = N, typename = EnableIf_t< M2 == 3 > >
+   inline ArraySlice& operator%=( const Tensor<MT>& m );
    //@}
    //**********************************************************************************************
 
@@ -1154,6 +1181,171 @@ inline ArraySlice<M,MT,CRAs...>&
    }
    else {
       smpSchurAssign( left, ~rhs );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( array_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for different matrices.
+//
+// \param rhs Array to be assigned.
+// \return Reference to the assigned arrayslice.
+// \exception std::invalid_argument Array sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted array.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying array \a MT is a lower or upper triangular array and the
+// assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< size_t M            // Dimension of the ArraysSlice
+        , typename MT         // Type of the dense array
+        , size_t... CRAs >    // Compile time arrayslice arguments
+template< typename MT2, bool TF, size_t M2, typename Enable >    // Type of the right-hand side vector
+inline ArraySlice<M,MT,CRAs...>&
+   ArraySlice<M,MT,CRAs...>::operator=( const Vector<MT2,TF>& rhs )
+{
+   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<MT2> );
+
+   if( dimension<0>() != (~rhs).size() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
+   }
+
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
+   Right right( ~rhs );
+
+   decltype(auto) left( derestrict( *this ) );
+
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<1, ET, false, true>;
+
+   if( IsReference_v<Right> && right.canAlias( &array_ ) ) {
+      const ResultType_t<MT2> tmp( right );
+      smpAssign( left, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+   else {
+      if( IsSparseArray_v<MT2> )
+         reset();
+      auto const& tmp = right;
+      smpAssign( left, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( array_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for different matrices.
+//
+// \param rhs Array to be assigned.
+// \return Reference to the assigned arrayslice.
+// \exception std::invalid_argument Array sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted array.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying array \a MT is a lower or upper triangular array and the
+// assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< size_t M            // Dimension of the ArraysSlice
+        , typename MT         // Type of the dense array
+        , size_t... CRAs >    // Compile time arrayslice arguments
+template< typename MT2, bool SO, size_t M2, typename Enable >    // Type of the right-hand side matrix
+inline ArraySlice<M,MT,CRAs...>&
+   ArraySlice<M,MT,CRAs...>::operator=( const Matrix<MT2,SO>& rhs )
+{
+   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<MT2> );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
+   }
+
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
+   Right right( ~rhs );
+
+   if( !tryAssign( array_, right, 0UL, 0UL, page() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted array" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   if( IsReference_v<Right> && right.canAlias( &array_ ) ) {
+      const ResultType_t<MT2> tmp( right );
+      smpAssign( left, tmp );
+   }
+   else {
+      if( IsSparseArray_v<MT2> )
+         reset();
+      smpAssign( left, right );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact( array_ ), "Invariant violation detected" );
+
+   return *this;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Assignment operator for different matrices.
+//
+// \param rhs Array to be assigned.
+// \return Reference to the assigned arrayslice.
+// \exception std::invalid_argument Array sizes do not match.
+// \exception std::invalid_argument Invalid assignment to restricted array.
+//
+// In case the current sizes of the two matrices don't match, a \a std::invalid_argument exception
+// is thrown. Also, if the underlying array \a MT is a lower or upper triangular array and the
+// assignment would violate its lower or upper property, respectively, a \a std::invalid_argument
+// exception is thrown.
+*/
+template< size_t M            // Dimension of the ArraysSlice
+        , typename MT         // Type of the dense array
+        , size_t... CRAs >    // Compile time arrayslice arguments
+template< typename MT2, size_t M2, typename Enable >    // Type of the right-hand side tensor
+inline ArraySlice<M,MT,CRAs...>&
+   ArraySlice<M,MT,CRAs...>::operator=( const Tensor<MT2>& rhs )
+{
+   //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<MT2> );
+   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<MT2> );
+
+   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
+   }
+
+   using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
+   Right right( ~rhs );
+
+   if( !tryAssign( array_, right, 0UL, 0UL, page() ) ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted array" );
+   }
+
+   decltype(auto) left( derestrict( *this ) );
+
+   if( IsReference_v<Right> && right.canAlias( &array_ ) ) {
+      const ResultType_t<MT2> tmp( right );
+      smpAssign( left, tmp );
+   }
+   else {
+      if( IsSparseArray_v<MT2> )
+         reset();
+      smpAssign( left, right );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( array_ ), "Invariant violation detected" );
