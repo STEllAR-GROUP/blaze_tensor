@@ -482,6 +482,33 @@ class CustomArray
    template< typename MT > inline CustomArray& operator+=( const Array<MT>& rhs );
    template< typename MT > inline CustomArray& operator-=( const Array<MT>& rhs );
    template< typename MT > inline CustomArray& operator%=( const Array<MT>& rhs );
+
+   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   inline ArraySlice& operator= ( const Vector<MT, TF>& m );
+   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   inline ArraySlice& operator+=( const Vector<MT, TF>& m );
+   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   inline ArraySlice& operator-=( const Vector<MT, TF>& m );
+   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   inline ArraySlice& operator%=( const Vector<MT, TF>& m );
+
+   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   inline ArraySlice& operator= ( const Matrix<MT, SO>& m );
+   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   inline ArraySlice& operator+=( const Matrix<MT, SO>& m );
+   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   inline ArraySlice& operator-=( const Matrix<MT, SO>& m );
+   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   inline ArraySlice& operator%=( const Matrix<MT, SO>& m );
+
+   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   inline ArraySlice& operator= ( const Tensor<MT>& m );
+   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   inline ArraySlice& operator+=( const Tensor<MT>& m );
+   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   inline ArraySlice& operator-=( const Tensor<MT>& m );
+   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   inline ArraySlice& operator%=( const Tensor<MT>& m );
    //@}
    //**********************************************************************************************
 
@@ -1669,6 +1696,10 @@ template< typename MT >  // Type of the right-hand side array
 inline CustomArray<N,Type,AF,PF,RT>&
    CustomArray<N,Type,AF,PF,RT>::operator=( const Array<MT>& rhs )
 {
+   if( dims_ != (~rhs).dimensions() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
+   }
+
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
       smpAssign( *this, tmp );
@@ -1701,9 +1732,7 @@ template< typename MT >  // Type of the right-hand side array
 inline CustomArray<N,Type,AF,PF,RT>&
    CustomArray<N,Type,AF,PF,RT>::operator+=( const Array<MT>& rhs )
 {
-   auto rhsdims = (~rhs).dimensions();
-   if( ArrayDimAnyOf( dims_,
-          [&]( size_t i, size_t dim ) { return rhsdims[i] != dim; } ) ) {
+   if( dims_ != (~rhs).dimensions() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
    }
 
@@ -1739,9 +1768,7 @@ template< typename MT >  // Type of the right-hand side array
 inline CustomArray<N,Type,AF,PF,RT>&
    CustomArray<N,Type,AF,PF,RT>::operator-=( const Array<MT>& rhs )
 {
-   auto rhsdims = (~rhs).dimensions();
-   if( ArrayDimAnyOf( dims_,
-          [&]( size_t i, size_t dim ) { return rhsdims[i] != dim; } ) ) {
+   if( dims_ != (~rhs).dimensions() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
    }
 
@@ -1777,9 +1804,7 @@ template< typename MT >  // Type of the right-hand side array
 inline CustomArray<N,Type,AF,PF,RT>&
    CustomArray<N,Type,AF,PF,RT>::operator%=( const Array<MT>& rhs )
 {
-   auto rhsdims = (~rhs).dimensions();
-   if( ArrayDimAnyOf( dims_,
-          [&]( size_t i, size_t dim ) { return rhsdims[i] != dim; } ) ) {
+   if( dims_ != (~rhs).dimensions() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
    }
 

@@ -1399,8 +1399,8 @@ void DenseGeneralTest::testMultAssign()
 
       initialize();
 
-      blaze::DynamicArray<3, int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
+      blaze::DynamicArray< 3, int > m{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+         {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}};
 
       RT arrayslice2 = blaze::arrayslice<2>( m, 1UL );
       arrayslice2 *= blaze::arrayslice<2>( m, 0UL );
@@ -1457,8 +1457,8 @@ void DenseGeneralTest::testMultAssign()
 
       initialize();
 
-      blaze::DynamicArray<3, int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
+      blaze::DynamicArray< 3, int > m{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+         {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}};
 
       RT arrayslice2 = blaze::arrayslice<2>( m, 1UL );
 
@@ -1516,11 +1516,10 @@ void DenseGeneralTest::testMultAssign()
       using blaze::padded;
       using blaze::rowMajor;
 
-      blaze::DynamicArray<3, int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
+      blaze::DynamicArray< 3, int > m{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+         {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}};
 
       RT arrayslice2 = blaze::arrayslice<2>( m, 1UL );
-
 
       using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
@@ -1586,8 +1585,8 @@ void DenseGeneralTest::testMultAssign()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      blaze::DynamicArray<3, int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
+      blaze::DynamicArray< 3, int > m{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+         {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}};
 
       RT arrayslice2 = blaze::arrayslice<2>( m, 1UL );
 
@@ -1669,8 +1668,8 @@ void DenseGeneralTest::testSchurAssign()
    {
       test_ = "ArraySlice Schur product assignment";
 
-      blaze::DynamicArray<3, int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
+      blaze::DynamicArray< 3, int > m{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+         {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}};
 
       RT arrayslice2 = blaze::arrayslice<2>( m, 1UL );
       arrayslice2 %= blaze::arrayslice<2>( m, 0UL );
@@ -1725,8 +1724,8 @@ void DenseGeneralTest::testSchurAssign()
    {
       test_ = "dense vector Schur product assignment (mixed type)";
 
-      blaze::DynamicArray<3, int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
+      blaze::DynamicArray< 3, int > m{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+         {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}};
 
       RT arrayslice2 = blaze::arrayslice<2>( m, 1UL );
 
@@ -1784,8 +1783,8 @@ void DenseGeneralTest::testSchurAssign()
       using blaze::padded;
       using blaze::rowMajor;
 
-      blaze::DynamicArray<3, int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
+      blaze::DynamicArray< 3, int > m{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+         {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}};
 
       RT arrayslice2 = blaze::arrayslice<2>( m, 1UL );
 
@@ -1853,8 +1852,8 @@ void DenseGeneralTest::testSchurAssign()
       using blaze::unpadded;
       using blaze::rowMajor;
 
-      blaze::DynamicArray<3, int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
+      blaze::DynamicArray< 3, int > m{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+         {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}};
 
       RT arrayslice2 = blaze::arrayslice<2>( m, 1UL );
 

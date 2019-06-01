@@ -209,7 +209,14 @@ class DynamicArray
 
                                      inline DynamicArray( const DynamicArray& m );
                                      inline DynamicArray( DynamicArray&& m ) noexcept;
-   template< typename MT>            inline DynamicArray( const Array<MT>& m );
+   template< typename MT >           inline DynamicArray( const Array<MT>& m );
+
+   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   inline DynamicArray( const Vector<MT, TF>& m );
+   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   inline DynamicArray( const Matrix<MT, SO>& m );
+   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   inline DynamicArray( const Tensor<MT>& m );
    //@}
    //**********************************************************************************************
 
@@ -269,6 +276,33 @@ class DynamicArray
    template< typename MT > inline DynamicArray& operator+=( const Array<MT>& rhs );
    template< typename MT > inline DynamicArray& operator-=( const Array<MT>& rhs );
    template< typename MT > inline DynamicArray& operator%=( const Array<MT>& rhs );
+
+   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   inline DynamicArray& operator= ( const Vector<MT, TF>& m );
+   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   inline DynamicArray& operator+=( const Vector<MT, TF>& m );
+   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   inline DynamicArray& operator-=( const Vector<MT, TF>& m );
+   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   inline DynamicArray& operator%=( const Vector<MT, TF>& m );
+
+   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   inline DynamicArray& operator= ( const Matrix<MT, SO>& m );
+   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   inline DynamicArray& operator+=( const Matrix<MT, SO>& m );
+   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   inline DynamicArray& operator-=( const Matrix<MT, SO>& m );
+   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   inline DynamicArray& operator%=( const Matrix<MT, SO>& m );
+
+   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   inline DynamicArray& operator= ( const Tensor<MT>& m );
+   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   inline DynamicArray& operator+=( const Tensor<MT>& m );
+   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   inline DynamicArray& operator-=( const Tensor<MT>& m );
+   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   inline DynamicArray& operator%=( const Tensor<MT>& m );
    //@}
    //**********************************************************************************************
 
@@ -689,6 +723,90 @@ inline DynamicArray<N, Type>::DynamicArray( const Array<MT>& rhs )
 }
 //*************************************************************************************************
 
+
+//*************************************************************************************************
+/*!\brief Conversion constructor from different arrays.
+//
+// \param m Array to be copied.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool TF, size_t M, typename Enable >
+inline DynamicArray<N, Type>::DynamicArray( const Vector<MT, TF>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<1, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+//*************************************************************************************************
+
+//*************************************************************************************************
+/*!\brief Conversion constructor from different arrays.
+//
+// \param m Array to be copied.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool SO, size_t M, typename Enable >
+inline DynamicArray<N, Type>::DynamicArray( const Matrix<MT,SO>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<2, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+//*************************************************************************************************
+
+//*************************************************************************************************
+/*!\brief Conversion constructor from different arrays.
+//
+// \param m Array to be copied.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, size_t M, typename Enable >
+inline DynamicArray<N, Type>::DynamicArray( const Tensor<MT>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<2, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+}
+//*************************************************************************************************
 
 //*************************************************************************************************
 /*!\brief Constructor from array bounds.
@@ -1463,6 +1581,392 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Array<MT>
    return *this;
 }
 //*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Homogeneous assignment to all array elements.
+//
+// \param rhs Array to be copied.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool TF, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Vector<MT, TF>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<1, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition assignment operator for the addition of a array (\f$ A+=B \f$).
+//
+// \param rhs The right-hand side array to be added to the array.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool TF, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Vector<MT, TF>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<1, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAddAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpAddAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment operator for the subtraction of a array (\f$ A-=B \f$).
+//
+// \param rhs The right-hand side array to be subtracted from the array.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool TF, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Vector<MT, TF>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<1, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpSubAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpSubAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Schur product assignment operator for the multiplication of a array (\f$ A\circ=B \f$).
+//
+// \param rhs The right-hand side array for the Schur product.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool TF, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Vector<MT, TF>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<1, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpSchurAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpSchurAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Homogeneous assignment to all array elements.
+//
+// \param rhs Array to be copied.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool SO, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Matrix<MT, SO>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<2, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition assignment operator for the addition of a array (\f$ A+=B \f$).
+//
+// \param rhs The right-hand side array to be added to the array.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool SO, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Matrix<MT, SO>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<2, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAddAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpAddAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment operator for the subtraction of a array (\f$ A-=B \f$).
+//
+// \param rhs The right-hand side array to be subtracted from the array.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool SO, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Matrix<MT, SO>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<2, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpSubAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpSubAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Schur product assignment operator for the multiplication of a array (\f$ A\circ=B \f$).
+//
+// \param rhs The right-hand side array for the Schur product.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, bool SO, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Matrix<MT, SO>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<2, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpSchurAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpSchurAssign( *this,
+         custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Homogeneous assignment to all array elements.
+//
+// \param rhs Array to be copied.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Tensor<MT>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<3, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Addition assignment operator for the subtraction of a array (\f$ A+=B \f$).
+//
+// \param rhs The right-hand side array to be added to the array.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Tensor<MT>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<3, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpAddAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpAddAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Subtraction assignment operator for the subtraction of a array (\f$ A-=B \f$).
+//
+// \param rhs The right-hand side array to be subtracted from the array.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Tensor<MT>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<3, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpSubAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpSubAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Schur product assignment operator for the multiplication of a array (\f$ A\circ=B \f$).
+//
+// \param rhs The right-hand side array for the Schur product.
+// \return Reference to the assigned array.
+*/
+template< size_t N         // The dimensionality of the array
+        , typename Type >  // Data type of the array
+template< typename MT, size_t M, typename Enable >
+inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Tensor<MT>& rhs )
+{
+   using ET = ElementType_t<MT>;
+   using custom_array = CustomArray<3, ET, false, true>;
+
+   if( (~rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( ~rhs );
+      smpSchurAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+   else {
+      auto const& tmp = ~rhs;
+      smpSchurAssign( *this,
+         custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
+            tmp.spacing() ) );
+   }
+
+   BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
+
+   return *this;
+}
+//*************************************************************************************************
+
+
 
 
 
