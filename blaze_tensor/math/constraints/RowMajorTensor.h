@@ -1,9 +1,9 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/constraints/TensMatSchurExpr.h
-//  \brief Constraint on the data type
+//  \file blaze_tensor/math/constraints/RowMajorTensor.h
+//  \brief Constraints on the storage order of tensor types
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
@@ -34,27 +34,22 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSMATSCHUREXPR_H_
-#define _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSMATSCHUREXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_ROWMAJORTENSOR_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_ROWMAJORTENSOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SchurExpr.h>
-#include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/Size.h>
+#include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
 
-
-#include <blaze_tensor/math/typetraits/IsTensor.h>
 
 namespace blaze {
 
-
 //=================================================================================================
 //
-//  MUST_FORM_VALID_TENSOR_MATRIX_SCHUREXPR CONSTRAINT
+//  MUST_BE_ROW_MAJOR_TENSOR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -62,19 +57,31 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data types \a T1 and \a T2 do not form a valid tensor/matrix schur product,
-// a compilation error is created.
+// In case the given data type \a T is not a row-major dense or sparse tensor type (i.e. a tensor
+// type whose storage order is set to \a false) a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSOR_MATRIX_SCHUREXPR(T1,T2) \
-   static_assert( ::blaze::IsTensor_v<T1> && \
-                  ::blaze::IsMatrix_v<T2> && \
-                  ( ( ::blaze::Size_v<T1,0UL> == -1L && ::blaze::Size_v<T1,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,0UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,0UL> ) ) && \
-                  ( ( ::blaze::Size_v<T1,2UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,1UL> ) )  \
-                , "Invalid tensor/matrix schur product expression detected" )
+#define BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_TENSOR_TYPE(T) \
+   static_assert( ::blaze::IsRowMajorTensor_v<T>, "Non-row-major tensor type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_ROW_MAJOR_TENSOR_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a row-major dense or sparse tensor type (i.e. a tensor
+// type whose storage order is set to \a false) a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_ROW_MAJOR_TENSOR_TYPE(T) \
+   static_assert( !::blaze::IsRowMajorTensor_v<T>, "Row-major tensor type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

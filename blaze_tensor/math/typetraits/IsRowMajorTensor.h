@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORMATRIX_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORMATRIX_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORTENSOR_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORTENSOR_H_
 
 
 //*************************************************************************************************

@@ -409,16 +409,16 @@ inline decltype(auto) rowslice( const SchurExpr<MT>& tensor, RRAs... args )
 //
 // This function returns an expression representing the specified rowslice of the given Schur product.
 */
-template< size_t... CRAs      // Compile time rowslice arguments
-        , typename TT         // Tensor base type of the expression
-        , typename... RRAs >  // Runtime rowslice arguments
-inline decltype(auto) rowslice( const TensMatSchurExpr<TT>& tensor, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) %
-                             (~tensor).rightOperand();
-}
+//template< size_t... CRAs      // Compile time rowslice arguments
+//        , typename TT         // Tensor base type of the expression
+//        , typename... RRAs >  // Runtime rowslice arguments
+//inline decltype(auto) rowslice( const TensMatSchurExpr<TT>& tensor, RRAs... args )
+//{
+//   BLAZE_FUNCTION_TRACE;
+//
+//   return rowslice<CRAs...>( (~tensor).leftOperand(), args... ) %
+//          row<CRAs...>     ( (~tensor).rightOperand(), args... );
+//}
 /*! \endcond */
 //*************************************************************************************************
 

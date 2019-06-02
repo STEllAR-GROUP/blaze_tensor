@@ -518,9 +518,9 @@ class DTensDMatSchurExpr
    BLAZE_ALWAYS_INLINE auto load( size_t k, size_t i, size_t j ) const noexcept {
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < lhs_.columns(), "Invalid column access index" );
-      BLAZE_INTERNAL_ASSERT( k < lhs_.pages()  , "Invalid page access index" );
-      BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index"    );
-      BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
+      BLAZE_INTERNAL_ASSERT( k < lhs_.pages()  , "Invalid page access index"   );
+      BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index"   );
+      BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index");
       return lhs_.load(k,i,j) * rhs_.load(i,j);
    }
    //**********************************************************************************************
@@ -674,14 +674,14 @@ class DTensDMatSchurExpr
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns");
       BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
 
-      if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
-         schurAssign( ~lhs, rhs.rhs_ );
-      }
-      else {
+      //if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
+      //   schurAssign( ~lhs, rhs.rhs_ );
+      //}
+      //else {
          CT1 A( serial( rhs.lhs_ ) );
          CT2 B( serial( rhs.rhs_ ) );
          assign( ~lhs, A % B );
-      }
+      //}
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -708,7 +708,7 @@ class DTensDMatSchurExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
       if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
          schurAssign( ~lhs, rhs.rhs_ );
@@ -892,16 +892,16 @@ class DTensDMatSchurExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
-      if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
-         smpSchurAssign( ~lhs, rhs.rhs_ );
-      }
-      else {
+      //if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
+      //   smpSchurAssign( ~lhs, rhs.rhs_ );
+      //}
+      //else {
          CT1 A( rhs.lhs_ );
          CT2 B( rhs.rhs_ );
          smpAssign( ~lhs, A % B );
-      }
+      //}
    }
    /*! \endcond */
    //**********************************************************************************************

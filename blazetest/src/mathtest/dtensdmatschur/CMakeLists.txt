@@ -35,6 +35,13 @@ set(category DTensDMatSchur)
 
 set(tests
     AliasingTest
+    T2x3x4aM3x4a
+    T2x3x4aM3x4b
+    T2x3x4aMDb
+    TDbM3x4b
+    TDbMDa
+    TUaM6x7a
+    TUaMUb
 )
 
 foreach(test ${tests})

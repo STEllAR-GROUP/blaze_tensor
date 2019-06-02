@@ -51,6 +51,7 @@
 #include <blaze_tensor/math/expressions/MatExpandExpr.h>
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
+#include <blaze_tensor/math/expressions/TensMatSchurExpr.h>
 #include <blaze_tensor/math/expressions/TensReduceExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
@@ -393,6 +394,31 @@ inline decltype(auto) columnslice( const SchurExpr<MT>& tensor, RRAs... args )
    return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) %
           columnslice<CRAs...>( (~tensor).rightOperand(), args... );
 }
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific columnslice of the given Schur product.
+// \ingroup columnslice
+//
+// \param tensor The constant Schur product.
+// \param args The runtime columnslice arguments.
+// \return View on the specified columnslice of the Schur product.
+//
+// This function returns an expression representing the specified columnslice of the given Schur product.
+*/
+//template< size_t... CRAs      // Compile time columnslice arguments
+//        , typename TT         // Tensor base type of the expression
+//        , typename... RRAs >  // Runtime columnslice arguments
+//inline decltype(auto) columnslice( const TensMatSchurExpr<TT>& tensor, RRAs... args )
+//{
+//   BLAZE_FUNCTION_TRACE;
+//
+//   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) %
+//          column<CRAs...>     ( (~tensor).rightOperand(), args... );
+//}
 /*! \endcond */
 //*************************************************************************************************
 

@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/constraints/TensMatSchurExpr.h
-//  \brief Constraint on the data type
+//  \file src/mathtest/dtensdmatschur/TUaM6x7a.cpp
+//  \brief Source file for the TUaM6x7a dense tensor/dense matrix schur product math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
@@ -34,49 +34,59 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSMATSCHUREXPR_H_
-#define _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSMATSCHUREXPR_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SchurExpr.h>
-#include <blaze/math/typetraits/IsMatrix.h>
-#include <blaze/math/typetraits/Size.h>
+#include <cstdlib>
+#include <iostream>
+#include <blaze/math/StaticMatrix.h>
+#include <blazetest/mathtest/creator/UniformTensor.h>
+#include <blazetest/mathtest/dtensdmatschur/OperationTest.h>
+#include <blazetest/system/MathTest.h>
 
-
-#include <blaze_tensor/math/typetraits/IsTensor.h>
-
-namespace blaze {
+#include <blaze_tensor/math/UniformTensor.h>
 
 
 //=================================================================================================
 //
-//  MUST_FORM_VALID_TENSOR_MATRIX_SCHUREXPR CONSTRAINT
+//  MAIN FUNCTION
 //
 //=================================================================================================
 
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data types \a T1 and \a T2 do not form a valid tensor/matrix schur product,
-// a compilation error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSOR_MATRIX_SCHUREXPR(T1,T2) \
-   static_assert( ::blaze::IsTensor_v<T1> && \
-                  ::blaze::IsMatrix_v<T2> && \
-                  ( ( ::blaze::Size_v<T1,0UL> == -1L && ::blaze::Size_v<T1,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,0UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,0UL> ) ) && \
-                  ( ( ::blaze::Size_v<T1,2UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,1UL> ) )  \
-                , "Invalid tensor/matrix schur product expression detected" )
-//*************************************************************************************************
-
-} // namespace blaze
-
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
 #endif
+
+//*************************************************************************************************
+int main()
+
+{
+   std::cout << "   Running 'TUaM6x7a'..." << std::endl;
+
+   using blazetest::mathtest::TypeA;
+
+   try
+   {
+      // Tensor type definitions
+      using TUa   = blaze::UniformTensor<TypeA>;
+      using M6x7a = blaze::StaticMatrix<TypeA,6UL,7UL>;
+
+      // Creator type definitions
+      using CTUa   = blazetest::Creator<TUa>;
+      using CM6x7a = blazetest::Creator<M6x7a>;
+
+      // Running the tests
+      RUN_DTENSDMATSCHUR_OPERATION_TEST( CTUa( 3UL,6UL,7UL ), CM6x7a() );
+
+   }
+   catch( std::exception& ex ) {
+      std::cerr << "\n\n ERROR DETECTED during dense tensor/dense matrix schur product:\n"
+                << ex.what() << "\n";
+      return EXIT_FAILURE;
+   }
+
+   return EXIT_SUCCESS;
+}
+//*************************************************************************************************
