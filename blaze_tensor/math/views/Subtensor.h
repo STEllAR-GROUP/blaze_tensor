@@ -90,6 +90,7 @@
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
 #include <blaze_tensor/math/expressions/Tensor.h>
 #include <blaze_tensor/math/expressions/TensReduceExpr.h>
+#include <blaze_tensor/math/expressions/TensMatSchurExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensAddExpr.h>
@@ -944,6 +945,40 @@ inline decltype(auto) subtensor( const SchurExpr<TT>& tensor, RSAs... args )
 
    return subtensor<AF,CSAs...>( (~tensor).leftOperand(), args... ) %
           subtensor<AF,CSAs...>( (~tensor).rightOperand(), args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific subtensor of the given Schur product.
+// \ingroup subtensor
+//
+// \param tensor The constant Schur product.
+// \param args The runtime subtensor arguments
+// \return View on the specified subtensor of the Schur product.
+//
+// This function returns an expression representing the specified subtensor of the given Schur
+// product.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time subtensor arguments
+        , typename TT         // Tensor base type of the expression
+        , typename... RSAs >  // Runtime subtensor arguments
+inline decltype(auto) subtensor( const TensMatSchurExpr<TT>& tensor, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using TT1 = RemoveReference_t< LeftOperand_t< TensorType_t<TT> > >;
+
+   const SubtensorData<CSAs...> st( args... );
+
+   BLAZE_DECLTYPE_AUTO( left , (~tensor).leftOperand()  );
+   BLAZE_DECLTYPE_AUTO( right, (~tensor).rightOperand() );
+
+   return subtensor<AF>( left, st.page(), st.row(), st.column(), st.pages(), st.rows(), st.columns()) %
+          submatrix<AF>( right, st.row(), st.column(), st.rows(), st.columns() );
 }
 /*! \endcond */
 //*************************************************************************************************

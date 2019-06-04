@@ -68,6 +68,11 @@
 #endif
 //*************************************************************************************************
 
+//=================================================================================================
+//
+//  SMP THRESHOLDS
+//
+//=================================================================================================
 
 //*************************************************************************************************
 /*!\brief SMP row-major dense matrix/dense vector multiplication threshold.
@@ -98,5 +103,41 @@
 */
 #ifndef BLAZE_SMP_DTENSDVECMULT_THRESHOLD
 #define BLAZE_SMP_DTENSDVECMULT_THRESHOLD 330UL
+#endif
+//*************************************************************************************************
+
+
+
+//*************************************************************************************************
+/*!\brief SMP row-major dense matrix/row-major dense matrix Schur product threshold.
+// \ingroup config
+//
+// This threshold specifies when a row-major dense matrix/row-major dense matrix Schur product
+// can be executed in parallel. This threshold affects both Schur products between two row-major
+// matrices or two column-major dense matrices. In case the number of elements of the target
+// matrix is larger or equal to this threshold, the operation is executed in parallel. If the
+// number of elements is below this threshold the operation is executed single-threaded.
+//
+// Please note that this threshold is highly sensitiv to the used system architecture and the
+// shared memory parallelization technique. Therefore the default value cannot guarantee maximum
+// performance for all possible situations and configurations. It merely provides a reasonable
+// standard for the current generation of CPUs. Also note that the provided default has been
+// determined using the OpenMP parallelization and requires individual adaption for the C++11
+// and Boost thread parallelization or the HPX-based parallelization.
+//
+// The default setting for this threshold is 36100 (which corresponds to a matrix size of
+// \f$ 190 \times 190 \f$). In case the threshold is set to 0, the operation is unconditionally
+// executed in parallel.
+//
+// \note It is possible to specify this threshold via command line or by defining this symbol
+// manually before including any Blaze header file:
+
+   \code
+   #define BLAZE_SMP_DMATDMATSCHUR_THRESHOLD 36100UL
+   #include <blaze/Blaze.h>
+   \endcode
+*/
+#ifndef BLAZE_SMP_DTENSDMATSCHUR_THRESHOLD
+#define BLAZE_SMP_DTENSDMATSCHUR_THRESHOLD 36100UL
 #endif
 //*************************************************************************************************

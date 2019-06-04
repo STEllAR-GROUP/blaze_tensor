@@ -72,6 +72,7 @@
 #include <blaze/math/typetraits/HighType.h>
 #include <blaze/math/typetraits/IsAligned.h>
 #include <blaze/math/typetraits/IsContiguous.h>
+#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/math/typetraits/IsDiagonal.h>
 #include <blaze/math/typetraits/IsLower.h>
 #include <blaze/math/typetraits/IsPadded.h>
@@ -3493,10 +3494,28 @@ struct SchurTraitEval2< T1, T2
 
    using Type = StaticTensor< MultTrait_t<ET1,ET2>, O, M, N >;
 };
+
+template< typename T1, typename T2 >
+struct SchurTraitEval2< T1, T2
+                      , EnableIf_t< IsDenseTensor_v<T1> &&
+                                    IsDenseMatrix_v<T2> &&
+                                  ( Size_v<T1,0UL> != DefaultSize_v &&
+                                    Size_v<T2,0UL> != DefaultSize_v ) &&
+                                  ( Size_v<T1,1UL> != DefaultSize_v &&
+                                    Size_v<T2,1UL> != DefaultSize_v ) &&
+                                  ( Size_v<T1,2UL> != DefaultSize_v ) > >
+{
+   using ET1 = ElementType_t<T1>;
+   using ET2 = ElementType_t<T2>;
+
+   static constexpr size_t O = Size_v<T1,0UL>;
+   static constexpr size_t M = max( Size_v<T1,1UL>, Size_v<T2,0UL> );
+   static constexpr size_t N = max( Size_v<T1,2UL>, Size_v<T2,1UL> );
+
+   using Type = StaticTensor< MultTrait_t<ET1,ET2>, O, M, N >;
+};
 /*! \endcond */
 //*************************************************************************************************
-
-
 
 
 //=================================================================================================

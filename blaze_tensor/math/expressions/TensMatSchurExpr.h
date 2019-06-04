@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/constraints/SchurExpr.h
-//  \brief Constraint on the data type
+//  \file blaze_tensor/math/expressions/TensMatSchurExpr.h
+//  \brief Header file for the SchurExpr base class
 //
-//  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,48 +34,40 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_SCHUREXPR_H_
-#define _BLAZE_TENSOR_MATH_CONSTRAINTS_SCHUREXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSMATSCHUREXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_TENSMATSCHUREXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SchurExpr.h>
-#include <blaze/math/typetraits/Size.h>
+#include <blaze/math/expressions/Expression.h>
 
-#include <blaze_tensor/math/typetraits/IsTensor.h>
 
 namespace blaze {
 
-
 //=================================================================================================
 //
-//  MUST_FORM_VALID_TENSOR_SCHUREXPR CONSTRAINT
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
+/*!\brief Base class for all Schur product expression templates.
+// \ingroup math
 //
-// In case the given data types \a T1 and \a T2 do not form a valid matrix/matrix addition,
-// a compilation error is created.
+// The SchurExpr class serves as a tag for all expression templates that implement mathematical
+// Schur products. All classes, that represent a mathematical Schur product and that are used
+// within the expression template environment of the Blaze library have to derive publicly from
+// this class in order to qualify as Schur product expression template. Only in case a class is
+// derived publicly from the SchurExpr base class, the IsSchurExpr type trait recognizes the
+// class as valid Schur product expression template.
 */
-#define BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSOR_SCHUREXPR(T1,T2) \
-   static_assert( ::blaze::IsTensor_v<T1> && \
-                  ::blaze::IsTensor_v<T2> && \
-                  ( ( ::blaze::Size_v<T1,0UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,0UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,0UL> == ::blaze::Size_v<T2,0UL> ) ) && \
-                  ( ( ::blaze::Size_v<T1,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,1UL> ) ) && \
-                  ( ( ::blaze::Size_v<T1,2UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,2UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,2UL> ) ) \
-                , "Invalid tensor/tensor schur product expression detected" )
+template< typename TT >  // Tensor base type of the expression
+struct TensMatSchurExpr
+   : public Expression<TT>
+{};
 //*************************************************************************************************
 
 } // namespace blaze

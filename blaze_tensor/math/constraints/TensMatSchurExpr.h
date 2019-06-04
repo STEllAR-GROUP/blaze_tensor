@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/constraints/SchurExpr.h
+//  \file blaze_tensor/math/constraints/TensMatSchurExpr.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,8 +34,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_SCHUREXPR_H_
-#define _BLAZE_TENSOR_MATH_CONSTRAINTS_SCHUREXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSMATSCHUREXPR_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSMATSCHUREXPR_H_
 
 
 //*************************************************************************************************
@@ -42,7 +43,9 @@
 //*************************************************************************************************
 
 #include <blaze/math/constraints/SchurExpr.h>
+#include <blaze/math/typetraits/IsMatrix.h>
 #include <blaze/math/typetraits/Size.h>
+
 
 #include <blaze_tensor/math/typetraits/IsTensor.h>
 
@@ -51,7 +54,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_FORM_VALID_TENSOR_SCHUREXPR CONSTRAINT
+//  MUST_FORM_VALID_TENSOR_MATRIX_SCHUREXPR CONSTRAINT
 //
 //=================================================================================================
 
@@ -59,22 +62,19 @@ namespace blaze {
 /*!\brief Constraint on the data type.
 // \ingroup math_constraints
 //
-// In case the given data types \a T1 and \a T2 do not form a valid matrix/matrix addition,
+// In case the given data types \a T1 and \a T2 do not form a valid tensor/matrix schur product,
 // a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSOR_SCHUREXPR(T1,T2) \
+#define BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSOR_MATRIX_SCHUREXPR(T1,T2) \
    static_assert( ::blaze::IsTensor_v<T1> && \
-                  ::blaze::IsTensor_v<T2> && \
-                  ( ( ::blaze::Size_v<T1,0UL> == -1L ) || \
+                  ::blaze::IsMatrix_v<T2> && \
+                  ( ( ::blaze::Size_v<T1,0UL> == -1L && ::blaze::Size_v<T1,1UL> == -1L ) || \
                     ( ::blaze::Size_v<T2,0UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,0UL> == ::blaze::Size_v<T2,0UL> ) ) && \
-                  ( ( ::blaze::Size_v<T1,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,1UL> ) ) && \
+                    ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,0UL> ) ) && \
                   ( ( ::blaze::Size_v<T1,2UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,2UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,2UL> ) ) \
-                , "Invalid tensor/tensor schur product expression detected" )
+                    ( ::blaze::Size_v<T2,1UL> == -1L ) || \
+                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,1UL> ) )  \
+                , "Invalid tensor/matrix schur product expression detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/expressions/DTensDTensSchurExpr.h
+//  \file blaze_tensor/math/expressions/DTensDMatSchurExpr.h
 //  \brief Header file for the dense tensor/dense tensor Schur product expression
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,8 +34,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_DTENSDTENSSCHUREXPR_H_
-#define _BLAZE_TENSOR_MATH_EXPRESSIONS_DTENSDTENSSCHUREXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_DTENSDMATSCHUREXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_DTENSDMATSCHUREXPR_H_
 
 
 //*************************************************************************************************
@@ -49,6 +50,7 @@
 #include <blaze/math/constraints/StorageOrder.h>
 #include <blaze/math/Exception.h>
 #include <blaze/math/expressions/Computation.h>
+#include <blaze/math/expressions/DenseMatrix.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/SchurExpr.h>
 #include <blaze/math/shims/Serial.h>
@@ -83,14 +85,16 @@
 #include <blaze/util/MaybeUnused.h>
 
 #include <blaze_tensor/math/constraints/DenseTensor.h>
-#include <blaze_tensor/math/constraints/SchurExpr.h>
+#include <blaze_tensor/math/constraints/TensMatSchurExpr.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
+#include <blaze_tensor/math/expressions/TensMatSchurExpr.h>
+#include <blaze_tensor/system/Thresholds.h>
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  CLASS DTENSDTENSSCHUREXPR
+//  CLASS DTENSDMATSCHUREXPR
 //
 //=================================================================================================
 
@@ -98,25 +102,26 @@ namespace blaze {
 /*!\brief Expression object for dense tensor-dense tensor Schur products.
 // \ingroup dense_tensor_expression
 //
-// The DTensDTensSchurExpr class represents the compile time expression for Schur products between
+// The DTensDMatSchurExpr class represents the compile time expression for Schur products between
 // dense tensors with identical storage order.
 */
-template< typename MT1  // Type of the left-hand side dense tensor
-        , typename MT2 > // Type of the right-hand side dense tensor
-class DTensDTensSchurExpr
-   : public SchurExpr< DenseTensor< DTensDTensSchurExpr<MT1,MT2> > >
+template< typename TT  // Type of the left-hand side dense tensor
+        , typename MT  // Type of the right-hand side dense tensor
+        , bool SO >    // Storage order
+class DTensDMatSchurExpr
+   : public TensMatSchurExpr< DenseTensor< DTensDMatSchurExpr<TT,MT,SO> > >
    , private Computation
 {
  private:
    //**Type definitions****************************************************************************
-   using RT1 = ResultType_t<MT1>;     //!< Result type of the left-hand side dense tensor expression.
-   using RT2 = ResultType_t<MT2>;     //!< Result type of the right-hand side dense tensor expression.
-   using RN1 = ReturnType_t<MT1>;     //!< Return type of the left-hand side dense tensor expression.
-   using RN2 = ReturnType_t<MT2>;     //!< Return type of the right-hand side dense tensor expression.
-   using CT1 = CompositeType_t<MT1>;  //!< Composite type of the left-hand side dense tensor expression.
-   using CT2 = CompositeType_t<MT2>;  //!< Composite type of the right-hand side dense tensor expression.
-   using ET1 = ElementType_t<MT1>;    //!< Element type of the left-hand side dense tensor expression.
-   using ET2 = ElementType_t<MT2>;    //!< Element type of the right-hand side dense tensor expression.
+   using RT1 = ResultType_t<TT>;     //!< Result type of the left-hand side dense tensor expression.
+   using RT2 = ResultType_t<MT>;     //!< Result type of the right-hand side dense tensor expression.
+   using RN1 = ReturnType_t<TT>;     //!< Return type of the left-hand side dense tensor expression.
+   using RN2 = ReturnType_t<MT>;     //!< Return type of the right-hand side dense tensor expression.
+   using CT1 = CompositeType_t<TT>;  //!< Composite type of the left-hand side dense tensor expression.
+   using CT2 = CompositeType_t<MT>;  //!< Composite type of the right-hand side dense tensor expression.
+   using ET1 = ElementType_t<TT>;    //!< Element type of the left-hand side dense tensor expression.
+   using ET2 = ElementType_t<MT>;    //!< Element type of the right-hand side dense tensor expression.
    //**********************************************************************************************
 
    //**Return type evaluation**********************************************************************
@@ -141,11 +146,11 @@ class DTensDTensSchurExpr
        evaluated via the \a assign function family. Otherwise \a useAssign will be set to 0 and
        the expression will be evaluated via the function call operator. */
    static constexpr bool useAssign =
-      ( RequiresEvaluation_v<MT1> || RequiresEvaluation_v<MT2> || !returnExpr );
+      ( RequiresEvaluation_v<TT> || RequiresEvaluation_v<MT> || !returnExpr );
 
    /*! \cond BLAZE_INTERNAL */
    //! Helper variable template for the explicit application of the SFINAE principle.
-   template< typename MT >
+   template< typename TT1 >
    static constexpr bool UseAssign_v = useAssign;
    /*! \endcond */
    //**********************************************************************************************
@@ -158,15 +163,16 @@ class DTensDTensSchurExpr
        the two operands requires an intermediate evaluation, the variable is set to 1 and the
        expression specific evaluation strategy is selected. Otherwise the variable is set to 0
        and the default strategy is chosen. */
-   template< typename MT >
+   template< typename TT1 >
    static constexpr bool UseSMPAssign_v =
-      ( ( !MT1::smpAssignable || !MT2::smpAssignable ) && useAssign );
+      ( ( !TT::smpAssignable || !MT::smpAssignable ) && useAssign );
    /*! \endcond */
    //**********************************************************************************************
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DTensDTensSchurExpr<MT1,MT2>;   //!< Type of this DTensDTensSchurExpr instance.
+   using This          = DTensDMatSchurExpr<TT,MT,SO>;   //!< Type of this DTensDMatSchurExpr instance.
+   using BaseType      = DenseTensor<This>;              //!< Base type of this DTensDVecMultExpr instance.
    using ResultType    = SchurTrait_t<RT1,RT2>;          //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;     //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = TransposeType_t<ResultType>;    //!< Transpose type for expression template evaluations.
@@ -176,13 +182,13 @@ class DTensDTensSchurExpr
    using ReturnType = const If_t< returnExpr, ExprReturnType, ElementType >;
 
    //! Data type for composite expression templates.
-   using CompositeType = If_t< useAssign, const ResultType, const DTensDTensSchurExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const DTensDMatSchurExpr& >;
 
    //! Composite type of the left-hand side dense tensor expression.
-   using LeftOperand = If_t< IsExpression_v<MT1>, const MT1, const MT1& >;
+   using LeftOperand = If_t< IsExpression_v<TT>, const TT, const TT& >;
 
-   //! Composite type of the right-hand side dense tensor expression.
-   using RightOperand = If_t< IsExpression_v<MT2>, const MT2, const MT2& >;
+   //! Composite type of the right-hand side dense matrix expression.
+   using RightOperand = If_t< IsExpression_v<MT>, const MT, const MT& >;
    //**********************************************************************************************
 
    //**ConstIterator class definition**************************************************************
@@ -206,10 +212,10 @@ class DTensDTensSchurExpr
       using difference_type   = DifferenceType;    //!< Difference between two iterators.
 
       //! ConstIterator type of the left-hand side dense tensor expression.
-      using LeftIteratorType = ConstIterator_t<MT1>;
+      using LeftIteratorType = ConstIterator_t<TT>;
 
-      //! ConstIterator type of the right-hand side dense tensor expression.
-      using RightIteratorType = ConstIterator_t<MT2>;
+      //! ConstIterator type of the right-hand side dense matrix expression.
+      using RightIteratorType = ConstIterator_t<MT>;
       //*******************************************************************************************
 
       //**Constructor******************************************************************************
@@ -438,10 +444,10 @@ class DTensDTensSchurExpr
    //**Compilation flags***************************************************************************
    //! Compilation switch for the expression template evaluation strategy.
    static constexpr bool simdEnabled =
-      ( MT1::simdEnabled && MT2::simdEnabled && HasSIMDMult_v<ET1,ET2> );
+      ( TT::simdEnabled && MT::simdEnabled && HasSIMDMult_v<ET1,ET2> );
 
    //! Compilation switch for the expression template assignment strategy.
-   static constexpr bool smpAssignable = ( MT1::smpAssignable && MT2::smpAssignable );
+   static constexpr bool smpAssignable = ( TT::smpAssignable && MT::smpAssignable );
    //**********************************************************************************************
 
    //**SIMD properties*****************************************************************************
@@ -450,18 +456,17 @@ class DTensDTensSchurExpr
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the DTensDTensSchurExpr class.
+   /*!\brief Constructor for the DTensDMatSchurExpr class.
    //
    // \param lhs The left-hand side operand of the Schur product expression.
    // \param rhs The right-hand side operand of the Schur product expression.
    */
-   explicit inline DTensDTensSchurExpr( const MT1& lhs, const MT2& rhs ) noexcept
+   explicit inline DTensDMatSchurExpr( const TT& lhs, const MT& rhs ) noexcept
       : lhs_( lhs )  // Left-hand side dense tensor of the Schur product expression
-      , rhs_( rhs )  // Right-hand side dense tensor of the Schur product expression
+      , rhs_( rhs )  // Right-hand side dense matrix of the Schur product expression
    {
       BLAZE_INTERNAL_ASSERT( lhs.rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( lhs.columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( lhs.pages()   == rhs.pages()  , "Invalid number of pages" );
    }
    //**********************************************************************************************
 
@@ -473,10 +478,11 @@ class DTensDTensSchurExpr
    // \return The resulting value.
    */
    inline ReturnType operator()( size_t k, size_t i, size_t j ) const {
-      BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
-      BLAZE_INTERNAL_ASSERT( j < lhs_.columns(), "Invalid column access index" );
-      BLAZE_INTERNAL_ASSERT( k < lhs_.pages()  , "Invalid page access index" );
-      return lhs_(k,i,j) * rhs_(k,i,j);
+      BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"   );
+      BLAZE_INTERNAL_ASSERT( j < lhs_.columns(), "Invalid column access index");
+      BLAZE_INTERNAL_ASSERT( k < lhs_.pages()  , "Invalid page access index"  );
+
+      return lhs_(k,i,j) * rhs_(i,j);
    }
    //**********************************************************************************************
 
@@ -512,10 +518,10 @@ class DTensDTensSchurExpr
    BLAZE_ALWAYS_INLINE auto load( size_t k, size_t i, size_t j ) const noexcept {
       BLAZE_INTERNAL_ASSERT( i < lhs_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < lhs_.columns(), "Invalid column access index" );
-      BLAZE_INTERNAL_ASSERT( k < lhs_.pages()  , "Invalid page access index" );
-      BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index"    );
-      BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index" );
-      return lhs_.load(k,i,j) * rhs_.load(k,i,j);
+      BLAZE_INTERNAL_ASSERT( k < lhs_.pages()  , "Invalid page access index"   );
+      BLAZE_INTERNAL_ASSERT( i % SIMDSIZE == 0UL, "Invalid row access index"   );
+      BLAZE_INTERNAL_ASSERT( j % SIMDSIZE == 0UL, "Invalid column access index");
+      return lhs_.load(k,i,j) * rhs_.load(i,j);
    }
    //**********************************************************************************************
 
@@ -525,8 +531,8 @@ class DTensDTensSchurExpr
    // \param i The row index.
    // \return Iterator to the first non-zero element of row \a i.
    */
-   inline ConstIterator begin( size_t i, size_t k ) const {
-      return ConstIterator( lhs_.begin(i, k), rhs_.begin(i, k) );
+   inline ConstIterator begin( size_t k, size_t i ) const {
+      return ConstIterator( lhs_.begin(k, i), rhs_.begin(i) );
    }
    //**********************************************************************************************
 
@@ -536,8 +542,8 @@ class DTensDTensSchurExpr
    // \param i The row index.
    // \return Iterator just past the last non-zero element of row \a i.
    */
-   inline ConstIterator end( size_t i, size_t k ) const {
-      return ConstIterator( lhs_.end(i, k), rhs_.end(i, k) );
+   inline ConstIterator end( size_t k, size_t i ) const {
+      return ConstIterator( lhs_.end(k, i), rhs_.end(i) );
    }
    //**********************************************************************************************
 
@@ -599,8 +605,8 @@ class DTensDTensSchurExpr
    */
    template< typename T >
    inline bool canAlias( const T* alias ) const noexcept {
-      return ( IsExpression_v<MT1> && ( RequiresEvaluation_v<MT1> ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
-             ( IsExpression_v<MT2> && ( RequiresEvaluation_v<MT2> ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
+      return ( IsExpression_v<TT> && ( RequiresEvaluation_v<TT> ? lhs_.isAliased( alias ) : lhs_.canAlias( alias ) ) ) ||
+             ( IsExpression_v<MT> && ( RequiresEvaluation_v<MT> ? rhs_.isAliased( alias ) : rhs_.canAlias( alias ) ) );
    }
    //**********************************************************************************************
 
@@ -633,14 +639,14 @@ class DTensDTensSchurExpr
    */
    inline bool canSMPAssign() const noexcept {
       return lhs_.canSMPAssign() || rhs_.canSMPAssign() ||
-             ( rows() * columns() * pages() >= SMP_DMATDMATSCHUR_THRESHOLD );
+             ( rows() * columns() * pages() >= SMP_DTENSDMATSCHUR_THRESHOLD );
    }
    //**********************************************************************************************
 
  private:
    //**Member variables****************************************************************************
    LeftOperand  lhs_;  //!< Left-hand side dense tensor of the Schur product expression.
-   RightOperand rhs_;  //!< Right-hand side dense tensor of the Schur product expression.
+   RightOperand rhs_;  //!< Right-hand side dense matrix of the Schur product expression.
    //**********************************************************************************************
 
    //**Assignment to dense tensors****************************************************************
@@ -658,24 +664,24 @@ class DTensDTensSchurExpr
    // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either of the two operands requires an intermediate evaluation.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
-      assign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 >  // Type of the target dense tensor
+   friend inline auto assign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
+      -> EnableIf_t< UseAssign_v<TT1> && !IsCommutative_v<TT,MT> >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns");
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         schurAssign( ~lhs, rhs.rhs_ );
-      }
-      else {
+      //if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
+      //   schurAssign( ~lhs, rhs.rhs_ );
+      //}
+      //else {
          CT1 A( serial( rhs.lhs_ ) );
          CT2 B( serial( rhs.rhs_ ) );
          assign( ~lhs, A % B );
-      }
+      //}
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -694,23 +700,23 @@ class DTensDTensSchurExpr
    // application of the SFINAE principle, this function can only be selected by the compiler
    // in case either of the two operands requires an intermediate evaluation.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseAssign_v<MT> && IsCommutative_v<MT1,MT2> >
-      assign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseAssign_v<TT1> && IsCommutative_v<TT,MT> >
+      assign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
          schurAssign( ~lhs, rhs.rhs_ );
       }
-      else if( !IsOperation_v<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+      else if( !IsOperation_v<MT> && isSame( ~lhs, rhs.rhs_ ) ) {
          schurAssign( ~lhs, rhs.lhs_ );
       }
-      else if( !RequiresEvaluation_v<MT2> ) {
+      else if( !RequiresEvaluation_v<MT> ) {
          assign     ( ~lhs, rhs.rhs_ );
          schurAssign( ~lhs, rhs.lhs_ );
       }
@@ -736,18 +742,18 @@ class DTensDTensSchurExpr
    // of the SFINAE principle, this function can only be selected by the compiler in case either
    // of the operands requires an intermediate evaluation.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      addAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseAssign_v<TT1> >
+      addAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns");
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
 
       const ResultType tmp( serial( rhs ) );
       addAssign( ~lhs, tmp );
@@ -773,18 +779,18 @@ class DTensDTensSchurExpr
    // the SFINAE principle, this function can only be selected by the compiler in case either
    // of the operands requires an intermediate evaluation.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      subAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseAssign_v<TT1> >
+      subAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns");
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
 
       const ResultType tmp( serial( rhs ) );
       subAssign( ~lhs, tmp );
@@ -807,18 +813,18 @@ class DTensDTensSchurExpr
    // to the explicit application of the SFINAE principle, this function can only be selected by
    // the compiler in case either of the operands requires an intermediate evaluation.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
-      schurAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseAssign_v<TT1> && !IsCommutative_v<TT,MT> >
+      schurAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
+      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns");
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
 
       const ResultType tmp( serial( rhs ) );
       schurAssign( ~lhs, tmp );
@@ -841,17 +847,17 @@ class DTensDTensSchurExpr
    // to the explicit application of the SFINAE principle, this function can only be selected
    // by the compiler in case either of the operands requires an intermediate evaluation.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseAssign_v<MT> && IsCommutative_v<MT1,MT2> >
-      schurAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseAssign_v<TT1> && IsCommutative_v<TT,MT> >
+      schurAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
-      if( !RequiresEvaluation_v<MT2> ) {
+      if( !RequiresEvaluation_v<MT> ) {
          schurAssign( ~lhs, rhs.rhs_ );
          schurAssign( ~lhs, rhs.lhs_ );
       }
@@ -878,24 +884,24 @@ class DTensDTensSchurExpr
    // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseSMPAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
-      smpAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseSMPAssign_v<TT1> && !IsCommutative_v<TT,MT> >
+      smpAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
-         smpSchurAssign( ~lhs, rhs.rhs_ );
-      }
-      else {
+      //if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
+      //   smpSchurAssign( ~lhs, rhs.rhs_ );
+      //}
+      //else {
          CT1 A( rhs.lhs_ );
          CT2 B( rhs.rhs_ );
          smpAssign( ~lhs, A % B );
-      }
+      //}
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -915,23 +921,23 @@ class DTensDTensSchurExpr
    // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseSMPAssign_v<MT> && IsCommutative_v<MT1,MT2> >
-      smpAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseSMPAssign_v<TT1> && IsCommutative_v<TT,MT> >
+      smpAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
-      if( !IsOperation_v<MT1> && isSame( ~lhs, rhs.lhs_ ) ) {
+      if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
          smpSchurAssign( ~lhs, rhs.rhs_ );
       }
-      else if( !IsOperation_v<MT2> && isSame( ~lhs, rhs.rhs_ ) ) {
+      else if( !IsOperation_v<MT> && isSame( ~lhs, rhs.rhs_ ) ) {
          smpSchurAssign( ~lhs, rhs.lhs_ );
       }
-      else if( !RequiresEvaluation_v<MT2> ) {
+      else if( !RequiresEvaluation_v<MT> ) {
          smpAssign     ( ~lhs, rhs.rhs_ );
          smpSchurAssign( ~lhs, rhs.lhs_ );
       }
@@ -957,9 +963,9 @@ class DTensDTensSchurExpr
    // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseAssign_v<MT> >
-      smpAddAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseAssign_v<TT1> >
+      smpAddAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -968,7 +974,7 @@ class DTensDTensSchurExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
       const ResultType tmp( rhs );
       smpAddAssign( ~lhs, tmp );
@@ -991,9 +997,9 @@ class DTensDTensSchurExpr
    // application of the SFINAE principle, this function can only be selected by the compiler
    // in case the expression specific parallel evaluation strategy is selected.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseSMPAssign_v<MT> >
-      smpSubAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseSMPAssign_v<TT1> >
+      smpSubAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1002,7 +1008,7 @@ class DTensDTensSchurExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
       const ResultType tmp( rhs );
       smpSubAssign( ~lhs, tmp );
@@ -1025,9 +1031,9 @@ class DTensDTensSchurExpr
    // to the explicit application of the SFINAE principle, this function can only be selected by
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseSMPAssign_v<MT> && !IsCommutative_v<MT1,MT2> >
-      smpSchurAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseSMPAssign_v<TT1> && !IsCommutative_v<TT,MT> >
+      smpSchurAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
@@ -1036,7 +1042,7 @@ class DTensDTensSchurExpr
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
       const ResultType tmp( rhs );
       smpSchurAssign( ~lhs, tmp );
@@ -1059,17 +1065,17 @@ class DTensDTensSchurExpr
    // the explicit application of the SFINAE principle, this function can only be selected by
    // the compiler in case the expression specific parallel evaluation strategy is selected.
    */
-   template< typename MT > // Type of the target dense tensor
-   friend inline EnableIf_t< UseSMPAssign_v<MT> && IsCommutative_v<MT1,MT2> >
-      smpSchurAssign( DenseTensor<MT2>& lhs, const DTensDTensSchurExpr& rhs )
+   template< typename TT1 > // Type of the target dense tensor
+   friend inline EnableIf_t< UseSMPAssign_v<TT1> && IsCommutative_v<TT,MT> >
+      smpSchurAssign( DenseTensor<TT1>& lhs, const DTensDMatSchurExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
-      if( !RequiresEvaluation_v<MT2> ) {
+      if( !RequiresEvaluation_v<MT> ) {
          smpSchurAssign( ~lhs, rhs.rhs_ );
          smpSchurAssign( ~lhs, rhs.lhs_ );
       }
@@ -1083,9 +1089,9 @@ class DTensDTensSchurExpr
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( MT1 );
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( MT2 );
-   BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSOR_SCHUREXPR( MT1, MT2 );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( TT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSOR_MATRIX_SCHUREXPR( TT, MT );
    /*! \endcond */
    //**********************************************************************************************
 };
@@ -1113,20 +1119,20 @@ class DTensDTensSchurExpr
 // This function implements a performance optimized treatment of the Schur product of two
 // dense tensors with identical storage order.
 */
-template< typename MT1  // Type of the left-hand side dense tensor
-        , typename MT2  // Type of the right-hand side dense tensor
-        , DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
-inline const DTensDTensSchurExpr<MT1,MT2>
-   dtensdtensschur( const DenseTensor<MT1>& lhs, const DenseTensor<MT2>& rhs )
+template< typename TT  // Type of the left-hand side dense tensor
+        , typename MT  // Type of the right-hand side dense tensor
+        , bool SO      // Storage order
+        , DisableIf_t< ( IsUniLower_v<TT> && IsUniUpper_v<MT> ) ||
+                       ( IsUniUpper_v<TT> && IsUniLower_v<MT> ) >* = nullptr >
+inline const DTensDMatSchurExpr<TT,MT,SO>
+   dtensdmatschur( const DenseTensor<TT>& lhs, const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages()  , "Invalid number of pages" );
 
-   return DTensDTensSchurExpr<MT1,MT2>( ~lhs, ~rhs );
+   return DTensDMatSchurExpr<TT,MT,SO>( ~lhs, ~rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1145,12 +1151,12 @@ inline const DTensDTensSchurExpr<MT1,MT2>
 // This function implements a performance optimized treatment of the Schur product between two
 // unitriangular dense tensors with identical storage order.
 */
-// template< typename MT1  // Type of the left-hand side dense tensor
-//         , typename MT2  // Type of the right-hand side dense tensor
-//         , EnableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
-//                       ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
-// inline const IdentityTensor< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> > >
-//    dmatdmatschur( const DenseTensor<MT1>& lhs, const DenseTensor<MT2>& rhs )
+// template< typename TT  // Type of the left-hand side dense tensor
+//         , typename MT  // Type of the right-hand side dense tensor
+//         , EnableIf_t< ( IsUniLower_v<TT> && IsUniUpper_v<MT> ) ||
+//                       ( IsUniUpper_v<TT> && IsUniLower_v<MT> ) >* = nullptr >
+// inline const IdentityTensor< MultTrait_t< ElementType_t<TT>, ElementType_t<MT> > >
+//    dmatdmatschur( const DenseTensor<TT>& lhs, const DenseTensor<MT>& rhs )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
@@ -1160,7 +1166,7 @@ inline const DTensDTensSchurExpr<MT1,MT2>
 //    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
 //    BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages()  , "Invalid number of pages" );
 //
-//    return IdentityTensor< MultTrait_t< ElementType_t<MT1>, ElementType_t<MT2> > >( (~lhs).rows() );
+//    return IdentityTensor< MultTrait_t< ElementType_t<TT>, ElementType_t<MT> > >( (~lhs).rows() );
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1185,24 +1191,25 @@ inline const DTensDTensSchurExpr<MT1,MT2>
    \endcode
 
 // The operator returns an expression representing a dense tensor of the higher-order element
-// type of the two involved tensor element types \a MT1::ElementType and \a MT2::ElementType.
-// Both tensor types \a MT1 and \a MT2 as well as the two element types \a MT1::ElementType
-// and \a MT2::ElementType have to be supported by the MultTrait class template.\n
+// type of the two involved tensor element types \a TT::ElementType and \a MT::ElementType.
+// Both tensor types \a TT and \a MT as well as the two element types \a TT::ElementType
+// and \a MT::ElementType have to be supported by the MultTrait class template.\n
 // In case the current number of rows and columns of the two given  tensors don't match, a
 // \a std::invalid_argument is thrown.
 */
-template< typename MT1  // Type of the left-hand side dense tensor
-        , typename MT2 > // Type of the right-hand side dense tensor
+template< typename TT  // Type of the left-hand side dense tensor
+        , typename MT  // Type of the right-hand side dense tensor
+        , bool SO >     // Storage order
 inline decltype(auto)
-   operator%( const DenseTensor<MT1>& lhs, const DenseTensor<MT2>& rhs )
+   operator%( const DenseTensor<TT>& lhs, const DenseMatrix<MT,SO>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() || (~lhs).pages() != (~rhs).pages() ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
+   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Tensor and matrix sizes do not match" );
    }
 
-   return dtensdtensschur( ~lhs, ~rhs );
+   return dtensdmatschur( ~lhs, ~rhs );
 }
 //*************************************************************************************************
 
@@ -1217,9 +1224,9 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsAligned< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsAligned_v<MT1> && IsAligned_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsAligned< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsAligned_v<TT> && IsAligned_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1235,9 +1242,9 @@ struct IsAligned< DTensDTensSchurExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsPadded< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsPadded_v<MT1> && IsPadded_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsPadded< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsPadded_v<TT> && IsPadded_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1253,9 +1260,9 @@ struct IsPadded< DTensDTensSchurExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsSymmetric< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsSymmetric_v<MT1> && IsSymmetric_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsSymmetric< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsSymmetric_v<TT> && IsSymmetric_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1271,9 +1278,9 @@ struct IsSymmetric< DTensDTensSchurExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsHermitian< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsHermitian_v<MT1> && IsHermitian_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsHermitian< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsHermitian_v<TT> && IsHermitian_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1289,9 +1296,9 @@ struct IsHermitian< DTensDTensSchurExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsLower< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsLower_v<MT1> || IsLower_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsLower< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsLower_v<TT> || IsLower_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1307,9 +1314,9 @@ struct IsLower< DTensDTensSchurExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUniLower< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsUniLower_v<MT1> && IsUniLower_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsUniLower< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsUniLower_v<TT> && IsUniLower_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1325,9 +1332,9 @@ struct IsUniLower< DTensDTensSchurExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyLower< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsStrictlyLower_v<MT1> || IsStrictlyLower_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsStrictlyLower< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsStrictlyLower_v<TT> || IsStrictlyLower_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1343,9 +1350,9 @@ struct IsStrictlyLower< DTensDTensSchurExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUpper< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsUpper_v<MT1> || IsUpper_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsUpper< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsUpper_v<TT> || IsUpper_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1361,9 +1368,9 @@ struct IsUpper< DTensDTensSchurExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsUniUpper< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsUniUpper_v<MT1> && IsUniUpper_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsUniUpper< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsUniUpper_v<TT> && IsUniUpper_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -1379,9 +1386,9 @@ struct IsUniUpper< DTensDTensSchurExpr<MT1,MT2> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename MT1, typename MT2 >
-struct IsStrictlyUpper< DTensDTensSchurExpr<MT1,MT2> >
-   : public BoolConstant< IsStrictlyUpper_v<MT1> || IsStrictlyUpper_v<MT2> >
+template< typename TT, typename MT, bool SO >
+struct IsStrictlyUpper< DTensDMatSchurExpr<TT,MT,SO> >
+   : public BoolConstant< IsStrictlyUpper_v<TT> || IsStrictlyUpper_v<MT> >
 {};
 /*! \endcond */
 //*************************************************************************************************

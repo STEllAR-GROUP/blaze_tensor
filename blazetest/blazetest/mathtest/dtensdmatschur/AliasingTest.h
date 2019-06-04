@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blazetest/mathtest/dtensdtensadd/AliasingTest.h
+//  \file blazetest/mathtest/dtensdmatschur/AliasingTest.h
 //  \brief Header file for the dense tensor/dense tensor addition aliasing test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,8 +34,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZETEST_MATHTEST_DTENSDTENSADD_ALIASINGTEST_H_
-#define _BLAZETEST_MATHTEST_DTENSDTENSADD_ALIASINGTEST_H_
+#ifndef _BLAZETEST_MATHTEST_DTENSDMATSCHUR_ALIASINGTEST_H_
+#define _BLAZETEST_MATHTEST_DTENSDMATSCHUR_ALIASINGTEST_H_
 
 
 //*************************************************************************************************
@@ -44,6 +45,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <blaze/math/DynamicMatrix.h>
 
 #include <blaze_tensor/math/StaticTensor.h>
 #include <blaze_tensor/math/DynamicTensor.h>
@@ -52,7 +54,7 @@ namespace blazetest {
 
 namespace mathtest {
 
-namespace dtensdtensadd {
+namespace dtensdmatschur {
 
 //=================================================================================================
 //
@@ -71,9 +73,11 @@ class AliasingTest
 {
  private:
    //**Type definitions****************************************************************************
-   using DMat  = blaze::DynamicTensor<int>;         //!< Row-major dense tensor type.
-//    using TDMat = blaze::DynamicTensor<int,blaze::columnMajor>;      //!< Column-major dense tensor type.
-   using RMat  = blaze::StaticTensor<int,2UL,3UL,3UL>;  //!< Result row-major tensor type.
+   using DTens  = blaze::DynamicTensor<int>;                    //!< Row-major dense tensor type.
+   using DMat   = blaze::DynamicMatrix<int,blaze::rowMajor>;    //!< Row-major dense matrix type.
+   using TDMat  = blaze::DynamicMatrix<int,blaze::columnMajor>; //!< Column-major dense matrix type.
+   using RTens  = blaze::StaticTensor<int,2UL,3UL,3UL>;         //!< Result row-major tensor type.
+   using RTens2 = blaze::StaticTensor<int,2UL,3UL,4UL>;         //!< Result row-major tensor type.
    //**********************************************************************************************
 
  public:
@@ -93,8 +97,8 @@ class AliasingTest
    //**Test functions******************************************************************************
    /*!\name Test functions */
    //@{
-   void testDTensDTensAdd ();
-   void testDTensTDTensAdd();
+   void testDTensDMatSchur ();
+   //void testDTensTDTensAdd();
 
    template< typename T1, typename T2 >
    void checkResult( const T1& computedResult, const T2& expectedResult );
@@ -111,79 +115,13 @@ class AliasingTest
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   DMat dA2x3x4_;    //!< The first row-major dense tensor.
-                   /*!< The \f$ 3 \times 4 \f$ tensor is initialized as
-                        \f[\left(\begin{array}{*{4}{c}}
-                        -1 & 0 & -2 & 0 \\
-                         0 & 2 & -3 & 1 \\
-                         0 & 1 &  2 & 2 \\
-                        \end{array}\right)\f]. */
-   DMat dB2x4x3_;    //!< The second row-major dense tensor.
-                   /*!< The \f$ 4 \times 3 \f$ tensor is initialized as
-                        \f[\left(\begin{array}{*{3}{c}}
-                        1 &  0 & -3 \\
-                        0 & -1 &  0 \\
-                        0 &  2 &  1 \\
-                        2 &  1 & -2 \\
-                        \end{array}\right)\f]. */
-   DMat dC2x3x3_;    //!< The third row-major dense tensor.
-                   /*!< The \f$ 3 \times 3 \f$ tensor is initialized as
-                        \f[\left(\begin{array}{*{3}{c}}
-                         1 & 0 &  2 \\
-                         0 & 3 & -1 \\
-                        -1 & 0 &  2 \\
-                        \end{array}\right)\f]. */
-   DMat dD2x3x3_;    //!< The fourth row-major dense tensor.
-                   /*!< The \f$ 3 \times 3 \f$ tensor is initialized as
-                        \f[\left(\begin{array}{*{3}{c}}
-                        0 & -1 &  0 \\
-                        1 & -2 &  2 \\
-                        0 &  0 & -3 \\
-                        \end{array}\right)\f]. */
-   DMat dE2x3x3_;    //!< The fifth row-major dense tensor.
-                   /*!< The \f$ 3 \times 3 \f$ tensor is initialized as
-                        \f[\left(\begin{array}{*{3}{c}}
-                        2 & 0 &  0 \\
-                        0 & 1 & -2 \\
-                        1 & 0 &  0 \\
-                        \end{array}\right)\f]. */
-//    TDMat tdA3x4_;  //!< The first column-major dense tensor.
-//                    /*!< The \f$ 3 \times 4 \f$ tensor is initialized as
-//                         \f[\left(\begin{array}{*{4}{c}}
-//                         -1 & 0 & -2 & 0 \\
-//                          0 & 2 & -3 & 1 \\
-//                          0 & 1 &  2 & 2 \\
-//                         \end{array}\right)\f]. */
-//    TDMat tdB4x3_;  //!< The second column-major dense tensor.
-//                    /*!< The \f$ 4 \times 3 \f$ tensor is initialized as
-//                         \f[\left(\begin{array}{*{3}{c}}
-//                         1 &  0 & -3 \\
-//                         0 & -1 &  0 \\
-//                         0 &  2 &  1 \\
-//                         2 &  1 & -2 \\
-//                         \end{array}\right)\f]. */
-//    TDMat tdC3x3_;  //!< The third column-major dense tensor.
-//                    /*!< The \f$ 3 \times 3 \f$ tensor is initialized as
-//                         \f[\left(\begin{array}{*{3}{c}}
-//                          1 & 0 &  2 \\
-//                          0 & 3 & -1 \\
-//                         -1 & 0 &  2 \\
-//                         \end{array}\right)\f]. */
-//    TDMat tdD3x3_;  //!< The fourth column-major dense tensor.
-//                    /*!< The \f$ 3 \times 3 \f$ tensor is initialized as
-//                         \f[\left(\begin{array}{*{3}{c}}
-//                         0 & -1 &  0 \\
-//                         1 & -2 &  2 \\
-//                         0 &  0 & -3 \\
-//                         \end{array}\right)\f]. */
-//    TDMat tdE3x3_;  //!< The fifth column-major dense tensor.
-//                    /*!< The \f$ 3 \times 3 \f$ tensor is initialized as
-//                         \f[\left(\begin{array}{*{3}{c}}
-//                         2 & 0 &  0 \\
-//                         0 & 1 & -2 \\
-//                         1 & 0 &  0 \\
-//                         \end{array}\right)\f]. */
-   RMat result_;   //!< The dense tensor for the reference result.
+   DTens  dA2x3x4_;
+   DTens  dC2x3x3_;
+   DTens  dD2x3x3_;
+   DMat   dA3x3_;
+   TDMat  dB3x4_;
+   RTens result_;   //!< The dense tensor for the reference result 2x3x3
+   RTens2 res_;     //!< The dense tensor for the reference result 2x3x4
 
    std::string test_;  //!< Label of the currently performed test.
    //@}
@@ -262,12 +200,12 @@ void runTest()
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Macro for the execution of the dense tensor/dense tensor addition aliasing test.
 */
-#define RUN_DTENSDTENSADD_ALIASING_TEST \
-   blazetest::mathtest::dtensdtensadd::runTest()
+#define RUN_DTENSDMATSCHUR_ALIASING_TEST \
+   blazetest::mathtest::dtensdmatschur::runTest()
 /*! \endcond */
 //*************************************************************************************************
 
-} // namespace dtensdtensadd
+} // namespace dtensdmatschur
 
 } // namespace mathtest
 

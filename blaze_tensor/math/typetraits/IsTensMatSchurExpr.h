@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/typetraits/IsRowMajorTensor.h
-//  \brief Header file for the IsRowMajorTensor type trait
+//  \file blaze_tensor/math/typetraits/IsTensMatSchurExpr.h
+//  \brief Header file for the IsTensMatSchurExpr type trait class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,8 +34,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORTENSOR_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISROWMAJORTENSOR_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSMATSCHUREXPR_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSMATSCHUREXPR_H_
 
 
 //*************************************************************************************************
@@ -45,8 +46,8 @@
 #include <blaze/util/FalseType.h>
 #include <blaze/util/TrueType.h>
 
-#include <blaze_tensor/math/expressions/Tensor.h>
-#include <blaze_tensor/math/StorageOrder.h>
+#include <blaze_tensor/math/expressions/TensMatSchurExpr.h>
+
 
 namespace blaze {
 
@@ -58,19 +59,19 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsRowMajorTensor type trait.
+/*!\brief Auxiliary helper struct for the IsTensMatSchurExpr type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsRowMajorTensorHelper
+struct IsTensMatSchurExprHelper
 {
  private:
    //**********************************************************************************************
-   template< typename MT >
-   static TrueType test( const Tensor<MT>& );
+   template< typename TT >
+   static TrueType test( const TensMatSchurExpr<TT>& );
 
-   template< typename MT >
-   static TrueType test( const volatile Tensor<MT>& );
+   template< typename TT >
+   static TrueType test( const volatile TensMatSchurExpr<TT>& );
 
    static FalseType test( ... );
    //**********************************************************************************************
@@ -85,52 +86,40 @@ struct IsRowMajorTensorHelper
 
 
 //*************************************************************************************************
-/*!\brief Compile time check for row-major matrix types.
+/*!\brief Compile time check whether the given type is a tensor/tensor multiplication expression
+//        template.
 // \ingroup math_type_traits
 //
-// This type trait tests whether or not the given template argument is a row-major dense or
-// sparse matrix type (i.e., a matrix whose storage order is set to \a true). In case the type
-// is a row-major matrix type, the \a value member constant is set to \a true, the nested type
-// definition \a Type is \a TrueType, and the class derives from \a TrueType. Otherwise \a value
-// is set to \a false, \a Type is \a FalseType, and the class derives from \a FalseType.
-
-   \code
-   using blaze::StaticTensor;
-   using blaze::DynamicTensor;
-   using blaze::CompressedTensor;
-   using blaze::rowMajor;
-   using blaze::columnMajor;
-
-   blaze::IsRowMajorTensor< StaticTensor<float,3U,3U,rowMajor> >::value      // Evaluates to 1
-   blaze::IsRowMajorTensor< const DynamicTensor<double,rowMajor> >::Type     // Results in TrueType
-   blaze::IsRowMajorTensor< volatile CompressedTensor<int,rowMajor> >        // Is derived from TrueType
-   blaze::IsRowMajorTensor< StaticTensor<float,3U,3U,columnMajor> >::value   // Evaluates to 0
-   blaze::IsRowMajorTensor< const DynamicTensor<double,columnMajor> >::Type  // Results in FalseType
-   blaze::IsRowMajorTensor< volatile CompressedTensor<int,columnMajor> >     // Is derived from FalseType
-   \endcode
+// This type trait class tests whether or not the given type \a Type is a tensor/tensor
+// multiplication expression template. In order to qualify as a valid tensor multiplication
+// expression template, the given type has to derive publicly from the TensMatSchurExpr base class.
+// In case the given type is a valid tensor multiplication expression template, the \a value
+// member constant is set to \a true, the nested type definition \a Type is \a TrueType, and
+// the class derives from \a TrueType. Otherwise \a value is set to \a false, \a Type is
+// \a FalseType, and the class derives from \a FalseType.
 */
 template< typename T >
-struct IsRowMajorTensor
-   : public IsRowMajorTensorHelper<T>::Type
+struct IsTensMatSchurExpr
+   : public IsTensMatSchurExprHelper<T>::Type
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the IsRowMajorTensor type trait.
+/*!\brief Auxiliary variable template for the IsTensMatSchurExpr type trait.
 // \ingroup type_traits
 //
-// The IsRowMajorTensor_v variable template provides a convenient shortcut to access the nested
-// \a value of the IsRowMajorTensor class template. For instance, given the type \a T the
+// The IsTensMatSchurExpr_v variable template provides a convenient shortcut to access the nested
+// \a value of the IsTensMatSchurExpr class template. For instance, given the type \a T the
 // following two statements are identical:
 
    \code
-   constexpr bool value1 = blaze::IsRowMajorTensor<T>::value;
-   constexpr bool value2 = blaze::IsRowMajorTensor_v<T>;
+   constexpr bool value1 = blaze::IsTensMatSchurExpr<T>::value;
+   constexpr bool value2 = blaze::IsTensMatSchurExpr_v<T>;
    \endcode
 */
 template< typename T >
-constexpr bool IsRowMajorTensor_v = IsRowMajorTensor<T>::value;
+constexpr bool IsTensMatSchurExpr_v = IsTensMatSchurExpr<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

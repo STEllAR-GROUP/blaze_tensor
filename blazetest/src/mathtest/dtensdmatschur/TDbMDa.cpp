@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/constraints/SchurExpr.h
-//  \brief Constraint on the data type
+//  \file src/mathtest/dtensdmatschur/TDbMDa.cpp
+//  \brief Source file for the TDbMDa dense tensor/dense matrix schur product math test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,50 +34,60 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_SCHUREXPR_H_
-#define _BLAZE_TENSOR_MATH_CONSTRAINTS_SCHUREXPR_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/constraints/SchurExpr.h>
-#include <blaze/math/typetraits/Size.h>
+#include <cstdlib>
+#include <iostream>
+#include <blaze/math/DynamicMatrix.h>
+#include <blazetest/mathtest/creator/DynamicTensor.h>
+#include <blazetest/mathtest/dtensdmatschur/OperationTest.h>
+#include <blazetest/system/MathTest.h>
 
-#include <blaze_tensor/math/typetraits/IsTensor.h>
-
-namespace blaze {
+#include <blaze_tensor/math/DynamicTensor.h>
+#include <blazetest/mathtest/creator/DynamicTensor.h>
 
 
 //=================================================================================================
 //
-//  MUST_FORM_VALID_TENSOR_SCHUREXPR CONSTRAINT
+//  MAIN FUNCTION
 //
 //=================================================================================================
 
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data types \a T1 and \a T2 do not form a valid matrix/matrix addition,
-// a compilation error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_FORM_VALID_TENSOR_SCHUREXPR(T1,T2) \
-   static_assert( ::blaze::IsTensor_v<T1> && \
-                  ::blaze::IsTensor_v<T2> && \
-                  ( ( ::blaze::Size_v<T1,0UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,0UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,0UL> == ::blaze::Size_v<T2,0UL> ) ) && \
-                  ( ( ::blaze::Size_v<T1,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,1UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,1UL> == ::blaze::Size_v<T2,1UL> ) ) && \
-                  ( ( ::blaze::Size_v<T1,2UL> == -1L ) || \
-                    ( ::blaze::Size_v<T2,2UL> == -1L ) || \
-                    ( ::blaze::Size_v<T1,2UL> == ::blaze::Size_v<T2,2UL> ) ) \
-                , "Invalid tensor/tensor schur product expression detected" )
-//*************************************************************************************************
-
-} // namespace blaze
-
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
 #endif
+
+//*************************************************************************************************
+int main()
+
+{
+   std::cout << "   Running 'TDbMDa'..." << std::endl;
+
+   using blazetest::mathtest::TypeA;
+   using blazetest::mathtest::TypeB;
+
+   try
+   {
+      // Tensor type definitions
+      using TDb = blaze::DynamicTensor<TypeB>;
+      using MDa = blaze::DynamicMatrix<TypeA>;
+
+      // Creator type definitions
+      using CTDb = blazetest::Creator<TDb>;
+      using CMDa = blazetest::Creator<MDa>;
+
+      // Running the tests
+      RUN_DTENSDMATSCHUR_OPERATION_TEST( CTDb( 5UL, 13UL, 4UL ), CMDa( 13UL, 4UL ) );
+   }
+   catch( std::exception& ex ) {
+      std::cerr << "\n\n ERROR DETECTED during dense tensor/dense matrix schur product:\n"
+                << ex.what() << "\n";
+      return EXIT_FAILURE;
+   }
+
+   return EXIT_SUCCESS;
+}
+//*************************************************************************************************

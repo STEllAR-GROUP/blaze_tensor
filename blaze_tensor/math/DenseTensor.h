@@ -47,6 +47,7 @@
 #include <blaze_tensor/math/dense/DenseTensor.h>
 #include <blaze_tensor/math/expressions/DMatExpandExpr.h>
 #include <blaze_tensor/math/expressions/DMatRavelExpr.h>
+#include <blaze_tensor/math/expressions/DTensDMatSchurExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensAddExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensEqualExpr.h>
 #include <blaze_tensor/math/expressions/DTensDTensMultExpr.h>
