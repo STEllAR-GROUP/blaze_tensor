@@ -48,8 +48,9 @@
 
 #include <blaze_tensor/math/expressions/Forward.h>
 #include <blaze_tensor/math/views/columnslice/BaseTemplate.h>
-#include <blaze_tensor/math/views/dilatedsubvector/BaseTemplate.h>
 #include <blaze_tensor/math/views/dilatedsubmatrix/BaseTemplate.h>
+#include <blaze_tensor/math/views/dilatedsubvector/BaseTemplate.h>
+#include <blaze_tensor/math/views/dilatedsubtensor/BaseTemplate.h>
 #include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/rowslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/subtensor/BaseTemplate.h>
@@ -147,6 +148,51 @@ inline decltype(auto) dilatedsubmatrix( const Submatrix<MT,AF,SO,DF,CSAs...>& sm
 template< typename MT, AlignmentFlag AF, bool SO, bool DF, size_t... CSAs, typename... RSAs >
 inline decltype(auto) dilatedsubmatrix( Submatrix<MT, AF, SO, DF, CSAs...>&& sm,
    size_t row, size_t column, size_t m, size_t n, size_t rowdilation, size_t columndilation, RSAs... args);
+
+
+
+
+template< size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation, typename TT, typename... RSAs >
+decltype(auto) dilatedsubtensor( Tensor<TT>&, RSAs... );
+
+template< size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation, typename TT, typename... RSAs >
+decltype(auto) dilatedsubtensor( const Tensor<TT>&, RSAs... );
+
+template< size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation, typename TT, typename... RSAs >
+decltype(auto) dilatedsubtensor( Tensor<TT>&&, RSAs... );
+
+template< typename TT, typename... RSAs >
+decltype(auto) dilatedsubtensor( Tensor<TT>&, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t, RSAs... );
+
+template< typename TT, typename... RSAs >
+decltype(auto) dilatedsubtensor( const Tensor<TT>&, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t, RSAs... );
+
+template< typename TT, typename... RSAs >
+decltype(auto) dilatedsubtensor( Tensor<TT>&&, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t, size_t, RSAs... );
+
+template< typename TT, bool DF, size_t... CSAs, typename... RSAs >
+inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT,DF,CSAs...>& st,
+   size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, size_t pagedilation, size_t rowdilation, size_t columndilation, RSAs... args);
+
+template< typename TT, bool DF, size_t... CSAs, typename... RSAs >
+inline decltype(auto) dilatedsubtensor( const DilatedSubtensor<TT,DF,CSAs...>& st,
+   size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, size_t pagedilation, size_t rowdilation, size_t columndilation, RSAs... args);
+
+template< typename TT, bool DF, size_t... CSAs, typename... RSAs >
+inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT , DF, CSAs...>&& st,
+   size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, size_t pagedilation, size_t rowdilation, size_t columndilation, RSAs... args);
+
+template< typename TT, AlignmentFlag AF, bool DF, size_t... CSAs, typename... RSAs >
+inline decltype(auto) dilatedsubtensor( Subtensor<TT,AF,DF,CSAs...>& st,
+   size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, size_t pagedilation, size_t rowdilation, size_t columndilation, RSAs... args);
+
+template< typename TT, AlignmentFlag AF, bool DF, size_t... CSAs, typename... RSAs >
+inline decltype(auto) dilatedsubtensor( const Subtensor<TT,AF,DF,CSAs...>& st,
+   size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, size_t pagedilation, size_t rowdilation, size_t columndilation, RSAs... args);
+
+template< typename TT, AlignmentFlag AF, bool DF, size_t... CSAs, typename... RSAs >
+inline decltype(auto) dilatedsubtensor( Subtensor<TT, AF, DF, CSAs...>&& st,
+   size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, size_t pagedilation, size_t rowdilation, size_t columndilation, RSAs... args);
 
 // template< size_t I, size_t... Is, typename TT, typename... RRAs >
 // decltype(auto) rows( Tensor<TT>&, RRAs... );

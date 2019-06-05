@@ -5325,7 +5325,6 @@ inline bool tryAddAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename VT       // Type of the right-hand side vector

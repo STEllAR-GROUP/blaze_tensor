@@ -110,9 +110,9 @@ struct RavelTraitEval2< T
 template< typename MT >
 struct DilatedSubmatrixTraitEval2< MT, inf, inf, inf, inf, inf, inf
                           , EnableIf_t< IsDenseMatrix_v<MT> &&
-                                        ( Size_v<MT,0UL> == DefaultSize_v ||
+                                        ( Size_v<MT,0UL> == DefaultSize_v &&
                                           Size_v<MT,1UL> == DefaultSize_v ) &&
-                                        ( MaxSize_v<MT,0UL> == DefaultMaxSize_v ||
+                                        ( MaxSize_v<MT,0UL> == DefaultMaxSize_v &&
                                           MaxSize_v<MT,1UL> == DefaultMaxSize_v ) > >
 {
    using Type = DynamicMatrix< RemoveConst_t< ElementType_t<MT> >, StorageOrder_v<MT> >;

@@ -99,6 +99,20 @@ constexpr size_t DTENSDVECMULT_THRESHOLD  = ( BLAZE_DEBUG_MODE ? DTENSDVECMULT_D
 
 
 //*************************************************************************************************
+/*!\brief SMP dense matrix assignment threshold.
+// \ingroup config
+//
+// This debug value is used instead of the BLAZE_SMP_DMATASSIGN_THRESHOLD while the Blaze
+// debug mode is active. It specifies when an assignment with a simple dense matrix can be executed
+// in parallel. In case the number of elements of the target matrix is larger or equal to this
+// threshold, the operation is executed in parallel. If the number of elements is below this
+// threshold the operation is executed single-threaded.
+*/
+constexpr size_t SMP_DTENSASSIGN_DEBUG_THRESHOLD = 256UL;
+//*************************************************************************************************
+
+
+//*************************************************************************************************
 /*!\brief SMP row-major dense matrix/dense vector multiplication threshold.
 // \ingroup config
 //
@@ -129,6 +143,7 @@ constexpr size_t SMP_DTENSDMATSCHUR_DEBUG_THRESHOLD = 256UL;
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+constexpr size_t SMP_DTENSASSIGN_THRESHOLD    = ( BLAZE_DEBUG_MODE ? SMP_DTENSASSIGN_DEBUG_THRESHOLD    : BLAZE_SMP_DTENSASSIGN_THRESHOLD     );
 constexpr size_t SMP_DTENSDMATSCHUR_THRESHOLD = ( BLAZE_DEBUG_MODE ? SMP_DTENSDMATSCHUR_DEBUG_THRESHOLD : BLAZE_SMP_DTENSDMATSCHUR_THRESHOLD  );
 constexpr size_t SMP_DTENSDVECMULT_THRESHOLD  = ( BLAZE_DEBUG_MODE ? SMP_DTENSDVECMULT_DEBUG_THRESHOLD  : BLAZE_SMP_DTENSDVECMULT_THRESHOLD  );
 /*! \endcond */
@@ -151,6 +166,7 @@ namespace {
 
 BLAZE_STATIC_ASSERT( blaze::DTENSDVECMULT_THRESHOLD  > 0UL );
 
+BLAZE_STATIC_ASSERT( blaze::SMP_DTENSASSIGN_THRESHOLD    >= 0UL );
 BLAZE_STATIC_ASSERT( blaze::SMP_DTENSDMATSCHUR_THRESHOLD >= 0UL );
 BLAZE_STATIC_ASSERT( blaze::SMP_DTENSDVECMULT_THRESHOLD  >= 0UL );
 

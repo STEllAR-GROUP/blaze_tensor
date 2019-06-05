@@ -52,6 +52,7 @@
 #include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
+#include <blaze_tensor/math/traits/DilatedSubtensorTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
 #include <blaze_tensor/math/traits/RavelTrait.h>
 #include <blaze_tensor/math/traits/RowSliceTrait.h>
@@ -3225,6 +3226,32 @@ struct DivTraitEval2< T1, T2
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+
+//=================================================================================================
+//
+//  DILATEDSUBTENSORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename TT >
+struct DilatedSubtensorTraitEval2< TT, inf, inf, inf, inf, inf, inf, inf, inf, inf
+                          , EnableIf_t< IsDenseTensor_v<TT> &&
+                                        ( Size_v<TT,0UL> == DefaultSize_v &&
+                                          Size_v<TT,1UL> == DefaultSize_v &&
+                                          Size_v<TT,2UL> == DefaultSize_v) &&
+                                        ( MaxSize_v<TT,0UL> == DefaultMaxSize_v &&
+                                          MaxSize_v<TT,1UL> == DefaultMaxSize_v &&
+                                          MaxSize_v<TT,2UL> == DefaultMaxSize_v ) > >
+{
+   using Type = DynamicTensor< RemoveConst_t< ElementType_t<TT> > >;
+};
+/*! \endcond */
+//*************************************************************************************************
 
 
 

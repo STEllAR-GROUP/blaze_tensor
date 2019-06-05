@@ -80,8 +80,11 @@ integration service tracks the current build status for the master branch:
 - `blaze::DilatedSubmatrix<...>`: a view representing a sub-matrix of any Blaze
   matrix-like data structure with two additional argumnts: 'rowdilation' and 
   'columndilation' (step-size between the rows and the columns of the underlying
-  matrix, respectively)
-
+  matrix, respectively).
+- `blaze::DilatedSubtensor<...>`: a view representing a sub-tensor of any Blaze
+  tensor-like data structure with three additional argumnts: 'pagedilation',  
+  'rowdilation' and 'columndilation' (step-size between the pages, rows and the 
+  columns of the underlying tensor, respectively).
 ### Operations
 
 - All element-wise arithmetic operations that are supported by the Blaze library:
