@@ -131,7 +131,7 @@ namespace blaze {
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 class DilatedSubtensor<TT,true,CSAs...>
-   : public View< DenseTensor< DilatedSubtensor<TT,false,true,CSAs...> > >
+   : public View< DenseTensor< DilatedSubtensor<TT,true,CSAs...> > >
    , private DilatedSubtensorData<CSAs...>
 {
  private:
@@ -152,7 +152,7 @@ class DilatedSubtensor<TT,true,CSAs...>
    //! Type of this DilatedSubtensor instance.
    using This = DilatedSubtensor<TT,true,CSAs...>;
 
-   using BaseType      = DenseTensor<This>;              //!< Base type of this DilatedSubtensor instance.
+   using BaseType      = DenseTensor<This>;                    //!< Base type of this DilatedSubtensor instance.
    using ViewedType    = TT;                                   //!< The type viewed by this DilatedSubtensor instance.
    using ResultType    = DilatedSubtensorTrait_t<TT,CSAs...>;  //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;           //!< Result type with opposite storage order for expression template evaluations.
@@ -211,8 +211,8 @@ class DilatedSubtensor<TT,true,CSAs...>
       */
       inline DilatedSubtensorIterator()
          : iterator_ (       )  // Iterator to the current DilatedSubtensor element
-         , pagedilation_ ( 1     ) // page step-size of the underlying dilated subtensor
-         , rowdilation_  ( 1     ) // row step-size of the underlying dilated subtensor
+         , pagedilation_ ( 1     )   // page step-size of the underlying dilated subtensor
+         , rowdilation_  ( 1     )   // row step-size of the underlying dilated subtensor
          , columndilation_ ( 1     ) // column step-size of the underlying dilated subtensor
       {}
       //*******************************************************************************************
@@ -224,9 +224,9 @@ class DilatedSubtensor<TT,true,CSAs...>
       // \param isMemoryAligned Memory alignment flag.
       */
       inline DilatedSubtensorIterator( IteratorType iterator, size_t pagedilation, size_t rowdilation, size_t columndilation)
-         : iterator_ ( iterator        )  // Iterator to the current DilatedSubtensor element
-         , pagedilation_ ( pagedilation )   // page step-size of the underlying dilated subtensor
-         , rowdilation_  ( rowdilation )     // row step-size of the underlying dilated subtensor
+         : iterator_ ( iterator        )        // Iterator to the current DilatedSubtensor element
+         , pagedilation_ ( pagedilation )       // page step-size of the underlying dilated subtensor
+         , rowdilation_  ( rowdilation )        // row step-size of the underlying dilated subtensor
          , columndilation_ ( columndilation )   // column step-size of the underlying dilated subtensor
       {}
       //*******************************************************************************************
@@ -538,14 +538,14 @@ class DilatedSubtensor<TT,true,CSAs...>
    inline ConstReference at( size_t k, size_t i, size_t j ) const;
    inline Pointer        data  () noexcept;
    inline ConstPointer   data  () const noexcept;
-   inline Pointer        data  ( size_t k, size_t i ) noexcept;
-   inline ConstPointer   data  ( size_t k, size_t i ) const noexcept;
-   inline Iterator       begin ( size_t k, size_t i );
-   inline ConstIterator  begin ( size_t k, size_t i ) const;
-   inline ConstIterator  cbegin( size_t k, size_t i ) const;
-   inline Iterator       end   ( size_t k, size_t i );
-   inline ConstIterator  end   ( size_t k, size_t i ) const;
-   inline ConstIterator  cend  ( size_t k, size_t i ) const;
+   inline Pointer        data  ( size_t i, size_t k ) noexcept;
+   inline ConstPointer   data  ( size_t i, size_t k ) const noexcept;
+   inline Iterator       begin ( size_t i, size_t k );
+   inline ConstIterator  begin ( size_t i, size_t k ) const;
+   inline ConstIterator  cbegin( size_t i, size_t k ) const;
+   inline Iterator       end   ( size_t i, size_t k );
+   inline ConstIterator  end   ( size_t i, size_t k ) const;
+   inline ConstIterator  cend  ( size_t i, size_t k ) const;
    //@}
    //**********************************************************************************************
 
@@ -603,11 +603,11 @@ class DilatedSubtensor<TT,true,CSAs...>
 
    inline size_t spacing() const noexcept;
    inline size_t capacity() const noexcept;
-   inline size_t capacity( size_t k, size_t i ) const noexcept;
+   inline size_t capacity( size_t i, size_t k ) const noexcept;
    inline size_t nonZeros() const;
-   inline size_t nonZeros( size_t k, size_t i ) const;
+   inline size_t nonZeros( size_t i, size_t k ) const;
    inline void   reset();
-   inline void   reset( size_t k, size_t i );
+   inline void   reset( size_t i, size_t k );
    //@}
    //**********************************************************************************************
 
@@ -641,10 +641,10 @@ class DilatedSubtensor<TT,true,CSAs...>
    inline bool canSMPAssign() const noexcept;
 
 
-   template< typename TT2 > inline void assign( const DenseTensor<TT2>& rhs );
-   template< typename TT2 > inline void addAssign( const DenseTensor<TT2>& rhs );
-   template< typename TT2 > inline void subAssign( const DenseTensor<TT2>& rhs );
-   template< typename TT2 > inline void schurAssign( const DenseTensor<TT2>& rhs );
+   template< typename TT2 > inline auto assign( const DenseTensor<TT2>& rhs );
+   template< typename TT2 > inline auto addAssign( const DenseTensor<TT2>& rhs );
+   template< typename TT2 > inline auto subAssign( const DenseTensor<TT2>& rhs );
+   template< typename TT2 > inline auto schurAssign( const DenseTensor<TT2>& rhs );
 
 
    //@}
@@ -671,12 +671,12 @@ class DilatedSubtensor<TT,true,CSAs...>
 
    //**Compile time checks*************************************************************************
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE    ( TT );
-   //BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( TT );
-   //BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( TT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_COMPUTATION_TYPE ( TT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_TRANSEXPR_TYPE   ( TT );
    //BLAZE_CONSTRAINT_MUST_NOT_BE_SUBTENSOR_TYPE   ( TT );
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_TENSOR_TYPE( TT );
-   //BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE     ( TT );
-   //BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE   ( TT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_POINTER_TYPE     ( TT );
+   BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE   ( TT );
    //**********************************************************************************************
 };
 /*! \endcond */
@@ -851,7 +851,7 @@ inline typename DilatedSubtensor<TT,true,CSAs...>::ConstReference
    if( j >= columns() ) {
       BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
    }
-   return (*this)(i,j);
+   return (*this)(k,i,j);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -911,7 +911,7 @@ inline typename DilatedSubtensor<TT,true,CSAs...>::ConstPointer
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline typename DilatedSubtensor<TT,true,CSAs...>::Pointer
-   DilatedSubtensor<TT,true,CSAs...>::data( size_t k, size_t i ) noexcept
+   DilatedSubtensor<TT,true,CSAs...>::data( size_t i, size_t k ) noexcept
 {
    return tensor_.data() + ( ( page()+k ) * tensor_.rows() + ( row()+i ) ) * spacing() + column();
 }
@@ -931,7 +931,7 @@ inline typename DilatedSubtensor<TT,true,CSAs...>::Pointer
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline typename DilatedSubtensor<TT,true,CSAs...>::ConstPointer
-   DilatedSubtensor<TT,true,CSAs...>::data( size_t k, size_t i ) const noexcept
+   DilatedSubtensor<TT,true,CSAs...>::data( size_t i, size_t k ) const noexcept
 {
    return tensor_.data() + ( ( page()+k ) * tensor_.rows() + ( row()+i ) ) * spacing() + column();
 }
@@ -954,11 +954,11 @@ inline typename DilatedSubtensor<TT,true,CSAs...>::ConstPointer
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline typename DilatedSubtensor<TT,true,CSAs...>::Iterator
-   DilatedSubtensor<TT,true,CSAs...>::begin( size_t k, size_t i )
+   DilatedSubtensor<TT,true,CSAs...>::begin( size_t i, size_t k )
 {
    BLAZE_USER_ASSERT( k < pages(), "Invalid dense dilatedsubtensor page access index" );
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense dilatedsubtensor row access index" );
-   return Iterator( tensor_.begin( page() + k * pagedilation(), row() + i * rowdilation() ) + column(),
+   return Iterator( tensor_.begin( row() + i * rowdilation() , page() + k * pagedilation() ) + column(),
       pagedilation(), rowdilation(), columndilation() );
 }
 /*! \endcond */
@@ -980,11 +980,11 @@ inline typename DilatedSubtensor<TT,true,CSAs...>::Iterator
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline typename DilatedSubtensor<TT,true,CSAs...>::ConstIterator
-   DilatedSubtensor<TT,true,CSAs...>::begin( size_t k, size_t i ) const
+   DilatedSubtensor<TT,true,CSAs...>::begin( size_t i, size_t k ) const
 {
    BLAZE_USER_ASSERT( k < pages(),"Invalid dense dilatedsubtensor page access index" );
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense dilatedsubtensor row access index" );
-   return ConstIterator( tensor_.cbegin( page() + k * pagedilation(), row() + i * rowdilation()) + column(),
+   return ConstIterator( tensor_.cbegin( row() + i * rowdilation() , page() + k * pagedilation() ) + column(),
       pagedilation(), rowdilation(), columndilation() );
 }
 /*! \endcond */
@@ -1006,11 +1006,11 @@ inline typename DilatedSubtensor<TT,true,CSAs...>::ConstIterator
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline typename DilatedSubtensor<TT,true,CSAs...>::ConstIterator
-   DilatedSubtensor<TT,true,CSAs...>::cbegin( size_t k, size_t i ) const
+   DilatedSubtensor<TT,true,CSAs...>::cbegin( size_t i, size_t k ) const
 {
    BLAZE_USER_ASSERT( k < pages(),"Invalid dense dilatedsubtensor page access index" );
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense dilatedsubtensor row access index" );
-   return ConstIterator( tensor_.cbegin( page() + k * pagedilation(), row() + i * rowdilation()) + column(),
+   return ConstIterator( tensor_.cbegin( row() + i * rowdilation() , page() + k * pagedilation()) + column(),
       pagedilation(), rowdilation(), columndilation() );
 }
 /*! \endcond */
@@ -1032,11 +1032,11 @@ inline typename DilatedSubtensor<TT,true,CSAs...>::ConstIterator
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline typename DilatedSubtensor<TT,true,CSAs...>::Iterator
-   DilatedSubtensor<TT,true,CSAs...>::end( size_t k, size_t i )
+   DilatedSubtensor<TT,true,CSAs...>::end( size_t i, size_t k )
 {
    BLAZE_USER_ASSERT( k < pages(),"Invalid dense dilatedsubtensor page access index" );
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense dilatedsubtensor row access index" );
-   return Iterator( tensor_.begin( page() + k * pagedilation(), row() + i * rowdilation()) + column() + columns() * columndilation(),
+   return Iterator( tensor_.begin( row() + i * rowdilation() , page() + k * pagedilation() ) + column() + columns() * columndilation(),
       pagedilation(), rowdilation(), columndilation() );
 }
 /*! \endcond */
@@ -1058,11 +1058,11 @@ inline typename DilatedSubtensor<TT,true,CSAs...>::Iterator
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline typename DilatedSubtensor<TT,true,CSAs...>::ConstIterator
-   DilatedSubtensor<TT,true,CSAs...>::end( size_t k, size_t i ) const
+   DilatedSubtensor<TT,true,CSAs...>::end( size_t i, size_t k ) const
 {
    BLAZE_USER_ASSERT( k < pages(),"Invalid dense dilatedsubtensor page access index" );
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense dilatedsubtensor row access index" );
-   return ConstIterator( tensor_.cbegin( page() + k * pagedilation(), row() + i * rowdilation()) + column() + columns() * columndilation(),
+   return ConstIterator( tensor_.cbegin( row() + i * rowdilation() , page() + k * pagedilation() ) + column() + columns() * columndilation(),
       pagedilation(), rowdilation(), columndilation() );
 }
 /*! \endcond */
@@ -1084,11 +1084,11 @@ inline typename DilatedSubtensor<TT,true,CSAs...>::ConstIterator
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline typename DilatedSubtensor<TT,true,CSAs...>::ConstIterator
-   DilatedSubtensor<TT,true,CSAs...>::cend( size_t k, size_t i ) const
+   DilatedSubtensor<TT,true,CSAs...>::cend( size_t i, size_t k ) const
 {
    BLAZE_USER_ASSERT( k < pages(),"Invalid dense dilatedsubtensor page access index" );
    BLAZE_USER_ASSERT( i < rows(), "Invalid dense dilatedsubtensor row access index" );
-   return ConstIterator( tensor_.cbegin( page() + k * pagedilation(), row() + i * rowdilation()) + column() + columns() * columndilation(),
+   return ConstIterator( tensor_.cbegin( row() + i * rowdilation() , page() + k * pagedilation() ) + column() + columns() * columndilation(),
       pagedilation(), rowdilation(), columndilation() );;
 }
 /*! \endcond */
@@ -1131,7 +1131,7 @@ inline DilatedSubtensor<TT,true,CSAs...>&
           const size_t jend  ( column() + columns() * columndilation() );
 
           for( size_t j=jbegin; j<jend; j += columndilation() ) {
-             if( !IsRestricted_v<TT> || IsTriangular_v<TT> || trySet( tensor_, k, i, j, rhs ) )
+             if( !IsRestricted_v<TT> || IsTriangular_v<TT> || trySet( tensor_, i, j, k, rhs ) )
                 left(k,i,j) = rhs;
           }
        }
@@ -1169,7 +1169,7 @@ inline DilatedSubtensor<TT,true,CSAs...>&
 
    if( IsRestricted_v<TT> ) {
       const InitializerTensor<ElementType> tmp( list, rows(), columns() );
-      if( !tryAssign( tensor_, tmp, page(), row(), column() ) ) {
+      if( !tryAssign( tensor_, tmp, row(), column(), page() ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
       }
    }
@@ -1177,10 +1177,10 @@ inline DilatedSubtensor<TT,true,CSAs...>&
    decltype(auto) left( derestrict( *this ) );
 
    size_t k( 0UL );
-   for( const auto& rowList : list ) {
+   for( const auto& colList : list ) {
       size_t i( 0UL );
-      for( const auto& colList : rowList ) {
-         std::fill( std::copy( colList.begin(), colList.end(), left.begin(k, i) ), left.end(k, i), ElementType() );
+      for( const auto& rowList : colList ) {
+         std::fill( std::copy( rowList.begin(), rowList.end(), left.begin(i, k) ), left.end(i, k), ElementType() );
          ++i;
       }
       ++k;
@@ -1223,7 +1223,7 @@ inline DilatedSubtensor<TT,true,CSAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "DilatedSubtensor sizes do not match" );
    }
 
-   if( !tryAssign( tensor_, rhs, page(), row(), column() ) ) {
+   if( !tryAssign( tensor_, rhs, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1275,7 +1275,7 @@ inline DilatedSubtensor<TT,true,CSAs...>&
    using Right = If_t< IsRestricted_v<TT>, CompositeType_t<TT2>, const TT2& >;
    Right right( ~rhs );
 
-   if( !tryAssign( tensor_, right, page(), row(), column() ) ) {
+   if( !tryAssign( tensor_, right, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1330,7 +1330,7 @@ inline auto DilatedSubtensor<TT,true,CSAs...>::operator+=( const Tensor<TT2>& rh
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !tryAddAssign( tensor_, ~rhs, page(), row(), column() ) ) {
+   if( !tryAddAssign( tensor_, ~rhs, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1387,7 +1387,7 @@ inline auto DilatedSubtensor<TT,true,CSAs...>::operator+=( const Tensor<TT2>& rh
 
    const AddType tmp( *this + (~rhs) );
 
-   if( !tryAssign( tensor_, tmp, page(), row(), column() ) ) {
+   if( !tryAssign( tensor_, tmp, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1436,7 +1436,7 @@ inline auto DilatedSubtensor<TT,true,CSAs...>::operator-=( const Tensor<TT2>& rh
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !trySubAssign( tensor_, ~rhs, page(), row(), column() ) ) {
+   if( !trySubAssign( tensor_, ~rhs, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1493,7 +1493,7 @@ inline auto DilatedSubtensor<TT,true,CSAs...>::operator-=( const Tensor<TT2>& rh
 
    const SubType tmp( *this - (~rhs) );
 
-   if( !tryAssign( tensor_, tmp, page(), row(), column() ) ) {
+   if( !tryAssign( tensor_, tmp, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1541,7 +1541,7 @@ inline auto DilatedSubtensor<TT,true,CSAs...>::operator%=( const Tensor<TT2>& rh
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !trySchurAssign( tensor_, ~rhs, page(), row(), column() ) ) {
+   if( !trySchurAssign( tensor_, ~rhs, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1597,7 +1597,7 @@ inline auto DilatedSubtensor<TT,true,CSAs...>::operator%=( const Tensor<TT2>& rh
 
    const SchurType tmp( *this % (~rhs) );
 
-   if( !tryAssign( tensor_, tmp, page(), row(), column() ) ) {
+   if( !tryAssign( tensor_, tmp, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
@@ -1684,7 +1684,7 @@ template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline size_t DilatedSubtensor<TT,true,CSAs...>::capacity() const noexcept
 {
-   return page() * rows() * columns();
+   return pages() * rows() * columns();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1704,9 +1704,9 @@ inline size_t DilatedSubtensor<TT,true,CSAs...>::capacity() const noexcept
 */
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
-inline size_t DilatedSubtensor<TT,true,CSAs...>::capacity( size_t k, size_t i ) const noexcept
+inline size_t DilatedSubtensor<TT,true,CSAs...>::capacity( size_t i, size_t k ) const noexcept
 {
-   MAYBE_UNUSED( k, i );
+   MAYBE_UNUSED( i, k );
 
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index" );
    BLAZE_USER_ASSERT( i < rows(),  "Invalid row access index"  );
@@ -1735,7 +1735,7 @@ inline size_t DilatedSubtensor<TT,true,CSAs...>::nonZeros() const
    for( size_t k=page(); k<kend; k+=pagedilation() )
       for( size_t i=row(); i<iend; i+=rowdilation() )
          for( size_t j=column(); j<jend; j+=columndilation() )
-            if( !isDefault( tensor_(i,j) ) )
+            if( !isDefault( tensor_(k,i,j) ) )
                ++nonzeros;
 
    return nonzeros;
@@ -1758,7 +1758,7 @@ inline size_t DilatedSubtensor<TT,true,CSAs...>::nonZeros() const
 */
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
-inline size_t DilatedSubtensor<TT,true,CSAs...>::nonZeros( size_t k, size_t i ) const
+inline size_t DilatedSubtensor<TT,true,CSAs...>::nonZeros( size_t i, size_t k ) const
 {
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index");
    BLAZE_USER_ASSERT( i < rows(),  "Invalid row access index" );
@@ -1767,7 +1767,7 @@ inline size_t DilatedSubtensor<TT,true,CSAs...>::nonZeros( size_t k, size_t i ) 
    size_t nonzeros( 0UL );
 
    for( size_t j=column(); j<jend; j+=columndilation() )
-      if( !isDefault( tensor_( page() + k * pagedilation(), row() + i * rowdilation(), j ) ) )
+      if (!isDefault(tensor_( page() + k * pagedilation(), row() + i * rowdilation(), j)))
          ++nonzeros;
 
    return nonzeros;
@@ -1817,16 +1817,16 @@ inline void DilatedSubtensor<TT,true,CSAs...>::reset()
 */
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
-inline void DilatedSubtensor<TT,true,CSAs...>::reset( size_t k, size_t i )
+inline void DilatedSubtensor<TT,true,CSAs...>::reset( size_t i, size_t k )
 {
    using blaze::clear;
 
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index" );
    BLAZE_USER_ASSERT( i < rows(),  "Invalid row access index"  );
 
-   const size_t jbegin( column() );
-   const size_t jend( column() + columns() * columndilation() );
-   for( size_t j=jbegin; j<jend; j+=columndilation() )
+   const size_t jend( column() + columns()*columndilation() );
+
+   for( size_t j=column(); j<jend; j+=columndilation() )
       clear( tensor_( page() + k * pagedilation(), row() + i * rowdilation(), j ) );
 }
 /*! \endcond */
@@ -1892,7 +1892,7 @@ inline DilatedSubtensor<TT,true,CSAs...>&
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic dilatedsubtensor" );
    }
 
-   if( !tryAssign( tensor_, trans( *this ), page(), row(), column() ) ) {
+   if( !tryAssign( tensor_, trans( *this ), row(), column(), page() ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
@@ -1934,7 +1934,7 @@ inline DilatedSubtensor<TT,true,CSAs...>&
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose of a non-quadratic dilatedsubtensor" );
    }
 
-   if( !tryAssign( tensor_, ctrans( *this ), page(), row(), column() ) ) {
+   if( !tryAssign( tensor_, ctrans( *this ), row(), column(), page() ) ) {
       BLAZE_THROW_LOGIC_ERROR( "Invalid transpose operation" );
    }
 
@@ -2133,7 +2133,7 @@ inline bool DilatedSubtensor<TT,true,CSAs...>::canSMPAssign() const noexcept
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 template< typename TT2 >    // Type of the right-hand side dense tensor
-inline void DilatedSubtensor<TT,true,CSAs...>::assign( const DenseTensor<TT2>& rhs )
+inline auto DilatedSubtensor<TT,true,CSAs...>::assign( const DenseTensor<TT2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages"  );
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"   );
@@ -2173,7 +2173,7 @@ inline void DilatedSubtensor<TT,true,CSAs...>::assign( const DenseTensor<TT2>& r
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 template< typename TT2 >    // Type of the right-hand side dense tensor
-inline void DilatedSubtensor<TT,true,CSAs...>::addAssign( const DenseTensor<TT2>& rhs )
+inline auto DilatedSubtensor<TT,true,CSAs...>::addAssign( const DenseTensor<TT2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages"  );
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"   );
@@ -2215,7 +2215,7 @@ inline void DilatedSubtensor<TT,true,CSAs...>::addAssign( const DenseTensor<TT2>
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 template< typename TT2 >    // Type of the right-hand side dense tensor
-inline void DilatedSubtensor<TT,true,CSAs...>::subAssign( const DenseTensor<TT2>& rhs )
+inline auto DilatedSubtensor<TT,true,CSAs...>::subAssign( const DenseTensor<TT2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages"  );
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"   );
@@ -2258,7 +2258,7 @@ inline void DilatedSubtensor<TT,true,CSAs...>::subAssign( const DenseTensor<TT2>
 template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 template< typename TT2 >    // Type of the right-hand side dense tensor
-inline void DilatedSubtensor<TT,true,CSAs...>::schurAssign( const DenseTensor<TT2>& rhs )
+inline auto DilatedSubtensor<TT,true,CSAs...>::schurAssign( const DenseTensor<TT2>& rhs )
 {
    BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages"  );
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"   );

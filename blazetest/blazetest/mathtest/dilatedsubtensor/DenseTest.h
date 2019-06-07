@@ -49,8 +49,9 @@
 
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/constraints/RowMajorTensor.h>
-#include <blaze_tensor/math/DilatedSubvector.h>
+#include <blaze_tensor/math/DilatedSubmatrix.h>
 #include <blaze_tensor/math/DilatedSubtensor.h>
+#include <blaze_tensor/math/DilatedSubvector.h>
 #include <blaze_tensor/math/DynamicTensor.h>
 #include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
 
@@ -97,7 +98,6 @@ class DenseTest
    void testAddAssign();
    void testSubAssign();
    void testSchurAssign();
-   void testMultAssign();
    void testScaling();
    void testFunctionCall();
    void testIterator();
@@ -109,11 +109,10 @@ class DenseTest
    void testIsDefault();
    void testIsSame();
    void testDilatedSubtensor();
-   void testRow();
-   void testRows();
-   void testColumn();
-   void testColumns();
-   void testBand();
+   void testPageslice();
+   void testRowslice();
+   void testColumnslice();
+
 
    template< typename Type >
    void checkPages( const Type& tensor, size_t expectedPages ) const;
@@ -141,9 +140,9 @@ class DenseTest
    //**********************************************************************************************
 
    //**Type definitions****************************************************************************
-   using TT    = blaze::DynamicTensor<int>;                   //!< Row-major dynamic tensor type
-   using DSTT  = blaze::DilatedSubtensor<TT, true>;           //!< Dense dilated subtensor type for row-major tensors.
-   //using RCTT  = blaze::Rows<blaze::Columns<TT>>;                    //!< Dense rows of columns type for row-major tensors.
+   using TT    = blaze::DynamicTensor<int>;                                 //!< Row-major dynamic tensor type
+   using DSTT  = blaze::DilatedSubtensor<TT, true>;                         //!< Dense dilated subtensor type for row-major tensors.
+   using DSPT  = blaze::DilatedSubmatrix<blaze::PageSlice<TT>,false,true>;  //!< Dense row-major dilated submatrix on a page of the original tensor
 
    //**********************************************************************************************
 

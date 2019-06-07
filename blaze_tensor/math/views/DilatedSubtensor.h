@@ -90,6 +90,9 @@
 #include <blaze/util/typetraits/IsPointer.h>
 #include <blaze/util/typetraits/RemoveReference.h>
 
+#include <blaze_tensor/math/Aliases.h>
+#include <blaze_tensor/math/ReductionFlag.h>
+#include <blaze_tensor/math/expressions/Forward.h>
 #include <blaze_tensor/math/expressions/MatExpandExpr.h>
 #include <blaze_tensor/math/expressions/TensEvalExpr.h>
 #include <blaze_tensor/math/expressions/TensMapExpr.h>
@@ -104,8 +107,8 @@
 #include <blaze_tensor/math/expressions/TensVecMultExpr.h>
 #include <blaze_tensor/math/expressions/Tensor.h>
 #include <blaze_tensor/math/IntegerSequence.h>
-#include <blaze_tensor/math/views/DilatedSubvector.h>
 #include <blaze_tensor/math/views/DilatedSubmatrix.h>
+#include <blaze_tensor/math/views/DilatedSubvector.h>
 #include <blaze_tensor/math/views/Forward.h>
 #include <blaze_tensor/math/views/columnslice/ColumnSliceData.h>
 #include <blaze_tensor/math/views/dilatedsubtensor/BaseTemplate.h>
@@ -176,15 +179,15 @@ namespace blaze {
 // Note however that in this case the given compile time arguments \a I, \a J, \a M, and \a N are
 // subject to additional checks to guarantee proper alignment.
 */
-template< size_t K               // Index of the first page
-        , size_t I               // Index of the first row
+template< size_t I               // Index of the first row
         , size_t J               // Index of the first column
-        , size_t O               // Number of pages
+        , size_t K               // Index of the first page
         , size_t M               // Number of rows
         , size_t N               // Number of columns
-        , size_t PageDilation    // The page step-size of the dilatedsubtensor
-        , size_t RowDilation     // The row step-size of the dilatedsubtensor
-        , size_t ColumnDilation  // The column step-size of the dilatedsubtensor
+        , size_t O               // Number of pages
+        , size_t RowDilation     // The page step-size of the dilatedsubtensor
+        , size_t ColumnDilation  // The row step-size of the dilatedsubtensor
+        , size_t PageDilation    // The column step-size of the dilatedsubtensor
         , typename TT            // Type of the dense tensor
         , typename... RSAs >     // Optional DilatedSubtensor arguments
 inline decltype(auto) dilatedsubtensor( Tensor<TT>& tensor, RSAs... args )
@@ -249,15 +252,15 @@ inline decltype(auto) dilatedsubtensor( Tensor<TT>& tensor, RSAs... args )
 // Note however that in this case the given compile time arguments \a I, \a J, \a M, and \a N are
 // subject to additional checks to guarantee proper alignment.
 */
-template< size_t K               // Index of the first page
-        , size_t I               // Index of the first row
+template< size_t I               // Index of the first row
         , size_t J               // Index of the first column
-        , size_t O               // Number of pages
+        , size_t K               // Index of the first page
         , size_t M               // Number of rows
         , size_t N               // Number of columns
-        , size_t PageDilation    // The page step-size of the dilatedsubtensor
+        , size_t O               // Number of pages
         , size_t RowDilation     // The row step-size of the dilatedsubtensor
         , size_t ColumnDilation  // The column step-size of the dilatedsubtensor
+        , size_t PageDilation    // The page step-size of the dilatedsubtensor
         , typename TT            // Type of the dense tensor
         , typename... RSAs >     // Option DilatedSubtensor arguments
 inline decltype(auto) dilatedsubtensor( const Tensor<TT>& tensor, RSAs... args )
@@ -284,17 +287,16 @@ inline decltype(auto) dilatedsubtensor( const Tensor<TT>& tensor, RSAs... args )
 // the DilatedSubtensor is specified beyond the number of rows or columns of the tensor) a
 // \a std::invalid_argument exception is thrown.
 */
-template< size_t K               // Index of the first page
-        , size_t I               // Index of the first row
+template< size_t I               // Index of the first row
         , size_t J               // Index of the first column
-        , size_t O               // Number of pages
+        , size_t K               // Index of the first page
         , size_t M               // Number of rows
         , size_t N               // Number of columns
-        , size_t PageDilation    // The page step-size of the dilatedsubtensor
+        , size_t O               // Number of pages
         , size_t RowDilation     // The row step-size of the dilatedsubtensor
         , size_t ColumnDilation  // The column step-size of the dilatedsubtensor
+        , size_t PageDilation    // The page step-size of the dilatedsubtensor
         , typename TT            // Type of the dense tensor
-        , bool SO                // Storage order
         , typename... RSAs >     // Option DilatedSubtensor arguments
 inline decltype(auto) dilatedsubtensor( Tensor<TT>&& tensor, RSAs... args )
 {
@@ -517,7 +519,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DilatedSubtensor_<const TT>;
+   using ReturnType = DilatedSubtensor_<TT>;
    return ReturnType( ~tensor, page, row, column, o, m, n, pagedilation, rowdilation, columndilation, args... );
 }
 
@@ -769,23 +771,23 @@ inline decltype(auto) dilatedsubtensor( const TensSerialExpr<TT>& tensor, RSAs..
 // This function returns an expression representing the specified DilatedSubtensor of the given tensor
 // transpose operation.
 */
-template< size_t K               // Index of the first page
-        , size_t I               // Index of the first row
-        , size_t J               // Index of the first column
-        , size_t O               // Number of pages
-        , size_t M               // Number of rows
-        , size_t N               // Number of columns
-        , size_t PageDilation    // The page step-size of the dilatedsubtensor
-        , size_t RowDilation     // The row step-size of the dilatedsubtensor
-        , size_t ColumnDilation  // The column step-size of the dilatedsubtensor
-        , typename TT            // Tensor base type of the expression
-        , typename... RSAs >     // Optional DilatedSubtensor arguments
-inline decltype(auto) dilatedsubtensor( const TensTransExpr<TT>& tensor, RSAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return trans( dilatedsubtensor<J,I,K,N,M,O,ColumnDilation,RowDilation,PageDilation>( (~tensor).operand(), args... ) );
-}
+//template< size_t K               // Index of the first page
+//        , size_t I               // Index of the first row
+//        , size_t J               // Index of the first column
+//        , size_t O               // Number of pages
+//        , size_t M               // Number of rows
+//        , size_t N               // Number of columns
+//        , size_t PageDilation    // The page step-size of the dilatedsubtensor
+//        , size_t RowDilation     // The row step-size of the dilatedsubtensor
+//        , size_t ColumnDilation  // The column step-size of the dilatedsubtensor
+//        , typename TT            // Tensor base type of the expression
+//        , typename... RSAs >     // Optional DilatedSubtensor arguments
+//inline decltype(auto) dilatedsubtensor( const TensTransExpr<TT>& tensor, RSAs... args )
+//{
+//   BLAZE_FUNCTION_TRACE;
+//
+//   return trans( dilatedsubtensor<J,I,K,N,M,O,ColumnDilation,RowDilation,PageDilation>( (~tensor).operand(), args... ) );
+//}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -814,7 +816,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( dilatedsubtensor( (~tensor).operand(), column, row, page, n, m, o, columndilation, rowdilation, pagedilation, args... ) );
+   return trans( dilatedsubtensor( (~tensor).operand(), page, column, row, n, m, o, pagedilation, columndilation, rowdilation, args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -919,28 +921,28 @@ inline decltype(auto)
 //
 // This function returns an expression representing the specified DilatedSubtensor of the given DilatedSubtensor.
 */
-template< size_t K1               // Index of the first page
-        , size_t I1               // Index of the first row
+template< size_t I1               // Index of the first row
         , size_t J1               // Index of the first column
-        , size_t O1               // Number of pages
+        , size_t K1               // Index of the first page
         , size_t M1               // Number of rows
         , size_t N1               // Number of columns
-        , size_t PageDilation1    // The page step-size of the dilatedsubtensor
+        , size_t O1               // Number of pages
         , size_t RowDilation1     // The row step-size of the dilatedsubtensor
         , size_t ColumnDilation1  // The column step-size of the dilatedsubtensor
+        , size_t PageDilation1    // The page step-size of the dilatedsubtensor
         , typename TT             // Type of the sparse DilatedSubtensor
         , bool DF                 // Density flag
-        , size_t K2               // Index of the first page
         , size_t I2               // Index of the first row
         , size_t J2               // Index of the first column
-        , size_t O2               // Number of pages
+        , size_t K2               // Index of the first page
         , size_t M2               // Number of rows
         , size_t N2               // Number of columns
-        , size_t PageDilation2    // The page step-size of the dilatedsubtensor
+        , size_t O2               // Number of pages
         , size_t RowDilation2     // The row step-size of the dilatedsubtensor
         , size_t ColumnDilation2  // The column step-size of the dilatedsubtensor
+        , size_t PageDilation2    // The page step-size of the dilatedsubtensor
         , typename... RSAs >      // Optional DilatedSubtensor arguments
-inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT,DF,K2,I2,J2,O2,M2,N2,PageDilation2,RowDilation2,ColumnDilation2>& st, RSAs... args )
+inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT,DF,I2,J2,K2,M2,N2,O2,RowDilation2,ColumnDilation2,PageDilation2>& st, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -948,8 +950,8 @@ inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT,DF,K2,I2,J2,O2,M2,N2
    BLAZE_STATIC_ASSERT_MSG( I1 + M1 * RowDilation1 <= M2 * RowDilation2, "Invalid dilatedsubtensor specification" );
    BLAZE_STATIC_ASSERT_MSG( J1 + N1 * ColumnDilation1 <= N2 * ColumnDilation2, "Invalid dilatedsubtensor specification" );
 
-   return dilatedsubtensor<K1*PageDilation2+K2,I1*RowDilation2+I2,J1*ColumnDilation2+J2,K1,M1,N1,PageDilation1*PageDilation2,
-      RowDilation1*RowDilation2, ColumnDilation1*ColumnDilation2>( st.operand(), args... );
+   return dilatedsubtensor<I1*RowDilation2+I2,J1*ColumnDilation2+J2,K1*PageDilation2+K2,M1,N1,O1,
+      RowDilation1*RowDilation2, ColumnDilation1*ColumnDilation2,PageDilation1*PageDilation2>( st.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -967,28 +969,28 @@ inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT,DF,K2,I2,J2,O2,M2,N2
 // This function returns an expression representing the specified DilatedSubtensor of the given constant
 // DilatedSubtensor.
 */
-template< size_t K1               // Index of the first page
-        , size_t I1               // Index of the first row
+template< size_t I1               // Index of the first row
         , size_t J1               // Index of the first column
-        , size_t O1               // Number of pages
+        , size_t K1               // Index of the first page
         , size_t M1               // Number of rows
         , size_t N1               // Number of columns
-        , size_t PageDilation1    // The page step-size of the dilatedsubtensor
+        , size_t O1               // Number of pages
         , size_t RowDilation1     // The row step-size of the dilatedsubtensor
         , size_t ColumnDilation1  // The column step-size of the dilatedsubtensor
+        , size_t PageDilation1    // The page step-size of the dilatedsubtensor
         , typename TT             // Type of the sparse DilatedSubtensor
         , bool DF                 // Density flag
-        , size_t K2               // Index of the first page
         , size_t I2               // Index of the first row
         , size_t J2               // Index of the first column
-        , size_t O2               // Number of pages
+        , size_t K2               // Index of the first page
         , size_t M2               // Number of rows
         , size_t N2               // Number of columns
-        , size_t PageDilation2    // The page step-size of the dilatedsubtensor
+        , size_t O2               // Number of pages
         , size_t RowDilation2     // The row step-size of the dilatedsubtensor
         , size_t ColumnDilation2  // The column step-size of the dilatedsubtensor
+        , size_t PageDilation2    // The page step-size of the dilatedsubtensor
         , typename... RSAs >  // Optional DilatedSubtensor arguments
-inline decltype(auto) dilatedsubtensor( const DilatedSubtensor<TT,DF,K2,I2,J2,O2,M2,N2,PageDilation2,RowDilation2,ColumnDilation2>& st, RSAs... args )
+inline decltype(auto) dilatedsubtensor( const DilatedSubtensor<TT,DF,I2,J2,K2,M2,N2,O2,RowDilation2,ColumnDilation2,PageDilation2>& st, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -996,8 +998,8 @@ inline decltype(auto) dilatedsubtensor( const DilatedSubtensor<TT,DF,K2,I2,J2,O2
    BLAZE_STATIC_ASSERT_MSG( I1 + M1 * RowDilation1 <= M2 * RowDilation2, "Invalid dilatedsubtensor specification" );
    BLAZE_STATIC_ASSERT_MSG( J1 + N1 * ColumnDilation1 <= N2 * ColumnDilation2, "Invalid dilatedsubtensor specification" );
 
-   return dilatedsubtensor<K1*PageDilation2+K2,I1*RowDilation2+I2,J1*ColumnDilation2+J2,K1,M1,N1,PageDilation1*PageDilation2,
-      RowDilation1*RowDilation2, ColumnDilation1*ColumnDilation2>( st.operand(), args... );
+   return dilatedsubtensor<I1*RowDilation2+I2,J1*ColumnDilation2+J2,K1*PageDilation2+K2,M1,N1,O1,
+      RowDilation1*RowDilation2, ColumnDilation1*ColumnDilation2,PageDilation1*PageDilation2>( st.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1015,28 +1017,28 @@ inline decltype(auto) dilatedsubtensor( const DilatedSubtensor<TT,DF,K2,I2,J2,O2
 // This function returns an expression representing the specified DilatedSubtensor of the given temporary
 // DilatedSubtensor.
 */
-template< size_t K1               // Index of the first page
-        , size_t I1               // Index of the first row
+template< size_t I1               // Index of the first row
         , size_t J1               // Index of the first column
-        , size_t O1               // Number of pages
+        , size_t K1               // Index of the first page
         , size_t M1               // Number of rows
         , size_t N1               // Number of columns
-        , size_t PageDilation1    // The page step-size of the dilatedsubtensor
+        , size_t O1               // Number of pages
         , size_t RowDilation1     // The row step-size of the dilatedsubtensor
         , size_t ColumnDilation1  // The column step-size of the dilatedsubtensor
+        , size_t PageDilation1    // The page step-size of the dilatedsubtensor
         , typename TT             // Type of the sparse DilatedSubtensor
         , bool DF                 // Density flag
-        , size_t K2               // Index of the first page
         , size_t I2               // Index of the first row
         , size_t J2               // Index of the first column
-        , size_t O2               // Number of pages
+        , size_t K2               // Index of the first page
         , size_t M2               // Number of rows
         , size_t N2               // Number of columns
-        , size_t PageDilation2    // The page step-size of the dilatedsubtensor
+        , size_t O2               // Number of pages
         , size_t RowDilation2     // The row step-size of the dilatedsubtensor
         , size_t ColumnDilation2  // The column step-size of the dilatedsubtensor
+        , size_t PageDilation2    // The page step-size of the dilatedsubtensor
         , typename... RSAs >  // Optional DilatedSubtensor arguments
-inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT,DF,K2,I2,J2,O2,M2,N2,PageDilation2,RowDilation2,ColumnDilation2>&& st, RSAs... args )
+inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT,DF,I2,J2,K2,M2,N2,O2,RowDilation2,ColumnDilation2,PageDilation2>&& st, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1044,8 +1046,8 @@ inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT,DF,K2,I2,J2,O2,M2,N2
    BLAZE_STATIC_ASSERT_MSG( I1 + M1 * RowDilation1 <= M2 * RowDilation2, "Invalid dilatedsubtensor specification" );
    BLAZE_STATIC_ASSERT_MSG( J1 + N1 * ColumnDilation1 <= N2 * ColumnDilation2, "Invalid dilatedsubtensor specification" );
 
-   return dilatedsubtensor<K1*PageDilation2+K2,I1*RowDilation2+I2,J1*ColumnDilation2+J2,K1,M1,N1,PageDilation1*PageDilation2,
-      RowDilation1*RowDilation2, ColumnDilation1*ColumnDilation2>( st.operand(), args... );
+   return dilatedsubtensor<I1*RowDilation2+I2,J1*ColumnDilation2+J2,K1*PageDilation2+K2,M1,N1,O1,
+      RowDilation1*RowDilation2, ColumnDilation1*ColumnDilation2,PageDilation1*PageDilation2>( st.operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1082,9 +1084,9 @@ inline decltype(auto) dilatedsubtensor( DilatedSubtensor<TT,DF>& st, RSAs... arg
    constexpr bool isChecked( !Contains_v< TypeList<RSAs...>, Unchecked > );
 
    if( isChecked ) {
-      if(( K + O * PageDilation > st.pages( ) * st.pagedilation( ) ) ||
-         ( I + M * RowDilation > st.rows( ) * st.rowdilation( ) ) ||
-         ( J + N * ColumnDilation > st.columns( ) * st.columndilation( ) ) )
+      if( ( K + O * PageDilation > st.pages() * st.pagedilation() ) ||
+          ( I + M * RowDilation > st.rows() * st.rowdilation() ) ||
+          ( J + N * ColumnDilation > st.columns() * st.columndilation() ) )
       {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid dilatedsubtensor specification" );
       }
@@ -1606,6 +1608,35 @@ inline decltype(auto)
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific submatrix of the given page-wise tensor reduction operation.
+// \ingroup subtensor
+//
+// \param matrix The constant page-wise tensor reduction operation.
+// \param args The runtime subvector arguments.
+// \return View on the specified submatrix of the reduction operation.
+//
+// This function returns an expression representing the specified submatrix of the given page-wise
+// tensor reduction operation.
+*/
+template< size_t... CSAs      // Compile time subvector arguments
+        , typename MT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) dilatedsubmatrix( const TensReduceExpr<MT,pagewise>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const DilatedSubmatrixData<CSAs...> sm( args... );
+   const size_t M( (~matrix).operand().rows() );
+
+   decltype(auto) st( dilatedsubtensor( (~matrix).operand(), sm.row(), 0UL, sm.column(), sm.rows(), M, sm.columns(), sm.rowdilation(), 1UL, sm.columndilation() ) );
+   return reduce<pagewise>( st, (~matrix).operation() );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific dilatedsubvector of the given column-wise tensor reduction operation.
 // \ingroup DilatedSubtensor
 //
@@ -1653,7 +1684,7 @@ inline decltype(auto) dilatedsubmatrix( const TensReduceExpr<MT,rowwise>& matrix
 {
    BLAZE_FUNCTION_TRACE;
 
-   const DilatedSubvectorData<CSAs...> sm( args... );
+   const DilatedSubmatrixData<CSAs...> sm( args... );
    const size_t N( (~matrix).operand().rows() );
 
    decltype(auto) st( dilatedsubtensor( (~matrix).operand(), sm.row(), sm.column(), 0UL, sm.rows(), sm.columns(), N,
@@ -1869,7 +1900,7 @@ inline decltype(auto) pageslice( const DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDi
       BLAZE_USER_ASSERT( index < O, "Invalid row access index" );
    }
 
-   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( pageslice( st.operand(), I+index*PageDilation, args... ), unchecked );
+   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( pageslice( st.operand(), K+index*PageDilation, args... ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1916,7 +1947,7 @@ inline decltype(auto) pageslice( DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation
       BLAZE_USER_ASSERT( index < O , "Invalid row access index" );
    }
 
-   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( pageslice( st.operand(), I+index*PageDilation, args... ), unchecked );
+   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( pageslice( st.operand(), K+index*PageDilation, args... ), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1957,7 +1988,7 @@ inline decltype(auto) pageslice( DilatedSubtensor<TT,DF>& st, RRAs... args )
 
    const size_t index( pd.page() * st.pagedilation() + st.page() );
 
-   return dilatedsubmatrix( pageslice( st.operand(), index, args... ), st.row(), st.column, st.rows(),
+  return dilatedsubmatrix( pageslice(st.operand(), index, args...), st.row(), st.column(), st.rows(),
       st.columns(),st.rowdilation(), st.columndilation(), unchecked );
 }
 /*! \endcond */
@@ -2000,8 +2031,8 @@ inline decltype(auto) pageslice( const DilatedSubtensor<TT,DF>& st, RRAs... args
 
    const size_t index( pd.page() * st.pagedilation() + st.page() );
 
-   return dilatedsubmatrix( pageslice( st.operand(), index, args... ), st.row(), st.column, st.rows(),
-      st.columns(),st.rowdilation(), st.columndilation(), unchecked );
+   return dilatedsubmatrix( pageslice( st.operand(), index, args... ), st.row(), st.column(), st.rows(),
+      st.columns(), st.rowdilation(), st.columndilation(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2043,7 +2074,7 @@ inline decltype(auto) pageslice( DilatedSubtensor<TT,DF>&& st, RRAs... args )
 
    const size_t index( pd.page() * st.pagedilation() + st.page() );
 
-   return dilatedsubmatrix( pageslice( st.operand(), index, args... ), st.row(), st.column, st.rows(),
+   return dilatedsubmatrix( pageslice( st.operand(), index, args... ), st.row(), st.column(), st.rows(),
       st.columns(),st.rowdilation(), st.columndilation(), unchecked );
 }
 /*! \endcond */
@@ -2343,7 +2374,7 @@ inline decltype(auto) rowslice( DilatedSubtensor<TT,DF>& st, RRAs... args )
 
    const size_t index( rd.row() * st.rowdilation() + st.row() );
 
-   return dilatedsubmatrix( rowslice( st.operand(), index, args... ), st.column(), st.page, st.columns(),
+   return dilatedsubmatrix( rowslice( st.operand(), index, args... ), st.column(), st.page(), st.columns(),
       st.pages(), st.columndilation(), st.pagedilation(), unchecked );
 }
 /*! \endcond */
@@ -2386,7 +2417,7 @@ inline decltype(auto) rowslice( const DilatedSubtensor<TT,DF>& st, RRAs... args 
 
    const size_t index( rd.row() * st.rowdilation() + st.row() );
 
-   return dilatedsubmatrix( rowslice( st.operand(), index, args... ), st.column(), st.page, st.columns(),
+   return dilatedsubmatrix( rowslice( st.operand(), index, args... ), st.column(), st.page(), st.columns(),
       st.pages(), st.columndilation(), st.pagedilation(), unchecked );
 }
 /*! \endcond */
@@ -2429,7 +2460,7 @@ inline decltype(auto) rowslice( DilatedSubtensor<TT,DF>&& st, RRAs... args )
 
    const size_t index( rd.row() * st.rowdilation() + st.row() );
 
-   return dilatedsubmatrix( rowslice( st.operand(), index, args... ), st.column(), st.page, st.columns(),
+   return dilatedsubmatrix( rowslice( st.operand(), index, args... ), st.column(), st.page(), st.columns(),
       st.pages(), st.columndilation(), st.pagedilation(), unchecked );
 }
 /*! \endcond */
@@ -2884,9 +2915,9 @@ inline void reset( DilatedSubtensor<TT,DF,CSAs...>&& st )
 template< typename TT       // Type of the tensor
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
-inline void reset( DilatedSubtensor<TT,DF,CSAs...>& st, size_t k, size_t i )
+inline void reset( DilatedSubtensor<TT,DF,CSAs...>& st, size_t i, size_t k )
 {
-   st.reset( k, i );
+   st.reset( i, k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2963,7 +2994,7 @@ inline void clear( DilatedSubtensor<TT,DF,CSAs...>&& st )
 template< bool RF           // Relaxation flag
         , typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
-inline bool isDefault( const DilatedSubtensor<TT,CSAs...>& st )
+inline bool isDefault( const DilatedSubtensor<TT,true,CSAs...>& st )
 {
    using blaze::isDefault;
 
@@ -3380,14 +3411,11 @@ inline bool isSame( const DilatedSubtensor<TT,DF,CSAs...>& a, const Tensor<TT>& 
 // \a true, otherwise it returns \a false.
 */
 template< typename TT       // Type of the tensor
-        , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline bool isSame( const Tensor<TT>& a, const DilatedSubtensor<TT,DF,CSAs...>& b ) noexcept
 {
-   return ( isSame( ~a, b.operand() ) && ( ( ~a ).pages() == b.pages() ) && ( ( ~a ).rows() == b.rows() ) &&
-      ( ( ~a ).columns() == b.columns() ) && ( b.pagedilation() == 1UL ) && ( b.rowdilation() == 1UL ) &&
-      ( b.columndilation() == 1UL ) );
+   return isSame(b, a);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3468,11 +3496,12 @@ inline bool isSame( const DilatedSubtensor<TT1,DF1,CSAs1...>& a,
 */
 template< InversionFlag IF  // Inversion algorithm
         , typename TT       // Type of the dense tensor
+        , bool DF           // Density flag
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
-inline auto invert( DilatedSubtensor<TT,CSAs...>& st )
+inline auto invert( DilatedSubtensor<TT,DF,CSAs...>& st )
    -> DisableIf_t< HasMutableDataAccess_v<TT> >
 {
-   using RT = ResultType_t< DilatedSubtensor<TT,CSAs...> >;
+   using RT = ResultType_t< DilatedSubtensor<TT,DF,CSAs...> >;
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( RT );
    BLAZE_CONSTRAINT_MUST_HAVE_MUTABLE_DATA_ACCESS( RT );
@@ -3511,7 +3540,7 @@ inline bool trySet( const DilatedSubtensor<TT,DF,CSAs...>& st, size_t k, size_t 
    BLAZE_INTERNAL_ASSERT( i < st.rows(),    "Invalid row access index"   );
    BLAZE_INTERNAL_ASSERT( j < st.columns(), "Invalid column access index");
 
-   return trySet( st.operand(), st.page()+i*st.pagedilation(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), value );
+   return trySet( st.operand(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), st.page()+k*st.pagedilation(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3543,7 +3572,7 @@ inline bool tryAdd( const DilatedSubtensor<TT,DF,CSAs...>& st, size_t k, size_t 
    BLAZE_INTERNAL_ASSERT( i < st.rows(),    "Invalid row access index"   );
    BLAZE_INTERNAL_ASSERT( j < st.columns(), "Invalid column access index");
 
-   return tryAdd( st.operand(), st.page()+i*st.pagedilation(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), value );
+   return tryAdd( st.operand(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), st.page()+k*st.pagedilation(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3575,7 +3604,7 @@ inline bool trySub( const DilatedSubtensor<TT,DF,CSAs...>& st, size_t k, size_t 
    BLAZE_INTERNAL_ASSERT( i < st.rows(),    "Invalid row access index"   );
    BLAZE_INTERNAL_ASSERT( j < st.columns(), "Invalid column access index");
 
-   return trySub( st.operand(), st.page()+i*st.pagedilation(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), value );
+   return trySub( st.operand(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), st.page()+k*st.pagedilation(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3607,7 +3636,7 @@ inline bool tryMult( const DilatedSubtensor<TT,DF,CSAs...>& st, size_t k, size_t
    BLAZE_INTERNAL_ASSERT( i < st.rows(),    "Invalid row access index"   );
    BLAZE_INTERNAL_ASSERT( j < st.columns(), "Invalid column access index");
 
-   return tryMult( st.operand(), st.page()+i*st.pagedilation(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), value );
+   return tryMult( st.operand(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), st.page()+k*st.pagedilation(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3636,7 +3665,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename ET >     // Type of the element
 BLAZE_ALWAYS_INLINE bool
-   tryMult( const DilatedSubtensor<TT,DF,CSAs...>& st, size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, const ET& value )
+   tryMult( const DilatedSubtensor<TT,DF,CSAs...>& st, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, const ET& value )
 {
    MAYBE_UNUSED( column );
 
@@ -3648,7 +3677,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( column + n <= (~st).columns(), "Invalid number of columns"  );
 
 
-   return tryMult( st.operand(), st.page(), st.row()+row*st.rowdilation(), st.column(), o, m*st.rowdilation(), n, value );
+   return tryMult( st.operand(), st.row()+row*st.rowdilation(), st.column(), st.page(), m*st.rowdilation(), n, o, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3680,7 +3709,7 @@ inline bool tryDiv( const DilatedSubtensor<TT,DF,CSAs...>& st, size_t k, size_t 
    BLAZE_INTERNAL_ASSERT( i < st.rows(),    "Invalid row access index"   );
    BLAZE_INTERNAL_ASSERT( j < st.columns(), "Invalid column access index");
 
-   return tryDiv( st.operand(), st.page()+i*st.pagedilation(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), value );
+   return tryDiv( st.operand(), st.row()+i*st.rowdilation(), st.column()+j*st.columndilation(), st.page()+k*st.pagedilation(), value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3709,7 +3738,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename ET >     // Type of the element
 BLAZE_ALWAYS_INLINE bool
-   tryDiv( const DilatedSubtensor<TT,DF,CSAs...>& st, size_t page, size_t row, size_t column, size_t o, size_t m, size_t n, const ET& value )
+   tryDiv( const DilatedSubtensor<TT,DF,CSAs...>& st, size_t row, size_t column, size_t page, size_t m, size_t n, size_t o, const ET& value )
 {
    MAYBE_UNUSED( column );
 
@@ -3720,7 +3749,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( row + m <= (~st).rows(),       "Invalid number of rows"     );
    BLAZE_INTERNAL_ASSERT( column + n <= (~st).columns(), "Invalid number of columns"  );
 
-   return tryDiv( st.operand(), st.page(), st.row()+row*st.rowdilation(), st.column(), o, m*st.rowdilation(), n, value );
+   return tryDiv( st.operand(), st.row()+row*st.rowdilation(), st.column(), st.page(), m*st.rowdilation(), n, o, value );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3747,7 +3776,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename MT  >    // Type of the right-hand side vector
 inline bool tryAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
-                       const Matrix<MT,false>& rhs, size_t page, size_t row, size_t column )
+                       const Matrix<MT,false>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( page <= lhs.pages(),    "Invalid page access index"  );
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(),      "Invalid row access index"   );
@@ -3756,8 +3785,8 @@ inline bool tryAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.page() + page * lhs.pagedilation(), lhs.row() + row * lhs.rowdilation(),
-                    lhs.column() + column * lhs.columndilation() );
+   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(),
+                    lhs.column() + column * lhs.columndilation(), lhs.page() + page * lhs.pagedilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3785,7 +3814,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename MT >     // Type of the right-hand side vector
 inline bool tryAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
-                       const Matrix<MT,false>& rhs, ptrdiff_t band, size_t page, size_t row, size_t column )
+                       const Matrix<MT,false>& rhs, ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( page <= lhs.pages(),    "Invalid page access index"  );
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(),      "Invalid row access index"   );
@@ -3794,8 +3823,8 @@ inline bool tryAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ), lhs.page() + page * lhs.pagedilation(),
-                     lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+                     lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation(), lhs.page() + page * lhs.pagedilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3822,7 +3851,7 @@ template< typename TT1      // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename TT2 >    // Type of the right-hand side tensor
 inline bool tryAssign( const DilatedSubtensor<TT1,DF,CSAs...>& lhs,
-                       const Tensor<TT2>& rhs, size_t page, size_t row, size_t column )
+                       const Tensor<TT2>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -3831,7 +3860,7 @@ inline bool tryAssign( const DilatedSubtensor<TT1,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= lhs.pages(), "Invalid number of pages" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.page() + page * lhs.pagedilation(), lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation(), lhs.page() + page * lhs.pagedilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3858,7 +3887,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename MT >     // Type of the right-hand side matrix
 inline bool tryAddAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
-                          const Matrix<MT,false>& rhs, size_t page, size_t row, size_t column )
+                          const Matrix<MT,false>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -3866,7 +3895,7 @@ inline bool tryAddAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.page() + page * lhs.pagedilation(), lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation(), lhs.page() + page * lhs.pagedilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3895,7 +3924,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename MT >     // Type of the right-hand side vector
 inline bool tryAddAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
-                          const Matrix<MT,false>& rhs, ptrdiff_t band, size_t page, size_t row, size_t column )
+                          const Matrix<MT,false>& rhs, ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -3903,8 +3932,8 @@ inline bool tryAddAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ), lhs.page() + page * lhs.pagedilation(),
-                        lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryAddAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+                        lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation(), lhs.page() + page * lhs.pagedilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3931,7 +3960,7 @@ template< typename TT1      // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename TT2 >    // Type of the right-hand side tensor
 inline bool tryAddAssign( const DilatedSubtensor<TT1,DF,CSAs...>& lhs,
-                          const Tensor<TT2>& rhs, size_t page, size_t row, size_t column )
+                          const Tensor<TT2>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -3940,7 +3969,7 @@ inline bool tryAddAssign( const DilatedSubtensor<TT1,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= lhs.pages(), "Invalid number of pages" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.page() + page * lhs.pagedilation(), lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation(), lhs.page() + page * lhs.pagedilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3967,7 +3996,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename MT >     // Type of the right-hand side vector
 inline bool trySubAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
-                          const Matrix<MT,false>& rhs, size_t page, size_t row, size_t column )
+                          const Matrix<MT,false>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -3975,7 +4004,7 @@ inline bool trySubAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.page() + page * lhs.pagedilation(), lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation(), lhs.page() + page * lhs.pagedilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4004,7 +4033,7 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename MT >     // Type of the right-hand side vector
 inline bool trySubAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
-                          const Matrix<MT,false>& rhs, ptrdiff_t band, size_t page, size_t row, size_t column )
+                          const Matrix<MT,false>& rhs, ptrdiff_t band, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -4012,8 +4041,8 @@ inline bool trySubAssign( const DilatedSubtensor<TT,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ), lhs.page() + page * lhs.pagedilation(),
-                        lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return trySubAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+                        lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation(), lhs.page() + page * lhs.pagedilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4040,7 +4069,7 @@ template< typename TT1      // Type of the tensor
         , size_t... CSAs    // Compile time DilatedSubtensor arguments
         , typename TT2 >    // Type of the right-hand side tensor
 inline bool trySubAssign( const DilatedSubtensor<TT1,DF,CSAs...>& lhs,
-                          const Tensor<TT2>& rhs, size_t page, size_t row, size_t column )
+                          const Tensor<TT2>& rhs, size_t row, size_t column, size_t page )
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
@@ -4049,7 +4078,7 @@ inline bool trySubAssign( const DilatedSubtensor<TT1,DF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= lhs.pages(), "Invalid number of pages" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.page() + page * lhs.pagedilation(), lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation(), lhs.page() + page * lhs.pagedilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4373,17 +4402,17 @@ inline decltype(auto) derestrict( DilatedSubtensor<TT,DF>&& dm )
 /*! \cond BLAZE_INTERNAL */
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
 struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 0UL >
-   : public PtrdiffT<O>
-{};
-
-template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
-struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 1UL >
    : public PtrdiffT<M>
 {};
 
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
-struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 2UL >
+struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 1UL >
    : public PtrdiffT<N>
+{};
+
+template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
+struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 2UL >
+   : public PtrdiffT<O>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4401,17 +4430,17 @@ struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnD
 /*! \cond BLAZE_INTERNAL */
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
 struct MaxSize< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 0UL >
-   : public PtrdiffT<O>
-{};
-
-template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
-struct MaxSize< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 1UL >
    : public PtrdiffT<M>
 {};
 
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
-struct MaxSize< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 2UL >
+struct MaxSize< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 1UL >
    : public PtrdiffT<N>
+{};
+
+template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
+struct MaxSize< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 2UL >
+   : public PtrdiffT<O>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4446,7 +4475,7 @@ struct IsRestricted< DilatedSubtensor<TT,DF,CSAs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename TT, size_t... CSAs >
-struct HasConstDataAccess< DilatedSubtensor<TT,CSAs...> >
+struct HasConstDataAccess< DilatedSubtensor<TT,true,CSAs...> >
    : public HasConstDataAccess<TT>
 {};
 /*! \endcond */
@@ -4464,7 +4493,7 @@ struct HasConstDataAccess< DilatedSubtensor<TT,CSAs...> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename TT, size_t... CSAs >
-struct HasMutableDataAccess< DilatedSubtensor<TT,CSAs...> >
+struct HasMutableDataAccess< DilatedSubtensor<TT,true,CSAs...> >
    : public HasMutableDataAccess<TT>
 {};
 /*! \endcond */

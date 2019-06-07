@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_DMATDMATMAPEXPR_H_
-#define _BLAZE_TENSOR_MATH_EXPRESSIONS_DMATDMATMAPEXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_DTENSDTENSMAPEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_DTENSDTENSMAPEXPR_H_
 
 
 //*************************************************************************************************
@@ -47,6 +47,7 @@
 #include <blaze/math/expressions/DMatDMatMapExpr.h>
 #include <blaze/math/expressions/MatMatMapExpr.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
+#include <blaze/math/typetraits/YieldsHermitian.h>
 
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
