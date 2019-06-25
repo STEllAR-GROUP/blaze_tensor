@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/views/dilatedsubmatrix/BaseTemplate.h
-//  \brief Header file for the implementation of the Submatrix base template
+//  \file blaze_tensor/math/views/dilatedsubtensor/BaseTemplate.h
+//  \brief Header file for the implementation of the Subtensor base template
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
@@ -34,17 +34,17 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_BASETEMPLATE_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_BASETEMPLATE_H_
+#ifndef _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBTENSOR_BASETEMPLATE_H_
+#define _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBTENSOR_BASETEMPLATE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
 #include <blaze/util/Types.h>
+
+#include <blaze_tensor/math/typetraits/IsDenseTensor.h>
 
 
 namespace blaze {
@@ -57,14 +57,13 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Base template of the Submatrix class template.
-// \ingroup submatrix
+/*!\brief Base template of the Subtensor class template.
+// \ingroup subtensor
 */
-template< typename MT                          // Type of the matrix
-        , bool SO = IsColumnMajorMatrix_v<MT>  // Storage order
-        , bool DF = IsDenseMatrix_v<MT>        // Density flag
-        , size_t... CSAs >                     // Compile time dilatedsubmatrix arguments
-class DilatedSubmatrix
+template< typename TT                          // Type of the tensor
+        , bool DF = IsDenseTensor_v<TT>        // Density flag
+        , size_t... CSAs >                     // Compile time dilatedsubtensor arguments
+class DilatedSubtensor
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -80,17 +79,16 @@ class DilatedSubmatrix
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary alias declaration for the Submatrix class template.
-// \ingroup submatrix
+/*!\brief Auxiliary alias declaration for the Subtensor class template.
+// \ingroup subtensor
 //
-// The Submatrix_ alias declaration represents a convenient shortcut for the specification of the
-// non-derived template arguments of the Submatrix class template.
+// The Subtensor_ alias declaration represents a convenient shortcut for the specification of the
+// non-derived template arguments of the Subtensor class template.
 */
-template< typename MT                   // Type of the matrix
-        , size_t... CSAs >              // Compile time submatrix arguments
-using DilatedSubmatrix_ = DilatedSubmatrix< MT
-                            , IsColumnMajorMatrix_v<MT>
-                            , IsDenseMatrix_v<MT>
+template< typename TT                   // Type of the tensor
+        , size_t... CSAs >              // Compile time subtensor arguments
+using DilatedSubtensor_ = DilatedSubtensor< TT
+                            , IsDenseTensor_v<TT>
                             , CSAs... >;
 /*! \endcond */
 //*************************************************************************************************

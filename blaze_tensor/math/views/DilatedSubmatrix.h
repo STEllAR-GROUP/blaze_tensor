@@ -83,6 +83,7 @@
 #include <blaze/math/views/Check.h>
 #include <blaze/math/views/column/ColumnData.h>
 #include <blaze/math/views/row/RowData.h>
+#include <blaze/math/views/submatrix/SubmatrixData.h>
 #include <blaze/math/views/Subvector.h>
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
@@ -508,7 +509,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DilatedSubmatrix_<const MT>;
+   using ReturnType = DilatedSubmatrix_<MT>;
    return ReturnType( ~matrix, row, column, m, n, rowdilation, columndilation, args... );
 }
 
@@ -1589,8 +1590,136 @@ inline decltype(auto)
       BLAZE_USER_ASSERT( column + ( n - 1 ) * columndilation + 1 <= sm.columns() , "Invalid dilatedsubmatrix specification" );
    }
 
-   return dilatedsubmatrix( sm.operand( ), sm.row( ) + row, sm.column( ) + column, m, n,
-      rowdilation, columndilation, args... );
+   return dilatedsubmatrix( sm.operand(), sm.row() + row, sm.column() + column,
+      m, n, rowdilation, columndilation, args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given DilatedSubmatrix.
+// \ingroup DilatedSubmatrix
+//
+// \param sm The DilatedSubmatrix containing the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the DilatedSubmatrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given DilatedSubmatrix.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CRAs      // Compile time row arguments
+        , typename MT         // Type of the sparse DilatedSubmatrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) submatrix( DilatedSubmatrix<MT,SO,DF>& sm, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const SubmatrixData<CRAs...> sd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( sd.row() >= sm.rows() ) || ( sd.column() >= sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row or column access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( sd.row() < sm.rows() , "Invalid row access index" );
+      BLAZE_USER_ASSERT( sd.column() < sm.columns() , "Invalid column access index" );
+   }
+
+   return dilatedsubmatrix(sm.operand(), sd.row()+sm.row()*sm.rowdilation(),sd.column()+sm.column()*sm.columndilation(),sd.rows(),sd.columns(),sm.rowdilation(),sm.columndilation(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given constant DilatedSubmatrix.
+// \ingroup DilatedSubmatrix
+//
+// \param sm The constant DilatedSubmatrix containing the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the DilatedSubmatrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given constant
+// DilatedSubmatrix.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CRAs      // Compile time row arguments
+        , typename MT         // Type of the sparse DilatedSubmatrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) submatrix( const DilatedSubmatrix<MT,SO,DF>& sm, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   const SubmatrixData<CRAs...> sd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( sd.row() >= sm.rows() ) || ( sd.column() >= sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row or column access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( sd.row() < sm.rows() , "Invalid row access index" );
+      BLAZE_USER_ASSERT( sd.column() < sm.columns() , "Invalid column access index" );
+   }
+
+   return dilatedsubmatrix(sm.operand(), sd.row()+sm.row()*sm.rowdilation(),sd.column()+sm.column()*sm.columndilation(),sd.rows(),sd.columns(),sm.rowdilation(),sm.columndilation(), unchecked );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Creating a view on a specific row of the given temporary DilatedSubmatrix.
+// \ingroup DilatedSubmatrix
+//
+// \param sm The temporary DilatedSubmatrix containing the row.
+// \param args The optional row arguments.
+// \return View on the specified row of the DilatedSubmatrix.
+// \exception std::invalid_argument Invalid row access index.
+//
+// This function returns an expression representing the specified row of the given temporary
+// DilatedSubmatrix.
+*/
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CRAs      // Compile time row arguments
+        , typename MT         // Type of the sparse DilatedSubmatrix
+        , bool SO             // Storage order
+        , bool DF             // Density flag
+        , typename... RRAs >  // Runtime row arguments
+inline decltype(auto) submatrix( DilatedSubmatrix<MT,SO,DF>&& sm, RRAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+    const SubmatrixData<CRAs...> sd( args... );
+
+   constexpr bool isChecked( !Contains_v< TypeList<RRAs...>, Unchecked > );
+
+   if( isChecked ) {
+      if( ( sd.row() >= sm.rows() ) || ( sd.column() >= sm.columns() ) ) {
+         BLAZE_THROW_INVALID_ARGUMENT( "Invalid row or column access index" );
+      }
+   }
+   else {
+      BLAZE_USER_ASSERT( sd.row() < sm.rows() , "Invalid row access index" );
+      BLAZE_USER_ASSERT( sd.column() < sm.columns() , "Invalid column access index" );
+   }
+
+   return dilatedsubmatrix(sm.operand(), sd.row()+sm.row()*sm.rowdilation(),sd.column()+sm.column()*sm.columndilation(),sd.rows(),sd.columns(),sm.rowdilation(),sm.columndilation(), unchecked );
 }
 /*! \endcond */
 //*************************************************************************************************

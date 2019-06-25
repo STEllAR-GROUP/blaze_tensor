@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/views/dilatedsubmatrix/BaseTemplate.h
-//  \brief Header file for the implementation of the Submatrix base template
+//  \file blaze_tensor/math/constraints/DilatedSubtensor.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
@@ -34,39 +34,34 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_BASETEMPLATE_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_DILATEDSUBMATRIX_BASETEMPLATE_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_DILATEDSUBTENSOR_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_DILATEDSUBTENSOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/typetraits/IsColumnMajorMatrix.h>
-#include <blaze/math/typetraits/IsDenseMatrix.h>
-#include <blaze/util/Types.h>
+#include <blaze_tensor/math/typetraits/IsDilatedSubtensor.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  ::blaze NAMESPACE FORWARD DECLARATIONS
+//  MUST_BE_DILATEDSUBTENSOR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Base template of the Submatrix class template.
-// \ingroup submatrix
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a dilatedsubtensor type (i.e. a dense or sparse dilatedsubtensor),
+// a compilation error is created.
 */
-template< typename MT                          // Type of the matrix
-        , bool SO = IsColumnMajorMatrix_v<MT>  // Storage order
-        , bool DF = IsDenseMatrix_v<MT>        // Density flag
-        , size_t... CSAs >                     // Compile time dilatedsubmatrix arguments
-class DilatedSubmatrix
-{};
-/*! \endcond */
+#define BLAZE_CONSTRAINT_MUST_BE_DILATEDSUBTENSOR_TYPE(T) \
+   static_assert( ::blaze::IsDilatedSubtensor_v<T>, "Non-dilatedsubtensor type detected" )
 //*************************************************************************************************
 
 
@@ -74,25 +69,19 @@ class DilatedSubmatrix
 
 //=================================================================================================
 //
-//  ALIAS DECLARATIONS
+//  MUST_NOT_BE_SUBTENSOR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary alias declaration for the Submatrix class template.
-// \ingroup submatrix
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
 //
-// The Submatrix_ alias declaration represents a convenient shortcut for the specification of the
-// non-derived template arguments of the Submatrix class template.
+// In case the given data type \a T is a dilatedsubtensor type (i.e. a dense or sparse dilatedsubtensor), a
+// compilation error is created.
 */
-template< typename MT                   // Type of the matrix
-        , size_t... CSAs >              // Compile time submatrix arguments
-using DilatedSubmatrix_ = DilatedSubmatrix< MT
-                            , IsColumnMajorMatrix_v<MT>
-                            , IsDenseMatrix_v<MT>
-                            , CSAs... >;
-/*! \endcond */
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_DILATEDSUBTENSOR_TYPE(T) \
+   static_assert( !::blaze::IsDilatedSubtensor_v<T>, "DilatedSubtensor type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

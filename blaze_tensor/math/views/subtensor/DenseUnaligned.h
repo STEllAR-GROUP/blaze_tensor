@@ -1954,10 +1954,10 @@ inline void Subtensor<MT,unaligned,CSAs...>::reset( size_t i, size_t k )
    BLAZE_USER_ASSERT( i < rows(), "Invalid row access index" );
    BLAZE_USER_ASSERT( k < pages(), "Invalid page access index" );
 
-   const size_t jbegin( column() );
-   const size_t jend  ( column()+columns() );
-   for( size_t j=jbegin; j<jend; ++j )
-      clear( tensor_(row()+page(),i,j+k) );
+   const size_t jend( column() + columns() );
+
+   for( size_t j=column(); j<jend; j++ )
+      clear( tensor_( page() + k, i + row(), j ) );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -93,7 +93,7 @@ struct DilatedSubmatrixData<>
    /*!\name Constructors */
    //@{
    template< typename... RSAs >
-   explicit inline DilatedSubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n,
+   explicit inline DilatedSubmatrixData( size_t row, size_t column, size_t m, size_t n,
       size_t rowdilation, size_t columndilation, RSAs... args );
 
    DilatedSubmatrixData( const DilatedSubmatrixData& ) = default;
@@ -154,10 +154,10 @@ struct DilatedSubmatrixData<>
 // \param args The optional DilatedSubmatrix arguments.
 */
 template< typename... RSAs >          // Optional DilatedSubmatrix arguments
-inline DilatedSubmatrixData<>::DilatedSubmatrixData( size_t rindex, size_t cindex, size_t m, size_t n,
+inline DilatedSubmatrixData<>::DilatedSubmatrixData( size_t row, size_t column, size_t m, size_t n,
    size_t rowdilation, size_t columndilation, RSAs... args )
-   : row_   ( rindex )                 // The first row of the DilatedSubmatrix
-   , column_( cindex )                 // The first column of the DilatedSubmatrix
+   : row_   ( row    )                 // The first row of the DilatedSubmatrix
+   , column_( column )                 // The first column of the DilatedSubmatrix
    , m_     ( m      )                 // The number of rows of the DilatedSubmatrix
    , n_     ( n      )                 // The number of columns of the DilatedSubmatrix
    , rowdilation_   ( rowdilation )    // The row step-size of the dilatedsubmatrix

@@ -126,6 +126,7 @@
 #include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
+#include <blaze_tensor/math/traits/DilatedSubtensorTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
 #include <blaze_tensor/math/traits/RavelTrait.h>
 #include <blaze_tensor/math/traits/RowSliceTrait.h>
@@ -3606,6 +3607,30 @@ struct DivTraitEval2< T1, T2
    static constexpr size_t N = Size_v<T1,2UL>;
 
    using Type = StaticTensor< DivTrait_t<ET1,T2>, O, M, N >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DILATEDSUBTENSORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename TT, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N,
+                     size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
+struct DilatedSubtensorTraitEval2< TT, K, I, J, O, M, N, PageDilation, RowDilation, ColumnDilation
+                          , EnableIf_t< K != inf && I != inf && J != inf &&
+                                        O != inf && M != inf && N != inf &&
+                                        PageDilation != inf && RowDilation != inf && ColumnDilation != inf &&
+                                        IsDenseTensor_v<TT> > >
+{
+   using Type = StaticTensor< RemoveConst_t< ElementType_t<TT> >, O, M, N>;
 };
 /*! \endcond */
 //*************************************************************************************************

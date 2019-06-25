@@ -97,6 +97,7 @@
 #include <blaze_tensor/math/dense/UniformMatrix.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
+#include <blaze_tensor/math/traits/DilatedSubtensorTrait.h>
 #include <blaze_tensor/math/traits/PageSliceTrait.h>
 #include <blaze_tensor/math/traits/RowSliceTrait.h>
 #include <blaze_tensor/math/traits/SubtensorTrait.h>
@@ -1828,6 +1829,27 @@ struct DivTraitEval1< T1, T2
    using ET1 = ElementType_t<T1>;
 
    using Type = UniformTensor< DivTrait_t<ET1,T2> >;
+};
+/*! \endcond */
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  DILATEDSUBTENSORTRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename TT, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N,
+                       size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
+struct DilatedSubtensorTraitEval1< TT, K, I, J, O, M, N, PageDilation, RowDilation, ColumnDilation
+                          , EnableIf_t< IsUniform_v<TT> && !IsZero_v<TT> > >
+{
+   using Type = UniformMatrix< RemoveConst_t< ElementType_t<TT> > >;
 };
 /*! \endcond */
 //*************************************************************************************************

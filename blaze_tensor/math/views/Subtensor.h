@@ -41,7 +41,6 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/Aliases.h>
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/constraints/MutableDataAccess.h>
@@ -1492,7 +1491,7 @@ inline decltype(auto) subtensor( Subtensor<TT,AF2>& sm, RSAs... args )
       BLAZE_USER_ASSERT( K + O <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.pages() + K, sm.row() + I, sm.column() + J, O, M, N, args... );
+   return subtensor<AF1>( sm.operand(), sm.page() + K, sm.row() + I, sm.column() + J, O, M, N, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1538,7 +1537,7 @@ inline decltype(auto) subtensor( const Subtensor<TT,AF2>& sm, RSAs... args )
       BLAZE_USER_ASSERT( K + O <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.pages() + K, sm.row() + I, sm.column() + J, O, M, N, args... );
+   return subtensor<AF1>( sm.operand(), sm.page() + K, sm.row() + I, sm.column() + J, O, M, N, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1584,7 +1583,7 @@ inline decltype(auto) subtensor( Subtensor<TT,AF2>&& sm, RSAs... args )
       BLAZE_USER_ASSERT( K + O <= sm.pages()  , "Invalid subtensor specification" );
    }
 
-   return subtensor<AF1>( sm.operand(), sm.pages() + K, sm.row() + I, sm.column() + J, O, M, N, args... );
+   return subtensor<AF1>( sm.operand(), sm.page() + K, sm.row() + I, sm.column() + J, O, M, N, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5325,7 +5324,6 @@ inline bool tryAddAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
 */
 template< typename TT       // Type of the tensor
         , AlignmentFlag AF  // Alignment flag
-        , bool SO           // Storage order
         , bool DF           // Density flag
         , size_t... CSAs    // Compile time subtensor arguments
         , typename VT       // Type of the right-hand side vector
