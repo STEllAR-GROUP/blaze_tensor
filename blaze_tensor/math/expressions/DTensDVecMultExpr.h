@@ -501,213 +501,217 @@ class DTensDVecMultExpr
    /*! \endcond */
    //**********************************************************************************************
 
-   ////**Vectorized default assignment to dense vectors (small tensors)*****************************
-   ///*! \cond BLAZE_INTERNAL */
-   ///*!\brief Vectorized default assignment of a small dense tensor-dense vector multiplication
-   ////        (\f$ \vec{y}=A*\vec{x} \f$).
-   //// \ingroup dense_vector
-   ////
-   //// \param y The target left-hand side dense matrix.
-   //// \param A The left-hand side dense tensor operand.
-   //// \param x The right-hand side dense vector operand.
-   //// \return void
-   ////
-   //// This function implements the vectorized default assignment kernel for the dense tensor-
-   //// dense vector multiplication. This kernel is optimized for small tensors.
-   //*/
-   //template< typename MT1    // Type of the left-hand side target vector
-   //        , typename TT1    // Type of the left-hand side tensor operand
-   //        , typename VT1 >  // Type of the right-hand side vector operand
-   //static inline auto selectSmallAssignKernel( MT1& y, const TT1& A, const VT1& x )
-   //   -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
-   //{
-   //   constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
+   //**Vectorized default assignment to dense vectors (small tensors)*****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default assignment of a small dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense matrix.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized default assignment kernel for the dense tensor-
+   // dense vector multiplication. This kernel is optimized for small tensors.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1 >  // Type of the right-hand side vector operand
+   static inline auto selectSmallAssignKernel( MT1& y, const TT1& A, const VT1& x )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+   {
+      constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
 
-   //   const size_t M( A.rows()    );
-   //   const size_t N( A.columns() );
+      const size_t O( A.pages()    );
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
 
-   //   size_t i( 0UL );
 
-   //   for( ; (i+8UL) <= M; i+=8UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+7UL : i+8UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+      for (size_t k = 0; k <= O; ++k)
+      {
+         size_t i( 0UL );
+         for (; (i + 8UL) <= M; i += 8UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 7UL : i + 8UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //         xmm3 += A.load(i+2UL,j) * x1;
-   //         xmm4 += A.load(i+3UL,j) * x1;
-   //         xmm5 += A.load(i+4UL,j) * x1;
-   //         xmm6 += A.load(i+5UL,j) * x1;
-   //         xmm7 += A.load(i+6UL,j) * x1;
-   //         xmm8 += A.load(i+7UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+               xmm3 += A.load(k, i + 2UL, j) * x1;
+               xmm4 += A.load(k, i + 3UL, j) * x1;
+               xmm5 += A.load(k, i + 4UL, j) * x1;
+               xmm6 += A.load(k, i + 5UL, j) * x1;
+               xmm7 += A.load(k, i + 6UL, j) * x1;
+               xmm8 += A.load(k, i + 7UL, j) * x1;
+            }
 
-   //      y[i    ] = sum( xmm1 );
-   //      y[i+1UL] = sum( xmm2 );
-   //      y[i+2UL] = sum( xmm3 );
-   //      y[i+3UL] = sum( xmm4 );
-   //      y[i+4UL] = sum( xmm5 );
-   //      y[i+5UL] = sum( xmm6 );
-   //      y[i+6UL] = sum( xmm7 );
-   //      y[i+7UL] = sum( xmm8 );
+            y(k, i) = sum(xmm1);
+            y(k, i + 1UL) = sum(xmm2);
+            y(k, i + 2UL) = sum(xmm3);
+            y(k, i + 3UL) = sum(xmm4);
+            y(k, i + 4UL) = sum(xmm5);
+            y(k, i + 5UL) = sum(xmm6);
+            y(k, i + 6UL) = sum(xmm7);
+            y(k, i + 7UL) = sum(xmm8);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //         y[i+3UL] += A(i+3UL,j) * x[j];
-   //         y[i+4UL] += A(i+4UL,j) * x[j];
-   //         y[i+5UL] += A(i+5UL,j) * x[j];
-   //         y[i+6UL] += A(i+6UL,j) * x[j];
-   //         y[i+7UL] += A(i+7UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) += A(k, i + 3UL, j) * x[j];
+               y(k, i + 4UL) += A(k, i + 4UL, j) * x[j];
+               y(k, i + 5UL) += A(k, i + 5UL, j) * x[j];
+               y(k, i + 6UL) += A(k, i + 6UL, j) * x[j];
+               y(k, i + 7UL) += A(k, i + 7UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+4UL) <= M; i+=4UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+3UL : i+4UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 4UL) <= M; i += 4UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 3UL : i + 4UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2, xmm3, xmm4;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2, xmm3, xmm4;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //         xmm3 += A.load(i+2UL,j) * x1;
-   //         xmm4 += A.load(i+3UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+               xmm3 += A.load(k, i + 2UL, j) * x1;
+               xmm4 += A.load(k, i + 3UL, j) * x1;
+            }
 
-   //      y[i    ] = sum( xmm1 );
-   //      y[i+1UL] = sum( xmm2 );
-   //      y[i+2UL] = sum( xmm3 );
-   //      y[i+3UL] = sum( xmm4 );
+            y(k, i) = sum(xmm1);
+            y(k, i + 1UL) = sum(xmm2);
+            y(k, i + 2UL) = sum(xmm3);
+            y(k, i + 3UL) = sum(xmm4);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //         y[i+3UL] += A(i+3UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) += A(k, i + 3UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+3UL) <= M; i+=3UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+2UL : i+3UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 3UL) <= M; i += 3UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 2UL : i + 3UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2, xmm3;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2, xmm3;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //         xmm3 += A.load(i+2UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+               xmm3 += A.load(k, i + 2UL, j) * x1;
+            }
 
-   //      y[i    ] = sum( xmm1 );
-   //      y[i+1UL] = sum( xmm2 );
-   //      y[i+2UL] = sum( xmm3 );
+            y(k, i) = sum(xmm1);
+            y(k, i + 1UL) = sum(xmm2);
+            y(k, i + 2UL) = sum(xmm3);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+2UL) <= M; i+=2UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+1UL : i+2UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 2UL) <= M; i += 2UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 1UL : i + 2UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+            }
 
-   //      y[i    ] = sum( xmm1 );
-   //      y[i+1UL] = sum( xmm2 );
+            y(k, i) = sum(xmm1);
+            y(k, i + 1UL) = sum(xmm2);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+            }
+         }
 
-   //   if( i < M )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i : i+1UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         if (i < M)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i : i + 1UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1;
-   //      size_t j( jbegin );
+            SIMDType xmm1;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         xmm1 += A.load(i,j) * x.load(j);
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               xmm1 += A.load(k, i, j) * x.load(j);
+            }
 
-   //      y[i] = sum( xmm1 );
+            y(k, i) = sum(xmm1);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i] += A(i,j) * x[j];
-   //      }
-   //   }
-   //}
-   ///*! \endcond */
-   ////**********************************************************************************************
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
    //**Default assignment to dense vectors (large tensors)****************************************
    /*! \cond BLAZE_INTERNAL */
@@ -734,253 +738,257 @@ class DTensDVecMultExpr
    /*! \endcond */
    //**********************************************************************************************
 
-   ////**Vectorized default assignment to dense vectors (large tensors)*****************************
-   ///*! \cond BLAZE_INTERNAL */
-   ///*!\brief Vectorized default assignment of a large dense tensor-dense vector multiplication
-   ////        (\f$ \vec{y}=A*\vec{x} \f$).
-   //// \ingroup dense_vector
-   ////
-   //// \param y The target left-hand side dense vector.
-   //// \param A The left-hand side dense tensor operand.
-   //// \param x The right-hand side dense vector operand.
-   //// \return void
-   ////
-   //// This function implements the vectorized default assignment kernel for the dense tensor-
-   //// dense vector multiplication. This kernel is optimized for large tensors.
-   //*/
-   //template< typename MT1    // Type of the left-hand side target matrix
-   //        , typename TT1    // Type of the left-hand side tensor operand
-   //        , typename VT1 >  // Type of the right-hand side vector operand
-   //static inline auto selectLargeAssignKernel( MT1& y, const TT1& A, const VT1& x )
-   //   -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
-   //{
-   //   constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
+   //**Vectorized default assignment to dense vectors (large tensors)*****************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default assignment of a large dense tensor-dense vector multiplication
+   //        (\f$ \vec{y}=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized default assignment kernel for the dense tensor-
+   // dense vector multiplication. This kernel is optimized for large tensors.
+   */
+   template< typename MT1    // Type of the left-hand side target matrix
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1 >  // Type of the right-hand side vector operand
+   static inline auto selectLargeAssignKernel( MT1& y, const TT1& A, const VT1& x )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+   {
+      constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
 
-   //   const size_t M( A.rows()    );
-   //   const size_t N( A.columns() );
+      const size_t O( A.pages()    );
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
 
-   //   reset( y );
+      reset( y );
 
-   //   size_t i( 0UL );
+      for (size_t k = 0; k <= O; ++k)
+      {
+         size_t i(0UL);
 
-   //   for( ; (i+8UL) <= M; i+=8UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+7UL : i+8UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 8UL) <= M; i += 8UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 7UL : i + 8UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 + A.load(i    ,j2) * x3 + A.load(i    ,j3) * x4 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 + A.load(i+2UL,j2) * x3 + A.load(i+2UL,j3) * x4 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
-   //         y[i+4UL] += sum( A.load(i+4UL,j) * x1 + A.load(i+4UL,j1) * x2 + A.load(i+4UL,j2) * x3 + A.load(i+4UL,j3) * x4 );
-   //         y[i+5UL] += sum( A.load(i+5UL,j) * x1 + A.load(i+5UL,j1) * x2 + A.load(i+5UL,j2) * x3 + A.load(i+5UL,j3) * x4 );
-   //         y[i+6UL] += sum( A.load(i+6UL,j) * x1 + A.load(i+6UL,j1) * x2 + A.load(i+6UL,j2) * x3 + A.load(i+6UL,j3) * x4 );
-   //         y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 + A.load(i+7UL,j2) * x3 + A.load(i+7UL,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2 + A.load(k, i + 1UL, j2) * x3 + A.load(k, i + 1UL, j3) * x4);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2 + A.load(k, i + 2UL, j2) * x3 + A.load(k, i + 2UL, j3) * x4);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2 + A.load(k, i + 3UL, j2) * x3 + A.load(k, i + 3UL, j3) * x4);
+               y(k, i + 4UL) += sum(A.load(k, i + 4UL, j) * x1 + A.load(k, i + 4UL, j1) * x2 + A.load(k, i + 4UL, j2) * x3 + A.load(k, i + 4UL, j3) * x4);
+               y(k, i + 5UL) += sum(A.load(k, i + 5UL, j) * x1 + A.load(k, i + 5UL, j1) * x2 + A.load(k, i + 5UL, j2) * x3 + A.load(k, i + 5UL, j3) * x4);
+               y(k, i + 6UL) += sum(A.load(k, i + 6UL, j) * x1 + A.load(k, i + 6UL, j1) * x2 + A.load(k, i + 6UL, j2) * x3 + A.load(k, i + 6UL, j3) * x4);
+               y(k, i + 7UL) += sum(A.load(k, i + 7UL, j) * x1 + A.load(k, i + 7UL, j1) * x2 + A.load(k, i + 7UL, j2) * x3 + A.load(k, i + 7UL, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
-   //         y[i+4UL] += sum( A.load(i+4UL,j) * x1 + A.load(i+4UL,j1) * x2 );
-   //         y[i+5UL] += sum( A.load(i+5UL,j) * x1 + A.load(i+5UL,j1) * x2 );
-   //         y[i+6UL] += sum( A.load(i+6UL,j) * x1 + A.load(i+6UL,j1) * x2 );
-   //         y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2);
+               y(k, i + 4UL) += sum(A.load(k, i + 4UL, j) * x1 + A.load(k, i + 4UL, j1) * x2);
+               y(k, i + 5UL) += sum(A.load(k, i + 5UL, j) * x1 + A.load(k, i + 5UL, j1) * x2);
+               y(k, i + 6UL) += sum(A.load(k, i + 6UL, j) * x1 + A.load(k, i + 6UL, j1) * x2);
+               y(k, i + 7UL) += sum(A.load(k, i + 7UL, j) * x1 + A.load(k, i + 7UL, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 );
-   //         y[i+4UL] += sum( A.load(i+4UL,j) * x1 );
-   //         y[i+5UL] += sum( A.load(i+5UL,j) * x1 );
-   //         y[i+6UL] += sum( A.load(i+6UL,j) * x1 );
-   //         y[i+7UL] += sum( A.load(i+7UL,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) += sum(A.load(k, i, j) * x1);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1);
+               y(k, i + 4UL) += sum(A.load(k, i + 4UL, j) * x1);
+               y(k, i + 5UL) += sum(A.load(k, i + 5UL, j) * x1);
+               y(k, i + 6UL) += sum(A.load(k, i + 6UL, j) * x1);
+               y(k, i + 7UL) += sum(A.load(k, i + 7UL, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //         y[i+3UL] += A(i+3UL,j) * x[j];
-   //         y[i+4UL] += A(i+4UL,j) * x[j];
-   //         y[i+5UL] += A(i+5UL,j) * x[j];
-   //         y[i+6UL] += A(i+6UL,j) * x[j];
-   //         y[i+7UL] += A(i+7UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) += A(k, i + 3UL, j) * x[j];
+               y(k, i + 4UL) += A(k, i + 4UL, j) * x[j];
+               y(k, i + 5UL) += A(k, i + 5UL, j) * x[j];
+               y(k, i + 6UL) += A(k, i + 6UL, j) * x[j];
+               y(k, i + 7UL) += A(k, i + 7UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+4UL) <= M; i+=4UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+3UL : i+4UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 4UL) <= M; i += 4UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 3UL : i + 4UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 + A.load(i    ,j2) * x3 + A.load(i    ,j3) * x4 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 + A.load(i+2UL,j2) * x3 + A.load(i+2UL,j3) * x4 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2 + A.load(k, i + 1UL, j2) * x3 + A.load(k, i + 1UL, j3) * x4);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2 + A.load(k, i + 2UL, j2) * x3 + A.load(k, i + 2UL, j3) * x4);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2 + A.load(k, i + 3UL, j2) * x3 + A.load(k, i + 3UL, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) += sum(A.load(k, i, j) * x1);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //         y[i+3UL] += A(i+3UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) += A(k, i + 3UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+2UL) <= M; i+=2UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+1UL : i+2UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 2UL) <= M; i += 2UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 1UL : i + 2UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 + A.load(i    ,j2) * x3 + A.load(i    ,j3) * x4 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2 + A.load(k, i + 1UL, j2) * x3 + A.load(k, i + 1UL, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) += sum(A.load(k, i, j) * x1);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+            }
+         }
 
-   //   if( i < M )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i : i+1UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         if (i < M)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i : i + 1UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 + A.load(i,j2) * x3 + A.load(i,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i] += sum( A.load(i,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) += sum(A.load(k, i, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i] += A(i,j) * x[j];
-   //      }
-   //   }
-   //}
-   ///*! \endcond */
-   ////**********************************************************************************************
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
    //**BLAS-based assignment to dense vectors (default)********************************************
    /*! \cond BLAZE_INTERNAL */
@@ -1184,213 +1192,217 @@ class DTensDVecMultExpr
    /*! \endcond */
    //**********************************************************************************************
 
-   ////**Vectorized default addition assignment to dense vectors (small tensors)********************
-   ///*! \cond BLAZE_INTERNAL */
-   ///*!\brief Vectorized default addition assignment of a small dense tensor-dense vector
-   ////        multiplication (\f$ \vec{y}+=A*\vec{x} \f$).
-   //// \ingroup dense_vector
-   ////
-   //// \param y The target left-hand side dense vector.
-   //// \param A The left-hand side dense tensor operand.
-   //// \param x The right-hand side dense vector operand.
-   //// \return void
-   ////
-   //// This function implements the vectorized default addition assignment kernel for the dense
-   //// tensor-dense vector multiplication. This kernel is optimized for small tensors.
-   //*/
-   //template< typename MT1    // Type of the left-hand side target vector
-   //        , typename TT1    // Type of the left-hand side tensor operand
-   //        , typename VT1 >  // Type of the right-hand side vector operand
-   //static inline auto selectSmallAddAssignKernel( MT1& y, const TT1& A, const VT1& x )
-   //   -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
-   //{
-   //   constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
+   //**Vectorized default addition assignment to dense vectors (small tensors)********************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default addition assignment of a small dense tensor-dense vector
+   //        multiplication (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment kernel for the dense
+   // tensor-dense vector multiplication. This kernel is optimized for small tensors.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1 >  // Type of the right-hand side vector operand
+   static inline auto selectSmallAddAssignKernel( MT1& y, const TT1& A, const VT1& x )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+   {
+      constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
 
-   //   const size_t M( A.rows()    );
-   //   const size_t N( A.columns() );
+      const size_t O( A.pages()   );
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
 
-   //   size_t i( 0UL );
+      for (size_t k = 0; k < O; ++k)
+      {
+         size_t i(0UL);
 
-   //   for( ; (i+8UL) <= M; i+=8UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+7UL : i+8UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 8UL) <= M; i += 8UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 7UL : i + 8UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //         xmm3 += A.load(i+2UL,j) * x1;
-   //         xmm4 += A.load(i+3UL,j) * x1;
-   //         xmm5 += A.load(i+4UL,j) * x1;
-   //         xmm6 += A.load(i+5UL,j) * x1;
-   //         xmm7 += A.load(i+6UL,j) * x1;
-   //         xmm8 += A.load(i+7UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+               xmm3 += A.load(k, i + 2UL, j) * x1;
+               xmm4 += A.load(k, i + 3UL, j) * x1;
+               xmm5 += A.load(k, i + 4UL, j) * x1;
+               xmm6 += A.load(k, i + 5UL, j) * x1;
+               xmm7 += A.load(k, i + 6UL, j) * x1;
+               xmm8 += A.load(k, i + 7UL, j) * x1;
+            }
 
-   //      y[i    ] += sum( xmm1 );
-   //      y[i+1UL] += sum( xmm2 );
-   //      y[i+2UL] += sum( xmm3 );
-   //      y[i+3UL] += sum( xmm4 );
-   //      y[i+4UL] += sum( xmm5 );
-   //      y[i+5UL] += sum( xmm6 );
-   //      y[i+6UL] += sum( xmm7 );
-   //      y[i+7UL] += sum( xmm8 );
+            y(k, i) += sum(xmm1);
+            y(k, i + 1UL) += sum(xmm2);
+            y(k, i + 2UL) += sum(xmm3);
+            y(k, i + 3UL) += sum(xmm4);
+            y(k, i + 4UL) += sum(xmm5);
+            y(k, i + 5UL) += sum(xmm6);
+            y(k, i + 6UL) += sum(xmm7);
+            y(k, i + 7UL) += sum(xmm8);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //         y[i+3UL] += A(i+3UL,j) * x[j];
-   //         y[i+4UL] += A(i+4UL,j) * x[j];
-   //         y[i+5UL] += A(i+5UL,j) * x[j];
-   //         y[i+6UL] += A(i+6UL,j) * x[j];
-   //         y[i+7UL] += A(i+7UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) += A(k, i + 3UL, j) * x[j];
+               y(k, i + 4UL) += A(k, i + 4UL, j) * x[j];
+               y(k, i + 5UL) += A(k, i + 5UL, j) * x[j];
+               y(k, i + 6UL) += A(k, i + 6UL, j) * x[j];
+               y(k, i + 7UL) += A(k, i + 7UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+4UL) <= M; i+=4UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+3UL : i+4UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 4UL) <= M; i += 4UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 3UL : i + 4UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2, xmm3, xmm4;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2, xmm3, xmm4;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //         xmm3 += A.load(i+2UL,j) * x1;
-   //         xmm4 += A.load(i+3UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+               xmm3 += A.load(k, i + 2UL, j) * x1;
+               xmm4 += A.load(k, i + 3UL, j) * x1;
+            }
 
-   //      y[i    ] += sum( xmm1 );
-   //      y[i+1UL] += sum( xmm2 );
-   //      y[i+2UL] += sum( xmm3 );
-   //      y[i+3UL] += sum( xmm4 );
+            y(k, i) += sum(xmm1);
+            y(k, i + 1UL) += sum(xmm2);
+            y(k, i + 2UL) += sum(xmm3);
+            y(k, i + 3UL) += sum(xmm4);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //         y[i+3UL] += A(i+3UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) += A(k, i + 3UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+3UL) <= M; i+=3UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+2UL : i+3UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 3UL) <= M; i += 3UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 2UL : i + 3UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2, xmm3;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2, xmm3;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //         xmm3 += A.load(i+2UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+               xmm3 += A.load(k, i + 2UL, j) * x1;
+            }
 
-   //      y[i    ] += sum( xmm1 );
-   //      y[i+1UL] += sum( xmm2 );
-   //      y[i+2UL] += sum( xmm3 );
+            y(k, i) += sum(xmm1);
+            y(k, i + 1UL) += sum(xmm2);
+            y(k, i + 2UL) += sum(xmm3);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+2UL) <= M; i+=2UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+1UL : i+2UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 2UL) <= M; i += 2UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 1UL : i + 2UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+            }
 
-   //      y[i    ] += sum( xmm1 );
-   //      y[i+1UL] += sum( xmm2 );
+            y(k, i) += sum(xmm1);
+            y(k, i + 1UL) += sum(xmm2);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+            }
+         }
 
-   //   if( i < M )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i : i+1UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         if (i < M)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i : i + 1UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1;
-   //      size_t j( jbegin );
+            SIMDType xmm1;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         xmm1 += A.load(i,j) * x.load(j);
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               xmm1 += A.load(k, i, j) * x.load(j);
+            }
 
-   //      y[i] += sum( xmm1 );
+            y(k, i) += sum(xmm1);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i] += A(i,j) * x[j];
-   //      }
-   //   }
-   //}
-   ///*! \endcond */
-   ////**********************************************************************************************
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
    //**Default addition assignment to dense vectors (large tensors)*******************************
    /*! \cond BLAZE_INTERNAL */
@@ -1417,251 +1429,255 @@ class DTensDVecMultExpr
    /*! \endcond */
    //**********************************************************************************************
 
-   ////**Vectorized default addition assignment to dense vectors (large tensors)********************
-   ///*! \cond BLAZE_INTERNAL */
-   ///*!\brief Vectorized default addition assignment of a large dense tensor-dense vector
-   ////        multiplication (\f$ \vec{y}+=A*\vec{x} \f$).
-   //// \ingroup dense_vector
-   ////
-   //// \param y The target left-hand side dense vector.
-   //// \param A The left-hand side dense tensor operand.
-   //// \param x The right-hand side dense vector operand.
-   //// \return void
-   ////
-   //// This function implements the vectorized default addition assignment kernel for the dense
-   //// tensor-dense vector multiplication. This kernel is optimized for large tensors.
-   //*/
-   //template< typename MT1    // Type of the left-hand side target vector
-   //        , typename TT1    // Type of the left-hand side tensor operand
-   //        , typename VT1 >  // Type of the right-hand side vector operand
-   //static inline auto selectLargeAddAssignKernel( MT1& y, const TT1& A, const VT1& x )
-   //   -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
-   //{
-   //   constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
+   //**Vectorized default addition assignment to dense vectors (large tensors)********************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default addition assignment of a large dense tensor-dense vector
+   //        multiplication (\f$ \vec{y}+=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized default addition assignment kernel for the dense
+   // tensor-dense vector multiplication. This kernel is optimized for large tensors.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1 >  // Type of the right-hand side vector operand
+   static inline auto selectLargeAddAssignKernel( MT1& y, const TT1& A, const VT1& x )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+   {
+      constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
 
-   //   const size_t M( A.rows()    );
-   //   const size_t N( A.columns() );
+      const size_t O( A.pages()   );
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
 
-   //   size_t i( 0UL );
+      for (size_t k = 0; k < O; ++k)
+      {
+         size_t i(0UL);
 
-   //   for( ; (i+8UL) <= M; i+=8UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+7UL : i+8UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 8UL) <= M; i += 8UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 7UL : i + 8UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 + A.load(i    ,j2) * x3 + A.load(i    ,j3) * x4 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 + A.load(i+2UL,j2) * x3 + A.load(i+2UL,j3) * x4 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
-   //         y[i+4UL] += sum( A.load(i+4UL,j) * x1 + A.load(i+4UL,j1) * x2 + A.load(i+4UL,j2) * x3 + A.load(i+4UL,j3) * x4 );
-   //         y[i+5UL] += sum( A.load(i+5UL,j) * x1 + A.load(i+5UL,j1) * x2 + A.load(i+5UL,j2) * x3 + A.load(i+5UL,j3) * x4 );
-   //         y[i+6UL] += sum( A.load(i+6UL,j) * x1 + A.load(i+6UL,j1) * x2 + A.load(i+6UL,j2) * x3 + A.load(i+6UL,j3) * x4 );
-   //         y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 + A.load(i+7UL,j2) * x3 + A.load(i+7UL,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2 + A.load(k, i + 1UL, j2) * x3 + A.load(k, i + 1UL, j3) * x4);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2 + A.load(k, i + 2UL, j2) * x3 + A.load(k, i + 2UL, j3) * x4);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2 + A.load(k, i + 3UL, j2) * x3 + A.load(k, i + 3UL, j3) * x4);
+               y(k, i + 4UL) += sum(A.load(k, i + 4UL, j) * x1 + A.load(k, i + 4UL, j1) * x2 + A.load(k, i + 4UL, j2) * x3 + A.load(k, i + 4UL, j3) * x4);
+               y(k, i + 5UL) += sum(A.load(k, i + 5UL, j) * x1 + A.load(k, i + 5UL, j1) * x2 + A.load(k, i + 5UL, j2) * x3 + A.load(k, i + 5UL, j3) * x4);
+               y(k, i + 6UL) += sum(A.load(k, i + 6UL, j) * x1 + A.load(k, i + 6UL, j1) * x2 + A.load(k, i + 6UL, j2) * x3 + A.load(k, i + 6UL, j3) * x4);
+               y(k, i + 7UL) += sum(A.load(k, i + 7UL, j) * x1 + A.load(k, i + 7UL, j1) * x2 + A.load(k, i + 7UL, j2) * x3 + A.load(k, i + 7UL, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
-   //         y[i+4UL] += sum( A.load(i+4UL,j) * x1 + A.load(i+4UL,j1) * x2 );
-   //         y[i+5UL] += sum( A.load(i+5UL,j) * x1 + A.load(i+5UL,j1) * x2 );
-   //         y[i+6UL] += sum( A.load(i+6UL,j) * x1 + A.load(i+6UL,j1) * x2 );
-   //         y[i+7UL] += sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2);
+               y(k, i + 4UL) += sum(A.load(k, i + 4UL, j) * x1 + A.load(k, i + 4UL, j1) * x2);
+               y(k, i + 5UL) += sum(A.load(k, i + 5UL, j) * x1 + A.load(k, i + 5UL, j1) * x2);
+               y(k, i + 6UL) += sum(A.load(k, i + 6UL, j) * x1 + A.load(k, i + 6UL, j1) * x2);
+               y(k, i + 7UL) += sum(A.load(k, i + 7UL, j) * x1 + A.load(k, i + 7UL, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 );
-   //         y[i+4UL] += sum( A.load(i+4UL,j) * x1 );
-   //         y[i+5UL] += sum( A.load(i+5UL,j) * x1 );
-   //         y[i+6UL] += sum( A.load(i+6UL,j) * x1 );
-   //         y[i+7UL] += sum( A.load(i+7UL,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) += sum(A.load(k, i, j) * x1);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1);
+               y(k, i + 4UL) += sum(A.load(k, i + 4UL, j) * x1);
+               y(k, i + 5UL) += sum(A.load(k, i + 5UL, j) * x1);
+               y(k, i + 6UL) += sum(A.load(k, i + 6UL, j) * x1);
+               y(k, i + 7UL) += sum(A.load(k, i + 7UL, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //         y[i+3UL] += A(i+3UL,j) * x[j];
-   //         y[i+4UL] += A(i+4UL,j) * x[j];
-   //         y[i+5UL] += A(i+5UL,j) * x[j];
-   //         y[i+6UL] += A(i+6UL,j) * x[j];
-   //         y[i+7UL] += A(i+7UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) += A(k, i + 3UL, j) * x[j];
+               y(k, i + 4UL) += A(k, i + 4UL, j) * x[j];
+               y(k, i + 5UL) += A(k, i + 5UL, j) * x[j];
+               y(k, i + 6UL) += A(k, i + 6UL, j) * x[j];
+               y(k, i + 7UL) += A(k, i + 7UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+4UL) <= M; i+=4UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+3UL : i+4UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 4UL) <= M; i += 4UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 3UL : i + 4UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 + A.load(i    ,j2) * x3 + A.load(i    ,j3) * x4 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 + A.load(i+2UL,j2) * x3 + A.load(i+2UL,j3) * x4 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2 + A.load(k, i + 1UL, j2) * x3 + A.load(k, i + 1UL, j3) * x4);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2 + A.load(k, i + 2UL, j2) * x3 + A.load(k, i + 2UL, j3) * x4);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2 + A.load(k, i + 3UL, j2) * x3 + A.load(k, i + 3UL, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
-   //         y[i+2UL] += sum( A.load(i+2UL,j) * x1 );
-   //         y[i+3UL] += sum( A.load(i+3UL,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) += sum(A.load(k, i, j) * x1);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1);
+               y(k, i + 2UL) += sum(A.load(k, i + 2UL, j) * x1);
+               y(k, i + 3UL) += sum(A.load(k, i + 3UL, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //         y[i+2UL] += A(i+2UL,j) * x[j];
-   //         y[i+3UL] += A(i+3UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) += A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) += A(k, i + 3UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+2UL) <= M; i+=2UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+1UL : i+2UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 2UL) <= M; i += 2UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 1UL : i + 2UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 + A.load(i    ,j2) * x3 + A.load(i    ,j3) * x4 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2 + A.load(k, i + 1UL, j2) * x3 + A.load(k, i + 1UL, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i    ] += sum( A.load(i    ,j) * x1 );
-   //         y[i+1UL] += sum( A.load(i+1UL,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) += sum(A.load(k, i, j) * x1);
+               y(k, i + 1UL) += sum(A.load(k, i + 1UL, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] += A(i    ,j) * x[j];
-   //         y[i+1UL] += A(i+1UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+               y(k, i + 1UL) += A(k, i + 1UL, j) * x[j];
+            }
+         }
 
-   //   if( i < M )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i : i+1UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         if (i < M)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i : i + 1UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 + A.load(i,j2) * x3 + A.load(i,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i] += sum( A.load(i,j) * x1 + A.load(i,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) += sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i] += sum( A.load(i,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) += sum(A.load(k, i, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i] += A(i,j) * x[j];
-   //      }
-   //   }
-   //}
-   ///*! \endcond */
-   ////**********************************************************************************************
+            for (; remainder && j < jend; ++j) {
+               y(k, i) += A(k, i, j) * x[j];
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
    //**BLAS-based addition assignment to dense vectors (default)***********************************
    /*! \cond BLAZE_INTERNAL */
@@ -1840,213 +1856,217 @@ class DTensDVecMultExpr
    /*! \endcond */
    //**********************************************************************************************
 
-   ////**Vectorized default subtraction assignment to dense vectors (small tensors)*****************
-   ///*! \cond BLAZE_INTERNAL */
-   ///*!\brief Vectorized default subtraction assignment of a small dense tensor-dense vector
-   ////        multiplication (\f$ \vec{y}-=A*\vec{x} \f$).
-   //// \ingroup dense_vector
-   ////
-   //// \param y The target left-hand side dense vector.
-   //// \param A The left-hand side dense tensor operand.
-   //// \param x The right-hand side dense vector operand.
-   //// \return void
-   ////
-   //// This function implements the vectorized default subtraction assignment kernel for the dense
-   //// tensor-dense vector multiplication. This kernel is optimized for small tensors.
-   //*/
-   //template< typename MT1    // Type of the left-hand side target vector
-   //        , typename TT1    // Type of the left-hand side tensor operand
-   //        , typename VT1 >  // Type of the right-hand side vector operand
-   //static inline auto selectSmallSubAssignKernel( MT1& y, const TT1& A, const VT1& x )
-   //   -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
-   //{
-   //   constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
+   //**Vectorized default subtraction assignment to dense vectors (small tensors)*****************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default subtraction assignment of a small dense tensor-dense vector
+   //        multiplication (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment kernel for the dense
+   // tensor-dense vector multiplication. This kernel is optimized for small tensors.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1 >  // Type of the right-hand side vector operand
+   static inline auto selectSmallSubAssignKernel( MT1& y, const TT1& A, const VT1& x )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+   {
+      constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
 
-   //   const size_t M( A.rows()    );
-   //   const size_t N( A.columns() );
+      const size_t O( A.page()   );
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
 
-   //   size_t i( 0UL );
+      for (size_t k = 0; k < O; ++k)
+      {
+         size_t i(0UL);
 
-   //   for( ; (i+8UL) <= M; i+=8UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+7UL : i+8UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 8UL) <= M; i += 8UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 7UL : i + 8UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2, xmm3, xmm4, xmm5, xmm6, xmm7, xmm8;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //         xmm3 += A.load(i+2UL,j) * x1;
-   //         xmm4 += A.load(i+3UL,j) * x1;
-   //         xmm5 += A.load(i+4UL,j) * x1;
-   //         xmm6 += A.load(i+5UL,j) * x1;
-   //         xmm7 += A.load(i+6UL,j) * x1;
-   //         xmm8 += A.load(i+7UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+               xmm3 += A.load(k, i + 2UL, j) * x1;
+               xmm4 += A.load(k, i + 3UL, j) * x1;
+               xmm5 += A.load(k, i + 4UL, j) * x1;
+               xmm6 += A.load(k, i + 5UL, j) * x1;
+               xmm7 += A.load(k, i + 6UL, j) * x1;
+               xmm8 += A.load(k, i + 7UL, j) * x1;
+            }
 
-   //      y[i    ] -= sum( xmm1 );
-   //      y[i+1UL] -= sum( xmm2 );
-   //      y[i+2UL] -= sum( xmm3 );
-   //      y[i+3UL] -= sum( xmm4 );
-   //      y[i+4UL] -= sum( xmm5 );
-   //      y[i+5UL] -= sum( xmm6 );
-   //      y[i+6UL] -= sum( xmm7 );
-   //      y[i+7UL] -= sum( xmm8 );
+            y(k, i) -= sum(xmm1);
+            y(k, i + 1UL) -= sum(xmm2);
+            y(k, i + 2UL) -= sum(xmm3);
+            y(k, i + 3UL) -= sum(xmm4);
+            y(k, i + 4UL) -= sum(xmm5);
+            y(k, i + 5UL) -= sum(xmm6);
+            y(k, i + 6UL) -= sum(xmm7);
+            y(k, i + 7UL) -= sum(xmm8);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] -= A(i    ,j) * x[j];
-   //         y[i+1UL] -= A(i+1UL,j) * x[j];
-   //         y[i+2UL] -= A(i+2UL,j) * x[j];
-   //         y[i+3UL] -= A(i+3UL,j) * x[j];
-   //         y[i+4UL] -= A(i+4UL,j) * x[j];
-   //         y[i+5UL] -= A(i+5UL,j) * x[j];
-   //         y[i+6UL] -= A(i+6UL,j) * x[j];
-   //         y[i+7UL] -= A(i+7UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) -= A(k, i, j) * x[j];
+               y(k, i + 1UL) -= A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) -= A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) -= A(k, i + 3UL, j) * x[j];
+               y(k, i + 4UL) -= A(k, i + 4UL, j) * x[j];
+               y(k, i + 5UL) -= A(k, i + 5UL, j) * x[j];
+               y(k, i + 6UL) -= A(k, i + 6UL, j) * x[j];
+               y(k, i + 7UL) -= A(k, i + 7UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+4UL) <= M; i+=4UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+3UL : i+4UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 4UL) <= M; i += 4UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 3UL : i + 4UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2, xmm3, xmm4;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2, xmm3, xmm4;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //         xmm3 += A.load(i+2UL,j) * x1;
-   //         xmm4 += A.load(i+3UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+               xmm3 += A.load(k, i + 2UL, j) * x1;
+               xmm4 += A.load(k, i + 3UL, j) * x1;
+            }
 
-   //      y[i    ] -= sum( xmm1 );
-   //      y[i+1UL] -= sum( xmm2 );
-   //      y[i+2UL] -= sum( xmm3 );
-   //      y[i+3UL] -= sum( xmm4 );
+            y(k, i) -= sum(xmm1);
+            y(k, i + 1UL) -= sum(xmm2);
+            y(k, i + 2UL) -= sum(xmm3);
+            y(k, i + 3UL) -= sum(xmm4);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] -= A(i    ,j) * x[j];
-   //         y[i+1UL] -= A(i+1UL,j) * x[j];
-   //         y[i+2UL] -= A(i+2UL,j) * x[j];
-   //         y[i+3UL] -= A(i+3UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) -= A(k, i, j) * x[j];
+               y(k, i + 1UL) -= A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) -= A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) -= A(k, i + 3UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+3UL) <= M; i+=3UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+2UL : i+3UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 3UL) <= M; i += 3UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 2UL : i + 3UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2, xmm3;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2, xmm3;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //         xmm3 += A.load(i+2UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+               xmm3 += A.load(k, i + 2UL, j) * x1;
+            }
 
-   //      y[i    ] -= sum( xmm1 );
-   //      y[i+1UL] -= sum( xmm2 );
-   //      y[i+2UL] -= sum( xmm3 );
+            y(k, i) -= sum(xmm1);
+            y(k, i + 1UL) -= sum(xmm2);
+            y(k, i + 2UL) -= sum(xmm3);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] -= A(i    ,j) * x[j];
-   //         y[i+1UL] -= A(i+1UL,j) * x[j];
-   //         y[i+2UL] -= A(i+2UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) -= A(k, i, j) * x[j];
+               y(k, i + 1UL) -= A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) -= A(k, i + 2UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+2UL) <= M; i+=2UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+1UL : i+2UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 2UL) <= M; i += 2UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 1UL : i + 2UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1, xmm2;
-   //      size_t j( jbegin );
+            SIMDType xmm1, xmm2;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         xmm1 += A.load(i    ,j) * x1;
-   //         xmm2 += A.load(i+1UL,j) * x1;
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               xmm1 += A.load(k, i, j) * x1;
+               xmm2 += A.load(k, i + 1UL, j) * x1;
+            }
 
-   //      y[i    ] -= sum( xmm1 );
-   //      y[i+1UL] -= sum( xmm2 );
+            y(k, i) -= sum(xmm1);
+            y(k, i + 1UL) -= sum(xmm2);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] -= A(i    ,j) * x[j];
-   //         y[i+1UL] -= A(i+1UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) -= A(k, i, j) * x[j];
+               y(k, i + 1UL) -= A(k, i + 1UL, j) * x[j];
+            }
+         }
 
-   //   if( i < M )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i : i+1UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         if (i < M)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i : i + 1UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      SIMDType xmm1;
-   //      size_t j( jbegin );
+            SIMDType xmm1;
+            size_t j(jbegin);
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         xmm1 += A.load(i,j) * x.load(j);
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               xmm1 += A.load(k, i, j) * x.load(j);
+            }
 
-   //      y[i] -= sum( xmm1 );
+            y(k, i) -= sum(xmm1);
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i] -= A(i,j) * x[j];
-   //      }
-   //   }
-   //}
-   ///*! \endcond */
-   ////**********************************************************************************************
+            for (; remainder && j < jend; ++j) {
+               y(k, i) -= A(k, i, j) * x[j];
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
    //**Default subtraction assignment to dense vectors (large tensors)****************************
    /*! \cond BLAZE_INTERNAL */
@@ -2073,251 +2093,255 @@ class DTensDVecMultExpr
    /*! \endcond */
    //**********************************************************************************************
 
-   ////**Vectorized default subtraction assignment to dense vectors (large tensors)*****************
-   ///*! \cond BLAZE_INTERNAL */
-   ///*!\brief Vectorized default subtraction assignment of a large dense tensor-dense vector
-   ////        multiplication (\f$ \vec{y}-=A*\vec{x} \f$).
-   //// \ingroup dense_vector
-   ////
-   //// \param y The target left-hand side dense vector.
-   //// \param A The left-hand side dense tensor operand.
-   //// \param x The right-hand side dense vector operand.
-   //// \return void
-   ////
-   //// This function implements the vectorized default subtraction assignment kernel for the dense
-   //// tensor-dense vector multiplication. This kernel is optimized for large tensors.
-   //*/
-   //template< typename MT1    // Type of the left-hand side target vector
-   //        , typename TT1    // Type of the left-hand side tensor operand
-   //        , typename VT1 >  // Type of the right-hand side vector operand
-   //static inline auto selectLargeSubAssignKernel( MT1& y, const TT1& A, const VT1& x )
-   //   -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
-   //{
-   //   constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
+   //**Vectorized default subtraction assignment to dense vectors (large tensors)*****************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Vectorized default subtraction assignment of a large dense tensor-dense vector
+   //        multiplication (\f$ \vec{y}-=A*\vec{x} \f$).
+   // \ingroup dense_vector
+   //
+   // \param y The target left-hand side dense vector.
+   // \param A The left-hand side dense tensor operand.
+   // \param x The right-hand side dense vector operand.
+   // \return void
+   //
+   // This function implements the vectorized default subtraction assignment kernel for the dense
+   // tensor-dense vector multiplication. This kernel is optimized for large tensors.
+   */
+   template< typename MT1    // Type of the left-hand side target vector
+           , typename TT1    // Type of the left-hand side tensor operand
+           , typename VT1 >  // Type of the right-hand side vector operand
+   static inline auto selectLargeSubAssignKernel( MT1& y, const TT1& A, const VT1& x )
+      -> EnableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+   {
+      constexpr bool remainder( !IsPadded_v<TT1> || !IsPadded_v<VT1> );
 
-   //   const size_t M( A.rows()    );
-   //   const size_t N( A.columns() );
+      const size_t O( A.pages()   );
+      const size_t M( A.rows()    );
+      const size_t N( A.columns() );
 
-   //   size_t i( 0UL );
+      for (size_t k = 0; k < O; ++k)
+      {
+         size_t i(0UL);
 
-   //   for( ; (i+8UL) <= M; i+=8UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+7UL : i+8UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 8UL) <= M; i += 8UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 7UL : i + 8UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i    ] -= sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 + A.load(i    ,j2) * x3 + A.load(i    ,j3) * x4 );
-   //         y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
-   //         y[i+2UL] -= sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 + A.load(i+2UL,j2) * x3 + A.load(i+2UL,j3) * x4 );
-   //         y[i+3UL] -= sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
-   //         y[i+4UL] -= sum( A.load(i+4UL,j) * x1 + A.load(i+4UL,j1) * x2 + A.load(i+4UL,j2) * x3 + A.load(i+4UL,j3) * x4 );
-   //         y[i+5UL] -= sum( A.load(i+5UL,j) * x1 + A.load(i+5UL,j1) * x2 + A.load(i+5UL,j2) * x3 + A.load(i+5UL,j3) * x4 );
-   //         y[i+6UL] -= sum( A.load(i+6UL,j) * x1 + A.load(i+6UL,j1) * x2 + A.load(i+6UL,j2) * x3 + A.load(i+6UL,j3) * x4 );
-   //         y[i+7UL] -= sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 + A.load(i+7UL,j2) * x3 + A.load(i+7UL,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) -= sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+               y(k, i + 1UL) -= sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2 + A.load(k, i + 1UL, j2) * x3 + A.load(k, i + 1UL, j3) * x4);
+               y(k, i + 2UL) -= sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2 + A.load(k, i + 2UL, j2) * x3 + A.load(k, i + 2UL, j3) * x4);
+               y(k, i + 3UL) -= sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2 + A.load(k, i + 3UL, j2) * x3 + A.load(k, i + 3UL, j3) * x4);
+               y(k, i + 4UL) -= sum(A.load(k, i + 4UL, j) * x1 + A.load(k, i + 4UL, j1) * x2 + A.load(k, i + 4UL, j2) * x3 + A.load(k, i + 4UL, j3) * x4);
+               y(k, i + 5UL) -= sum(A.load(k, i + 5UL, j) * x1 + A.load(k, i + 5UL, j1) * x2 + A.load(k, i + 5UL, j2) * x3 + A.load(k, i + 5UL, j3) * x4);
+               y(k, i + 6UL) -= sum(A.load(k, i + 6UL, j) * x1 + A.load(k, i + 6UL, j1) * x2 + A.load(k, i + 6UL, j2) * x3 + A.load(k, i + 6UL, j3) * x4);
+               y(k, i + 7UL) -= sum(A.load(k, i + 7UL, j) * x1 + A.load(k, i + 7UL, j1) * x2 + A.load(k, i + 7UL, j2) * x3 + A.load(k, i + 7UL, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i    ] -= sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 );
-   //         y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
-   //         y[i+2UL] -= sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 );
-   //         y[i+3UL] -= sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
-   //         y[i+4UL] -= sum( A.load(i+4UL,j) * x1 + A.load(i+4UL,j1) * x2 );
-   //         y[i+5UL] -= sum( A.load(i+5UL,j) * x1 + A.load(i+5UL,j1) * x2 );
-   //         y[i+6UL] -= sum( A.load(i+6UL,j) * x1 + A.load(i+6UL,j1) * x2 );
-   //         y[i+7UL] -= sum( A.load(i+7UL,j) * x1 + A.load(i+7UL,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) -= sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+               y(k, i + 1UL) -= sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2);
+               y(k, i + 2UL) -= sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2);
+               y(k, i + 3UL) -= sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2);
+               y(k, i + 4UL) -= sum(A.load(k, i + 4UL, j) * x1 + A.load(k, i + 4UL, j1) * x2);
+               y(k, i + 5UL) -= sum(A.load(k, i + 5UL, j) * x1 + A.load(k, i + 5UL, j1) * x2);
+               y(k, i + 6UL) -= sum(A.load(k, i + 6UL, j) * x1 + A.load(k, i + 6UL, j1) * x2);
+               y(k, i + 7UL) -= sum(A.load(k, i + 7UL, j) * x1 + A.load(k, i + 7UL, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i    ] -= sum( A.load(i    ,j) * x1 );
-   //         y[i+1UL] -= sum( A.load(i+1UL,j) * x1 );
-   //         y[i+2UL] -= sum( A.load(i+2UL,j) * x1 );
-   //         y[i+3UL] -= sum( A.load(i+3UL,j) * x1 );
-   //         y[i+4UL] -= sum( A.load(i+4UL,j) * x1 );
-   //         y[i+5UL] -= sum( A.load(i+5UL,j) * x1 );
-   //         y[i+6UL] -= sum( A.load(i+6UL,j) * x1 );
-   //         y[i+7UL] -= sum( A.load(i+7UL,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) -= sum(A.load(k, i, j) * x1);
+               y(k, i + 1UL) -= sum(A.load(k, i + 1UL, j) * x1);
+               y(k, i + 2UL) -= sum(A.load(k, i + 2UL, j) * x1);
+               y(k, i + 3UL) -= sum(A.load(k, i + 3UL, j) * x1);
+               y(k, i + 4UL) -= sum(A.load(k, i + 4UL, j) * x1);
+               y(k, i + 5UL) -= sum(A.load(k, i + 5UL, j) * x1);
+               y(k, i + 6UL) -= sum(A.load(k, i + 6UL, j) * x1);
+               y(k, i + 7UL) -= sum(A.load(k, i + 7UL, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] -= A(i    ,j) * x[j];
-   //         y[i+1UL] -= A(i+1UL,j) * x[j];
-   //         y[i+2UL] -= A(i+2UL,j) * x[j];
-   //         y[i+3UL] -= A(i+3UL,j) * x[j];
-   //         y[i+4UL] -= A(i+4UL,j) * x[j];
-   //         y[i+5UL] -= A(i+5UL,j) * x[j];
-   //         y[i+6UL] -= A(i+6UL,j) * x[j];
-   //         y[i+7UL] -= A(i+7UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) -= A(k, i, j) * x[j];
+               y(k, i + 1UL) -= A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) -= A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) -= A(k, i + 3UL, j) * x[j];
+               y(k, i + 4UL) -= A(k, i + 4UL, j) * x[j];
+               y(k, i + 5UL) -= A(k, i + 5UL, j) * x[j];
+               y(k, i + 6UL) -= A(k, i + 6UL, j) * x[j];
+               y(k, i + 7UL) -= A(k, i + 7UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+4UL) <= M; i+=4UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+3UL : i+4UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 4UL) <= M; i += 4UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 3UL : i + 4UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i    ] -= sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 + A.load(i    ,j2) * x3 + A.load(i    ,j3) * x4 );
-   //         y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
-   //         y[i+2UL] -= sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 + A.load(i+2UL,j2) * x3 + A.load(i+2UL,j3) * x4 );
-   //         y[i+3UL] -= sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 + A.load(i+3UL,j2) * x3 + A.load(i+3UL,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) -= sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+               y(k, i + 1UL) -= sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2 + A.load(k, i + 1UL, j2) * x3 + A.load(k, i + 1UL, j3) * x4);
+               y(k, i + 2UL) -= sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2 + A.load(k, i + 2UL, j2) * x3 + A.load(k, i + 2UL, j3) * x4);
+               y(k, i + 3UL) -= sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2 + A.load(k, i + 3UL, j2) * x3 + A.load(k, i + 3UL, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i    ] -= sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 );
-   //         y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
-   //         y[i+2UL] -= sum( A.load(i+2UL,j) * x1 + A.load(i+2UL,j1) * x2 );
-   //         y[i+3UL] -= sum( A.load(i+3UL,j) * x1 + A.load(i+3UL,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) -= sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+               y(k, i + 1UL) -= sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2);
+               y(k, i + 2UL) -= sum(A.load(k, i + 2UL, j) * x1 + A.load(k, i + 2UL, j1) * x2);
+               y(k, i + 3UL) -= sum(A.load(k, i + 3UL, j) * x1 + A.load(k, i + 3UL, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i    ] -= sum( A.load(i    ,j) * x1 );
-   //         y[i+1UL] -= sum( A.load(i+1UL,j) * x1 );
-   //         y[i+2UL] -= sum( A.load(i+2UL,j) * x1 );
-   //         y[i+3UL] -= sum( A.load(i+3UL,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) -= sum(A.load(k, i, j) * x1);
+               y(k, i + 1UL) -= sum(A.load(k, i + 1UL, j) * x1);
+               y(k, i + 2UL) -= sum(A.load(k, i + 2UL, j) * x1);
+               y(k, i + 3UL) -= sum(A.load(k, i + 3UL, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] -= A(i    ,j) * x[j];
-   //         y[i+1UL] -= A(i+1UL,j) * x[j];
-   //         y[i+2UL] -= A(i+2UL,j) * x[j];
-   //         y[i+3UL] -= A(i+3UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) -= A(k, i, j) * x[j];
+               y(k, i + 1UL) -= A(k, i + 1UL, j) * x[j];
+               y(k, i + 2UL) -= A(k, i + 2UL, j) * x[j];
+               y(k, i + 3UL) -= A(k, i + 3UL, j) * x[j];
+            }
+         }
 
-   //   for( ; (i+2UL) <= M; i+=2UL )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i+1UL : i+2UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         for (; (i + 2UL) <= M; i += 2UL)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i + 1UL : i + 2UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i    ] -= sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 + A.load(i    ,j2) * x3 + A.load(i    ,j3) * x4 );
-   //         y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 + A.load(i+1UL,j2) * x3 + A.load(i+1UL,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) -= sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+               y(k, i + 1UL) -= sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2 + A.load(k, i + 1UL, j2) * x3 + A.load(k, i + 1UL, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i    ] -= sum( A.load(i    ,j) * x1 + A.load(i    ,j1) * x2 );
-   //         y[i+1UL] -= sum( A.load(i+1UL,j) * x1 + A.load(i+1UL,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) -= sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+               y(k, i + 1UL) -= sum(A.load(k, i + 1UL, j) * x1 + A.load(k, i + 1UL, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i    ] -= sum( A.load(i    ,j) * x1 );
-   //         y[i+1UL] -= sum( A.load(i+1UL,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) -= sum(A.load(k, i, j) * x1);
+               y(k, i + 1UL) -= sum(A.load(k, i + 1UL, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i    ] -= A(i    ,j) * x[j];
-   //         y[i+1UL] -= A(i+1UL,j) * x[j];
-   //      }
-   //   }
+            for (; remainder && j < jend; ++j) {
+               y(k, i) -= A(k, i, j) * x[j];
+               y(k, i + 1UL) -= A(k, i + 1UL, j) * x[j];
+            }
+         }
 
-   //   if( i < M )
-   //   {
-   //      const size_t jbegin( ( IsUpper_v<TT1> )
-   //                           ?( ( IsStrictlyUpper_v<TT1> ? i+1UL : i ) & size_t(-SIMDSIZE) )
-   //                           :( 0UL ) );
-   //      const size_t jend( ( IsLower_v<TT1> )
-   //                         ?( IsStrictlyLower_v<TT1> ? i : i+1UL )
-   //                         :( N ) );
-   //      BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
+         if (i < M)
+         {
+            const size_t jbegin((IsUpper_v<TT1>)
+               ? ((IsStrictlyUpper_v<TT1> ? i + 1UL : i) & size_t(-SIMDSIZE))
+               : (0UL));
+            const size_t jend((IsLower_v<TT1>)
+               ? (IsStrictlyLower_v<TT1> ? i : i + 1UL)
+               : (N));
+            BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
 
-   //      const size_t jpos( remainder ? ( jend & size_t(-SIMDSIZE) ) : jend );
-   //      BLAZE_INTERNAL_ASSERT( !remainder || ( jend - ( jend % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+            const size_t jpos(remainder ? (jend & size_t(-SIMDSIZE)) : jend);
+            BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
 
-   //      size_t j( jbegin );
+            size_t j(jbegin);
 
-   //      for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
-   //         const size_t j1( j+SIMDSIZE     );
-   //         const size_t j2( j+SIMDSIZE*2UL );
-   //         const size_t j3( j+SIMDSIZE*3UL );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         const SIMDType x3( x.load(j2) );
-   //         const SIMDType x4( x.load(j3) );
-   //         y[i] -= sum( A.load(i,j) * x1 + A.load(i,j1) * x2 + A.load(i,j2) * x3 + A.load(i,j3) * x4 );
-   //      }
+            for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
+               const size_t j1(j + SIMDSIZE);
+               const size_t j2(j + SIMDSIZE * 2UL);
+               const size_t j3(j + SIMDSIZE * 3UL);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               const SIMDType x3(x.load(j2));
+               const SIMDType x4(x.load(j3));
+               y(k, i) -= sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2 + A.load(k, i, j2) * x3 + A.load(k, i, j3) * x4);
+            }
 
-   //      for( ; (j+SIMDSIZE) < jpos; j+=SIMDSIZE*2UL ) {
-   //         const size_t j1( j+SIMDSIZE );
-   //         const SIMDType x1( x.load(j ) );
-   //         const SIMDType x2( x.load(j1) );
-   //         y[i] -= sum( A.load(i,j) * x1 + A.load(i,j1) * x2 );
-   //      }
+            for (; (j + SIMDSIZE) < jpos; j += SIMDSIZE * 2UL) {
+               const size_t j1(j + SIMDSIZE);
+               const SIMDType x1(x.load(j));
+               const SIMDType x2(x.load(j1));
+               y(k, i) -= sum(A.load(k, i, j) * x1 + A.load(k, i, j1) * x2);
+            }
 
-   //      for( ; j<jpos; j+=SIMDSIZE ) {
-   //         const SIMDType x1( x.load(j) );
-   //         y[i] -= sum( A.load(i,j) * x1 );
-   //      }
+            for (; j < jpos; j += SIMDSIZE) {
+               const SIMDType x1(x.load(j));
+               y(k, i) -= sum(A.load(k, i, j) * x1);
+            }
 
-   //      for( ; remainder && j<jend; ++j ) {
-   //         y[i] -= A(i,j) * x[j];
-   //      }
-   //   }
-   //}
-   ///*! \endcond */
-   ////**********************************************************************************************
+            for (; remainder && j < jend; ++j) {
+               y(k, i) -= A(k, i, j) * x[j];
+            }
+         }
+      }
+   }
+   /*! \endcond */
+   //**********************************************************************************************
 
    //**BLAS-based subtraction assignment to dense matrices (default)********************************
    /*! \cond BLAZE_INTERNAL */
