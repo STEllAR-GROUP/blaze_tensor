@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/Views.h
-//  \brief Header file for the vector and matrix views
+//  \file blaze_tensor/math/constraints/QuatSlice.h
+//  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,26 +34,56 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_VIEWS_H_
-#define _BLAZE_TENSOR_MATH_VIEWS_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_QUATSLICE_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_QUATSLICE_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Views.h>
+#include <blaze_tensor/math/typetraits/IsQuatSlice.h>
 
-// #include <blaze_tensor/math/Column.h>
-// #include <blaze_tensor/math/Columns.h>
-// #include <blaze_tensor/math/Elements.h>
-#include <blaze_tensor/math/ColumnSlice.h>
-#include <blaze_tensor/math/PageSlice.h>
-#include <blaze_tensor/math/QuatSlice.h>
-#include <blaze_tensor/math/RowSlice.h>
-// #include <blaze_tensor/math/Rows.h>
-#include <blaze_tensor/math/Subtensor.h>
-#include <blaze_tensor/math/DilatedSubvector.h>
-#include <blaze_tensor/math/DilatedSubmatrix.h>
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  MUST_BE_QUATSLICE_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a quatslice type (i.e. a dense or sparse quatslice), a compilation
+// error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_QUATSLICE_TYPE(T) \
+   static_assert( ::blaze::IsQuatSlice_v<T>, "Non-quatslice type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_QUATSLICE_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a quatslice type (i.e. a dense or sparse quatslice), a compilation
+// error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_QUATSLICE_TYPE(T) \
+   static_assert( !::blaze::IsQuatSlice_v<T>, "QuatSlice type detected" )
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

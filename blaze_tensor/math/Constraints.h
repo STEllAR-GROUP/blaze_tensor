@@ -48,6 +48,7 @@
 #include <blaze_tensor/math/constraints/MatExpandExpr.h>
 #include <blaze_tensor/math/constraints/NumericTensor.h>
 #include <blaze_tensor/math/constraints/PageSlice.h>
+#include <blaze_tensor/math/constraints/QuatSlice.h>
 #include <blaze_tensor/math/constraints/RowSlice.h>
 #include <blaze_tensor/math/constraints/StorageOrder.h>
 #include <blaze_tensor/math/constraints/Subtensor.h>
