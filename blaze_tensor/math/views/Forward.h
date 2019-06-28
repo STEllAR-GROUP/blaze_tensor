@@ -47,12 +47,12 @@
 #include <blaze/math/views/submatrix/BaseTemplate.h>
 
 #include <blaze_tensor/math/expressions/Forward.h>
-#include <blaze_tensor/math/views/arrayslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/columnslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/dilatedsubmatrix/BaseTemplate.h>
 #include <blaze_tensor/math/views/dilatedsubvector/BaseTemplate.h>
 #include <blaze_tensor/math/views/dilatedsubtensor/BaseTemplate.h>
 #include <blaze_tensor/math/views/pageslice/BaseTemplate.h>
+#include <blaze_tensor/math/views/quatslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/rowslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/subtensor/BaseTemplate.h>
 
@@ -303,23 +303,24 @@ decltype(auto) rowslice( const Tensor<TT>&, size_t, RRAs... );
 template< typename TT, typename... RRAs >
 decltype(auto) rowslice( Tensor<TT>&&, size_t, RRAs... );
 
-template< size_t M, size_t I, typename AT, typename... RRAs >
-decltype(auto) arrayslice( Array<AT>&, RRAs... );
 
-template< size_t M, size_t I, typename AT, typename... RRAs >
-decltype(auto) arrayslice( const Array<AT>&, RRAs... );
+template< size_t I, typename AT, typename... RRAs >
+decltype(auto) quatslice( Array<AT>&, RRAs... );
 
-template< size_t M, size_t I, typename AT, typename... RRAs >
-decltype(auto) arrayslice( Array<AT>&&, RRAs... );
+template< size_t I, typename AT, typename... RRAs >
+decltype(auto) quatslice( const Array<AT>&, RRAs... );
 
-template< size_t M, typename AT, typename... RRAs >
-decltype(auto) arrayslice( Array<AT>&, size_t, RRAs... );
+template< size_t I, typename AT, typename... RRAs >
+decltype(auto) quatslice( Array<AT>&&, RRAs... );
 
-template< size_t M, typename AT, typename... RRAs >
-decltype(auto) arrayslice( const Array<AT>&, size_t, RRAs... );
+template< typename AT, typename... RRAs >
+decltype(auto) quatslice( Array<AT>&, size_t, RRAs... );
 
-template< size_t M, typename AT, typename... RRAs >
-decltype(auto) arrayslice( Array<AT>&&, size_t, RRAs... );
+template< typename AT, typename... RRAs >
+decltype(auto) quatslice( const Array<AT>&, size_t, RRAs... );
+
+template< typename AT, typename... RRAs >
+decltype(auto) quatslice( Array<AT>&&, size_t, RRAs... );
 
 // template< size_t I, size_t... Is, typename TT, typename... RCAs >
 // decltype(auto) pages( Tensor<TT>&, RCAs... );

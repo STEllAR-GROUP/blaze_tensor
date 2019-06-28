@@ -31,7 +31,6 @@
 # =================================================================================================
 
 set(subdirs
-   arrayslice
    columnslice
    customarray
    customtensor

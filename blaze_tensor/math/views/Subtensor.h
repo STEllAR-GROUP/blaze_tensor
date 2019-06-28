@@ -1757,8 +1757,6 @@ inline decltype(auto)
  {
     BLAZE_FUNCTION_TRACE;
 
-    using TT = RemoveReference_t< LeftOperand_t< MatrixType_t<MT> > >;
-
     const SubmatrixData<CSAs...> sm( args... );
 
     BLAZE_DECLTYPE_AUTO( left , (~matrix).leftOperand()  );

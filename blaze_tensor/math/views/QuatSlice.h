@@ -49,7 +49,7 @@
 //#include <blaze_tensor/math/expressions/TensExpandExpr.h>
 //#include <blaze_tensor/math/expressions/ArrEvalExpr.h>
 #include <blaze_tensor/math/expressions/ArrMapExpr.h>
-#include <blaze_tensor/math/expressions/ArrReduceExpr.h>
+//#include <blaze_tensor/math/expressions/ArrReduceExpr.h>
 #include <blaze_tensor/math/expressions/ArrScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/ArrScalarMultExpr.h>
 //#include <blaze_tensor/math/expressions/ArrSerialExpr.h>
@@ -905,7 +905,7 @@ inline bool isDefault( const QuatSlice<AT,CRAs...>& quatslice )
 {
    using blaze::isDefault;
 
-   for( size_t k=0UL; k<(~sm).pages(); ++k )
+   for( size_t k=0UL; k<quatslice.pages(); ++k )
       for( size_t i=0UL; i<quatslice.rows(); ++i )
          for( size_t j=0UL; j<quatslice.columns(); ++j )
             if( !isDefault<RF>( quatslice(k, i, j) ) )

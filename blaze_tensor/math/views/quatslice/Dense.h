@@ -1726,6 +1726,7 @@ inline auto QuatSlice<AT,CRAs...>::assign( const DenseTensor<AT2>& rhs )
    constexpr bool remainder( !IsPadded_v<AT> || !IsPadded_v<AT2> );
 
    const size_t cols( columns() );
+   const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
 
    for( size_t k=0UL; k<pages(); ++k )
    {
@@ -1733,7 +1734,7 @@ inline auto QuatSlice<AT,CRAs...>::assign( const DenseTensor<AT2>& rhs )
       {
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<MT2> right((~rhs).begin(i, k));
+         ConstIterator_t<AT2> right((~rhs).begin(i, k));
 
          if (useStreaming && cols > (cacheSize / (sizeof(ElementType) * 3UL)) && !(~rhs).isAliased(&quaternion_))
          {
@@ -1831,6 +1832,7 @@ inline auto QuatSlice<AT,CRAs...>::addAssign( const DenseTensor<AT2>& rhs )
    constexpr bool remainder( !IsPadded_v<AT> || !IsPadded_v<AT2> );
 
    const size_t cols( columns() );
+   const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
 
    for( size_t k=0UL; k<pages(); ++k )
    {
@@ -1838,7 +1840,7 @@ inline auto QuatSlice<AT,CRAs...>::addAssign( const DenseTensor<AT2>& rhs )
       {
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<MT2> right((~rhs).begin(i, k));
+         ConstIterator_t<AT2> right((~rhs).begin(i, k));
 
          for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
             left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -1924,6 +1926,7 @@ inline auto QuatSlice<AT,CRAs...>::subAssign( const DenseTensor<AT2>& rhs )
    constexpr bool remainder( !IsPadded_v<AT> || !IsPadded_v<AT2> );
 
    const size_t cols( columns() );
+   const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
 
    for( size_t k=0UL; k<pages(); ++k )
    {
@@ -1931,7 +1934,7 @@ inline auto QuatSlice<AT,CRAs...>::subAssign( const DenseTensor<AT2>& rhs )
       {
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<MT2> right((~rhs).begin(i, k));
+         ConstIterator_t<AT2> right((~rhs).begin(i, k));
 
          for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
             left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -2017,6 +2020,7 @@ inline auto QuatSlice<AT,CSAs...>::schurAssign( const DenseTensor<AT2>& rhs )
    constexpr bool remainder( !IsPadded_v<AT> || !IsPadded_v<AT2> );
 
    const size_t cols( columns() );
+   const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
 
    for( size_t k=0UL; k<pages(); ++k )
    {
@@ -2024,7 +2028,7 @@ inline auto QuatSlice<AT,CSAs...>::schurAssign( const DenseTensor<AT2>& rhs )
       {
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<MT2> right((~rhs).begin(i, k));
+         ConstIterator_t<AT2> right((~rhs).begin(i, k));
 
          for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
             left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;

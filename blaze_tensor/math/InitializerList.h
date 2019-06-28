@@ -42,6 +42,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/InitializerList.h>
+#include <array>
 
 namespace blaze {
 

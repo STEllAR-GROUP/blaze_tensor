@@ -483,32 +483,32 @@ class CustomArray
    template< typename MT > inline CustomArray& operator-=( const Array<MT>& rhs );
    template< typename MT > inline CustomArray& operator%=( const Array<MT>& rhs );
 
-   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
-   inline ArraySlice& operator= ( const Vector<MT, TF>& m );
-   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
-   inline ArraySlice& operator+=( const Vector<MT, TF>& m );
-   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
-   inline ArraySlice& operator-=( const Vector<MT, TF>& m );
-   template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
-   inline ArraySlice& operator%=( const Vector<MT, TF>& m );
+   //template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   //inline ArraySlice& operator= ( const Vector<MT, TF>& m );
+   //template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   //inline ArraySlice& operator+=( const Vector<MT, TF>& m );
+   //template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   //inline ArraySlice& operator-=( const Vector<MT, TF>& m );
+   //template< typename MT, bool TF, size_t M = N, typename = EnableIf_t< M == 1 > >
+   //inline ArraySlice& operator%=( const Vector<MT, TF>& m );
 
-   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
-   inline ArraySlice& operator= ( const Matrix<MT, SO>& m );
-   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
-   inline ArraySlice& operator+=( const Matrix<MT, SO>& m );
-   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
-   inline ArraySlice& operator-=( const Matrix<MT, SO>& m );
-   template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
-   inline ArraySlice& operator%=( const Matrix<MT, SO>& m );
+   //template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   //inline ArraySlice& operator= ( const Matrix<MT, SO>& m );
+   //template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   //inline ArraySlice& operator+=( const Matrix<MT, SO>& m );
+   //template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   //inline ArraySlice& operator-=( const Matrix<MT, SO>& m );
+   //template< typename MT, bool SO, size_t M = N, typename = EnableIf_t< M == 2 > >
+   //inline ArraySlice& operator%=( const Matrix<MT, SO>& m );
 
-   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
-   inline ArraySlice& operator= ( const Tensor<MT>& m );
-   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
-   inline ArraySlice& operator+=( const Tensor<MT>& m );
-   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
-   inline ArraySlice& operator-=( const Tensor<MT>& m );
-   template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
-   inline ArraySlice& operator%=( const Tensor<MT>& m );
+   //template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   //inline ArraySlice& operator= ( const Tensor<MT>& m );
+   //template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   //inline ArraySlice& operator+=( const Tensor<MT>& m );
+   //template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   //inline ArraySlice& operator-=( const Tensor<MT>& m );
+   //template< typename MT, size_t M = N, typename = EnableIf_t< M == 3 > >
+   //inline ArraySlice& operator%=( const Tensor<MT>& m );
    //@}
    //**********************************************************************************************
 
