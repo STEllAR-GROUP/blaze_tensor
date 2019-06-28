@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/smp/DenseArray.h
-//  \brief Header file for the dense array SMP implementation
+//  \file blaze_tensor/math/constraints/QuatSliceTensor.h
+//  \brief Constraint on the transpose flag of tensor types
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,25 +34,56 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_SMP_DENSEARRAY_H_
-#define _BLAZE_TENSOR_MATH_SMP_DENSEARRAY_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_QUATSLICETENSOR_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_QUATSLICETENSOR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/SMP.h>
-#include <blaze/system/SMP.h>
+#include <blaze_tensor/math/typetraits/IsQuatSliceTensor.h>
 
-#if BLAZE_HPX_PARALLEL_MODE
-#include <blaze_tensor/math/smp/hpx/DenseArray.h>
-#elif BLAZE_CPP_THREADS_PARALLEL_MODE || BLAZE_BOOST_THREADS_PARALLEL_MODE
-//#include <blaze_tensor/math/smp/threads/DenseArray.h>
-#elif BLAZE_OPENMP_PARALLEL_MODE
-#include <blaze_tensor/math/smp/openmp/DenseArray.h>
-#else
-#include <blaze_tensor/math/smp/default/DenseArray.h>
-#endif
+
+namespace blaze {
+
+//=================================================================================================
+//
+//  MUST_BE_QUATSLICE_TENSOR_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is not a row dense or sparse tensor type (i.e. a tensor type
+// whose transposition flag is set to blaze::rowMajor) a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_BE_QUATSLICE_TENSOR_TYPE(T) \
+   static_assert( ::blaze::IsQuatSliceTensor_v<T>, "Non-row-major tensor type detected" )
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  MUST_NOT_BE_QUATSLICE_TENSOR_TYPE CONSTRAINT
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Constraint on the data type.
+// \ingroup math_constraints
+//
+// In case the given data type \a T is a row dense or sparse tensor type (i.e. a tensor type
+// whose transposition flag is set to blaze::rowMajor) a compilation error is created.
+*/
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_QUATSLICE_TENSOR_TYPE(T) \
+   static_assert( !::blaze::IsQuatSliceTensor_v<T>, "QuatSlice tensor type detected" )
+//*************************************************************************************************
+
+} // namespace blaze
 
 #endif

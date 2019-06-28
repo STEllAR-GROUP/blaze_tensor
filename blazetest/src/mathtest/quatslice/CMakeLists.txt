@@ -30,33 +30,14 @@
 #
 # =================================================================================================
 
-set(subdirs
-   arrayslice
-   columnslice
-   customarray
-   customtensor
-   densearray
-   densetensor
-   dilatedsubmatrix
-   dilatedsubvector
-   dilatedsubtensor
-   dmatexpand
-   dmatravel
-   dtensdmatschur
-   dtensdtensadd
-   dtensdvecmult
-   dtensravel
-   dynamictensor
-   initializertensor
-   pageslice
-   quatslice
-   rowslice
-   statictensor
-   subtensor
-   uniformtensor
+set(category QuatSlice)
+
+set(tests
+    IncludeTest
 )
 
-foreach(dir ${subdirs})
-   add_subdirectory(${dir})
+foreach(test ${tests})
+   add_blaze_tensor_test(${category}${test}
+      SOURCES ${test}.cpp
+      FOLDER "Tests/${category}")
 endforeach()
-

@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/Constraints.h
-//  \brief Header file for all mathematical constraints
+//  \file src/mathtest/quatslice/IncludeTest.cpp
+//  \brief Source file for the QuatSlice include test
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,32 +34,29 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_H_
-#define _BLAZE_TENSOR_MATH_CONSTRAINTS_H_
-
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/math/Constraints.h>
+#include <blaze_tensor/math/QuatSlice.h>
 
-#include <blaze_tensor/math/constraints/ColumnSlice.h>
-#include <blaze_tensor/math/constraints/DenseTensor.h>
-#include <blaze_tensor/math/constraints/MatExpandExpr.h>
-#include <blaze_tensor/math/constraints/NumericTensor.h>
-#include <blaze_tensor/math/constraints/PageSlice.h>
-#include <blaze_tensor/math/constraints/QuatSlice.h>
-#include <blaze_tensor/math/constraints/RowSlice.h>
-#include <blaze_tensor/math/constraints/StorageOrder.h>
-#include <blaze_tensor/math/constraints/Subtensor.h>
-#include <blaze_tensor/math/constraints/TensMapExpr.h>
-#include <blaze_tensor/math/constraints/TensScalarDivExpr.h>
-#include <blaze_tensor/math/constraints/TensScalarMultExpr.h>
-#include <blaze_tensor/math/constraints/TensTensAddExpr.h>
-#include <blaze_tensor/math/constraints/TensTensMapExpr.h>
-#include <blaze_tensor/math/constraints/TensTensMultExpr.h>
-#include <blaze_tensor/math/constraints/TensTensSubExpr.h>
-#include <blaze_tensor/math/constraints/Tensor.h>
 
+
+
+//=================================================================================================
+//
+//  MAIN FUNCTION
+//
+//=================================================================================================
+
+#if defined(BLAZE_USE_HPX_THREADS)
+#include <hpx/hpx_main.hpp>
 #endif
+
+//*************************************************************************************************
+int main()
+{
+   return EXIT_SUCCESS;
+}
+//*************************************************************************************************
