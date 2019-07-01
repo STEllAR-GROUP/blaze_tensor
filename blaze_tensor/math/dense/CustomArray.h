@@ -517,6 +517,10 @@ class CustomArray
    //@{
    inline static constexpr size_t num_dimensions() noexcept { return N; }
    inline constexpr std::array< size_t, N > const& dimensions() const noexcept;
+   inline size_t quats() const noexcept;
+   inline size_t pages() const noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
    template < size_t Dim >
    inline size_t dimension() const noexcept;
    inline size_t spacing() const noexcept;
@@ -1006,6 +1010,84 @@ inline constexpr std::array< size_t, N > const& CustomArray<N,Type,AF,PF,RT>::di
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Calculate index of first element in given row.
+//
+// \param value The index-array for the row access.
+// \return The index of the first element in the given row.
+//
+// This function calculates the overall index of the first of the give row
+*/
+template< size_t N       // The dimensionality of the array
+        , typename Type  // Data type of the array
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomArray<N,Type,AF,PF,RT>::quats() const noexcept
+{
+   return dims_[3];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculate index of first element in given row.
+//
+// \param value The index-array for the row access.
+// \return The index of the first element in the given row.
+//
+// This function calculates the overall index of the first of the give row
+*/
+template< size_t N       // The dimensionality of the array
+        , typename Type  // Data type of the array
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomArray<N,Type,AF,PF,RT>::pages() const noexcept
+{
+   return dims_[2];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculate index of first element in given row.
+//
+// \param value The index-array for the row access.
+// \return The index of the first element in the given row.
+//
+// This function calculates the overall index of the first of the give row
+*/
+template< size_t N       // The dimensionality of the array
+        , typename Type  // Data type of the array
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomArray<N,Type,AF,PF,RT>::rows() const noexcept
+{
+   return dims_[1];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculate index of first element in given row.
+//
+// \param value The index-array for the row access.
+// \return The index of the first element in the given row.
+//
+// This function calculates the overall index of the first of the give row
+*/
+template< size_t N       // The dimensionality of the array
+        , typename Type  // Data type of the array
+        , bool AF        // Alignment flag
+        , bool PF        // Padding flag
+        , typename RT >  // Result type
+inline size_t CustomArray<N,Type,AF,PF,RT>::columns() const noexcept
+{
+   return dims_[0];
+}
+//*************************************************************************************************
 
 
 //=================================================================================================

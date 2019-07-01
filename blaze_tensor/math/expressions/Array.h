@@ -703,6 +703,9 @@ template< typename MT >
 BLAZE_ALWAYS_INLINE constexpr size_t pages( const Array<MT>& array ) noexcept;
 
 template< typename MT >
+BLAZE_ALWAYS_INLINE constexpr size_t quats( const Array<MT>& array ) noexcept;
+
+template< typename MT >
 BLAZE_ALWAYS_INLINE constexpr size_t size( const Array<MT>& array ) noexcept;
 
 template< typename MT >
@@ -924,6 +927,21 @@ template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE constexpr size_t pages( const Array<MT>& array ) noexcept
 {
    return (~array).pages();
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Returns the current number of quats of the array.
+// \ingroup array
+//
+// \param array The given array.
+// \return The number of quats of the array.
+*/
+template< typename MT > // Type of the array
+BLAZE_ALWAYS_INLINE constexpr size_t quats( const Array<MT>& array ) noexcept
+{
+   return (~array).quats();
 }
 //*************************************************************************************************
 

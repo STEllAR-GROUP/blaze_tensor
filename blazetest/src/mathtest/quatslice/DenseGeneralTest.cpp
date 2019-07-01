@@ -74,18 +74,17 @@ namespace quatslice {
 // \exception std::runtime_error Operation error detected.
 */
 DenseGeneralTest::DenseGeneralTest()
-   //: quat_ ( 3UL, 2UL, 5UL, 4UL )
+   : quat_ ( 3UL, 2UL, 5UL, 4UL )
 {
    testConstructors();
-   //testAssignment();
-   //testAddAssign();
-   //testSubAssign();
-   //testMultAssign();
-   //testSchurAssign();
-   //testScaling();
-   //testFunctionCall();
-   //testAt();
-   //testIterator();
+   testAssignment();
+   testAddAssign();
+   testSubAssign();
+   testSchurAssign();
+   testScaling();
+   testFunctionCall();
+   testAt();
+   testIterator();
    //testNonZeros();
    //testReset();
    //testClear();
@@ -123,116 +122,140 @@ void DenseGeneralTest::testConstructors()
    // quaternion tests
    //=====================================================================================
 
-   //{
-   //   test_ = "QuatSlice constructor (0x0)";
+   {
+      test_ = "QuatSlice constructor (0x0x0)";
 
-   //   AT quat;
+      AT quat;
 
-   //   // 0th quaternion quatslice
-   //   try {
-   //      blaze::quatslice( quat, 0UL );
-   //   }
-   //   catch( std::invalid_argument& ) {}
-   //}
+      // 0th quaternion quatslice
+      try {
+         blaze::quatslice( quat, 0UL, 0UL );
+      }
+      catch( std::invalid_argument& ) {}
+   }
 
-   //{
-   //   test_ = "QuatSlice constructor (2x0)";
+   {
+      test_ = "QuatSlice constructor (3x4x0)";
 
-   //   AT quat( 2UL, 2UL, 0UL );
+      AT quat( 2UL, 3UL, 4UL, 0UL );
 
-   //   // 0th quaternion quatslice
-   //   {
-   //      RT quatslice0 = blaze::quatslice( quat, 0UL );
+      // 0th quaternion quatslice
+      {
+         RT quatslice0 = blaze::quatslice( quat, 0UL );
 
-   //      checkRows    ( quatslice0, 2UL );
-   //      checkColumns ( quatslice0, 0UL );
-   //      checkCapacity( quatslice0, 0UL );
-   //      checkNonZeros( quatslice0, 0UL );
-   //   }
+         checkPages   ( quatslice0, 3UL );
+         checkRows    ( quatslice0, 4UL );
+         checkColumns ( quatslice0, 0UL );
+         checkCapacity( quatslice0, 0UL );
+         checkNonZeros( quatslice0, 0UL );
+      }
 
-   //   // 1st quaternion quatslice
-   //   {
-   //      RT quatslice1 = blaze::quatslice( quat, 1UL );
+      // 1st quaternion quatslice
+      {
+         RT quatslice1 = blaze::quatslice( quat, 1UL );
 
-   //      checkRows    ( quatslice1, 2UL );
-   //      checkColumns ( quatslice1, 0UL );
-   //      checkCapacity( quatslice1, 0UL );
-   //      checkNonZeros( quatslice1, 0UL );
-   //   }
+         checkPages   ( quatslice1, 3UL );
+         checkRows    ( quatslice1, 4UL );
+         checkColumns ( quatslice1, 0UL );
+         checkCapacity( quatslice1, 0UL );
+         checkNonZeros( quatslice1, 0UL );
+      }
 
-   //   // 2nd quaternion quatslice
-   //   try {
-   //      blaze::quatslice( quat, 2UL );
-   //   }
-   //   catch( std::invalid_argument& ) {}
-   //}
+      // 2nd quaternion quatslice
+      try {
+         blaze::quatslice( quat, 2UL );
+      }
+      catch( std::invalid_argument& ) {}
+   }
 
-   //{
-   //   test_ = "QuatSlice constructor (5x4)";
+   {
+      test_ = "QuatSlice constructor (2x5x4)";
 
-   //   initialize();
+      initialize();
 
-   //   // 0th quaternion quatslice
-   //   {
-   //      RT quatslice0 = blaze::quatslice( quat_, 0UL );
+      // 0th quaternion quatslice
+      {
+         RT quatslice0 = blaze::quatslice( quat_, 0UL );
 
-   //      checkRows    ( quatslice0, 5UL );
-   //      checkColumns ( quatslice0, 4UL );
-   //      checkCapacity( quatslice0, 20UL );
-   //      checkNonZeros( quatslice0, 10UL );
+         checkPages   ( quatslice0, 2UL  );
+         checkRows    ( quatslice0, 5UL  );
+         checkColumns ( quatslice0, 4UL  );
+         checkCapacity( quatslice0, 40UL );
+         checkNonZeros( quatslice0, 20UL );
 
-   //      if( quatslice0(0,0) !=  0 || quatslice0(0,1) !=  0 || quatslice0(0,2) !=  0 || quatslice0(0,3) !=  0 ||
-   //          quatslice0(1,0) !=  0 || quatslice0(1,1) !=  1 || quatslice0(1,2) !=  0 || quatslice0(1,3) !=  0 ||
-   //          quatslice0(2,0) != -2 || quatslice0(2,1) !=  0 || quatslice0(2,2) != -3 || quatslice0(2,3) !=  0 ||
-   //          quatslice0(3,0) !=  0 || quatslice0(3,1) !=  4 || quatslice0(3,2) !=  5 || quatslice0(3,3) != -6 ||
-   //          quatslice0(4,0) !=  7 || quatslice0(4,1) != -8 || quatslice0(4,2) !=  9 || quatslice0(4,3) != 10 ) {
-   //         std::ostringstream oss;
-   //         oss << " Test: " << test_ << "\n"
-   //             << " Error: Setup of 0th dense quatslice failed\n"
-   //             << " Details:\n"
-   //             << "   Result:\n" << quatslice0 << "\n"
-   //             << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
-   //         throw std::runtime_error( oss.str() );
-   //      }
-   //   }
+         if( quatslice0(0,0,0) !=  0 || quatslice0(0,0,1) !=  0 || quatslice0(0,0,2) !=  0 || quatslice0(0,0,3) !=  0 ||
+             quatslice0(0,1,0) !=  0 || quatslice0(0,1,1) !=  1 || quatslice0(0,1,2) !=  0 || quatslice0(0,1,3) !=  0 ||
+             quatslice0(0,2,0) != -2 || quatslice0(0,2,1) !=  0 || quatslice0(0,2,2) != -3 || quatslice0(0,2,3) !=  0 ||
+             quatslice0(0,3,0) !=  0 || quatslice0(0,3,1) !=  4 || quatslice0(0,3,2) !=  5 || quatslice0(0,3,3) != -6 ||
+             quatslice0(0,4,0) !=  7 || quatslice0(0,4,1) != -8 || quatslice0(0,4,2) !=  9 || quatslice0(0,4,3) != 10 ||
+             quatslice0(1,0,0) !=  0 || quatslice0(1,0,1) !=  0 || quatslice0(1,0,2) !=  0 || quatslice0(1,0,3) !=  0 ||
+             quatslice0(1,1,0) !=  0 || quatslice0(1,1,1) !=  1 || quatslice0(1,1,2) !=  0 || quatslice0(1,1,3) !=  0 ||
+             quatslice0(1,2,0) != -2 || quatslice0(1,2,1) !=  0 || quatslice0(1,2,2) != 13 || quatslice0(1,2,3) !=  0 ||
+             quatslice0(1,3,0) !=  0 || quatslice0(1,3,1) !=  4 || quatslice0(1,3,2) !=  5 || quatslice0(1,3,3) != -6 ||
+             quatslice0(1,4,0) !=  7 || quatslice0(1,4,1) != -8 || quatslice0(1,4,2) !=  9 || quatslice0(1,4,3) != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of 0th dense quatslice failed\n"
+                << " Details:\n"
+                << "   Result:\n"
+                << quatslice0 << "\n"
+                << "   Expected result:\n((   0   0   0   0 ) (     0   1   0  "
+                   " 0 ) (    -2   0     -3   0 ) (     0   4   5     -6 ) (   "
+                   "  7     -8   9     10 ) )\n((   0   0   0   0 ) (     0   "
+                   "1   0   0 ) (    -2   0     13   0 ) (     0   4   5     "
+                   "-6 ) (     7     -8   9     10 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
-   //   // 1st quaternion quatslice
-   //   {
-   //      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+      // 1st quaternion quatslice
+      {
+         RT quatslice1 = blaze::quatslice( quat_, 1UL );
 
-   //      checkRows    ( quatslice1, 5UL );
-   //      checkColumns ( quatslice1, 4UL );
-   //      checkCapacity( quatslice1, 20UL );
-   //      checkNonZeros( quatslice1, 10UL );
+         checkPages   ( quatslice1, 2UL  );
+         checkRows    ( quatslice1, 5UL );
+         checkColumns ( quatslice1, 4UL );
+         checkCapacity( quatslice1, 40UL );
+         checkNonZeros( quatslice1, 20UL );
 
-   //      if( quatslice1(0,0) !=  0 || quatslice1(0,1) !=  0 || quatslice1(0,2) !=  0 || quatslice1(0,3) !=  0 ||
-   //          quatslice1(1,0) !=  0 || quatslice1(1,1) !=  1 || quatslice1(1,2) !=  0 || quatslice1(1,3) !=  0 ||
-   //          quatslice1(2,0) != -2 || quatslice1(2,1) !=  0 || quatslice1(2,2) != -3 || quatslice1(2,3) !=  0 ||
-   //          quatslice1(3,0) !=  0 || quatslice1(3,1) !=  4 || quatslice1(3,2) !=  5 || quatslice1(3,3) != -6 ||
-   //          quatslice1(4,0) !=  7 || quatslice1(4,1) != -8 || quatslice1(4,2) !=  9 || quatslice1(4,3) != 10 ) {
-   //         std::ostringstream oss;
-   //         oss << " Test: " << test_ << "\n"
-   //             << " Error: Setup of 1st dense quatslice failed\n"
-   //             << " Details:\n"
-   //             << "   Result:\n" << quatslice1 << "\n"
-   //             << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
-   //         throw std::runtime_error( oss.str() );
-   //      }
-   //   }
+         if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+             quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+             quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+             quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+             quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+             quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+             quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+             quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+             quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  5 || quatslice1(1,3,3) != 33 ||
+             quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -8 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of 1st dense quatslice failed\n"
+                << " Details:\n"
+                << "   Result:\n"
+                << quatslice1 << "\n"
+                << "   Expected result:\n((     0   1   0   0 ) (     0   0   "
+                   "0   0 ) (     0     12     -3   0 ) (     0   4   5     -6 "
+                   ") (     7     28   9     10 ) )\n((     0   0   0   0 ) (  "
+                   "   0   1   0   0 ) (    -2   0   0   0 ) (    -3   4   5   "
+                   "  33 ) (     7     -8   9     11 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 
-   //   // 2nd quaternion quatslice
-   //   try {
-   //      RT quatslice2 = blaze::quatslice( quat_, 2UL );
+      // 3rd quaternion quatslice
+      try {
+         RT quatslice3 = blaze::quatslice( quat_, 3UL );
 
-   //      std::ostringstream oss;
-   //      oss << " Test: " << test_ << "\n"
-   //          << " Error: Out-of-bound quat access succeeded\n"
-   //          << " Details:\n"
-   //          << "   Result:\n" << quatslice2 << "\n";
-   //      throw std::runtime_error( oss.str() );
-   //   }
-   //   catch( std::invalid_argument& ) {}
-   //}
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Out-of-bound quat access succeeded\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice3 << "\n";
+         throw std::runtime_error( oss.str() );
+      }
+      catch( std::invalid_argument& ) {}
+   }
 }
 //*************************************************************************************************
 
@@ -245,3305 +268,2705 @@ void DenseGeneralTest::testConstructors()
 // This function performs a test of all assignment operators of the QuatSlice specialization.
 // In case an error is detected, a \a std::runtime_error exception is thrown.
 */
-//void DenseGeneralTest::testAssignment()
-//{
-//   //=====================================================================================
-//   // homogeneous assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "QuatSlice homogeneous assignment";
-//
-//      initialize();
-//
-//      RT quatslice1 = blaze::quatslice( quat_, 1UL );
-//      quatslice1 = 8;
-//
-//
-//      checkRows    ( quatslice1, 5UL );
-//      checkColumns ( quatslice1, 4UL );
-//      checkCapacity( quatslice1, 20UL );
-//      checkNonZeros( quatslice1, 20UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 30UL );
-//
-//      if( quatslice1(0,0) != 8 || quatslice1(0,1) != 8 || quatslice1(0,2) != 8 || quatslice1(0,3) != 8 ||
-//          quatslice1(1,0) != 8 || quatslice1(1,1) != 8 || quatslice1(1,2) != 8 || quatslice1(1,3) != 8 ||
-//          quatslice1(2,0) != 8 || quatslice1(2,1) != 8 || quatslice1(2,2) != 8 || quatslice1(2,3) != 8 ||
-//          quatslice1(3,0) != 8 || quatslice1(3,1) != 8 || quatslice1(3,2) != 8 || quatslice1(3,3) != 8 ||
-//          quatslice1(4,0) != 8 || quatslice1(4,1) != 8 || quatslice1(4,2) != 8 || quatslice1(4,3) != 8 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice1 << "\n"
-//             << "   Expected result:\n(( 8 8 8 8 )\n( 8 8 8 8 )\n( 8 8 8 8 )\n( 8 8 8 8 )\n( 8 8 8 8 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  8 || quat_(1,0,1) !=  8 || quat_(1,0,2) !=  8 || quat_(1,0,3) !=  8 ||
-//          quat_(1,1,0) !=  8 || quat_(1,1,1) !=  8 || quat_(1,1,2) !=  8 || quat_(1,1,3) !=  8 ||
-//          quat_(1,2,0) !=  8 || quat_(1,2,1) !=  8 || quat_(1,2,2) !=  8 || quat_(1,2,3) !=  8 ||
-//          quat_(1,3,0) !=  8 || quat_(1,3,1) !=  8 || quat_(1,3,2) !=  8 || quat_(1,3,3) !=  8 ||
-//          quat_(1,4,0) !=  8 || quat_(1,4,1) !=  8 || quat_(1,4,2) !=  8 || quat_(1,4,3) !=  8 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0  0  0  0 )\n"
-//                                     " (  0  1  0  0 )\n"
-//                                     " ( -2  0 -3  0 )\n"
-//                                     " (  0  4  5 -6 )\n"
-//                                     " (  7 -8  9 10 ))\n"
-//                                     "((  8  8  8  8 )\n"
-//                                     " (  8  8  8  8 )\n"
-//                                     " (  8  8  8  8 )\n"
-//                                     " (  8  8  8  8 )\n"
-//                                     " (  8  8  8  8 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // list assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "initializer list assignment (complete list)";
-//
-//      initialize();
-//
-//      RT quatslice3 = blaze::quatslice( quat_, 1UL );
-//      quatslice3 = {
-//          {1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}, {1, 2, 3, 4}
-//      };
-//
-//      checkRows    ( quatslice3, 5UL );
-//      checkColumns ( quatslice3, 4UL );
-//      checkCapacity( quatslice3, 20UL );
-//      checkNonZeros( quatslice3, 20UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 30UL );
-//
-//      if( quatslice3(0,0) != 1 || quatslice3(0,1) != 2 || quatslice3(0,2) != 3 || quatslice3(0,3) != 4 ||
-//          quatslice3(1,0) != 1 || quatslice3(1,1) != 2 || quatslice3(1,2) != 3 || quatslice3(1,3) != 4 ||
-//          quatslice3(2,0) != 1 || quatslice3(2,1) != 2 || quatslice3(2,2) != 3 || quatslice3(2,3) != 4 ||
-//          quatslice3(3,0) != 1 || quatslice3(3,1) != 2 || quatslice3(3,2) != 3 || quatslice3(3,3) != 4 ||
-//          quatslice3(4,0) != 1 || quatslice3(4,1) != 2 || quatslice3(4,2) != 3 || quatslice3(4,3) != 4 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice3 << "\n"
-//             << "   Expected result:\n(( 1 2 3 4 )\n( 1 2 3 4 )\n( 1 2 3 4 )\n( 1 2 3 4 )\n( 1 2 3 4 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  1 || quat_(1,0,1) !=  2 || quat_(1,0,2) !=  3 || quat_(1,0,3) !=  4 ||
-//          quat_(1,1,0) !=  1 || quat_(1,1,1) !=  2 || quat_(1,1,2) !=  3 || quat_(1,1,3) !=  4 ||
-//          quat_(1,2,0) !=  1 || quat_(1,2,1) !=  2 || quat_(1,2,2) !=  3 || quat_(1,2,3) !=  4 ||
-//          quat_(1,3,0) !=  1 || quat_(1,3,1) !=  2 || quat_(1,3,2) !=  3 || quat_(1,3,3) !=  4 ||
-//          quat_(1,4,0) !=  1 || quat_(1,4,1) !=  2 || quat_(1,4,2) !=  3 || quat_(1,4,3) !=  4 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0  0  0  0 )\n"
-//                                     " (  0  1  0  0 )\n"
-//                                     " ( -2  0 -3  0 )\n"
-//                                     " (  0  4  5 -6 )\n"
-//                                     " (  7 -8  9 10 ))\n"
-//                                     "((  1  2  3  4 )\n"
-//                                     " (  1  2  3  4 )\n"
-//                                     " (  1  2  3  4 )\n"
-//                                     " (  1  2  3  4 )\n"
-//                                     " (  1  2  3  4 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "initializer list assignment (incomplete list)";
-//
-//      initialize();
-//
-//      RT quatslice3 = blaze::quatslice( quat_, 1UL );
-//      quatslice3 = {{1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}};
-//
-//      checkRows    ( quatslice3, 5UL );
-//      checkColumns ( quatslice3, 4UL );
-//      checkCapacity( quatslice3, 20UL );
-//      checkNonZeros( quatslice3, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice3(0,0) != 1 || quatslice3(0,1) != 2 || quatslice3(0,2) != 0 || quatslice3(0,3) != 0 ||
-//          quatslice3(1,0) != 1 || quatslice3(1,1) != 2 || quatslice3(1,2) != 0 || quatslice3(1,3) != 0 ||
-//          quatslice3(2,0) != 1 || quatslice3(2,1) != 2 || quatslice3(2,2) != 0 || quatslice3(2,3) != 0 ||
-//          quatslice3(3,0) != 1 || quatslice3(3,1) != 2 || quatslice3(3,2) != 0 || quatslice3(3,3) != 0 ||
-//          quatslice3(4,0) != 1 || quatslice3(4,1) != 2 || quatslice3(4,2) != 0 || quatslice3(4,3) != 0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice3 << "\n"
-//             << "   Expected result:\n(( 1 2 0 0 )\n( 1 2 0 0 )\n( 1 2 0 0 )\n( 1 2 0 0 )\n( 1 2 0 0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  1 || quat_(1,0,1) !=  2 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  1 || quat_(1,1,1) !=  2 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) !=  1 || quat_(1,2,1) !=  2 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  1 || quat_(1,3,1) !=  2 || quat_(1,3,2) !=  0 || quat_(1,3,3) !=  0 ||
-//          quat_(1,4,0) !=  1 || quat_(1,4,1) !=  2 || quat_(1,4,2) !=  0 || quat_(1,4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0  0  0  0 )\n"
-//                                     " (  0  1  0  0 )\n"
-//                                     " ( -2  0 -3  0 )\n"
-//                                     " (  0  4  5 -6 )\n"
-//                                     " (  7 -8  9 10 ))\n"
-//                                     "((  1  2  0  0 )\n"
-//                                     " (  1  2  0  0 )\n"
-//                                     " (  1  2  0  0 )\n"
-//                                     " (  1  2  0  0 )\n"
-//                                     " (  1  2  0  0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // copy assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "QuatSlice copy assignment";
-//
-//      initialize();
-//
-//      RT quatslice1 = blaze::quatslice( quat_, 0UL );
-//      quatslice1 = 0;
-//      quatslice1 = blaze::quatslice( quat_, 1UL );
-//
-//      checkRows    ( quatslice1, 5UL );
-//      checkColumns ( quatslice1, 4UL );
-//      checkCapacity( quatslice1, 20UL );
-//      checkNonZeros( quatslice1, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice1(0,0) !=  0 || quatslice1(0,1) !=  0 || quatslice1(0,2) !=  0 || quatslice1(0,3) !=  0 ||
-//          quatslice1(1,0) !=  0 || quatslice1(1,1) !=  1 || quatslice1(1,2) !=  0 || quatslice1(1,3) !=  0 ||
-//          quatslice1(2,0) != -2 || quatslice1(2,1) !=  0 || quatslice1(2,2) != -3 || quatslice1(2,3) !=  0 ||
-//          quatslice1(3,0) !=  0 || quatslice1(3,1) !=  4 || quatslice1(3,2) !=  5 || quatslice1(3,3) != -6 ||
-//          quatslice1(4,0) !=  7 || quatslice1(4,1) != -8 || quatslice1(4,2) !=  9 || quatslice1(4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice1 << "\n"
-//             << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -2 || quat_(1,2,1) !=  0 || quat_(1,2,2) != -3 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) != -8 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0  0  0  0 )\n"
-//                                     " (  0  1  0  0 )\n"
-//                                     " ( -2  0 -3  0 )\n"
-//                                     " (  0  4  5 -6 )\n"
-//                                     " (  7 -8  9 10 ))\n"
-//                                     "((  0  0  0  0 )\n"
-//                                     " (  0  1  0  0 )\n"
-//                                     " ( -2  0 -3  0 )\n"
-//                                     " (  0  4  5 -6 )\n"
-//                                     " (  7 -8  9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // dense quaternion assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "dense quaternion assignment (mixed type)";
-//
-//      initialize();
-//
-//      RT quatslice1 = blaze::quatslice( quat_, 1UL );
-//
-//      blaze::DynamicMatrix<int, blaze::rowMajor> m1;
-//      m1 = {{0, 8, 0, 9}, {0}, {0}, {0}, {0}};
-//
-//      quatslice1 = m1;
-//
-//      checkRows    ( quatslice1, 5UL );
-//      checkColumns ( quatslice1, 4UL );
-//      checkCapacity( quatslice1, 20UL );
-//      checkNonZeros( quatslice1, 2UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 12UL );
-//
-//      if( quatslice1(0,0) !=  0 || quatslice1(0,1) !=  8 || quatslice1(0,2) !=  0 || quatslice1(0,3) !=  9 ||
-//          quatslice1(1,0) !=  0 || quatslice1(1,1) !=  0 || quatslice1(1,2) !=  0 || quatslice1(1,3) !=  0 ||
-//          quatslice1(2,0) !=  0 || quatslice1(2,1) !=  0 || quatslice1(2,2) !=  0 || quatslice1(2,3) !=  0 ||
-//          quatslice1(3,0) !=  0 || quatslice1(3,1) !=  0 || quatslice1(3,2) !=  0 || quatslice1(3,3) !=  0 ||
-//          quatslice1(4,0) !=  0 || quatslice1(4,1) !=  0 || quatslice1(4,2) !=  0 || quatslice1(4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice1 << "\n"
-//             << "   Expected result:\n(( 0 8 0 9 )\n(0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  8 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  9 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  0 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) !=  0 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  0 || quat_(1,3,2) !=  0 || quat_(1,3,3) !=  0 ||
-//          quat_(1,4,0) !=  0 || quat_(1,4,1) !=  0 || quat_(1,4,2) !=  0 || quat_(1,4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0  0  0  0 )\n"
-//                                     " (  0  1  0  0 )\n"
-//                                     " ( -2  0 -3  0 )\n"
-//                                     " (  0  4  5 -6 )\n"
-//                                     " (  7 -8  9 10 ))\n"
-//                                     "((  0  9  0  9 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion assignment (mixed type)";
-//
-//      initialize();
-//
-//      RT quatslice1 = blaze::quatslice( quat_, 1UL );
-//
-//      blaze::DynamicMatrix<int, blaze::columnMajor> m1;
-//      m1 = {{0, 8, 0, 9}, {0}, {0}, {0}, {0}};
-//
-//      quatslice1 = m1;
-//
-//      checkRows    ( quatslice1, 5UL );
-//      checkColumns ( quatslice1, 4UL );
-//      checkCapacity( quatslice1, 20UL );
-//      checkNonZeros( quatslice1, 2UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 12UL );
-//
-//      if( quatslice1(0,0) !=  0 || quatslice1(0,1) !=  8 || quatslice1(0,2) !=  0 || quatslice1(0,3) !=  9 ||
-//          quatslice1(1,0) !=  0 || quatslice1(1,1) !=  0 || quatslice1(1,2) !=  0 || quatslice1(1,3) !=  0 ||
-//          quatslice1(2,0) !=  0 || quatslice1(2,1) !=  0 || quatslice1(2,2) !=  0 || quatslice1(2,3) !=  0 ||
-//          quatslice1(3,0) !=  0 || quatslice1(3,1) !=  0 || quatslice1(3,2) !=  0 || quatslice1(3,3) !=  0 ||
-//          quatslice1(4,0) !=  0 || quatslice1(4,1) !=  0 || quatslice1(4,2) !=  0 || quatslice1(4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice1 << "\n"
-//             << "   Expected result:\n(( 0 8 0 9 )\n(0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  8 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  9 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  0 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) !=  0 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  0 || quat_(1,3,2) !=  0 || quat_(1,3,3) !=  0 ||
-//          quat_(1,4,0) !=  0 || quat_(1,4,1) !=  0 || quat_(1,4,2) !=  0 || quat_(1,4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0  0  0  0 )\n"
-//                                     " (  0  1  0  0 )\n"
-//                                     " ( -2  0 -3  0 )\n"
-//                                     " (  0  4  5 -6 )\n"
-//                                     " (  7 -8  9 10 ))\n"
-//                                     "((  0  9  0  9 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion assignment (aligned/padded)";
-//
-//      using blaze::aligned;
-//      using blaze::padded;
-//      using blaze::rowMajor;
-//
-//      initialize();
-//
-//      RT quatslice1 = blaze::quatslice( quat_, 1UL );
-//
-//      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
-//      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 80UL ) );
-//      AlignedPadded m1( memory.get(), 5UL, 4UL, 16UL );
-//      m1 = 0;
-//      m1(0,0) = 0;
-//      m1(0,1) = 8;
-//      m1(0,2) = 0;
-//      m1(0,3) = 9;
-//
-//      quatslice1 = m1;
-//
-//      checkRows    ( quatslice1, 5UL );
-//      checkColumns ( quatslice1, 4UL );
-//      checkCapacity( quatslice1, 20UL );
-//      checkNonZeros( quatslice1, 2UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 12UL );
-//
-//      if( quatslice1(0,0) !=  0 || quatslice1(0,1) !=  8 || quatslice1(0,2) !=  0 || quatslice1(0,3) !=  9 ||
-//          quatslice1(1,0) !=  0 || quatslice1(1,1) !=  0 || quatslice1(1,2) !=  0 || quatslice1(1,3) !=  0 ||
-//          quatslice1(2,0) !=  0 || quatslice1(2,1) !=  0 || quatslice1(2,2) !=  0 || quatslice1(2,3) !=  0 ||
-//          quatslice1(3,0) !=  0 || quatslice1(3,1) !=  0 || quatslice1(3,2) !=  0 || quatslice1(3,3) !=  0 ||
-//          quatslice1(4,0) !=  0 || quatslice1(4,1) !=  0 || quatslice1(4,2) !=  0 || quatslice1(4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice1 << "\n"
-//             << "   Expected result:\n(( 0 8 0 9 )\n(0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  8 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  9 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  0 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) !=  0 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  0 || quat_(1,3,2) !=  0 || quat_(1,3,3) !=  0 ||
-//          quat_(1,4,0) !=  0 || quat_(1,4,1) !=  0 || quat_(1,4,2) !=  0 || quat_(1,4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0  0  0  0 )\n"
-//                                     " (  0  1  0  0 )\n"
-//                                     " ( -2  0 -3  0 )\n"
-//                                     " (  0  4  5 -6 )\n"
-//                                     " (  7 -8  9 10 ))\n"
-//                                     "((  0  9  0  9 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion assignment (unaligned/unpadded)";
-//
-//      using blaze::unaligned;
-//      using blaze::unpadded;
-//      using blaze::rowMajor;
-//
-//      initialize();
-//
-//      RT quatslice1 = blaze::quatslice( quat_, 1UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[21] );
-//      UnalignedUnpadded m1( memory.get()+1UL, 5UL, 4UL );
-//      m1 = 0;
-//      m1(0,0) = 0;
-//      m1(0,1) = 8;
-//      m1(0,2) = 0;
-//      m1(0,3) = 9;
-//
-//      quatslice1 = m1;
-//
-//      checkRows    ( quatslice1, 5UL );
-//      checkColumns ( quatslice1, 4UL );
-//      checkCapacity( quatslice1, 20UL );
-//      checkNonZeros( quatslice1, 2UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 12UL );
-//
-//      if( quatslice1(0,0) !=  0 || quatslice1(0,1) !=  8 || quatslice1(0,2) !=  0 || quatslice1(0,3) !=  9 ||
-//          quatslice1(1,0) !=  0 || quatslice1(1,1) !=  0 || quatslice1(1,2) !=  0 || quatslice1(1,3) !=  0 ||
-//          quatslice1(2,0) !=  0 || quatslice1(2,1) !=  0 || quatslice1(2,2) !=  0 || quatslice1(2,3) !=  0 ||
-//          quatslice1(3,0) !=  0 || quatslice1(3,1) !=  0 || quatslice1(3,2) !=  0 || quatslice1(3,3) !=  0 ||
-//          quatslice1(4,0) !=  0 || quatslice1(4,1) !=  0 || quatslice1(4,2) !=  0 || quatslice1(4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice1 << "\n"
-//             << "   Expected result:\n(( 0 8 0 9 )\n(0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  8 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  9 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  0 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) !=  0 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  0 || quat_(1,3,2) !=  0 || quat_(1,3,3) !=  0 ||
-//          quat_(1,4,0) !=  0 || quat_(1,4,1) !=  0 || quat_(1,4,2) !=  0 || quat_(1,4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0  0  0  0 )\n"
-//                                     " (  0  1  0  0 )\n"
-//                                     " ( -2  0 -3  0 )\n"
-//                                     " (  0  4  5 -6 )\n"
-//                                     " (  7 -8  9 10 ))\n"
-//                                     "((  0  9  0  9 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 )\n"
-//                                     " (  0  0  0  0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//}
-////*************************************************************************************************
-//
-//
-////*************************************************************************************************
-///*!\brief Test of the QuatSlice addition assignment operators.
-////
-//// \return void
-//// \exception std::runtime_error Error detected.
-////
-//// This function performs a test of the addition assignment operators of the QuatSlice specialization.
-//// In case an error is detected, a \a std::runtime_error exception is thrown.
-//*/
-//void DenseGeneralTest::testAddAssign()
-//{
-//   //=====================================================================================
-//   // QuatSlice addition assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "QuatSlice addition assignment";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//      quatslice2 += blaze::quatslice( quat_, 0UL );
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   2 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -4 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -6 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=   8 || quatslice2(3,2) != 10 || quatslice2(3,3) != -12 ||
-//          quatslice2(4,0) != 14 || quatslice2(4,1) != -16 || quatslice2(4,2) != 18 || quatslice2(4,3) !=  20 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//                << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   2 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) != -4 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -6 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   8 || quat_(1,3,2) != 10 || quat_(1,3,3) != -12 ||
-//          quat_(1,4,0) != 14 || quat_(1,4,1) != -16 || quat_(1,4,2) != 18 || quat_(1,4,3) !=  20 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   2   0   0 )\n"
-//                                     " ( -4   0  -6   0 )\n"
-//                                     " (  0   8  10 -12 )\n"
-//                                     " ( 14 -16  18  20 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // dense quaternion addition assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "dense quaternion addition assignment (mixed type)";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//
-//      const blaze::DynamicMatrix<short, blaze::rowMajor> vec{{0, 0, 0, 0},
-//                                                             {0, 1, 0, 0},
-//                                                             {-2, 0, -3, 0},
-//                                                             {0, 4, 5, -6},
-//                                                             {7, -8, 9, 10}};
-//
-//      quatslice2 += vec;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   2 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -4 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -6 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=   8 || quatslice2(3,2) != 10 || quatslice2(3,3) != -12 ||
-//          quatslice2(4,0) != 14 || quatslice2(4,1) != -16 || quatslice2(4,2) != 18 || quatslice2(4,3) !=  20 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   2 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) != -4 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -6 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   8 || quat_(1,3,2) != 10 || quat_(1,3,3) != -12 ||
-//          quat_(1,4,0) != 14 || quat_(1,4,1) != -16 || quat_(1,4,2) != 18 || quat_(1,4,3) !=  20 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   2   0   0 )\n"
-//                                     " ( -4   0  -6   0 )\n"
-//                                     " (  0   8  10 -12 )\n"
-//                                     " ( 14 -16  18  20 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion addition assignment (aligned/padded)";
-//
-//      using blaze::aligned;
-//      using blaze::padded;
-//      using blaze::rowMajor;
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//
-//      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
-//      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 80UL ) );
-//      AlignedPadded m( memory.get(), 5UL, 4UL, 16UL );
-//      m(0,0) =  0;
-//      m(0,1) =  0;
-//      m(0,2) =  0;
-//      m(0,3) =  0;
-//      m(1,0) =  0;
-//      m(1,1) =  1;
-//      m(1,2) =  0;
-//      m(1,3) =  0;
-//      m(2,0) = -2;
-//      m(2,1) =  0;
-//      m(2,2) = -3;
-//      m(2,3) =  0;
-//      m(3,0) =  0;
-//      m(3,1) =  4;
-//      m(3,2) =  5;
-//      m(3,3) = -6;
-//      m(4,0) =  7;
-//      m(4,1) = -8;
-//      m(4,2) =  9;
-//      m(4,3) = 10;
-//
-//      quatslice2 += m;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   2 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -4 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -6 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=   8 || quatslice2(3,2) != 10 || quatslice2(3,3) != -12 ||
-//          quatslice2(4,0) != 14 || quatslice2(4,1) != -16 || quatslice2(4,2) != 18 || quatslice2(4,3) !=  20 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   2 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) != -4 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -6 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   8 || quat_(1,3,2) != 10 || quat_(1,3,3) != -12 ||
-//          quat_(1,4,0) != 14 || quat_(1,4,1) != -16 || quat_(1,4,2) != 18 || quat_(1,4,3) !=  20 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   2   0   0 )\n"
-//                                     " ( -4   0  -6   0 )\n"
-//                                     " (  0   8  10 -12 )\n"
-//                                     " ( 14 -16  18  20 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion addition assignment (unaligned/unpadded)";
-//
-//      using blaze::unaligned;
-//      using blaze::unpadded;
-//      using blaze::rowMajor;
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[21] );
-//      UnalignedUnpadded m( memory.get()+1UL, 5UL, 4UL );
-//      m(0,0) =  0;
-//      m(0,1) =  0;
-//      m(0,2) =  0;
-//      m(0,3) =  0;
-//      m(1,0) =  0;
-//      m(1,1) =  1;
-//      m(1,2) =  0;
-//      m(1,3) =  0;
-//      m(2,0) = -2;
-//      m(2,1) =  0;
-//      m(2,2) = -3;
-//      m(2,3) =  0;
-//      m(3,0) =  0;
-//      m(3,1) =  4;
-//      m(3,2) =  5;
-//      m(3,3) = -6;
-//      m(4,0) =  7;
-//      m(4,1) = -8;
-//      m(4,2) =  9;
-//      m(4,3) = 10;
-//
-//      quatslice2 += m;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   2 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -4 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -6 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=   8 || quatslice2(3,2) != 10 || quatslice2(3,3) != -12 ||
-//          quatslice2(4,0) != 14 || quatslice2(4,1) != -16 || quatslice2(4,2) != 18 || quatslice2(4,3) !=  20 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   2 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) != -4 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -6 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   8 || quat_(1,3,2) != 10 || quat_(1,3,3) != -12 ||
-//          quat_(1,4,0) != 14 || quat_(1,4,1) != -16 || quat_(1,4,2) != 18 || quat_(1,4,3) !=  20 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Addition assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   2   0   0 )\n"
-//                                     " ( -4   0  -6   0 )\n"
-//                                     " (  0   8  10 -12 )\n"
-//                                     " ( 14 -16  18  20 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//}
-////*************************************************************************************************
-//
-//
-////*************************************************************************************************
-///*!\brief Test of the QuatSlice subtraction assignment operators.
-////
-//// \return void
-//// \exception std::runtime_error Error detected.
-////
-//// This function performs a test of the subtraction assignment operators of the QuatSlice
-//// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-//*/
-//void DenseGeneralTest::testSubAssign()
-//{
-//   //=====================================================================================
-//   // QuatSlice subtraction assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "QuatSlice subtraction assignment";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//      quatslice2 -= blaze::quatslice( quat_, 0UL );
-//
-//      checkRows    ( quatslice2,  5UL );
-//      checkColumns ( quatslice2,  4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2,  0UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 10UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=  0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=  0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=  0 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=  0 ||
-//          quatslice2(2,0) !=  0 || quatslice2(2,1) !=  0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=  0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=  0 || quatslice2(3,2) !=  0 || quatslice2(3,3) !=  0 ||
-//          quatslice2(4,0) !=  0 || quatslice2(4,1) !=  0 || quatslice2(4,2) !=  0 || quatslice2(4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   0 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) !=  0 || quat_(1,2,1) !=   0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   0 || quat_(1,3,2) !=  0 || quat_(1,3,3) !=   0 ||
-//          quat_(1,4,0) !=  0 || quat_(1,4,1) !=   0 || quat_(1,4,2) !=  0 || quat_(1,4,3) !=   0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // dense quaternion subtraction assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "dense quaternion subtraction assignment (mixed type)";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//
-//      const blaze::DynamicMatrix<short, blaze::rowMajor> vec{{0, 0, 0, 0},
-//                                                             {0, 1, 0, 0},
-//                                                             {-2, 0, -3, 0},
-//                                                             {0, 4, 5, -6},
-//                                                             {7, -8, 9, 10}};
-//
-//      quatslice2 -= vec;
-//
-//      checkRows    ( quatslice2,  5UL );
-//      checkColumns ( quatslice2,  4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2,  0UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 10UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=  0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=  0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=  0 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=  0 ||
-//          quatslice2(2,0) !=  0 || quatslice2(2,1) !=  0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=  0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=  0 || quatslice2(3,2) !=  0 || quatslice2(3,3) !=  0 ||
-//          quatslice2(4,0) !=  0 || quatslice2(4,1) !=  0 || quatslice2(4,2) !=  0 || quatslice2(4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   0 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) !=  0 || quat_(1,2,1) !=   0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   0 || quat_(1,3,2) !=  0 || quat_(1,3,3) !=   0 ||
-//          quat_(1,4,0) !=  0 || quat_(1,4,1) !=   0 || quat_(1,4,2) !=  0 || quat_(1,4,3) !=   0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 ))\n";
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion subtraction assignment (aligned/padded)";
-//
-//      using blaze::aligned;
-//      using blaze::padded;
-//      using blaze::rowMajor;
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//
-//      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
-//      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 80UL ) );
-//      AlignedPadded m( memory.get(), 5UL, 4UL, 16UL );
-//      m(0,0) =  0;
-//      m(0,1) =  0;
-//      m(0,2) =  0;
-//      m(0,3) =  0;
-//      m(1,0) =  0;
-//      m(1,1) =  1;
-//      m(1,2) =  0;
-//      m(1,3) =  0;
-//      m(2,0) = -2;
-//      m(2,1) =  0;
-//      m(2,2) = -3;
-//      m(2,3) =  0;
-//      m(3,0) =  0;
-//      m(3,1) =  4;
-//      m(3,2) =  5;
-//      m(3,3) = -6;
-//      m(4,0) =  7;
-//      m(4,1) = -8;
-//      m(4,2) =  9;
-//      m(4,3) = 10;
-//
-//      quatslice2 -= m;
-//
-//      checkRows    ( quatslice2,  5UL );
-//      checkColumns ( quatslice2,  4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2,  0UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 10UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=  0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=  0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=  0 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=  0 ||
-//          quatslice2(2,0) !=  0 || quatslice2(2,1) !=  0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=  0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=  0 || quatslice2(3,2) !=  0 || quatslice2(3,3) !=  0 ||
-//          quatslice2(4,0) !=  0 || quatslice2(4,1) !=  0 || quatslice2(4,2) !=  0 || quatslice2(4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   0 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) !=  0 || quat_(1,2,1) !=   0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   0 || quat_(1,3,2) !=  0 || quat_(1,3,3) !=   0 ||
-//          quat_(1,4,0) !=  0 || quat_(1,4,1) !=   0 || quat_(1,4,2) !=  0 || quat_(1,4,3) !=   0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion subtraction assignment (unaligned/unpadded)";
-//
-//      using blaze::unaligned;
-//      using blaze::unpadded;
-//      using blaze::rowMajor;
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[21] );
-//      UnalignedUnpadded m( memory.get()+1UL, 5UL, 4UL );
-//      m(0,0) =  0;
-//      m(0,1) =  0;
-//      m(0,2) =  0;
-//      m(0,3) =  0;
-//      m(1,0) =  0;
-//      m(1,1) =  1;
-//      m(1,2) =  0;
-//      m(1,3) =  0;
-//      m(2,0) = -2;
-//      m(2,1) =  0;
-//      m(2,2) = -3;
-//      m(2,3) =  0;
-//      m(3,0) =  0;
-//      m(3,1) =  4;
-//      m(3,2) =  5;
-//      m(3,3) = -6;
-//      m(4,0) =  7;
-//      m(4,1) = -8;
-//      m(4,2) =  9;
-//      m(4,3) = 10;
-//
-//      quatslice2 -= m;
-//
-//      checkRows    ( quatslice2,  5UL );
-//      checkColumns ( quatslice2,  4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2,  0UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 10UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=  0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=  0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=  0 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=  0 ||
-//          quatslice2(2,0) !=  0 || quatslice2(2,1) !=  0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=  0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=  0 || quatslice2(3,2) !=  0 || quatslice2(3,3) !=  0 ||
-//          quatslice2(4,0) !=  0 || quatslice2(4,1) !=  0 || quatslice2(4,2) !=  0 || quatslice2(4,3) !=  0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 )\n( 0 0 0 0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   0 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) !=  0 || quat_(1,2,1) !=   0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   0 || quat_(1,3,2) !=  0 || quat_(1,3,3) !=   0 ||
-//          quat_(1,4,0) !=  0 || quat_(1,4,1) !=   0 || quat_(1,4,2) !=  0 || quat_(1,4,3) !=   0 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Subtraction assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 )\n"
-//                                     " (  0   0   0   0 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//}
-////*************************************************************************************************
-//
-//
-////*************************************************************************************************
-///*!\brief Test of the QuatSlice multiplication assignment operators.
-////
-//// \return void
-//// \exception std::runtime_error Error detected.
-////
-//// This function performs a test of the multiplication assignment operators of the QuatSlice
-//// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-//*/
-//void DenseGeneralTest::testMultAssign()
-//{
-//   //=====================================================================================
-//   // QuatSlice multiplication assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "QuatSlice multiplication assignment";
-//
-//      initialize();
-//
-//      blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-//                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
-//
-//      RT quatslice2 = blaze::quatslice( m, 1UL );
-//      quatslice2 *= blaze::quatslice( m, 0UL );
-//
-//      checkRows    ( quatslice2, 3UL );
-//      checkColumns ( quatslice2, 3UL );
-//      checkCapacity( quatslice2, 9UL );
-//      checkNonZeros( quatslice2, 9UL );
-//      checkRows    ( m,  3UL );
-//      checkColumns ( m,  3UL );
-//      checkQuats   ( m,  2UL );
-//      checkNonZeros( m, 18UL );
-//
-//      if( quatslice2(0,0) != 90 || quatslice2(0,1) != 114 || quatslice2(0,2) != 138 ||
-//          quatslice2(1,0) != 54 || quatslice2(1,1) !=  69 || quatslice2(1,2) !=  84 ||
-//          quatslice2(2,0) != 18 || quatslice2(2,1) !=  24 || quatslice2(2,2) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 90 114 138 )\n( 54 69 84 )\n( 18 24 30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( m(0,0,0) !=  1 || m(0,0,1) !=   2 || m(0,0,2) !=   3 ||
-//          m(0,1,0) !=  4 || m(0,1,1) !=   5 || m(0,1,2) !=   6 ||
-//          m(0,2,0) !=  7 || m(0,2,1) !=   8 || m(0,2,2) !=   9 ||
-//          m(1,0,0) != 90 || m(1,0,1) != 114 || m(1,0,2) != 138 ||
-//          m(1,1,0) != 54 || m(1,1,1) !=  69 || m(1,1,2) !=  84 ||
-//          m(1,2,0) != 18 || m(1,2,1) !=  24 || m(1,2,2) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((   1   2   3 )\n"
-//                                     " (   4   5   6 )\n"
-//                                     " (   7   8   9 ))\n"
-//                                     "((  90 114 138 )\n"
-//                                     " (  54  69  84 )\n"
-//                                     " (  18  24  30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // dense quaternion multiplication assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "dense quaternion multiplication assignment (mixed type)";
-//
-//      initialize();
-//
-//      blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-//                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
-//
-//      RT quatslice2 = blaze::quatslice( m, 1UL );
-//
-//      const blaze::DynamicMatrix<short, blaze::rowMajor> m1{
-//          {1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-//
-//      quatslice2 *= m1;
-//
-//      checkRows    ( quatslice2, 3UL );
-//      checkColumns ( quatslice2, 3UL );
-//      checkCapacity( quatslice2, 9UL );
-//      checkNonZeros( quatslice2, 9UL );
-//      checkRows    ( m,  3UL );
-//      checkColumns ( m,  3UL );
-//      checkQuats   ( m,  2UL );
-//      checkNonZeros( m, 18UL );
-//
-//      if( quatslice2(0,0) != 90 || quatslice2(0,1) != 114 || quatslice2(0,2) != 138 ||
-//          quatslice2(1,0) != 54 || quatslice2(1,1) !=  69 || quatslice2(1,2) !=  84 ||
-//          quatslice2(2,0) != 18 || quatslice2(2,1) !=  24 || quatslice2(2,2) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 90 114 138 )\n( 54 69 84 )\n( 18 24 30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( m(0,0,0) !=  1 || m(0,0,1) !=   2 || m(0,0,2) !=   3 ||
-//          m(0,1,0) !=  4 || m(0,1,1) !=   5 || m(0,1,2) !=   6 ||
-//          m(0,2,0) !=  7 || m(0,2,1) !=   8 || m(0,2,2) !=   9 ||
-//          m(1,0,0) != 90 || m(1,0,1) != 114 || m(1,0,2) != 138 ||
-//          m(1,1,0) != 54 || m(1,1,1) !=  69 || m(1,1,2) !=  84 ||
-//          m(1,2,0) != 18 || m(1,2,1) !=  24 || m(1,2,2) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((   1   2   3 )\n"
-//                                     " (   4   5   6 )\n"
-//                                     " (   7   8   9 ))\n"
-//                                     "((  90 114 138 )\n"
-//                                     " (  54  69  84 )\n"
-//                                     " (  18  24  30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion multiplication assignment (aligned/padded)";
-//
-//      using blaze::aligned;
-//      using blaze::padded;
-//      using blaze::rowMajor;
-//
-//      blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-//                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
-//
-//      RT quatslice2 = blaze::quatslice( m, 1UL );
-//
-//
-//      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
-//      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//      AlignedPadded m1( memory.get(), 3UL, 3UL, 16UL );
-//      m1(0,0) = 1;
-//      m1(0,1) = 2;
-//      m1(0,2) = 3;
-//      m1(1,0) = 4;
-//      m1(1,1) = 5;
-//      m1(1,2) = 6;
-//      m1(2,0) = 7;
-//      m1(2,1) = 8;
-//      m1(2,2) = 9;
-//
-//      quatslice2 *= m1;
-//
-//      checkRows    ( quatslice2, 3UL );
-//      checkColumns ( quatslice2, 3UL );
-//      checkCapacity( quatslice2, 9UL );
-//      checkNonZeros( quatslice2, 9UL );
-//      checkRows    ( m,  3UL );
-//      checkColumns ( m,  3UL );
-//      checkQuats   ( m,  2UL );
-//      checkNonZeros( m, 18UL );
-//
-//      if( quatslice2(0,0) != 90 || quatslice2(0,1) != 114 || quatslice2(0,2) != 138 ||
-//          quatslice2(1,0) != 54 || quatslice2(1,1) !=  69 || quatslice2(1,2) !=  84 ||
-//          quatslice2(2,0) != 18 || quatslice2(2,1) !=  24 || quatslice2(2,2) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 90 114 138 )\n( 54 69 84 )\n( 18 24 30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( m(0,0,0) !=  1 || m(0,0,1) !=   2 || m(0,0,2) !=   3 ||
-//          m(0,1,0) !=  4 || m(0,1,1) !=   5 || m(0,1,2) !=   6 ||
-//          m(0,2,0) !=  7 || m(0,2,1) !=   8 || m(0,2,2) !=   9 ||
-//          m(1,0,0) != 90 || m(1,0,1) != 114 || m(1,0,2) != 138 ||
-//          m(1,1,0) != 54 || m(1,1,1) !=  69 || m(1,1,2) !=  84 ||
-//          m(1,2,0) != 18 || m(1,2,1) !=  24 || m(1,2,2) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((   1   2   3 )\n"
-//                                     " (   4   5   6 )\n"
-//                                     " (   7   8   9 ))\n"
-//                                     "((  90 114 138 )\n"
-//                                     " (  54  69  84 )\n"
-//                                     " (  18  24  30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion multiplication assignment (unaligned/unpadded)";
-//
-//      using blaze::unaligned;
-//      using blaze::unpadded;
-//      using blaze::rowMajor;
-//
-//      blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-//                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
-//
-//      RT quatslice2 = blaze::quatslice( m, 1UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[10] );
-//      UnalignedUnpadded m1( memory.get()+1UL, 3UL , 3UL);
-//      m1(0,0) = 1;
-//      m1(0,1) = 2;
-//      m1(0,2) = 3;
-//      m1(1,0) = 4;
-//      m1(1,1) = 5;
-//      m1(1,2) = 6;
-//      m1(2,0) = 7;
-//      m1(2,1) = 8;
-//      m1(2,2) = 9;
-//
-//      quatslice2 *= m1;
-//
-//      checkRows    ( quatslice2, 3UL );
-//      checkColumns ( quatslice2, 3UL );
-//      checkCapacity( quatslice2, 9UL );
-//      checkNonZeros( quatslice2, 9UL );
-//      checkRows    ( m,  3UL );
-//      checkColumns ( m,  3UL );
-//      checkQuats   ( m,  2UL );
-//      checkNonZeros( m, 18UL );
-//
-//      if( quatslice2(0,0) != 90 || quatslice2(0,1) != 114 || quatslice2(0,2) != 138 ||
-//          quatslice2(1,0) != 54 || quatslice2(1,1) !=  69 || quatslice2(1,2) !=  84 ||
-//          quatslice2(2,0) != 18 || quatslice2(2,1) !=  24 || quatslice2(2,2) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 90 114 138 )\n( 54 69 84 )\n( 18 24 30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( m(0,0,0) !=  1 || m(0,0,1) !=   2 || m(0,0,2) !=   3 ||
-//          m(0,1,0) !=  4 || m(0,1,1) !=   5 || m(0,1,2) !=   6 ||
-//          m(0,2,0) !=  7 || m(0,2,1) !=   8 || m(0,2,2) !=   9 ||
-//          m(1,0,0) != 90 || m(1,0,1) != 114 || m(1,0,2) != 138 ||
-//          m(1,1,0) != 54 || m(1,1,1) !=  69 || m(1,1,2) !=  84 ||
-//          m(1,2,0) != 18 || m(1,2,1) !=  24 || m(1,2,2) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((   1   2   3 )\n"
-//                                     " (   4   5   6 )\n"
-//                                     " (   7   8   9 ))\n"
-//                                     "((  90 114 138 )\n"
-//                                     " (  54  69  84 )\n"
-//                                     " (  18  24  30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//}
-////*************************************************************************************************
-//
-//
-////*************************************************************************************************
-///*!\brief Test of the QuatSlice Schur product assignment operators.
-////
-//// \return void
-//// \exception std::runtime_error Error detected.
-////
-//// This function performs a test of the Schur product assignment operators of the QuatSlice
-//// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-//*/
-//void DenseGeneralTest::testSchurAssign()
-//{
-//   //=====================================================================================
-//   // QuatSlice Schur product assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "QuatSlice Schur product assignment";
-//
-//      blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-//                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
-//
-//      RT quatslice2 = blaze::quatslice( m, 1UL );
-//      quatslice2 %= blaze::quatslice( m, 0UL );
-//
-//      checkRows    ( quatslice2, 3UL );
-//      checkColumns ( quatslice2, 3UL );
-//      checkCapacity( quatslice2, 9UL );
-//      checkNonZeros( quatslice2, 9UL );
-//      checkRows    ( m,  3UL );
-//      checkColumns ( m,  3UL );
-//      checkQuats   ( m,  2UL );
-//      checkNonZeros( m, 18UL );
-//
-//      if( quatslice2(0,0) !=  9 || quatslice2(0,1) != 16 || quatslice2(0,2) != 21 ||
-//          quatslice2(1,0) != 24 || quatslice2(1,1) != 25 || quatslice2(1,2) != 24 ||
-//          quatslice2(2,0) != 21 || quatslice2(2,1) != 16 || quatslice2(2,2) !=  9 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( m(0,0,0) !=  1 || m(0,0,1) !=  2 || m(0,0,2) !=  3 ||
-//          m(0,1,0) !=  4 || m(0,1,1) !=  5 || m(0,1,2) !=  6 ||
-//          m(0,2,0) !=  7 || m(0,2,1) !=  8 || m(0,2,2) !=  9 ||
-//          m(1,0,0) !=  9 || m(1,0,1) != 16 || m(1,0,2) != 21 ||
-//          m(1,1,0) != 24 || m(1,1,1) != 25 || m(1,1,2) != 24 ||
-//          m(1,2,0) != 21 || m(1,2,1) != 16 || m(1,2,2) !=  9 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  1  2  3 )\n"
-//                                     " (  4  5  6 )\n"
-//                                     " (  7  8  9 ))\n"
-//                                     "((  9 16 21 )\n"
-//                                     " ( 24 25 24 )\n"
-//                                     " ( 21 16  9 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // dense quaternion Schur product assignment
-//   //=====================================================================================
-//
-//   {
-//      test_ = "dense vector Schur product assignment (mixed type)";
-//
-//      blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-//                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
-//
-//      RT quatslice2 = blaze::quatslice( m, 1UL );
-//
-//      const blaze::DynamicMatrix<short, blaze::rowMajor> m1{
-//          {1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-//
-//      quatslice2 %= m1;
-//
-//      checkRows    ( quatslice2, 3UL );
-//      checkColumns ( quatslice2, 3UL );
-//      checkCapacity( quatslice2, 9UL );
-//      checkNonZeros( quatslice2, 9UL );
-//      checkRows    ( m,  3UL );
-//      checkColumns ( m,  3UL );
-//      checkQuats   ( m,  2UL );
-//      checkNonZeros( m, 18UL );
-//
-//      if( quatslice2(0,0) !=  9 || quatslice2(0,1) != 16 || quatslice2(0,2) != 21 ||
-//          quatslice2(1,0) != 24 || quatslice2(1,1) != 25 || quatslice2(1,2) != 24 ||
-//          quatslice2(2,0) != 21 || quatslice2(2,1) != 16 || quatslice2(2,2) !=  9 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( m(0,0,0) !=  1 || m(0,0,1) !=  2 || m(0,0,2) !=  3 ||
-//          m(0,1,0) !=  4 || m(0,1,1) !=  5 || m(0,1,2) !=  6 ||
-//          m(0,2,0) !=  7 || m(0,2,1) !=  8 || m(0,2,2) !=  9 ||
-//          m(1,0,0) !=  9 || m(1,0,1) != 16 || m(1,0,2) != 21 ||
-//          m(1,1,0) != 24 || m(1,1,1) != 25 || m(1,1,2) != 24 ||
-//          m(1,2,0) != 21 || m(1,2,1) != 16 || m(1,2,2) !=  9 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  1  2  3 )\n"
-//                                     " (  4  5  6 )\n"
-//                                     " (  7  8  9 ))\n"
-//                                     "((  9 16 21 )\n"
-//                                     " ( 24 25 24 )\n"
-//                                     " ( 21 16  9 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion Schur product assignment (aligned/padded)";
-//
-//      using blaze::aligned;
-//      using blaze::padded;
-//      using blaze::rowMajor;
-//
-//      blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-//                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
-//
-//      RT quatslice2 = blaze::quatslice( m, 1UL );
-//
-//      using AlignedPadded = blaze::CustomMatrix<int,aligned,padded,rowMajor>;
-//      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 48UL ) );
-//      AlignedPadded m1( memory.get(), 3UL, 3UL, 16UL );
-//      m1(0,0) = 1;
-//      m1(0,1) = 2;
-//      m1(0,2) = 3;
-//      m1(1,0) = 4;
-//      m1(1,1) = 5;
-//      m1(1,2) = 6;
-//      m1(2,0) = 7;
-//      m1(2,1) = 8;
-//      m1(2,2) = 9;
-//
-//      quatslice2 %= m1;
-//
-//      checkRows    ( quatslice2, 3UL );
-//      checkColumns ( quatslice2, 3UL );
-//      checkCapacity( quatslice2, 9UL );
-//      checkNonZeros( quatslice2, 9UL );
-//      checkRows    ( m,  3UL );
-//      checkColumns ( m,  3UL );
-//      checkQuats   ( m,  2UL );
-//      checkNonZeros( m, 18UL );
-//
-//      if( quatslice2(0,0) !=  9 || quatslice2(0,1) != 16 || quatslice2(0,2) != 21 ||
-//          quatslice2(1,0) != 24 || quatslice2(1,1) != 25 || quatslice2(1,2) != 24 ||
-//          quatslice2(2,0) != 21 || quatslice2(2,1) != 16 || quatslice2(2,2) !=  9 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( m(0,0,0) !=  1 || m(0,0,1) !=  2 || m(0,0,2) !=  3 ||
-//          m(0,1,0) !=  4 || m(0,1,1) !=  5 || m(0,1,2) !=  6 ||
-//          m(0,2,0) !=  7 || m(0,2,1) !=  8 || m(0,2,2) !=  9 ||
-//          m(1,0,0) !=  9 || m(1,0,1) != 16 || m(1,0,2) != 21 ||
-//          m(1,1,0) != 24 || m(1,1,1) != 25 || m(1,1,2) != 24 ||
-//          m(1,2,0) != 21 || m(1,2,1) != 16 || m(1,2,2) !=  9 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  1  2  3 )\n"
-//                                     " (  4  5  6 )\n"
-//                                     " (  7  8  9 ))\n"
-//                                     "((  9 16 21 )\n"
-//                                     " ( 24 25 24 )\n"
-//                                     " ( 21 16  9 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//   {
-//      test_ = "dense quaternion Schur product assignment (unaligned/unpadded)";
-//
-//      using blaze::unaligned;
-//      using blaze::unpadded;
-//      using blaze::rowMajor;
-//
-//      blaze::DynamicTensor<int> m{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
-//                                  {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
-//
-//      RT quatslice2 = blaze::quatslice( m, 1UL );
-//
-//      using UnalignedUnpadded = blaze::CustomMatrix<int,unaligned,unpadded,rowMajor>;
-//      std::unique_ptr<int[]> memory( new int[10] );
-//      UnalignedUnpadded m1( memory.get()+1UL, 3UL , 3UL);
-//      m1(0,0) = 1;
-//      m1(0,1) = 2;
-//      m1(0,2) = 3;
-//      m1(1,0) = 4;
-//      m1(1,1) = 5;
-//      m1(1,2) = 6;
-//      m1(2,0) = 7;
-//      m1(2,1) = 8;
-//      m1(2,2) = 9;
-//
-//      quatslice2 %= m1;
-//
-//      checkRows    ( quatslice2, 3UL );
-//      checkColumns ( quatslice2, 3UL );
-//      checkCapacity( quatslice2, 9UL );
-//      checkNonZeros( quatslice2, 9UL );
-//      checkRows    ( m,  3UL );
-//      checkColumns ( m,  3UL );
-//      checkQuats   ( m,  2UL );
-//      checkNonZeros( m, 18UL );
-//
-//      if( quatslice2(0,0) !=  9 || quatslice2(0,1) != 16 || quatslice2(0,2) != 21 ||
-//          quatslice2(1,0) != 24 || quatslice2(1,1) != 25 || quatslice2(1,2) != 24 ||
-//          quatslice2(2,0) != 21 || quatslice2(2,1) != 16 || quatslice2(2,2) !=  9 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( m(0,0,0) !=  1 || m(0,0,1) !=  2 || m(0,0,2) !=  3 ||
-//          m(0,1,0) !=  4 || m(0,1,1) !=  5 || m(0,1,2) !=  6 ||
-//          m(0,2,0) !=  7 || m(0,2,1) !=  8 || m(0,2,2) !=  9 ||
-//          m(1,0,0) !=  9 || m(1,0,1) != 16 || m(1,0,2) != 21 ||
-//          m(1,1,0) != 24 || m(1,1,1) != 25 || m(1,1,2) != 24 ||
-//          m(1,2,0) != 21 || m(1,2,1) != 16 || m(1,2,2) !=  9 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Multiplication assignment failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  1  2  3 )\n"
-//                                     " (  4  5  6 )\n"
-//                                     " (  7  8  9 ))\n"
-//                                     "((  9 16 21 )\n"
-//                                     " ( 24 25 24 )\n"
-//                                     " ( 21 16  9 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//}
-////*************************************************************************************************
-//
-//
-////*************************************************************************************************
-///*!\brief Test of all QuatSlice (self-)scaling operations.
-////
-//// \return void
-//// \exception std::runtime_error Error detected.
-////
-//// This function performs a test of all available ways to scale an instance of the QuatSlice
-//// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
-//*/
-//void DenseGeneralTest::testScaling()
-//{
-//   //=====================================================================================
-//   // self-scaling (v*=2)
-//   //=====================================================================================
-//
-//   {
-//      test_ = "self-scaling (v*=2)";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//      quatslice2 *= 3;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   3 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -6 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -9 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=  12 || quatslice2(3,2) != 15 || quatslice2(3,3) != -18 ||
-//          quatslice2(4,0) != 21 || quatslice2(4,1) != -24 || quatslice2(4,2) != 27 || quatslice2(4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   3 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) != -6 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -9 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  12 || quat_(1,3,2) != 15 || quat_(1,3,3) != -18 ||
-//          quat_(1,4,0) != 21 || quat_(1,4,1) != -24 || quat_(1,4,2) != 27 || quat_(1,4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   3   0   0 )\n"
-//                                     " ( -6   0  -9   0 )\n"
-//                                     " (  0  12  15 -18 )\n"
-//                                     " ( 21 -24  27  30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // self-scaling (v=v*2)
-//   //=====================================================================================
-//
-//   {
-//      test_ = "self-scaling (v=v*3)";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//      quatslice2 = quatslice2 * 3;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   3 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -6 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -9 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=  12 || quatslice2(3,2) != 15 || quatslice2(3,3) != -18 ||
-//          quatslice2(4,0) != 21 || quatslice2(4,1) != -24 || quatslice2(4,2) != 27 || quatslice2(4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   3 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) != -6 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -9 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  12 || quat_(1,3,2) != 15 || quat_(1,3,3) != -18 ||
-//          quat_(1,4,0) != 21 || quat_(1,4,1) != -24 || quat_(1,4,2) != 27 || quat_(1,4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   3   0   0 )\n"
-//                                     " ( -6   0  -9   0 )\n"
-//                                     " (  0  12  15 -18 )\n"
-//                                     " ( 21 -24  27  30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // self-scaling (v=3*v)
-//   //=====================================================================================
-//
-//   {
-//      test_ = "self-scaling (v=3*v)";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//      quatslice2 = 3 * quatslice2;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   3 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -6 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -9 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=  12 || quatslice2(3,2) != 15 || quatslice2(3,3) != -18 ||
-//          quatslice2(4,0) != 21 || quatslice2(4,1) != -24 || quatslice2(4,2) != 27 || quatslice2(4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   3 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) != -6 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -9 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  12 || quat_(1,3,2) != 15 || quat_(1,3,3) != -18 ||
-//          quat_(1,4,0) != 21 || quat_(1,4,1) != -24 || quat_(1,4,2) != 27 || quat_(1,4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   3   0   0 )\n"
-//                                     " ( -6   0  -9   0 )\n"
-//                                     " (  0  12  15 -18 )\n"
-//                                     " ( 21 -24  27  30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // self-scaling (v/=s)
-//   //=====================================================================================
-//
-//   {
-//      test_ = "self-scaling (v/=s)";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//      quatslice2 /= (1.0/3.0);
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   3 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -6 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -9 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=  12 || quatslice2(3,2) != 15 || quatslice2(3,3) != -18 ||
-//          quatslice2(4,0) != 21 || quatslice2(4,1) != -24 || quatslice2(4,2) != 27 || quatslice2(4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   3 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) != -6 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -9 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  12 || quat_(1,3,2) != 15 || quat_(1,3,3) != -18 ||
-//          quat_(1,4,0) != 21 || quat_(1,4,1) != -24 || quat_(1,4,2) != 27 || quat_(1,4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   3   0   0 )\n"
-//                                     " ( -6   0  -9   0 )\n"
-//                                     " (  0  12  15 -18 )\n"
-//                                     " ( 21 -24  27  30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // self-scaling (v=v/s)
-//   //=====================================================================================
-//
-//   {
-//      test_ = "self-scaling (v=v/s)";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//      quatslice2 = quatslice2 / (1.0/3.0);
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   3 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -6 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -9 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=  12 || quatslice2(3,2) != 15 || quatslice2(3,3) != -18 ||
-//          quatslice2(4,0) != 21 || quatslice2(4,1) != -24 || quatslice2(4,2) != 27 || quatslice2(4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   3 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//          quat_(1,2,0) != -6 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -9 || quat_(1,2,3) !=   0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  12 || quat_(1,3,2) != 15 || quat_(1,3,3) != -18 ||
-//          quat_(1,4,0) != 21 || quat_(1,4,1) != -24 || quat_(1,4,2) != 27 || quat_(1,4,3) !=  30 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Failed self-scaling operation\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   0   0   0 )\n"
-//                                     " (  0   3   0   0 )\n"
-//                                     " ( -6   0  -9   0 )\n"
-//                                     " (  0  12  15 -18 )\n"
-//                                     " ( 21 -24  27  30 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//
-//
-//   //=====================================================================================
-//   // QuatSlice::scale()
-//   //=====================================================================================
-//
-//   {
-//      test_ = "QuatSlice::scale()";
-//
-//      initialize();
-//
-//      // Integral scaling the 3rd quatslice
-//      {
-//         RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//         quatslice2.scale( 3 );
-//
-//         checkRows    ( quatslice2, 5UL );
-//         checkColumns ( quatslice2, 4UL );
-//         checkCapacity( quatslice2, 20UL );
-//         checkNonZeros( quatslice2, 10UL );
-//         checkRows    ( quat_,  5UL );
-//         checkColumns ( quat_,  4UL );
-//         checkQuats   ( quat_,  2UL );
-//         checkNonZeros( quat_, 20UL );
-//
-//         if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//             quatslice2(1,0) !=  0 || quatslice2(1,1) !=   3 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//             quatslice2(2,0) != -6 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -9 || quatslice2(2,3) !=   0 ||
-//             quatslice2(3,0) !=  0 || quatslice2(3,1) !=  12 || quatslice2(3,2) != 15 || quatslice2(3,3) != -18 ||
-//             quatslice2(4,0) != 21 || quatslice2(4,1) != -24 || quatslice2(4,2) != 27 || quatslice2(4,3) !=  30 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Failed self-scaling operation\n"
-//                << " Details:\n"
-//                << "   Result:\n" << quatslice2 << "\n"
-//                   << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//             quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//             quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//             quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//             quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//             quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//             quat_(1,1,0) !=  0 || quat_(1,1,1) !=   3 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//             quat_(1,2,0) != -6 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -9 || quat_(1,2,3) !=   0 ||
-//             quat_(1,3,0) !=  0 || quat_(1,3,1) !=  12 || quat_(1,3,2) != 15 || quat_(1,3,3) != -18 ||
-//             quat_(1,4,0) != 21 || quat_(1,4,1) != -24 || quat_(1,4,2) != 27 || quat_(1,4,3) !=  30 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Failed self-scaling operation\n"
-//                << " Details:\n"
-//                << "   Result:\n" << quat_ << "\n"
-//                << "   Expected result:\n((  0   0   0   0 )\n"
-//                                        " (  0   1   0   0 )\n"
-//                                        " ( -2   0  -3   0 )\n"
-//                                        " (  0   4   5  -6 )\n"
-//                                        " (  7  -8   9  10 ))\n"
-//                                        "((  0   0   0   0 )\n"
-//                                        " (  0   3   0   0 )\n"
-//                                        " ( -6   0  -9   0 )\n"
-//                                        " (  0  12  15 -18 )\n"
-//                                        " ( 21 -24  27  30 ))\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
-//      initialize();
-//
-//      // Floating point scaling the 3rd quatslice
-//      {
-//         RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//         quatslice2.scale( 0.5 );
-//
-//         checkRows    ( quatslice2,  5UL );
-//         checkColumns ( quatslice2,  4UL );
-//         checkCapacity( quatslice2, 20UL );
-//         checkNonZeros( quatslice2,  9UL );
-//         checkRows    ( quat_,  5UL );
-//         checkColumns ( quat_,  4UL );
-//         checkQuats   ( quat_,  2UL );
-//         checkNonZeros( quat_, 19UL );
-//
-//         if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=  0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=  0 ||
-//             quatslice2(1,0) !=  0 || quatslice2(1,1) !=  0 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=  0 ||
-//             quatslice2(2,0) != -1 || quatslice2(2,1) !=  0 || quatslice2(2,2) != -1 || quatslice2(2,3) !=  0 ||
-//             quatslice2(3,0) !=  0 || quatslice2(3,1) !=  2 || quatslice2(3,2) !=  2 || quatslice2(3,3) != -3 ||
-//             quatslice2(4,0) !=  3 || quatslice2(4,1) != -4 || quatslice2(4,2) !=  4 || quatslice2(4,3) !=  5 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Failed self-scaling operation\n"
-//                << " Details:\n"
-//                << "   Result:\n" << quatslice2 << "\n"
-//                   << "   Expected result:\n(( 0 0 0 0 )\n( 0 0 0 0 )\n( -1 0 -1 0 )\n( 0 12 2 -3 )\n( 3 -4 4 5 ))\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=   0 ||
-//             quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=   0 ||
-//             quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=   0 ||
-//             quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) !=  -6 ||
-//             quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) !=  10 ||
-//             quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=   0 ||
-//             quat_(1,1,0) !=  0 || quat_(1,1,1) !=   0 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=   0 ||
-//             quat_(1,2,0) != -1 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -1 || quat_(1,2,3) !=   0 ||
-//             quat_(1,3,0) !=  0 || quat_(1,3,1) !=   2 || quat_(1,3,2) !=  2 || quat_(1,3,3) !=  -3 ||
-//             quat_(1,4,0) !=  3 || quat_(1,4,1) !=  -4 || quat_(1,4,2) !=  4 || quat_(1,4,3) !=   5 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Failed self-scaling operation\n"
-//                << " Details:\n"
-//                << "   Result:\n" << quat_ << "\n"
-//                << "   Expected result:\n((  0   0   0   0 )\n"
-//                                        " (  0   1   0   0 )\n"
-//                                        " ( -2   0  -3   0 )\n"
-//                                        " (  0   4   5  -6 )\n"
-//                                        " (  7  -8   9  10 ))\n"
-//                                        "((  0   0   0   0 )\n"
-//                                        " (  0   0   0   0 )\n"
-//                                        " ( -1   0  -1   0 )\n"
-//                                        " (  0   2   2  -3 )\n"
-//                                        " (  3  -4   4   5 ))\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//   }
-//}
-////*************************************************************************************************
-//
-//
-////*************************************************************************************************
-///*!\brief Test of the QuatSlice function call operator.
-////
-//// \return void
-//// \exception std::runtime_error Error detected.
-////
-//// This function performs a test of adding and accessing elements via the function call operator
-//// of the QuatSlice specialization. In case an error is detected, a \a std::runtime_error exception
-//// is thrown.
-//*/
-//void DenseGeneralTest::testFunctionCall()
-//{
-//   //=====================================================================================
-//   // quaternion tests
-//   //=====================================================================================
-//
-//   {
-//      test_ = "QuatSlice::operator()";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//
-//      // Assignment to the element at index (0,1)
-//      quatslice2(0,1) = 9;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 11UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 21UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   9 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   1 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -2 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -3 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=   4 || quatslice2(3,2) !=  5 || quatslice2(3,3) !=  -6 ||
-//          quatslice2(4,0) !=  7 || quatslice2(4,1) !=  -8 || quatslice2(4,2) !=  9 || quatslice2(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  9 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -2 || quat_(1,2,1) !=  0 || quat_(1,2,2) != -3 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) != -8 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   9   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Assignment to the element at index (2,2)
-//      quatslice2(2,2) = 0;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   9 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   1 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -2 || quatslice2(2,1) !=   0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=   4 || quatslice2(3,2) !=  5 || quatslice2(3,3) !=  -6 ||
-//          quatslice2(4,0) !=  7 || quatslice2(4,1) !=  -8 || quatslice2(4,2) !=  9 || quatslice2(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  9 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -2 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) != -8 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   9   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0   0   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Assignment to the element at index (4,1)
-//      quatslice2(4,1) = -9;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   9 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   1 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -2 || quatslice2(2,1) !=   0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=   4 || quatslice2(3,2) !=  5 || quatslice2(3,3) !=  -6 ||
-//          quatslice2(4,0) !=  7 || quatslice2(4,1) !=  -9 || quatslice2(4,2) !=  9 || quatslice2(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   9 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -2 || quat_(1,2,1) !=   0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) !=  -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   9   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0   0   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Addition assignment to the element at index (0,1)
-//      quatslice2(0,1) += -3;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   6 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   1 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -2 || quatslice2(2,1) !=   0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=   4 || quatslice2(3,2) !=  5 || quatslice2(3,3) !=  -6 ||
-//          quatslice2(4,0) !=  7 || quatslice2(4,1) !=  -9 || quatslice2(4,2) !=  9 || quatslice2(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  6 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -2 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) != -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   6   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Subtraction assignment to the element at index (2,0)
-//      quatslice2(2,0) -= 6;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   6 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=  0 || quatslice2(1,1) !=   1 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) != -8 || quatslice2(2,1) !=   0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=  0 || quatslice2(3,1) !=   4 || quatslice2(3,2) !=  5 || quatslice2(3,3) !=  -6 ||
-//          quatslice2(4,0) !=  7 || quatslice2(4,1) !=  -9 || quatslice2(4,2) !=  9 || quatslice2(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  6 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -8 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) != -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   6   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -8   0   0   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Multiplication assignment to the element at index (4,0)
-//      quatslice2(4,0) *= -3;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=   0 || quatslice2(0,1) !=   6 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=   0 || quatslice2(1,1) !=   1 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) !=  -8 || quatslice2(2,1) !=   0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=   0 || quatslice2(3,1) !=   4 || quatslice2(3,2) !=  5 || quatslice2(3,3) !=  -6 ||
-//          quatslice2(4,0) != -21 || quatslice2(4,1) !=  -9 || quatslice2(4,2) !=  9 || quatslice2(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -6 )\n( -21 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=   0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=   0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) !=  -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=   0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=   7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=   0 || quat_(1,0,1) !=  6 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=   0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) !=  -8 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=   0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) != -21 || quat_(1,4,1) != -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((   0   0   0   0 )\n"
-//                                     " (   0   1   0   0 )\n"
-//                                     " (  -2   0  -3   0 )\n"
-//                                     " (   0   4   5  -6 )\n"
-//                                     " (   7  -8   9  10 ))\n"
-//                                     "((   0   6   0   0 )\n"
-//                                     " (   0   1   0   0 )\n"
-//                                     " (  -8   0   0   0 )\n"
-//                                     " (   0   4   5  -6 )\n"
-//                                     " ( -21  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Division assignment to the element at index (3,3)
-//      quatslice2(3,3) /= 2;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2(0,0) !=   0 || quatslice2(0,1) !=   6 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//          quatslice2(1,0) !=   0 || quatslice2(1,1) !=   1 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//          quatslice2(2,0) !=  -8 || quatslice2(2,1) !=   0 || quatslice2(2,2) !=  0 || quatslice2(2,3) !=   0 ||
-//          quatslice2(3,0) !=   0 || quatslice2(3,1) !=   4 || quatslice2(3,2) !=  5 || quatslice2(3,3) !=  -3 ||
-//          quatslice2(4,0) != -21 || quatslice2(4,1) !=  -9 || quatslice2(4,2) !=  9 || quatslice2(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -3 )\n( -21 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=   0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=   0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) !=  -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=   0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=   7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=   0 || quat_(1,0,1) !=  6 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=   0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) !=  -8 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=   0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -3 ||
-//          quat_(1,4,0) != -21 || quat_(1,4,1) != -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: Function call operator failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((   0   0   0   0 )\n"
-//                                     " (   0   1   0   0 )\n"
-//                                     " (  -2   0  -3   0 )\n"
-//                                     " (   0   4   5  -6 )\n"
-//                                     " (   7  -8   9  10 ))\n"
-//                                     "((   0   6   0   0 )\n"
-//                                     " (   0   1   0   0 )\n"
-//                                     " (  -8   0   0   0 )\n"
-//                                     " (   0   4   5  -3 )\n"
-//                                     " ( -21  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//}
-////*************************************************************************************************
-//
-//
-////*************************************************************************************************
-///*!\brief Test of the QuatSlice at() operator.
-////
-//// \return void
-//// \exception std::runtime_error Error detected.
-////
-//// This function performs a test of adding and accessing elements via the at() operator
-//// of the QuatSlice specialization. In case an error is detected, a \a std::runtime_error exception
-//// is thrown.
-//*/
-//void DenseGeneralTest::testAt()
-//{
-//   //=====================================================================================
-//   // quaternion tests
-//   //=====================================================================================
-//
-//   {
-//      test_ = "QuatSlice::at()";
-//
-//      initialize();
-//
-//      RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//
-//      // Assignment to the element at index (0,1)
-//      quatslice2.at(0,1) = 9;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 11UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 21UL );
-//
-//      if( quatslice2.at(0,0) !=  0 || quatslice2.at(0,1) !=   9 || quatslice2.at(0,2) !=  0 || quatslice2.at(0,3) !=   0 ||
-//          quatslice2.at(1,0) !=  0 || quatslice2.at(1,1) !=   1 || quatslice2.at(1,2) !=  0 || quatslice2.at(1,3) !=   0 ||
-//          quatslice2.at(2,0) != -2 || quatslice2.at(2,1) !=   0 || quatslice2.at(2,2) != -3 || quatslice2.at(2,3) !=   0 ||
-//          quatslice2.at(3,0) !=  0 || quatslice2.at(3,1) !=   4 || quatslice2.at(3,2) !=  5 || quatslice2.at(3,3) !=  -6 ||
-//          quatslice2.at(4,0) !=  7 || quatslice2.at(4,1) !=  -8 || quatslice2.at(4,2) !=  9 || quatslice2.at(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  9 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -2 || quat_(1,2,1) !=  0 || quat_(1,2,2) != -3 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) != -8 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   9   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Assignment to the element at index (2,2)
-//      quatslice2.at(2,2) = 0;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2.at(0,0) !=  0 || quatslice2.at(0,1) !=   9 || quatslice2.at(0,2) !=  0 || quatslice2.at(0,3) !=   0 ||
-//          quatslice2.at(1,0) !=  0 || quatslice2.at(1,1) !=   1 || quatslice2.at(1,2) !=  0 || quatslice2.at(1,3) !=   0 ||
-//          quatslice2.at(2,0) != -2 || quatslice2.at(2,1) !=   0 || quatslice2.at(2,2) !=  0 || quatslice2.at(2,3) !=   0 ||
-//          quatslice2.at(3,0) !=  0 || quatslice2.at(3,1) !=   4 || quatslice2.at(3,2) !=  5 || quatslice2.at(3,3) !=  -6 ||
-//          quatslice2.at(4,0) !=  7 || quatslice2.at(4,1) !=  -8 || quatslice2.at(4,2) !=  9 || quatslice2.at(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  9 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -2 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) != -8 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   9   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0   0   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Assignment to the element at index (4,1)
-//      quatslice2.at(4,1) = -9;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2.at(0,0) !=  0 || quatslice2.at(0,1) !=   9 || quatslice2.at(0,2) !=  0 || quatslice2.at(0,3) !=   0 ||
-//          quatslice2.at(1,0) !=  0 || quatslice2.at(1,1) !=   1 || quatslice2.at(1,2) !=  0 || quatslice2.at(1,3) !=   0 ||
-//          quatslice2.at(2,0) != -2 || quatslice2.at(2,1) !=   0 || quatslice2.at(2,2) !=  0 || quatslice2.at(2,3) !=   0 ||
-//          quatslice2.at(3,0) !=  0 || quatslice2.at(3,1) !=   4 || quatslice2.at(3,2) !=  5 || quatslice2.at(3,3) !=  -6 ||
-//          quatslice2.at(4,0) !=  7 || quatslice2.at(4,1) !=  -9 || quatslice2.at(4,2) !=  9 || quatslice2.at(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=   9 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=   1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -2 || quat_(1,2,1) !=   0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=   4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) !=  -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   9   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0   0   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Addition assignment to the element at index (0,1)
-//      quatslice2.at(0,1) += -3;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2.at(0,0) !=  0 || quatslice2.at(0,1) !=   6 || quatslice2.at(0,2) !=  0 || quatslice2.at(0,3) !=   0 ||
-//          quatslice2.at(1,0) !=  0 || quatslice2.at(1,1) !=   1 || quatslice2.at(1,2) !=  0 || quatslice2.at(1,3) !=   0 ||
-//          quatslice2.at(2,0) != -2 || quatslice2.at(2,1) !=   0 || quatslice2.at(2,2) !=  0 || quatslice2.at(2,3) !=   0 ||
-//          quatslice2.at(3,0) !=  0 || quatslice2.at(3,1) !=   4 || quatslice2.at(3,2) !=  5 || quatslice2.at(3,3) !=  -6 ||
-//          quatslice2.at(4,0) !=  7 || quatslice2.at(4,1) !=  -9 || quatslice2.at(4,2) !=  9 || quatslice2.at(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -2 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  6 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -2 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) != -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   6   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Subtraction assignment to the element at index (2,0)
-//      quatslice2.at(2,0) -= 6;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2.at(0,0) !=  0 || quatslice2.at(0,1) !=   6 || quatslice2.at(0,2) !=  0 || quatslice2.at(0,3) !=   0 ||
-//          quatslice2.at(1,0) !=  0 || quatslice2.at(1,1) !=   1 || quatslice2.at(1,2) !=  0 || quatslice2.at(1,3) !=   0 ||
-//          quatslice2.at(2,0) != -8 || quatslice2.at(2,1) !=   0 || quatslice2.at(2,2) !=  0 || quatslice2.at(2,3) !=   0 ||
-//          quatslice2.at(3,0) !=  0 || quatslice2.at(3,1) !=   4 || quatslice2.at(3,2) !=  5 || quatslice2.at(3,3) !=  -6 ||
-//          quatslice2.at(4,0) !=  7 || quatslice2.at(4,1) !=  -9 || quatslice2.at(4,2) !=  9 || quatslice2.at(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -6 )\n( 7 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=  0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) != -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=  0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=  7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=  0 || quat_(1,0,1) !=  6 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=  0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) != -8 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=  0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) !=  7 || quat_(1,4,1) != -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((  0   0   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -2   0  -3   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -8   9  10 ))\n"
-//                                     "((  0   6   0   0 )\n"
-//                                     " (  0   1   0   0 )\n"
-//                                     " ( -8   0   0   0 )\n"
-//                                     " (  0   4   5  -6 )\n"
-//                                     " (  7  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Multiplication assignment to the element at index (4,0)
-//      quatslice2.at(4,0) *= -3;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2.at(0,0) !=   0 || quatslice2.at(0,1) !=   6 || quatslice2.at(0,2) !=  0 || quatslice2.at(0,3) !=   0 ||
-//          quatslice2.at(1,0) !=   0 || quatslice2.at(1,1) !=   1 || quatslice2.at(1,2) !=  0 || quatslice2.at(1,3) !=   0 ||
-//          quatslice2.at(2,0) !=  -8 || quatslice2.at(2,1) !=   0 || quatslice2.at(2,2) !=  0 || quatslice2.at(2,3) !=   0 ||
-//          quatslice2.at(3,0) !=   0 || quatslice2.at(3,1) !=   4 || quatslice2.at(3,2) !=  5 || quatslice2.at(3,3) !=  -6 ||
-//          quatslice2.at(4,0) != -21 || quatslice2.at(4,1) !=  -9 || quatslice2.at(4,2) !=  9 || quatslice2.at(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -6 )\n( -21 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=   0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=   0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) !=  -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=   0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=   7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=   0 || quat_(1,0,1) !=  6 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=   0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) !=  -8 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=   0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//          quat_(1,4,0) != -21 || quat_(1,4,1) != -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((   0   0   0   0 )\n"
-//                                     " (   0   1   0   0 )\n"
-//                                     " (  -2   0  -3   0 )\n"
-//                                     " (   0   4   5  -6 )\n"
-//                                     " (   7  -8   9  10 ))\n"
-//                                     "((   0   6   0   0 )\n"
-//                                     " (   0   1   0   0 )\n"
-//                                     " (  -8   0   0   0 )\n"
-//                                     " (   0   4   5  -6 )\n"
-//                                     " ( -21  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      // Division assignment to the element at index (3,3)
-//      quatslice2.at(3,3) /= 2;
-//
-//      checkRows    ( quatslice2, 5UL );
-//      checkColumns ( quatslice2, 4UL );
-//      checkCapacity( quatslice2, 20UL );
-//      checkNonZeros( quatslice2, 10UL );
-//      checkRows    ( quat_,  5UL );
-//      checkColumns ( quat_,  4UL );
-//      checkQuats   ( quat_,  2UL );
-//      checkNonZeros( quat_, 20UL );
-//
-//      if( quatslice2.at(0,0) !=   0 || quatslice2.at(0,1) !=   6 || quatslice2.at(0,2) !=  0 || quatslice2.at(0,3) !=   0 ||
-//          quatslice2.at(1,0) !=   0 || quatslice2.at(1,1) !=   1 || quatslice2.at(1,2) !=  0 || quatslice2.at(1,3) !=   0 ||
-//          quatslice2.at(2,0) !=  -8 || quatslice2.at(2,1) !=   0 || quatslice2.at(2,2) !=  0 || quatslice2.at(2,3) !=   0 ||
-//          quatslice2.at(3,0) !=   0 || quatslice2.at(3,1) !=   4 || quatslice2.at(3,2) !=  5 || quatslice2.at(3,3) !=  -3 ||
-//          quatslice2.at(4,0) != -21 || quatslice2.at(4,1) !=  -9 || quatslice2.at(4,2) !=  9 || quatslice2.at(4,3) !=  10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quatslice2 << "\n"
-//             << "   Expected result:\n(( 0 6 0 0 )\n( 0 1 0 0 )\n( -8 0 0 0 )\n( 0 4 5 -3 )\n( -21 -9 9 10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//
-//      if( quat_(0,0,0) !=   0 || quat_(0,0,1) !=  0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//          quat_(0,1,0) !=   0 || quat_(0,1,1) !=  1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//          quat_(0,2,0) !=  -2 || quat_(0,2,1) !=  0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//          quat_(0,3,0) !=   0 || quat_(0,3,1) !=  4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//          quat_(0,4,0) !=   7 || quat_(0,4,1) != -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//          quat_(1,0,0) !=   0 || quat_(1,0,1) !=  6 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//          quat_(1,1,0) !=   0 || quat_(1,1,1) !=  1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//          quat_(1,2,0) !=  -8 || quat_(1,2,1) !=  0 || quat_(1,2,2) !=  0 || quat_(1,2,3) !=  0 ||
-//          quat_(1,3,0) !=   0 || quat_(1,3,1) !=  4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -3 ||
-//          quat_(1,4,0) != -21 || quat_(1,4,1) != -9 || quat_(1,4,2) !=  9 || quat_(1,4,3) != 10 ) {
-//         std::ostringstream oss;
-//         oss << " Test: " << test_ << "\n"
-//             << " Error: At() failed\n"
-//             << " Details:\n"
-//             << "   Result:\n" << quat_ << "\n"
-//             << "   Expected result:\n((   0   0   0   0 )\n"
-//                                     " (   0   1   0   0 )\n"
-//                                     " (  -2   0  -3   0 )\n"
-//                                     " (   0   4   5  -6 )\n"
-//                                     " (   7  -8   9  10 ))\n"
-//                                     "((   0   6   0   0 )\n"
-//                                     " (   0   1   0   0 )\n"
-//                                     " (  -8   0   0   0 )\n"
-//                                     " (   0   4   5  -3 )\n"
-//                                     " ( -21  -9   9  10 ))\n";
-//         throw std::runtime_error( oss.str() );
-//      }
-//   }
-//}
-////*************************************************************************************************
-//
-//
-////*************************************************************************************************
-///*!\brief Test of the QuatSlice iterator implementation.
-////
-//// \return void
-//// \exception std::runtime_error Error detected.
-////
-//// This function performs a test of the iterator implementation of the QuatSlice specialization.
-//// In case an error is detected, a \a std::runtime_error exception is thrown.
-//*/
-//void DenseGeneralTest::testIterator()
-//{
-//   //=====================================================================================
-//   // quaternion tests
-//   //=====================================================================================
-//
-//   {
-//      initialize();
-//
-//      // Testing the Iterator default constructor
-//      {
-//         test_ = "Iterator default constructor";
-//
-//         RT::Iterator it{};
-//
-//         if( it != RT::Iterator() ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Failed iterator default constructor\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
-//      // Testing the ConstIterator default constructor
-//      {
-//         test_ = "ConstIterator default constructor";
-//
-//         RT::ConstIterator it{};
-//
-//         if( it != RT::ConstIterator() ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Failed iterator default constructor\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
-//      // Testing conversion from Iterator to ConstIterator
-//      {
-//         test_ = "Iterator/ConstIterator conversion";
-//
-//         RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//         RT::ConstIterator it( begin( quatslice2, 2UL ) );
-//
-//         if( it == end( quatslice2, 2UL ) || *it != -2 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Failed iterator conversion detected\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
-//      // Counting the number of elements in 1st quatslice via Iterator (end-begin)
-//      {
-//         test_ = "Iterator subtraction (end-begin)";
-//
-//         RT quatslice1 = blaze::quatslice( quat_, 1UL );
-//         const ptrdiff_t number( end( quatslice1, 2UL ) - begin( quatslice1, 2UL ) );
-//
-//         if( number != 4L ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Invalid number of elements detected\n"
-//                << " Details:\n"
-//                << "   Number of elements         : " << number << "\n"
-//                << "   Expected number of elements: 4\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
-//      // Counting the number of elements in 1st quatslice via Iterator (begin-end)
-//      {
-//         test_ = "Iterator subtraction (begin-end)";
-//
-//         RT quatslice1 = blaze::quatslice( quat_, 1UL );
-//         const ptrdiff_t number( begin( quatslice1, 2UL ) - end( quatslice1, 2UL ) );
-//
-//         if( number != -4L ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Invalid number of elements detected\n"
-//                << " Details:\n"
-//                << "   Number of elements         : " << number << "\n"
-//                << "   Expected number of elements: -4\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
-//      // Counting the number of elements in 2nd quatslice via ConstIterator (end-begin)
-//      {
-//         test_ = "ConstIterator subtraction (end-begin)";
-//
-//         RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//         const ptrdiff_t number( cend( quatslice2, 2UL ) - cbegin( quatslice2, 2UL ) );
-//
-//         if( number != 4L ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Invalid number of elements detected\n"
-//                << " Details:\n"
-//                << "   Number of elements         : " << number << "\n"
-//                << "   Expected number of elements: 4\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
-//      // Counting the number of elements in 2nd quatslice via ConstIterator (begin-end)
-//      {
-//         test_ = "ConstIterator subtraction (begin-end)";
-//
-//         RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//         const ptrdiff_t number( cbegin( quatslice2, 2UL ) - cend( quatslice2, 2UL ) );
-//
-//         if( number != -4L ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Invalid number of elements detected\n"
-//                << " Details:\n"
-//                << "   Number of elements         : " << number << "\n"
-//                << "   Expected number of elements: -4\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
-//      // Testing read-only access via ConstIterator
-//      {
-//         test_ = "read-only access via ConstIterator";
-//
-//         RT quatslice3 = blaze::quatslice( quat_, 0UL );
-//         RT::ConstIterator it ( cbegin( quatslice3, 4UL ) );
-//         RT::ConstIterator end( cend( quatslice3, 4UL ) );
-//
-//         if( it == end || *it != 7 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Invalid initial iterator detected\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         ++it;
-//
-//         if( it == end || *it != -8 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator pre-increment failed\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         --it;
-//
-//         if( it == end || *it != 7 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator pre-decrement failed\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         it++;
-//
-//         if( it == end || *it != -8 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator post-increment failed\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         it--;
-//
-//         if( it == end || *it != 7 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator post-decrement failed\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         it += 2UL;
-//
-//         if( it == end || *it != 9 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator addition assignment failed\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         it -= 2UL;
-//
-//         if( it == end || *it != 7 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator subtraction assignment failed\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         it = it + 3UL;
-//
-//         if( it == end || *it != 10 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator/scalar addition failed\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         it = it - 3UL;
-//
-//         if( it == end || *it != 7 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Iterator/scalar subtraction failed\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         it = 4UL + it;
-//
-//         if( it != end ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Scalar/iterator addition failed\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
-//
-//      // Testing assignment via Iterator
-//      {
-//         test_ = "assignment via Iterator";
-//
-//         RT quatslice2 = blaze::quatslice( quat_, 1UL );
-//         int value = 6;
-//
-//         for( RT::Iterator it=begin( quatslice2, 4UL ); it!=end( quatslice2, 4UL ); ++it ) {
-//            *it = value++;
-//         }
-//
-//         if( quatslice2(0,0) !=  0 || quatslice2(0,1) !=   0 || quatslice2(0,2) !=  0 || quatslice2(0,3) !=   0 ||
-//             quatslice2(1,0) !=  0 || quatslice2(1,1) !=   1 || quatslice2(1,2) !=  0 || quatslice2(1,3) !=   0 ||
-//             quatslice2(2,0) != -2 || quatslice2(2,1) !=   0 || quatslice2(2,2) != -3 || quatslice2(2,3) !=   0 ||
-//             quatslice2(3,0) !=  0 || quatslice2(3,1) !=   4 || quatslice2(3,2) !=  5 || quatslice2(3,3) !=  -6 ||
-//             quatslice2(4,0) !=  6 || quatslice2(4,1) !=   7 || quatslice2(4,2) !=  8 || quatslice2(4,3) !=   9 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Assignment via iterator failed\n"
-//                << " Details:\n"
-//                << "   Result:\n" << quatslice2 << "\n"
-//                << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 6 7 8 9 ))\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//
-//         if( quat_(0,0,0) !=  0 || quat_(0,0,1) !=   0 || quat_(0,0,2) !=  0 || quat_(0,0,3) !=  0 ||
-//             quat_(0,1,0) !=  0 || quat_(0,1,1) !=   1 || quat_(0,1,2) !=  0 || quat_(0,1,3) !=  0 ||
-//             quat_(0,2,0) != -2 || quat_(0,2,1) !=   0 || quat_(0,2,2) != -3 || quat_(0,2,3) !=  0 ||
-//             quat_(0,3,0) !=  0 || quat_(0,3,1) !=   4 || quat_(0,3,2) !=  5 || quat_(0,3,3) != -6 ||
-//             quat_(0,4,0) !=  7 || quat_(0,4,1) !=  -8 || quat_(0,4,2) !=  9 || quat_(0,4,3) != 10 ||
-//             quat_(1,0,0) !=  0 || quat_(1,0,1) !=   0 || quat_(1,0,2) !=  0 || quat_(1,0,3) !=  0 ||
-//             quat_(1,1,0) !=  0 || quat_(1,1,1) !=   1 || quat_(1,1,2) !=  0 || quat_(1,1,3) !=  0 ||
-//             quat_(1,2,0) != -2 || quat_(1,2,1) !=   0 || quat_(1,2,2) != -3 || quat_(1,2,3) !=  0 ||
-//             quat_(1,3,0) !=  0 || quat_(1,3,1) !=   4 || quat_(1,3,2) !=  5 || quat_(1,3,3) != -6 ||
-//             quat_(1,4,0) !=  6 || quat_(1,4,1) !=   7 || quat_(1,4,2) !=  8 || quat_(1,4,3) !=  9 ) {
-//            std::ostringstream oss;
-//            oss << " Test: " << test_ << "\n"
-//                << " Error: Assignment via iterator failed\n"
-//                << " Details:\n"
-//                << "   Result:\n" << quat_ << "\n"
-//                << "   Expected result:\n((  0   0   0   0 )\n"
-//                                        " (  0   1   0   0 )\n"
-//                                        " ( -2   0  -3   0 )\n"
-//                                        " (  0   4   5  -6 )\n"
-//                                        " (  7  -8   9  10 ))\n"
-//                                        "((  0   0   0   0 )\n"
-//                                        " (  0   1   0   0 )\n"
-//                                        " ( -2   0   0   0 )\n"
-//                                        " (  0   4   5  -6 )\n"
-//                                        " (  6   7   8   9 ))\n";
-//            throw std::runtime_error( oss.str() );
-//         }
-//      }
+void DenseGeneralTest::testAssignment()
+{
+   //=====================================================================================
+   // homogeneous assignment
+   //=====================================================================================
+
+   {
+      test_ = "QuatSlice homogeneous assignment";
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+      quatslice1 = 8;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 40UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) != 8 || quatslice1(0,0,1) != 8 || quatslice1(0,0,2) != 8 || quatslice1(0,0,3) != 8 ||
+          quatslice1(0,1,0) != 8 || quatslice1(0,1,1) != 8 || quatslice1(0,1,2) != 8 || quatslice1(0,1,3) != 8 ||
+          quatslice1(0,2,0) != 8 || quatslice1(0,2,1) != 8 || quatslice1(0,2,2) != 8 || quatslice1(0,2,3) != 8 ||
+          quatslice1(0,3,0) != 8 || quatslice1(0,3,1) != 8 || quatslice1(0,3,2) != 8 || quatslice1(0,3,3) != 8 ||
+          quatslice1(0,4,0) != 8 || quatslice1(0,4,1) != 8 || quatslice1(0,4,2) != 8 || quatslice1(0,4,3) != 8 ||
+          quatslice1(1,0,0) != 8 || quatslice1(1,0,1) != 8 || quatslice1(1,0,2) != 8 || quatslice1(1,0,3) != 8 ||
+          quatslice1(1,1,0) != 8 || quatslice1(1,1,1) != 8 || quatslice1(1,1,2) != 8 || quatslice1(1,1,3) != 8 ||
+          quatslice1(1,2,0) != 8 || quatslice1(1,2,1) != 8 || quatslice1(1,2,2) != 8 || quatslice1(1,2,3) != 8 ||
+          quatslice1(1,3,0) != 8 || quatslice1(1,3,1) != 8 || quatslice1(1,3,2) != 8 || quatslice1(1,3,3) != 8 ||
+          quatslice1(1,4,0) != 8 || quatslice1(1,4,1) != 8 || quatslice1(1,4,2) != 8 || quatslice1(1,4,3) != 8) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 8 8 8 8 )\n( 8 8 8 8 )\n( 8 8 8 8 )\n( 8 8 8 8 )\n( 8 8 8 8 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+
+      if(  quat_(0,0,0,0) !=  0 || quat_(0,0,0,1) !=  0 || quat_(0,0,0,2) !=  0 || quat_(0,0,0,3) !=  0 ||
+           quat_(0,0,1,0) !=  0 || quat_(0,0,1,1) !=  1 || quat_(0,0,1,2) !=  0 || quat_(0,0,1,3) !=  0 ||
+           quat_(0,0,2,0) != -2 || quat_(0,0,2,1) !=  0 || quat_(0,0,2,2) != -3 || quat_(0,0,2,3) !=  0 ||
+           quat_(0,0,3,0) !=  0 || quat_(0,0,3,1) !=  4 || quat_(0,0,3,2) !=  5 || quat_(0,0,3,3) != -6 ||
+           quat_(0,0,4,0) !=  7 || quat_(0,0,4,1) != -8 || quat_(0,0,4,2) !=  9 || quat_(0,0,4,3) != 10 ||
+           quat_(0,1,0,0) !=  0 || quat_(0,1,0,1) !=  0 || quat_(0,1,0,2) !=  0 || quat_(0,1,0,3) !=  0 ||
+           quat_(0,1,1,0) !=  0 || quat_(0,1,1,1) !=  1 || quat_(0,1,1,2) !=  0 || quat_(0,1,1,3) !=  0 ||
+           quat_(0,1,2,0) != -2 || quat_(0,1,2,1) !=  0 || quat_(0,1,2,2) != 13 || quat_(0,1,2,3) !=  0 ||
+           quat_(0,1,3,0) !=  0 || quat_(0,1,3,1) !=  4 || quat_(0,1,3,2) !=  5 || quat_(0,1,3,3) != -6 ||
+           quat_(0,1,4,0) !=  7 || quat_(0,1,4,1) != -8 || quat_(0,1,4,2) !=  9 || quat_(0,1,4,3) != 10 ||
+           quat_(1,0,0,0) != 8 || quat_(1,0,0,1) != 8 || quat_(1,0,0,2) != 8 || quat_(1,0,0,3) != 8 ||
+           quat_(1,0,1,0) != 8 || quat_(1,0,1,1) != 8 || quat_(1,0,1,2) != 8 || quat_(1,0,1,3) != 8 ||
+           quat_(1,0,2,0) != 8 || quat_(1,0,2,1) != 8 || quat_(1,0,2,2) != 8 || quat_(1,0,2,3) != 8 ||
+           quat_(1,0,3,0) != 8 || quat_(1,0,3,1) != 8 || quat_(1,0,3,2) != 8 || quat_(1,0,3,3) != 8 ||
+           quat_(1,0,4,0) != 8 || quat_(1,0,4,1) != 8 || quat_(1,0,4,2) != 8 || quat_(1,0,4,3) != 8 ||
+           quat_(1,1,0,0) != 8 || quat_(1,1,0,1) != 8 || quat_(1,1,0,2) != 8 || quat_(1,1,0,3) != 8 ||
+           quat_(1,1,1,0) != 8 || quat_(1,1,1,1) != 8 || quat_(1,1,1,2) != 8 || quat_(1,1,1,3) != 8 ||
+           quat_(1,1,2,0) != 8 || quat_(1,1,2,1) != 8 || quat_(1,1,2,2) != 8 || quat_(1,1,2,3) != 8 ||
+           quat_(1,1,3,0) != 8 || quat_(1,1,3,1) != 8 || quat_(1,1,3,2) != 8 || quat_(1,1,3,3) != 8 ||
+           quat_(1,1,4,0) != 8 || quat_(1,1,4,1) != 8 || quat_(1,1,4,2) != 8 || quat_(1,1,4,3) != 8) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quat_ << "\n"
+             << "   Expected result:\n((((     0   0   0   0 )(   0   1   0   "
+                "0 )(  -2   0     -3   0 )(   0   4   5     -6 )(   7     -8   "
+                "9     10 ))((   0   0   0   0 )(   0   1   0   0 )(   0   4   "
+                "5     -6 )(   7     -8   9     10 )))(((    8   8   8   8 )(  "
+                "  8   8   8   8 )(    8   8   8   8 )(    8   8   8   8 )(    "
+                "8   8   8   8 ))((   8   8   8   8 )(   8   8   8   8 )(   8  "
+                " 8   8   8 )(   8   8   8   8 )(   8   8   8   8 )))";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // list assignment
+   //=====================================================================================
+
+   {
+      test_ = "initializer list assignment (complete list)";
+
+      initialize();
+
+      RT quatslice3 = blaze::quatslice( quat_, 1UL );
+      quatslice3 = {{{1, 2, 3, 4}, {7, 8, 9, 10}, {11, 12, 13, 14},
+                       {17, 18, 19, 20}, {21, 22, 23, 24}},
+         {{-1, -2, -3, -4}, {-7, -8, -9, -10}, {-11, -12, -13, -14},
+            {-17, -18, -19, -20}, {-21, -22, -23, -24}}};
+
+
+      checkPages   ( quatslice3, 2UL );
+      checkRows    ( quatslice3, 5UL );
+      checkColumns ( quatslice3, 4UL );
+      checkCapacity( quatslice3, 40UL );
+      checkNonZeros( quatslice3, 40UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice3(0,0,0) != 1  || quatslice3(0,0,1) != 2  || quatslice3(0,0,2) != 3  || quatslice3(0,0,3) != 4  ||
+          quatslice3(0,1,0) != 7  || quatslice3(0,1,1) != 8  || quatslice3(0,1,2) != 9  || quatslice3(0,1,3) != 10 ||
+          quatslice3(0,2,0) != 11 || quatslice3(0,2,1) != 12 || quatslice3(0,2,2) != 13 || quatslice3(0,2,3) != 14 ||
+          quatslice3(0,3,0) != 17 || quatslice3(0,3,1) != 18 || quatslice3(0,3,2) != 19 || quatslice3(0,3,3) != 20 ||
+          quatslice3(0,4,0) != 21 || quatslice3(0,4,1) != 22 || quatslice3(0,4,2) != 23 || quatslice3(0,4,3) != 24 ||
+          quatslice3(1,0,0) != -1  || quatslice3(1,0,1) != -2  || quatslice3(1,0,2) != -3  || quatslice3(1,0,3) != -4  ||
+          quatslice3(1,1,0) != -7  || quatslice3(1,1,1) != -8  || quatslice3(1,1,2) != -9  || quatslice3(1,1,3) != -10 ||
+          quatslice3(1,2,0) != -11 || quatslice3(1,2,1) != -12 || quatslice3(1,2,2) != -13 || quatslice3(1,2,3) != -14 ||
+          quatslice3(1,3,0) != -17 || quatslice3(1,3,1) != -18 || quatslice3(1,3,2) != -19 || quatslice3(1,3,3) != -20 ||
+          quatslice3(1,4,0) != -21 || quatslice3(1,4,1) != -22 || quatslice3(1,4,2) != -23 || quatslice3(1,4,3) != -24) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quatslice3 << "\n"
+             << "   Expected result:\n(((     1   2   3   4 )(     7   8   9   "
+                "  10 )(    11     12     13     14 )(    17     18     19     "
+                "20 )(    21     22     23     24 ))((    -1     -2     -3     "
+                "-4 )(    -7     -8     -9    -10 )(   -11    -12    -13    "
+                "-14 )(   -17    -18    -19    -20 )(   -21    -22    -23    "
+                "-24 )))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) != 1   || quat_(1,0,0,1) != 2   || quat_(1,0,0,2) != 3   || quat_(1,0,0,3) != 4  ||
+          quat_(1,0,1,0) != 7   || quat_(1,0,1,1) != 8   || quat_(1,0,1,2) != 9   || quat_(1,0,1,3) != 10 ||
+          quat_(1,0,2,0) != 11  || quat_(1,0,2,1) != 12  || quat_(1,0,2,2) != 13  || quat_(1,0,2,3) != 14 ||
+          quat_(1,0,3,0) != 17  || quat_(1,0,3,1) != 18  || quat_(1,0,3,2) != 19  || quat_(1,0,3,3) != 20 ||
+          quat_(1,0,4,0) != 21  || quat_(1,0,4,1) != 22  || quat_(1,0,4,2) != 23  || quat_(1,0,4,3) != 24 ||
+          quat_(1,1,0,0) != -1  || quat_(1,1,0,1) != -2  || quat_(1,1,0,2) != -3  || quat_(1,1,0,3) != -4  ||
+          quat_(1,1,1,0) != -7  || quat_(1,1,1,1) != -8  || quat_(1,1,1,2) != -9  || quat_(1,1,1,3) != -10 ||
+          quat_(1,1,2,0) != -11 || quat_(1,1,2,1) != -12 || quat_(1,1,2,2) != -13 || quat_(1,1,2,3) != -14 ||
+          quat_(1,1,3,0) != -17 || quat_(1,1,3,1) != -18 || quat_(1,1,3,2) != -19 || quat_(1,1,3,3) != -20 ||
+          quat_(1,1,4,0) != -21 || quat_(1,1,4,1) != -22 || quat_(1,1,4,2) != -23 || quat_(1,1,4,3) != -24 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quat_ << "\n"
+             << "   Expected result:\n(((     1   2   3   4 )(     7   8   9   "
+                "  10 )(    11     12     13     14 )(    17     18     19     "
+                "20 )(    21     22     23     24 ))((    -1     -2     -3     "
+                "-4 )(    -7     -8     -9    -10 )(   -11    -12    -13    "
+                "-14 )(   -17    -18    -19    -20 )(   -21    -22    -23    "
+                "-24 )))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "initializer list assignment (incomplete list)";
+
+      initialize();
+
+      RT quatslice3 = blaze::quatslice( quat_, 1UL );
+      quatslice3 = {{{1, 2}, {1, 2}, {1, 2}, {1, 2}, {1, 2}},
+         {{-1, -2}, {-1, -2}, {-1, -2}, {-1, -2}, {-1, -2}}};
+
+      checkPages   ( quatslice3, 2UL );
+      checkRows    ( quatslice3, 5UL );
+      checkColumns ( quatslice3, 4UL );
+      checkCapacity( quatslice3, 40UL );
+      checkNonZeros( quatslice3, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice3(0,0,0) != 1 || quatslice3(0,0,1) != 2 || quatslice3(0,0,2) != 0 || quatslice3(0,0,3) != 0 ||
+          quatslice3(0,1,0) != 1 || quatslice3(0,1,1) != 2 || quatslice3(0,1,2) != 0 || quatslice3(0,1,3) != 0 ||
+          quatslice3(0,2,0) != 1 || quatslice3(0,2,1) != 2 || quatslice3(0,2,2) != 0 || quatslice3(0,2,3) != 0 ||
+          quatslice3(0,3,0) != 1 || quatslice3(0,3,1) != 2 || quatslice3(0,3,2) != 0 || quatslice3(0,3,3) != 0 ||
+          quatslice3(0,4,0) != 1 || quatslice3(0,4,1) != 2 || quatslice3(0,4,2) != 0 || quatslice3(0,4,3) != 0 ||
+          quatslice3(1,0,0) != -1 || quatslice3(1,0,1) != -2 || quatslice3(1,0,2) != 0 || quatslice3(1,0,3) != 0 ||
+          quatslice3(1,1,0) != -1 || quatslice3(1,1,1) != -2 || quatslice3(1,1,2) != 0 || quatslice3(1,1,3) != 0 ||
+          quatslice3(1,2,0) != -1 || quatslice3(1,2,1) != -2 || quatslice3(1,2,2) != 0 || quatslice3(1,2,3) != 0 ||
+          quatslice3(1,3,0) != -1 || quatslice3(1,3,1) != -2 || quatslice3(1,3,2) != 0 || quatslice3(1,3,3) != 0 ||
+          quatslice3(1,4,0) != -1 || quatslice3(1,4,1) != -2 || quatslice3(1,4,2) != 0 || quatslice3(1,4,3) != 0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quatslice3 << "\n"
+             << "   Expected result:\n(((     1   2   0   0 )(     1   2   0   "
+                "0 )(     1   2   0   0 )(     1   2   0   0 )(     1   2   0  "
+                " 0 ))((    -1     -2   0   0 )(    -1     -2   0   0 )(    -1 "
+                "    -2   0   0 )(    -1     -2   0   0 )(    -1     -2   0   "
+                "0 )))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) != 1  || quat_(1,0,0,1) != 2  || quat_(1,0,0,2) != 0 || quat_(1,0,0,3) != 0 ||
+          quat_(1,0,1,0) != 1  || quat_(1,0,1,1) != 2  || quat_(1,0,1,2) != 0 || quat_(1,0,1,3) != 0 ||
+          quat_(1,0,2,0) != 1  || quat_(1,0,2,1) != 2  || quat_(1,0,2,2) != 0 || quat_(1,0,2,3) != 0 ||
+          quat_(1,0,3,0) != 1  || quat_(1,0,3,1) != 2  || quat_(1,0,3,2) != 0 || quat_(1,0,3,3) != 0 ||
+          quat_(1,0,4,0) != 1  || quat_(1,0,4,1) != 2  || quat_(1,0,4,2) != 0 || quat_(1,0,4,3) != 0 ||
+          quat_(1,1,0,0) != -1 || quat_(1,1,0,1) != -2 || quat_(1,1,0,2) != 0 || quat_(1,1,0,3) != 0 ||
+          quat_(1,1,1,0) != -1 || quat_(1,1,1,1) != -2 || quat_(1,1,1,2) != 0 || quat_(1,1,1,3) != 0 ||
+          quat_(1,1,2,0) != -1 || quat_(1,1,2,1) != -2 || quat_(1,1,2,2) != 0 || quat_(1,1,2,3) != 0 ||
+          quat_(1,1,3,0) != -1 || quat_(1,1,3,1) != -2 || quat_(1,1,3,2) != 0 || quat_(1,1,3,3) != 0 ||
+          quat_(1,1,4,0) != -1 || quat_(1,1,4,1) != -2 || quat_(1,1,4,2) != 0 || quat_(1,1,4,3) != 0  ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quat_ << "\n"
+             << "   Expected result:\n(((     1   2   0   0 )(     1   2   0   "
+                "0 )(     1   2   0   0 )(     1   2   0   0 )(     1   2   0  "
+                " 0 ))((    -1     -2   0   0 )(    -1     -2   0   0 )(    -1 "
+                "    -2   0   0 )(    -1     -2   0   0 )(    -1     -2   0   "
+                "0 )))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // copy assignment
+   //=====================================================================================
+
+   {
+      test_ = "QuatSlice copy assignment";
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 0UL );
+      quatslice1 = 0;
+      quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  5 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -8 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n((     0   1   0   0 ) (     0   0   "
+                   "0   0 ) (     0     12     -3   0 ) (     0   4   5     -6 "
+                   ") (     7     28   9     10 ) )\n((     0   0   0   0 ) (  "
+                   "   0   1   0   0 ) (    -2   0   0   0 ) (    -3   4   5   "
+                   "  33 ) (     7     -8   9     11 ) )\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(0,0,0,0) !=  0 || quat_(0,0,0,1) !=  1 || quat_(0,0,0,2) !=  0 || quat_(0,0,0,3) !=  0 ||
+          quat_(0,0,1,0) !=  0 || quat_(0,0,1,1) !=  0 || quat_(0,0,1,2) !=  0 || quat_(0,0,1,3) !=  0 ||
+          quat_(0,0,2,0) !=  0 || quat_(0,0,2,1) != 12 || quat_(0,0,2,2) != -3 || quat_(0,0,2,3) !=  0 ||
+          quat_(0,0,3,0) !=  0 || quat_(0,0,3,1) !=  4 || quat_(0,0,3,2) !=  5 || quat_(0,0,3,3) != -6 ||
+          quat_(0,0,4,0) !=  7 || quat_(0,0,4,1) != 28 || quat_(0,0,4,2) !=  9 || quat_(0,0,4,3) != 10 ||
+          quat_(0,1,0,0) !=  0 || quat_(0,1,0,1) !=  0 || quat_(0,1,0,2) !=  0 || quat_(0,1,0,3) !=  0 ||
+          quat_(0,1,1,0) !=  0 || quat_(0,1,1,1) !=  1 || quat_(0,1,1,2) !=  0 || quat_(0,1,1,3) !=  0 ||
+          quat_(0,1,2,0) != -2 || quat_(0,1,2,1) !=  0 || quat_(0,1,2,2) !=  0 || quat_(0,1,2,3) !=  0 ||
+          quat_(0,1,3,0) != -3 || quat_(0,1,3,1) !=  4 || quat_(0,1,3,2) !=  5 || quat_(0,1,3,3) != 33 ||
+          quat_(0,1,4,0) !=  7 || quat_(0,1,4,1) != -8 || quat_(0,1,4,2) !=  9 || quat_(0,1,4,3) != 11 ||
+          quat_(1,0,0,0) !=  0 || quat_(1,0,0,1) !=  1 || quat_(1,0,0,2) !=  0 || quat_(1,0,0,3) !=  0 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=  0 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=  0 ||
+          quat_(1,0,2,0) !=  0 || quat_(1,0,2,1) != 12 || quat_(1,0,2,2) != -3 || quat_(1,0,2,3) !=  0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=  4 || quat_(1,0,3,2) !=  5 || quat_(1,0,3,3) != -6 ||
+          quat_(1,0,4,0) !=  7 || quat_(1,0,4,1) != 28 || quat_(1,0,4,2) !=  9 || quat_(1,0,4,3) != 10 ||
+          quat_(1,1,0,0) !=  0 || quat_(1,1,0,1) !=  0 || quat_(1,1,0,2) !=  0 || quat_(1,1,0,3) !=  0 ||
+          quat_(1,1,1,0) !=  0 || quat_(1,1,1,1) !=  1 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=  0 ||
+          quat_(1,1,2,0) != -2 || quat_(1,1,2,1) !=  0 || quat_(1,1,2,2) !=  0 || quat_(1,1,2,3) !=  0 ||
+          quat_(1,1,3,0) != -3 || quat_(1,1,3,1) !=  4 || quat_(1,1,3,2) !=  5 || quat_(1,1,3,3) != 33 ||
+          quat_(1,1,4,0) !=  7 || quat_(1,1,4,1) != -8 || quat_(1,1,4,2) !=  9 || quat_(1,1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quat_ << "\n"
+             << "   Expected result:\n((     0   1   0   0 ) (     0   0   "
+                "0   0 ) (     0     12     -3   0 ) (     0   4   5     -6 "
+                ") (     7     28   9     10 ) )\n((     0   0   0   0 ) (  "
+                "   0   1   0   0 ) (    -2   0   0   0 ) (    -3   4   5   "
+                "  33 ) (     7     -8   9     11 ) )\n((     0   1   0   0 ) "
+                "(     0   0   0   0 ) (  0     12     -3   0 ) (   0   4   5  "
+                "-6 ) (  7     28   9     10 ) )\n((   0   0   0   0 ) (  "
+                "   0   1   0   0 ) (    -2   0   0   0 ) (    -3   4   5   "
+                "  33 ) (     7     -8   9     11 ) )\n(((     0   0   0   0 "
+                ")(     0   1   0   0 )(    -2   0     -3   4 )(     0   0   5 "
+                "  2 )(     7     -8   9     10 ))((     0   0   0   0 )(     "
+                "0   1   0   0 )(    62   0     -3   0 )(     0   5     15     "
+                "16 )(    -7     -8     19     10 ))))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // dense quaternion assignment
+   //=====================================================================================
+
+   {
+      test_ = "dense quaternion assignment ";
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      blaze::DynamicTensor<int> t1;
+      t1 = {{{0, 8, 0, 9}, {0}, {0}, {0}, {0}},
+         {{7, 8, 10, 9}, {1}, {1}, {1}, {1}}};
+
+      quatslice1 = t1;
+
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 10UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  8 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  9 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) !=  0 || quatslice1(0,2,2) !=  0 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  0 || quatslice1(0,3,2) !=  0 || quatslice1(0,3,3) !=  0 ||
+          quatslice1(0,4,0) !=  0 || quatslice1(0,4,1) !=  0 || quatslice1(0,4,2) !=  0 || quatslice1(0,4,3) !=  0 ||
+          quatslice1(1,0,0) !=  7 || quatslice1(1,0,1) !=  8 || quatslice1(1,0,2) != 10 || quatslice1(1,0,3) !=  9 ||
+          quatslice1(1,1,0) !=  1 || quatslice1(1,1,1) !=  0 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) !=  1 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) !=  1 || quatslice1(1,3,1) !=  0 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) !=  0 ||
+          quatslice1(1,4,0) !=  1 || quatslice1(1,4,1) !=  0 || quatslice1(1,4,2) !=  0 || quatslice1(1,4,3) !=  0 ) {
+         std::ostringstream oss;
+         oss
+            << " Test: " << test_ << "\n"
+            << " Error: Assignment failed\n"
+            << " Details:\n"
+            << "   Result:\n"
+            << quatslice1 << "\n"
+            << "   Expected result:\n(((   0    8    0    9 )(   0    0    0   "
+               " 0 )(   0    0    0    0 )(   0    0    0    0 )(   0    0    "
+               "0    0 ))((   7    8   10    9 )(   1    0    0    0 )(   1    "
+               "0    0    0 )(   1    0    0    0 )(   1    0    0    0 )))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) !=  0 || quat_(1,0,0,1) !=  8 || quat_(1,0,0,2) !=  0 || quat_(1,0,0,3) !=  9 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=  0 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=  0 ||
+          quat_(1,0,2,0) !=  0 || quat_(1,0,2,1) !=  0 || quat_(1,0,2,2) !=  0 || quat_(1,0,2,3) !=  0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=  0 || quat_(1,0,3,2) !=  0 || quat_(1,0,3,3) !=  0 ||
+          quat_(1,0,4,0) !=  0 || quat_(1,0,4,1) !=  0 || quat_(1,0,4,2) !=  0 || quat_(1,0,4,3) !=  0 ||
+          quat_(1,1,0,0) !=  7 || quat_(1,1,0,1) !=  8 || quat_(1,1,0,2) != 10 || quat_(1,1,0,3) !=  9 ||
+          quat_(1,1,1,0) !=  1 || quat_(1,1,1,1) !=  0 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=  0 ||
+          quat_(1,1,2,0) !=  1 || quat_(1,1,2,1) !=  0 || quat_(1,1,2,2) !=  0 || quat_(1,1,2,3) !=  0 ||
+          quat_(1,1,3,0) !=  1 || quat_(1,1,3,1) !=  0 || quat_(1,1,3,2) !=  0 || quat_(1,1,3,3) !=  0 ||
+          quat_(1,1,4,0) !=  1 || quat_(1,1,4,1) !=  0 || quat_(1,1,4,2) !=  0 || quat_(1,1,4,3) !=  0 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quat_ << "\n"
+             << "   Expected result:\n((((      0  0  0  0 )(      0  1  0  0 "
+                ")(     -2  0      -3  0 )(      0  4  5      -6 )(      7     "
+                " -8  9      10 ))((      0  0  0  0 )(      0  1  0  0 )(     "
+                "-2  0      13  0 )(      0  4  5      -6 )(      7      -8  9 "
+                "     10 )))(((      0  8  0  9 )(      0  0  0  0 )(      0  "
+                "0  0  0 )(      0  0  0  0 )(      0  0  0  0 ))((      7  8  "
+                "    10  9 )(      1  0  0  0 )(      1  0  0  0 )(      1  0  "
+                "0  0 )(      1  0  0  0 )))(((      0  0  0  0 )(      0  1  "
+                "0  0 )(     -2  0      -3  4 )(      0  0  5  2 )(      7     "
+                " -8  9      10 ))((      0  0  0  0 )(      0  1  0  0 )(     "
+                "62  0      -3  0 )(      0  5      15      16 )(     -7      "
+                "-8      19      10 ))))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   {
+      test_ = "dense quaternion assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 160UL ) );
+      AlignedPadded m1( memory.get(), 2UL, 5UL, 4UL, 16UL );
+      m1 = 0;
+      m1(0,0,0) = 10;
+      m1(0,0,1) = 8;
+      m1(0,0,2) = 7;
+      m1(0,0,3) = 9;
+      m1(1,1,3) = 6;
+
+      quatslice1 = m1;
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL);
+      checkNonZeros( quatslice1, 5UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) != 10 || quatslice1(0,0,1) !=  8 || quatslice1(0,0,2) !=  7 || quatslice1(0,0,3) !=  9 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) !=  0 || quatslice1(0,2,2) !=  0 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  0 || quatslice1(0,3,2) !=  0 || quatslice1(0,3,3) !=  0 ||
+          quatslice1(0,4,0) !=  0 || quatslice1(0,4,1) !=  0 || quatslice1(0,4,2) !=  0 || quatslice1(0,4,3) !=  0 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  0 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  6 ||
+          quatslice1(1,2,0) !=  0 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) !=  0 || quatslice1(1,3,1) !=  0 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) !=  0 ||
+          quatslice1(1,4,0) !=  0 || quatslice1(1,4,1) !=  0 || quatslice1(1,4,2) !=  0 || quatslice1(1,4,3) !=  0) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quatslice1 << "\n"
+             << "   Expected result:\n(((     10  8  7  9 )(      0  0  0  0 "
+                ")(      0  0  0  0 )(      0  0  0  0 )(      0  0  0  0 ))(( "
+                "     0  0  0  0 )(      0  0  0  6 )(      0  0  0  0 )(      "
+                "0  0  0  0 )(      0  0  0  0 )))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) != 10 || quat_(1,0,0,1) !=  8 || quat_(1,0,0,2) !=  7 || quat_(1,0,0,3) !=  9 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=  0 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=  0 ||
+          quat_(1,0,2,0) !=  0 || quat_(1,0,2,1) !=  0 || quat_(1,0,2,2) !=  0 || quat_(1,0,2,3) !=  0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=  0 || quat_(1,0,3,2) !=  0 || quat_(1,0,3,3) !=  0 ||
+          quat_(1,0,4,0) !=  0 || quat_(1,0,4,1) !=  0 || quat_(1,0,4,2) !=  0 || quat_(1,0,4,3) !=  0 ||
+          quat_(1,1,0,0) !=  0 || quat_(1,1,0,1) !=  0 || quat_(1,1,0,2) !=  0 || quat_(1,1,0,3) !=  0 ||
+          quat_(1,1,1,0) !=  0 || quat_(1,1,1,1) !=  0 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=  6 ||
+          quat_(1,1,2,0) !=  0 || quat_(1,1,2,1) !=  0 || quat_(1,1,2,2) !=  0 || quat_(1,1,2,3) !=  0 ||
+          quat_(1,1,3,0) !=  0 || quat_(1,1,3,1) !=  0 || quat_(1,1,3,2) !=  0 || quat_(1,1,3,3) !=  0 ||
+          quat_(1,1,4,0) !=  0 || quat_(1,1,4,1) !=  0 || quat_(1,1,4,2) !=  0 || quat_(1,1,4,3) !=  0) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quat_ << "\n"
+             << "   Expected result:\n((((      0  0  0  0 )(      0  1  0  0 "
+                ")(     -2  0      -3  0 )(      0  4  5      -6 )(      7     "
+                " -8  9      10 ))((      0  0  0  0 )(      0  1  0  0 )(     "
+                "-2  0      13  0 )(      0  4  5      -6 )(      7      -8  9 "
+                "     10 )))(((     10  8  7  9 )(      0  0  0  0 )(      0  "
+                "0  0  0 )(      0  0  0  0 )(      0  0  0  0 ))((      0  0  "
+                "0  0 )(      0  0  0  6 )(      0  0  0  0 )(      0  0  0  0 "
+                ")(      0  0  0  0 )))(((      0  0  0  0 )(      0  1  0  0 "
+                ")(     -2  0      -3  4 )(      0  0  5  2 )(      7      -8  "
+                "9      10 ))((      0  0  0  0 )(      0  1  0  0 )(     62  "
+                "0      -3  0 )(      0  5      15      16 )(     -7      -8   "
+                "   19      10 ))))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "dense quaternion assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
+      std::unique_ptr<int[]> memory( new int[41] );
+      UnalignedUnpadded m1( memory.get()+1UL, 2UL, 5UL, 4UL );
+      m1 = 0;
+      m1(0,0,0) = 10;
+      m1(0,0,1) = 8;
+      m1(0,0,2) = 7;
+      m1(0,0,3) = 9;
+      m1(1,1,3) = 6;
+
+      quatslice1 = m1;
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL);
+      checkNonZeros( quatslice1, 5UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) != 10 || quatslice1(0,0,1) !=  8 || quatslice1(0,0,2) !=  7 || quatslice1(0,0,3) !=  9 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) !=  0 || quatslice1(0,2,2) !=  0 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  0 || quatslice1(0,3,2) !=  0 || quatslice1(0,3,3) !=  0 ||
+          quatslice1(0,4,0) !=  0 || quatslice1(0,4,1) !=  0 || quatslice1(0,4,2) !=  0 || quatslice1(0,4,3) !=  0 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  0 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  6 ||
+          quatslice1(1,2,0) !=  0 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) !=  0 || quatslice1(1,3,1) !=  0 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) !=  0 ||
+          quatslice1(1,4,0) !=  0 || quatslice1(1,4,1) !=  0 || quatslice1(1,4,2) !=  0 || quatslice1(1,4,3) !=  0) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quatslice1 << "\n"
+             << "   Expected result:\n(((     10  8  7  9 )(      0  0  0  0 "
+                ")(      0  0  0  0 )(      0  0  0  0 )(      0  0  0  0 ))(( "
+                "     0  0  0  0 )(      0  0  0  6 )(      0  0  0  0 )(      "
+                "0  0  0  0 )(      0  0  0  0 )))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) != 10 || quat_(1,0,0,1) !=  8 || quat_(1,0,0,2) !=  7 || quat_(1,0,0,3) !=  9 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=  0 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=  0 ||
+          quat_(1,0,2,0) !=  0 || quat_(1,0,2,1) !=  0 || quat_(1,0,2,2) !=  0 || quat_(1,0,2,3) !=  0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=  0 || quat_(1,0,3,2) !=  0 || quat_(1,0,3,3) !=  0 ||
+          quat_(1,0,4,0) !=  0 || quat_(1,0,4,1) !=  0 || quat_(1,0,4,2) !=  0 || quat_(1,0,4,3) !=  0 ||
+          quat_(1,1,0,0) !=  0 || quat_(1,1,0,1) !=  0 || quat_(1,1,0,2) !=  0 || quat_(1,1,0,3) !=  0 ||
+          quat_(1,1,1,0) !=  0 || quat_(1,1,1,1) !=  0 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=  6 ||
+          quat_(1,1,2,0) !=  0 || quat_(1,1,2,1) !=  0 || quat_(1,1,2,2) !=  0 || quat_(1,1,2,3) !=  0 ||
+          quat_(1,1,3,0) !=  0 || quat_(1,1,3,1) !=  0 || quat_(1,1,3,2) !=  0 || quat_(1,1,3,3) !=  0 ||
+          quat_(1,1,4,0) !=  0 || quat_(1,1,4,1) !=  0 || quat_(1,1,4,2) !=  0 || quat_(1,1,4,3) !=  0) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quat_ << "\n"
+             << "   Expected result:\n((((      0  0  0  0 )(      0  1  0  0 "
+                ")(     -2  0      -3  0 )(      0  4  5      -6 )(      7     "
+                " -8  9      10 ))((      0  0  0  0 )(      0  1  0  0 )(     "
+                "-2  0      13  0 )(      0  4  5      -6 )(      7      -8  9 "
+                "     10 )))(((     10  8  7  9 )(      0  0  0  0 )(      0  "
+                "0  0  0 )(      0  0  0  0 )(      0  0  0  0 ))((      0  0  "
+                "0  0 )(      0  0  0  6 )(      0  0  0  0 )(      0  0  0  0 "
+                ")(      0  0  0  0 )))(((      0  0  0  0 )(      0  1  0  0 "
+                ")(     -2  0      -3  4 )(      0  0  5  2 )(      7      -8  "
+                "9      10 ))((      0  0  0  0 )(      0  1  0  0 )(     62  "
+                "0      -3  0 )(      0  5      15      16 )(     -7      -8   "
+                "   19      10 ))))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the QuatSlice addition assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the addition assignment operators of the QuatSlice specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseGeneralTest::testAddAssign()
+{
+   //=====================================================================================
+   // QuatSlice addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "QuatSlice addition assignment";
+
+      initialize();
+
+      RT quatslice1  = blaze::quatslice( quat_, 1UL );
+      quatslice1    += blaze::quatslice( quat_, 0UL );
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 23UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=   1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=   0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=   1 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=   0 ||
+          quatslice1(0,2,0) != -2 || quatslice1(0,2,1) !=  12 || quatslice1(0,2,2) != -6 || quatslice1(0,2,3) !=   0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=   8 || quatslice1(0,3,2) != 10 || quatslice1(0,3,3) != -12 ||
+          quatslice1(0,4,0) != 14 || quatslice1(0,4,1) !=  20 || quatslice1(0,4,2) != 18 || quatslice1(0,4,3) !=  20 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=   0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=   0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=   2 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=   0 ||
+          quatslice1(1,2,0) != -4 || quatslice1(1,2,1) !=   0 || quatslice1(1,2,2) != 13 || quatslice1(1,2,3) !=   0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=   8 || quatslice1(1,3,2) != 10 || quatslice1(1,3,3) !=  27 ||
+          quatslice1(1,4,0) != 14 || quatslice1(1,4,1) != -16 || quatslice1(1,4,2) != 18 || quatslice1(1,4,3) !=  21) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quatslice1 << "\n"
+             << "   Expected result:\n(((   0  1  0  0 )(   0  1  0  0 )(  -2  "
+                "    12      -6  0 )(   0  8      10     -12 )(  14      20    "
+                "  18      20 ))((   0  0  0  0 )(   0  2  0  0 )(  -4  0      "
+                "13  0 )(  -3  8      10      27 )(  14     -16      18      "
+                "21 )))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) !=  0 || quat_(1,0,0,1) !=   1 || quat_(1,0,0,2) !=  0 || quat_(1,0,0,3) !=   0 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=   1 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=   0 ||
+          quat_(1,0,2,0) != -2 || quat_(1,0,2,1) !=  12 || quat_(1,0,2,2) != -6 || quat_(1,0,2,3) !=   0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=   8 || quat_(1,0,3,2) != 10 || quat_(1,0,3,3) != -12 ||
+          quat_(1,0,4,0) != 14 || quat_(1,0,4,1) !=  20 || quat_(1,0,4,2) != 18 || quat_(1,0,4,3) !=  20 ||
+          quat_(1,1,0,0) !=  0 || quat_(1,1,0,1) !=   0 || quat_(1,1,0,2) !=  0 || quat_(1,1,0,3) !=   0 ||
+          quat_(1,1,1,0) !=  0 || quat_(1,1,1,1) !=   2 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=   0 ||
+          quat_(1,1,2,0) != -4 || quat_(1,1,2,1) !=   0 || quat_(1,1,2,2) != 13 || quat_(1,1,2,3) !=   0 ||
+          quat_(1,1,3,0) != -3 || quat_(1,1,3,1) !=   8 || quat_(1,1,3,2) != 10 || quat_(1,1,3,3) !=  27 ||
+          quat_(1,1,4,0) != 14 || quat_(1,1,4,1) != -16 || quat_(1,1,4,2) != 18 || quat_(1,1,4,3) !=  21) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quat_ << "\n"
+             << "   Expected result:\n(((   0  1  0  0 )(   0  1  0  0 )(  -2  "
+                "    12      -6  0 )(   0  8      10     -12 )(  14      20    "
+                "  18      20 ))((   0  0  0  0 )(   0  2  0  0 )(  -4  0      "
+                "13  0 )(  -3  8      10      27 )(  14     -16      18  21 "
+                ")))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+   }
+
+   //=====================================================================================
+   // dense quaternion addition assignment
+   //=====================================================================================
+
+   {
+      test_ = "dense quaternion addition assignment (mixed type)";
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      const blaze::DynamicTensor< short > t{
+         {{0, 0, 0, 0}, {0, 1, 0, 0}, {-2, 0, -3, 0}, {0, 4, 5, -6},
+            {7, -8, 9, 10}},
+         {{0, 0, 0, 0}, {0, 1, 0, 0}, {-2, 0, -3, 0}, {0, 4, 5, -6},
+            {7, -8, 9, 10}}};
+
+      quatslice1 += t;
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 23UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=   1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=   0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=   1 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=   0 ||
+          quatslice1(0,2,0) != -2 || quatslice1(0,2,1) !=  12 || quatslice1(0,2,2) != -6 || quatslice1(0,2,3) !=   0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=   8 || quatslice1(0,3,2) != 10 || quatslice1(0,3,3) != -12 ||
+          quatslice1(0,4,0) != 14 || quatslice1(0,4,1) !=  20 || quatslice1(0,4,2) != 18 || quatslice1(0,4,3) !=  20 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=   0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=   0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=   2 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=   0 ||
+          quatslice1(1,2,0) != -4 || quatslice1(1,2,1) !=   0 || quatslice1(1,2,2) != -3 || quatslice1(1,2,3) !=   0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=   8 || quatslice1(1,3,2) != 10 || quatslice1(1,3,3) !=  27 ||
+          quatslice1(1,4,0) != 14 || quatslice1(1,4,1) != -16 || quatslice1(1,4,2) != 18 || quatslice1(1,4,3) !=  21 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) !=  0 || quat_(1,0,0,1) !=   1 || quat_(1,0,0,2) !=  0 || quat_(1,0,0,3) !=   0 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=   1 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=   0 ||
+          quat_(1,0,2,0) != -2 || quat_(1,0,2,1) !=  12 || quat_(1,0,2,2) != -6 || quat_(1,0,2,3) !=   0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=   8 || quat_(1,0,3,2) != 10 || quat_(1,0,3,3) != -12 ||
+          quat_(1,0,4,0) != 14 || quat_(1,0,4,1) !=  20 || quat_(1,0,4,2) != 18 || quat_(1,0,4,3) !=  20 ||
+          quat_(1,1,0,0) !=  0 || quat_(1,1,0,1) !=   0 || quat_(1,1,0,2) !=  0 || quat_(1,1,0,3) !=   0 ||
+          quat_(1,1,1,0) !=  0 || quat_(1,1,1,1) !=   2 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=   0 ||
+          quat_(1,1,2,0) != -4 || quat_(1,1,2,1) !=   0 || quat_(1,1,2,2) != -3 || quat_(1,1,2,3) !=   0 ||
+          quat_(1,1,3,0) != -3 || quat_(1,1,3,1) !=   8 || quat_(1,1,3,2) != 10 || quat_(1,1,3,3) !=  27 ||
+          quat_(1,1,4,0) != 14 || quat_(1,1,4,1) != -16 || quat_(1,1,4,2) != 18 || quat_(1,1,4,3) !=  21 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quat_ << "\n"
+             << "   Expected result:\n((  0   0   0   0 )\n"
+                                     " (  0   1   0   0 )\n"
+                                     " ( -2   0  -3   0 )\n"
+                                     " (  0   4   5  -6 )\n"
+                                     " (  7  -8   9  10 ))\n"
+                                     "((  0   0   0   0 )\n"
+                                     " (  0   2   0   0 )\n"
+                                     " ( -4   0  -6   0 )\n"
+                                     " (  0   8  10 -12 )\n"
+                                     " ( 14 -16  18  20 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "dense quaternion addition assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 160UL ) );
+      AlignedPadded m( memory.get(), 2UL, 5UL, 4UL, 16UL );
+      m(0,0,0) =  0;
+      m(0,0,1) =  0;
+      m(0,0,2) =  0;
+      m(0,0,3) = 13;
+      m(0,1,0) =  0;
+      m(0,1,1) =  1;
+      m(0,1,2) =  0;
+      m(0,1,3) =  0;
+      m(0,2,0) = -2;
+      m(0,2,1) =  0;
+      m(0,2,2) = -3;
+      m(0,2,3) =  0;
+      m(0,3,0) =  0;
+      m(0,3,1) =  4;
+      m(0,3,2) =  5;
+      m(0,3,3) = -6;
+      m(0,4,0) =  7;
+      m(0,4,1) = -8;
+      m(0,4,2) =  9;
+      m(0,4,3) = 10;
+      m(1,0,0) =  0;
+      m(1,0,1) =  0;
+      m(1,0,2) =  0;
+      m(1,0,3) =  0;
+      m(1,1,0) =  0;
+      m(1,1,1) =  1;
+      m(1,1,2) =  0;
+      m(1,1,3) =  0;
+      m(1,2,0) = 33;
+      m(1,2,1) =  0;
+      m(1,2,2) = -3;
+      m(1,2,3) =  0;
+      m(1,3,0) =  0;
+      m(1,3,1) =  4;
+      m(1,3,2) =  5;
+      m(1,3,3) = -6;
+      m(1,4,0) = 17;
+      m(1,4,1) = 18;
+      m(1,4,2) =  9;
+      m(1,4,3) = 10;
+
+      quatslice1 += m;
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL);
+      checkNonZeros( quatslice1, 24UL);
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=   1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  13 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=   1 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=   0 ||
+          quatslice1(0,2,0) != -2 || quatslice1(0,2,1) !=  12 || quatslice1(0,2,2) != -6 || quatslice1(0,2,3) !=   0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=   8 || quatslice1(0,3,2) != 10 || quatslice1(0,3,3) != -12 ||
+          quatslice1(0,4,0) != 14 || quatslice1(0,4,1) !=  20 || quatslice1(0,4,2) != 18 || quatslice1(0,4,3) !=  20 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=   0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=   0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=   2 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=   0 ||
+          quatslice1(1,2,0) != 31 || quatslice1(1,2,1) !=   0 || quatslice1(1,2,2) != -3 || quatslice1(1,2,3) !=   0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=   8 || quatslice1(1,3,2) != 10 || quatslice1(1,3,3) !=  27 ||
+          quatslice1(1,4,0) != 24 || quatslice1(1,4,1) !=  10 || quatslice1(1,4,2) != 18 || quatslice1(1,4,3) !=  21 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) !=  0 || quat_(1,0,0,1) !=   1 || quat_(1,0,0,2) !=  0 || quat_(1,0,0,3) !=  13 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=   1 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=   0 ||
+          quat_(1,0,2,0) != -2 || quat_(1,0,2,1) !=  12 || quat_(1,0,2,2) != -6 || quat_(1,0,2,3) !=   0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=   8 || quat_(1,0,3,2) != 10 || quat_(1,0,3,3) != -12 ||
+          quat_(1,0,4,0) != 14 || quat_(1,0,4,1) !=  20 || quat_(1,0,4,2) != 18 || quat_(1,0,4,3) !=  20 ||
+          quat_(1,1,0,0) !=  0 || quat_(1,1,0,1) !=   0 || quat_(1,1,0,2) !=  0 || quat_(1,1,0,3) !=   0 ||
+          quat_(1,1,1,0) !=  0 || quat_(1,1,1,1) !=   2 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=   0 ||
+          quat_(1,1,2,0) != 31 || quat_(1,1,2,1) !=   0 || quat_(1,1,2,2) != -3 || quat_(1,1,2,3) !=   0 ||
+          quat_(1,1,3,0) != -3 || quat_(1,1,3,1) !=   8 || quat_(1,1,3,2) != 10 || quat_(1,1,3,3) !=  27 ||
+          quat_(1,1,4,0) != 24 || quat_(1,1,4,1) !=  10 || quat_(1,1,4,2) != 18 || quat_(1,1,4,3) !=  21  ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quat_ << "\n"
+             << "   Expected result:\n((  0   0   0   0 )\n"
+                                     " (  0   1   0   0 )\n"
+                                     " ( -2   0  -3   0 )\n"
+                                     " (  0   4   5  -6 )\n"
+                                     " (  7  -8   9  10 ))\n"
+                                     "((  0   0   0   0 )\n"
+                                     " (  0   2   0   0 )\n"
+                                     " ( -4   0  -6   0 )\n"
+                                     " (  0   8  10 -12 )\n"
+                                     " ( 14 -16  18  20 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "dense quaternion addition assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
+      std::unique_ptr<int[]> memory( new int[41] );
+      UnalignedUnpadded m( memory.get()+1UL, 2UL, 5UL, 4UL );
+      m(0,0,0) =  0;
+      m(0,0,1) =  0;
+      m(0,0,2) =  0;
+      m(0,0,3) = 13;
+      m(0,1,0) =  0;
+      m(0,1,1) =  1;
+      m(0,1,2) =  0;
+      m(0,1,3) =  0;
+      m(0,2,0) = -2;
+      m(0,2,1) =  0;
+      m(0,2,2) = -3;
+      m(0,2,3) =  0;
+      m(0,3,0) =  0;
+      m(0,3,1) =  4;
+      m(0,3,2) =  5;
+      m(0,3,3) = -6;
+      m(0,4,0) =  7;
+      m(0,4,1) = -8;
+      m(0,4,2) =  9;
+      m(0,4,3) = 10;
+      m(1,0,0) =  0;
+      m(1,0,1) =  0;
+      m(1,0,2) =  0;
+      m(1,0,3) =  0;
+      m(1,1,0) =  0;
+      m(1,1,1) =  1;
+      m(1,1,2) =  0;
+      m(1,1,3) =  0;
+      m(1,2,0) = 33;
+      m(1,2,1) =  0;
+      m(1,2,2) = -3;
+      m(1,2,3) =  0;
+      m(1,3,0) =  0;
+      m(1,3,1) =  4;
+      m(1,3,2) =  5;
+      m(1,3,3) = -6;
+      m(1,4,0) = 17;
+      m(1,4,1) = 18;
+      m(1,4,2) =  9;
+      m(1,4,3) = 10;
+
+      quatslice1 += m;
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL);
+      checkNonZeros( quatslice1, 24UL);
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=   1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  13 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=   1 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=   0 ||
+          quatslice1(0,2,0) != -2 || quatslice1(0,2,1) !=  12 || quatslice1(0,2,2) != -6 || quatslice1(0,2,3) !=   0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=   8 || quatslice1(0,3,2) != 10 || quatslice1(0,3,3) != -12 ||
+          quatslice1(0,4,0) != 14 || quatslice1(0,4,1) !=  20 || quatslice1(0,4,2) != 18 || quatslice1(0,4,3) !=  20 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=   0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=   0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=   2 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=   0 ||
+          quatslice1(1,2,0) != 31 || quatslice1(1,2,1) !=   0 || quatslice1(1,2,2) != -3 || quatslice1(1,2,3) !=   0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=   8 || quatslice1(1,3,2) != 10 || quatslice1(1,3,3) !=  27 ||
+          quatslice1(1,4,0) != 24 || quatslice1(1,4,1) !=  10 || quatslice1(1,4,2) != 18 || quatslice1(1,4,3) !=  21 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) !=  0 || quat_(1,0,0,1) !=   1 || quat_(1,0,0,2) !=  0 || quat_(1,0,0,3) !=  13 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=   1 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=   0 ||
+          quat_(1,0,2,0) != -2 || quat_(1,0,2,1) !=  12 || quat_(1,0,2,2) != -6 || quat_(1,0,2,3) !=   0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=   8 || quat_(1,0,3,2) != 10 || quat_(1,0,3,3) != -12 ||
+          quat_(1,0,4,0) != 14 || quat_(1,0,4,1) !=  20 || quat_(1,0,4,2) != 18 || quat_(1,0,4,3) !=  20 ||
+          quat_(1,1,0,0) !=  0 || quat_(1,1,0,1) !=   0 || quat_(1,1,0,2) !=  0 || quat_(1,1,0,3) !=   0 ||
+          quat_(1,1,1,0) !=  0 || quat_(1,1,1,1) !=   2 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=   0 ||
+          quat_(1,1,2,0) != 31 || quat_(1,1,2,1) !=   0 || quat_(1,1,2,2) != -3 || quat_(1,1,2,3) !=   0 ||
+          quat_(1,1,3,0) != -3 || quat_(1,1,3,1) !=   8 || quat_(1,1,3,2) != 10 || quat_(1,1,3,3) !=  27 ||
+          quat_(1,1,4,0) != 24 || quat_(1,1,4,1) !=  10 || quat_(1,1,4,2) != 18 || quat_(1,1,4,3) !=  21  ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quat_ << "\n"
+             << "   Expected result:\n((  0   0   0   0 )\n"
+                                     " (  0   1   0   0 )\n"
+                                     " ( -2   0  -3   0 )\n"
+                                     " (  0   4   5  -6 )\n"
+                                     " (  7  -8   9  10 ))\n"
+                                     "((  0   0   0   0 )\n"
+                                     " (  0   2   0   0 )\n"
+                                     " ( -4   0  -6   0 )\n"
+                                     " (  0   8  10 -12 )\n"
+                                     " ( 14 -16  18  20 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the QuatSlice subtraction assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the subtraction assignment operators of the QuatSlice
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseGeneralTest::testSubAssign()
+{
+   //=====================================================================================
+   // QuatSlice subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "QuatSlice subtraction assignment";
+
+      initialize();
+
+      RT quatslice1  = blaze::quatslice( quat_, 1UL );
+      quatslice1    -= blaze::quatslice( quat_, 0UL );
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 9UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=   1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=   0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  -1 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=   0 ||
+          quatslice1(0,2,0) !=  2 || quatslice1(0,2,1) !=  12 || quatslice1(0,2,2) !=  0 || quatslice1(0,2,3) !=   0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=   0 || quatslice1(0,3,2) !=  0 || quatslice1(0,3,3) !=   0 ||
+          quatslice1(0,4,0) !=  0 || quatslice1(0,4,1) !=  36 || quatslice1(0,4,2) !=  0 || quatslice1(0,4,3) !=   0 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=   0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=   0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=   0 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=   0 ||
+          quatslice1(1,2,0) !=  0 || quatslice1(1,2,1) !=   0 || quatslice1(1,2,2) !=-13 || quatslice1(1,2,3) !=   0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=   0 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) !=  39 ||
+          quatslice1(1,4,0) !=  0 || quatslice1(1,4,1) !=   0 || quatslice1(1,4,2) !=  0 || quatslice1(1,4,3) !=   1) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n"
+             << quatslice1 << "\n"
+             << "   Expected result:\n(((   0  1  0  0 )(   0  1  0  0 )(  -2  "
+                "    12      -6  0 )(   0  8      10     -12 )(  14      20    "
+                "  18      20 ))((   0  0  0  0 )(   0  2  0  0 )(  -4  0      "
+                "13  0 )(  -3  8      10      27 )(  14     -16      18      "
+                "21 )))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) !=  0 || quat_(1,0,0,1) !=   1 || quat_(1,0,0,2) !=  0 || quat_(1,0,0,3) !=   0 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=  -1 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=   0 ||
+          quat_(1,0,2,0) !=  2 || quat_(1,0,2,1) !=  12 || quat_(1,0,2,2) !=  0 || quat_(1,0,2,3) !=   0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=   0 || quat_(1,0,3,2) !=  0 || quat_(1,0,3,3) !=   0 ||
+          quat_(1,0,4,0) !=  0 || quat_(1,0,4,1) !=  36 || quat_(1,0,4,2) !=  0 || quat_(1,0,4,3) !=   0 ||
+          quat_(1,1,0,0) !=  0 || quat_(1,1,0,1) !=   0 || quat_(1,1,0,2) !=  0 || quat_(1,1,0,3) !=   0 ||
+          quat_(1,1,1,0) !=  0 || quat_(1,1,1,1) !=   0 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=   0 ||
+          quat_(1,1,2,0) !=  0 || quat_(1,1,2,1) !=   0 || quat_(1,1,2,2) !=-13 || quat_(1,1,2,3) !=   0 ||
+          quat_(1,1,3,0) != -3 || quat_(1,1,3,1) !=   0 || quat_(1,1,3,2) !=  0 || quat_(1,1,3,3) !=  39 ||
+          quat_(1,1,4,0) !=  0 || quat_(1,1,4,1) !=   0 || quat_(1,1,4,2) !=  0 || quat_(1,1,4,3) !=   1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quat_ << "\n"
+             << "   Expected result:\n((  0   0   0   0 )\n"
+                                     " (  0   1   0   0 )\n"
+                                     " ( -2   0  -3   0 )\n"
+                                     " (  0   4   5  -6 )\n"
+                                     " (  7  -8   9  10 ))\n"
+                                     "((  0   0   0   0 )\n"
+                                     " (  0   0   0   0 )\n"
+                                     " (  0   0   0   0 )\n"
+                                     " (  0   0   0   0 )\n"
+                                     " (  0   0   0   0 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // dense quaternion subtraction assignment
+   //=====================================================================================
+
+   {
+      test_ = "dense quaternion subtraction assignment (mixed type)";
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      const blaze::DynamicTensor< short > t{
+         {{0, 0, 0, 0}, {0, 1, 0, 0}, {-2, 0, -3, 0}, {0, 4, 5, -6},
+            {7, -8, 9, 10}},
+         {{0, 0, 0, 0}, {0, 1, 0, 0}, {-2, 0, -3, 0}, {0, 4, 5, -6},
+            {7, -8, 9, 10}}};
+
+      quatslice1 -= t;
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 9UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=   1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=   0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  -1 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=   0 ||
+          quatslice1(0,2,0) !=  2 || quatslice1(0,2,1) !=  12 || quatslice1(0,2,2) !=  0 || quatslice1(0,2,3) !=   0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=   0 || quatslice1(0,3,2) !=  0 || quatslice1(0,3,3) !=   0 ||
+          quatslice1(0,4,0) !=  0 || quatslice1(0,4,1) !=  36 || quatslice1(0,4,2) !=  0 || quatslice1(0,4,3) !=   0 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=   0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=   0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=   0 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=   0 ||
+          quatslice1(1,2,0) !=  0 || quatslice1(1,2,1) !=   0 || quatslice1(1,2,2) !=  3 || quatslice1(1,2,3) !=   0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=   0 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) !=  39 ||
+          quatslice1(1,4,0) !=  0 || quatslice1(1,4,1) !=   0 || quatslice1(1,4,2) !=  0 || quatslice1(1,4,3) !=   1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Addition assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( quat_(1,0,0,0) !=  0 || quat_(1,0,0,1) !=   1 || quat_(1,0,0,2) !=  0 || quat_(1,0,0,3) !=   0 ||
+          quat_(1,0,1,0) !=  0 || quat_(1,0,1,1) !=  -1 || quat_(1,0,1,2) !=  0 || quat_(1,0,1,3) !=   0 ||
+          quat_(1,0,2,0) !=  2 || quat_(1,0,2,1) !=  12 || quat_(1,0,2,2) !=  0 || quat_(1,0,2,3) !=   0 ||
+          quat_(1,0,3,0) !=  0 || quat_(1,0,3,1) !=   0 || quat_(1,0,3,2) !=  0 || quat_(1,0,3,3) !=   0 ||
+          quat_(1,0,4,0) !=  0 || quat_(1,0,4,1) !=  36 || quat_(1,0,4,2) !=  0 || quat_(1,0,4,3) !=   0 ||
+          quat_(1,1,0,0) !=  0 || quat_(1,1,0,1) !=   0 || quat_(1,1,0,2) !=  0 || quat_(1,1,0,3) !=   0 ||
+          quat_(1,1,1,0) !=  0 || quat_(1,1,1,1) !=   0 || quat_(1,1,1,2) !=  0 || quat_(1,1,1,3) !=   0 ||
+          quat_(1,1,2,0) !=  0 || quat_(1,1,2,1) !=   0 || quat_(1,1,2,2) !=  3 || quat_(1,1,2,3) !=   0 ||
+          quat_(1,1,3,0) != -3 || quat_(1,1,3,1) !=   0 || quat_(1,1,3,2) !=  0 || quat_(1,1,3,3) !=  39 ||
+          quat_(1,1,4,0) !=  0 || quat_(1,1,4,1) !=   0 || quat_(1,1,4,2) !=  0 || quat_(1,1,4,3) !=   1  ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quat_ << "\n"
+             << "   Expected result:\n((  0   0   0   0 )\n"
+                                     " (  0   1   0   0 )\n"
+                                     " ( -2   0  -3   0 )\n"
+                                     " (  0   4   5  -6 )\n"
+                                     " (  7  -8   9  10 ))\n"
+                                     "((  0   0   0   0 )\n"
+                                     " (  0   0   0   0 )\n"
+                                     " (  0   0   0   0 )\n"
+                                     " (  0   0   0   0 )\n"
+                                     " (  0   0   0   0 ))\n";
+      }
+   }
+
+   {
+      test_ = "dense quaternion subtraction assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 160UL ) );
+      AlignedPadded m( memory.get(), 2UL, 5UL, 4UL, 16UL );
+      m(0,0,0) =  0;
+      m(0,0,1) =  0;
+      m(0,0,2) =  0;
+      m(0,0,3) = 13;
+      m(0,1,0) =  0;
+      m(0,1,1) =  1;
+      m(0,1,2) =  0;
+      m(0,1,3) =  0;
+      m(0,2,0) = -2;
+      m(0,2,1) =  0;
+      m(0,2,2) = -3;
+      m(0,2,3) =  0;
+      m(0,3,0) =  0;
+      m(0,3,1) =  4;
+      m(0,3,2) =  5;
+      m(0,3,3) = -6;
+      m(0,4,0) =  7;
+      m(0,4,1) = -8;
+      m(0,4,2) =  9;
+      m(0,4,3) = 10;
+      m(1,0,0) =  0;
+      m(1,0,1) =  0;
+      m(1,0,2) =  0;
+      m(1,0,3) =  0;
+      m(1,1,0) =  0;
+      m(1,1,1) =  1;
+      m(1,1,2) =  0;
+      m(1,1,3) =  0;
+      m(1,2,0) = 33;
+      m(1,2,1) =  0;
+      m(1,2,2) = -3;
+      m(1,2,3) =  0;
+      m(1,3,0) =  0;
+      m(1,3,1) =  4;
+      m(1,3,2) =  5;
+      m(1,3,3) = -6;
+      m(1,4,0) = 17;
+      m(1,4,1) = 18;
+      m(1,4,2) =  9;
+      m(1,4,3) = 10;
+
+      quatslice1 -= m;
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL);
+      checkNonZeros( quatslice1, 13UL);
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=   1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) != -13 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  -1 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=   0 ||
+          quatslice1(0,2,0) !=  2 || quatslice1(0,2,1) !=  12 || quatslice1(0,2,2) !=  0 || quatslice1(0,2,3) !=   0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=   0 || quatslice1(0,3,2) !=  0 || quatslice1(0,3,3) !=   0 ||
+          quatslice1(0,4,0) !=  0 || quatslice1(0,4,1) !=  36 || quatslice1(0,4,2) !=  0 || quatslice1(0,4,3) !=   0 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=   0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=   0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=   0 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=   0 ||
+          quatslice1(1,2,0) !=-35 || quatslice1(1,2,1) !=   0 || quatslice1(1,2,2) !=  3 || quatslice1(1,2,3) !=   0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=   0 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) !=  39 ||
+          quatslice1(1,4,0) !=-10 || quatslice1(1,4,1) != -26 || quatslice1(1,4,2) !=  0 || quatslice1(1,4,3) !=   1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "dense quaternion subtraction assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      using UnalignedUnpadded = blaze::CustomTensor<int,unaligned,unpadded>;
+      std::unique_ptr<int[]> memory( new int[41] );
+      UnalignedUnpadded m( memory.get()+1UL, 2UL, 5UL, 4UL );
+      m(0,0,0) =  0;
+      m(0,0,1) =  0;
+      m(0,0,2) =  0;
+      m(0,0,3) = 13;
+      m(0,1,0) =  0;
+      m(0,1,1) =  1;
+      m(0,1,2) =  0;
+      m(0,1,3) =  0;
+      m(0,2,0) = -2;
+      m(0,2,1) =  0;
+      m(0,2,2) = -3;
+      m(0,2,3) =  0;
+      m(0,3,0) =  0;
+      m(0,3,1) =  4;
+      m(0,3,2) =  5;
+      m(0,3,3) = -6;
+      m(0,4,0) =  7;
+      m(0,4,1) = -8;
+      m(0,4,2) =  9;
+      m(0,4,3) = 10;
+      m(1,0,0) =  0;
+      m(1,0,1) =  0;
+      m(1,0,2) =  0;
+      m(1,0,3) =  0;
+      m(1,1,0) =  0;
+      m(1,1,1) =  1;
+      m(1,1,2) =  0;
+      m(1,1,3) =  0;
+      m(1,2,0) = 33;
+      m(1,2,1) =  0;
+      m(1,2,2) = -3;
+      m(1,2,3) =  0;
+      m(1,3,0) =  0;
+      m(1,3,1) =  4;
+      m(1,3,2) =  5;
+      m(1,3,3) = -6;
+      m(1,4,0) = 17;
+      m(1,4,1) = 18;
+      m(1,4,2) =  9;
+      m(1,4,3) = 10;
+
+      quatslice1 -= m;
+
+      checkPages   ( quatslice1, 2UL );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL);
+      checkNonZeros( quatslice1, 13UL);
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=   1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) != -13 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  -1 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=   0 ||
+          quatslice1(0,2,0) !=  2 || quatslice1(0,2,1) !=  12 || quatslice1(0,2,2) !=  0 || quatslice1(0,2,3) !=   0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=   0 || quatslice1(0,3,2) !=  0 || quatslice1(0,3,3) !=   0 ||
+          quatslice1(0,4,0) !=  0 || quatslice1(0,4,1) !=  36 || quatslice1(0,4,2) !=  0 || quatslice1(0,4,3) !=   0 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=   0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=   0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=   0 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=   0 ||
+          quatslice1(1,2,0) !=-35 || quatslice1(1,2,1) !=   0 || quatslice1(1,2,2) !=  3 || quatslice1(1,2,3) !=   0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=   0 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) !=  39 ||
+          quatslice1(1,4,0) !=-10 || quatslice1(1,4,1) != -26 || quatslice1(1,4,2) !=  0 || quatslice1(1,4,3) !=   1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Subtraction assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 0 0 0 )\n( 0 2 0 0 )\n( -4 0 -6 0 )\n( 0 8 10 -12 )\n( 14 -16 18 20 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the QuatSlice Schur product assignment operators.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the Schur product assignment operators of the QuatSlice
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseGeneralTest::testSchurAssign()
+{
+   //=====================================================================================
+   // QuatSlice Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "QuatSlice Schur product assignment";
+
+      blaze::DynamicArray< 4, int > a{ {{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+                                          {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}},
+         {{{-1, -2, -3}, {-4, -5, -6}, {-7, -8, -9}},
+            {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}} };
+
+      RT quatslice2 = blaze::quatslice( a, 1UL );
+      quatslice2 %= blaze::quatslice( a, 0UL );
+
+      checkPages   ( quatslice2, 2UL );
+      checkRows    ( quatslice2, 3UL );
+      checkColumns ( quatslice2, 3UL );
+      checkCapacity( quatslice2, 18UL );
+      checkNonZeros( quatslice2, 18UL );
+      checkQuats   ( a,  2UL );
+      checkRows    ( a,  3UL );
+      checkColumns ( a,  3UL );
+      checkPages   ( a,  2UL );
+      checkNonZeros( a, 36UL );
+
+      if( quatslice2(0,0,0) !=  -1 || quatslice2(0,0,1) !=  -4 || quatslice2(0,0,2) != -9  ||
+          quatslice2(0,1,0) != -16 || quatslice2(0,1,1) != -25 || quatslice2(0,1,2) != -36 ||
+          quatslice2(0,2,0) != -49 || quatslice2(0,2,1) != -64 || quatslice2(0,2,2) != -81 ||
+          quatslice2(1,0,0) !=  81 || quatslice2(1,0,1) !=  64 || quatslice2(1,0,2) !=  49 ||
+          quatslice2(1,1,0) !=  36 || quatslice2(1,1,1) !=  25 || quatslice2(1,1,2) !=  16 ||
+          quatslice2(1,2,0) !=   9 || quatslice2(1,2,1) !=   4 || quatslice2(1,2,2) !=  1) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice2 << "\n"
+             << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( a(1,0,0,0) != -1  || a(1,0,0,1) != -4  || a(1,0,0,2) != -9  ||
+          a(1,0,1,0) != -16 || a(1,0,1,1) != -25 || a(1,0,1,2) != -36 ||
+          a(1,0,2,0) != -49 || a(1,0,2,1) != -64 || a(1,0,2,2) != -81 ||
+          a(1,1,0,0) !=  81 || a(1,1,0,1) !=  64 || a(1,1,0,2) !=  49 ||
+          a(1,1,1,0) !=  36 || a(1,1,1,1) !=  25 || a(1,1,1,2) !=  16 ||
+          a(1,1,2,0) !=   9 || a(1,1,2,1) !=   4 || a(1,1,2,2) !=  1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << a << "\n"
+             << "   Expected result:\n((  1  2  3 )\n"
+                                     " (  4  5  6 )\n"
+                                     " (  7  8  9 ))\n"
+                                     "((  9 16 21 )\n"
+                                     " ( 24 25 24 )\n"
+                                     " ( 21 16  9 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // dense quaternion Schur product assignment
+   //=====================================================================================
+
+   {
+      test_ = "dense vector Schur product assignment (mixed type)";
+
+      blaze::DynamicArray< 4, int > a{{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+                                          {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}},
+         {{{-1, -2, -3}, {-4, -5, -6}, {-7, -8, -9}},
+            {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}}};
+
+      RT quatslice2 = blaze::quatslice( a, 1UL );
+
+      const blaze::DynamicTensor< short > a1{
+         {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}};
+
+      quatslice2 %= a1;
+
+      checkPages   ( quatslice2, 2UL );
+      checkRows    ( quatslice2, 3UL );
+      checkColumns ( quatslice2, 3UL );
+      checkCapacity( quatslice2, 18UL );
+      checkNonZeros( quatslice2, 18UL );
+      checkQuats   ( a,  2UL );
+      checkRows    ( a,  3UL );
+      checkColumns ( a,  3UL );
+      checkPages   ( a,  2UL );
+      checkNonZeros( a, 36UL );
+
+      if( quatslice2(0,0,0) !=  -1 || quatslice2(0,0,1) !=  -4 || quatslice2(0,0,2) != -9  ||
+          quatslice2(0,1,0) != -16 || quatslice2(0,1,1) != -25 || quatslice2(0,1,2) != -36 ||
+          quatslice2(0,2,0) != -49 || quatslice2(0,2,1) != -64 || quatslice2(0,2,2) != -81 ||
+          quatslice2(1,0,0) !=  81 || quatslice2(1,0,1) !=  64 || quatslice2(1,0,2) !=  49 ||
+          quatslice2(1,1,0) !=  36 || quatslice2(1,1,1) !=  25 || quatslice2(1,1,2) !=  16 ||
+          quatslice2(1,2,0) !=   9 || quatslice2(1,2,1) !=   4 || quatslice2(1,2,2) !=  1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice2 << "\n"
+             << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( a(1,0,0,0) != -1  || a(1,0,0,1) != -4  || a(1,0,0,2) != -9  ||
+          a(1,0,1,0) != -16 || a(1,0,1,1) != -25 || a(1,0,1,2) != -36 ||
+          a(1,0,2,0) != -49 || a(1,0,2,1) != -64 || a(1,0,2,2) != -81 ||
+          a(1,1,0,0) !=  81 || a(1,1,0,1) !=  64 || a(1,1,0,2) !=  49 ||
+          a(1,1,1,0) !=  36 || a(1,1,1,1) !=  25 || a(1,1,1,2) !=  16 ||
+          a(1,1,2,0) !=   9 || a(1,1,2,1) !=   4 || a(1,1,2,2) !=  1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << a << "\n"
+             << "   Expected result:\n((  1  2  3 )\n"
+                                     " (  4  5  6 )\n"
+                                     " (  7  8  9 ))\n"
+                                     "((  9 16 21 )\n"
+                                     " ( 24 25 24 )\n"
+                                     " ( 21 16  9 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "dense quaternion Schur product assignment (aligned/padded)";
+
+      using blaze::aligned;
+      using blaze::padded;
+
+      blaze::DynamicArray< 4, int > a{{{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+                                          {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}},
+         {{{-1, -2, -3}, {-4, -5, -6}, {-7, -8, -9}},
+            {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}}};
+
+      RT quatslice2 = blaze::quatslice( a, 1UL );
+
+      using AlignedPadded = blaze::CustomTensor<int,aligned,padded>;
+      std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 96UL ) );
+      AlignedPadded a1( memory.get(), 2UL, 3UL, 3UL, 16UL );
+      a1(0,0,0) = 1;
+      a1(0,0,1) = 2;
+      a1(0,0,2) = 3;
+      a1(0,1,0) = 4;
+      a1(0,1,1) = 5;
+      a1(0,1,2) = 6;
+      a1(0,2,0) = 7;
+      a1(0,2,1) = 8;
+      a1(0,2,2) = 9;
+      a1(1,0,0) = 9;
+      a1(1,0,1) = 8;
+      a1(1,0,2) = 7;
+      a1(1,1,0) = 6;
+      a1(1,1,1) = 5;
+      a1(1,1,2) = 4;
+      a1(1,2,0) = 3;
+      a1(1,2,1) = 2;
+      a1(1,2,2) = 1;
+
+      quatslice2 %= a1;
+
+      checkPages   ( quatslice2, 2UL );
+      checkRows    ( quatslice2, 3UL );
+      checkColumns ( quatslice2, 3UL );
+      checkCapacity( quatslice2, 18UL );
+      checkNonZeros( quatslice2, 18UL );
+      checkQuats   ( a,  2UL );
+      checkRows    ( a,  3UL );
+      checkColumns ( a,  3UL );
+      checkPages   ( a,  2UL );
+      checkNonZeros( a, 36UL );
+
+      if( quatslice2(0,0,0) !=  -1 || quatslice2(0,0,1) !=  -4 || quatslice2(0,0,2) != -9  ||
+          quatslice2(0,1,0) != -16 || quatslice2(0,1,1) != -25 || quatslice2(0,1,2) != -36 ||
+          quatslice2(0,2,0) != -49 || quatslice2(0,2,1) != -64 || quatslice2(0,2,2) != -81 ||
+          quatslice2(1,0,0) !=  81 || quatslice2(1,0,1) !=  64 || quatslice2(1,0,2) !=  49 ||
+          quatslice2(1,1,0) !=  36 || quatslice2(1,1,1) !=  25 || quatslice2(1,1,2) !=  16 ||
+          quatslice2(1,2,0) !=   9 || quatslice2(1,2,1) !=   4 || quatslice2(1,2,2) !=  1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Multiplication assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice2 << "\n"
+             << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      if( a(1,0,0,0) != -1  || a(1,0,0,1) != -4  || a(1,0,0,2) != -9  ||
+          a(1,0,1,0) != -16 || a(1,0,1,1) != -25 || a(1,0,1,2) != -36 ||
+          a(1,0,2,0) != -49 || a(1,0,2,1) != -64 || a(1,0,2,2) != -81 ||
+          a(1,1,0,0) !=  81 || a(1,1,0,1) !=  64 || a(1,1,0,2) !=  49 ||
+          a(1,1,1,0) !=  36 || a(1,1,1,1) !=  25 || a(1,1,1,2) !=  16 ||
+          a(1,1,2,0) !=   9 || a(1,1,2,1) !=   4 || a(1,1,2,2) !=  1 ) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Schur assignment failed\n"
+             << " Details:\n"
+             << "   Result:\n" << a << "\n"
+             << "   Expected result:\n((  1  2  3 )\n"
+                                     " (  4  5  6 )\n"
+                                     " (  7  8  9 ))\n"
+                                     "((  9 16 21 )\n"
+                                     " ( 24 25 24 )\n"
+                                     " ( 21 16  9 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+   {
+      test_ = "dense quaternion Schur product assignment (unaligned/unpadded)";
+
+      using blaze::unaligned;
+      using blaze::unpadded;
+
+      blaze::DynamicArray< 4, int > a{ {{{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+                                          {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}},
+         {{{-1, -2, -3}, {-4, -5, -6}, {-7, -8, -9}},
+            {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}}}} };
+
+      RT quatslice2 = blaze::quatslice(a, 1UL);
+
+      using UnalignedUnpadded = blaze::CustomTensor<int, unaligned, unpadded>;
+      std::unique_ptr<int[]> memory(new int[20]);
+      UnalignedUnpadded a1(memory.get() + 1UL, 2UL, 3UL, 3UL);
+      a1(0, 0, 0) = 1;
+      a1(0, 0, 1) = 2;
+      a1(0, 0, 2) = 3;
+      a1(0, 1, 0) = 4;
+      a1(0, 1, 1) = 5;
+      a1(0, 1, 2) = 6;
+      a1(0, 2, 0) = 7;
+      a1(0, 2, 1) = 8;
+      a1(0, 2, 2) = 9;
+      a1(1, 0, 0) = 9;
+      a1(1, 0, 1) = 8;
+      a1(1, 0, 2) = 7;
+      a1(1, 1, 0) = 6;
+      a1(1, 1, 1) = 5;
+      a1(1, 1, 2) = 4;
+      a1(1, 2, 0) = 3;
+      a1(1, 2, 1) = 2;
+      a1(1, 2, 2) = 1;
+
+      quatslice2 %= a1;
+
+      checkPages(quatslice2, 2UL);
+      checkRows(quatslice2, 3UL);
+      checkColumns(quatslice2, 3UL);
+      checkCapacity(quatslice2, 18UL);
+      checkNonZeros(quatslice2, 18UL);
+      checkQuats(a, 2UL);
+      checkRows(a, 3UL);
+      checkColumns(a, 3UL);
+      checkPages(a, 2UL);
+      checkNonZeros(a, 36UL);
+
+      if (quatslice2(0, 0, 0) != -1 || quatslice2(0, 0, 1) != -4 || quatslice2(0, 0, 2) != -9 ||
+         quatslice2(0, 1, 0) != -16 || quatslice2(0, 1, 1) != -25 || quatslice2(0, 1, 2) != -36 ||
+         quatslice2(0, 2, 0) != -49 || quatslice2(0, 2, 1) != -64 || quatslice2(0, 2, 2) != -81 ||
+         quatslice2(1, 0, 0) != 81 || quatslice2(1, 0, 1) != 64 || quatslice2(1, 0, 2) != 49 ||
+         quatslice2(1, 1, 0) != 36 || quatslice2(1, 1, 1) != 25 || quatslice2(1, 1, 2) != 16 ||
+         quatslice2(1, 2, 0) != 9 || quatslice2(1, 2, 1) != 4 || quatslice2(1, 2, 2) != 1) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+            << " Error: Multiplication assignment failed\n"
+            << " Details:\n"
+            << "   Result:\n" << quatslice2 << "\n"
+            << "   Expected result:\n(( 9 16 21 )\n( 24 25 24 )\n( 21 16 9 ))\n";
+         throw std::runtime_error(oss.str());
+      }
+
+      if (a(1, 0, 0, 0) != -1 || a(1, 0, 0, 1) != -4 || a(1, 0, 0, 2) != -9 ||
+         a(1, 0, 1, 0) != -16 || a(1, 0, 1, 1) != -25 || a(1, 0, 1, 2) != -36 ||
+         a(1, 0, 2, 0) != -49 || a(1, 0, 2, 1) != -64 || a(1, 0, 2, 2) != -81 ||
+         a(1, 1, 0, 0) != 81 || a(1, 1, 0, 1) != 64 || a(1, 1, 0, 2) != 49 ||
+         a(1, 1, 1, 0) != 36 || a(1, 1, 1, 1) != 25 || a(1, 1, 1, 2) != 16 ||
+         a(1, 1, 2, 0) != 9 || a(1, 1, 2, 1) != 4 || a(1, 1, 2, 2) != 1) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+            << " Error: Schur assignment failed\n"
+            << " Details:\n"
+            << "   Result:\n" << a << "\n"
+            << "   Expected result:\n((  1  2  3 )\n"
+            " (  4  5  6 )\n"
+            " (  7  8  9 ))\n"
+            "((  9 16 21 )\n"
+            " ( 24 25 24 )\n"
+            " ( 21 16  9 ))\n";
+         throw std::runtime_error(oss.str());
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of all QuatSlice (self-)scaling operations.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of all available ways to scale an instance of the QuatSlice
+// specialization. In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseGeneralTest::testScaling()
+{
+   //=====================================================================================
+   // self-scaling (v*=3)
+   //=====================================================================================
+
+   {
+      test_ = "self-scaling (v*=3)";
+
+      initialize();
+
+      RT quatslice2 = blaze::quatslice( quat_, 1UL );
+      quatslice2 *= 3;
+
+      checkPages   ( quatslice2, 2UL );
+      checkRows    ( quatslice2, 5UL );
+      checkColumns ( quatslice2, 4UL );
+      checkCapacity( quatslice2, 40UL );
+      checkNonZeros( quatslice2, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice2(0,0,0) !=  0 || quatslice2(0,0,1) !=   3 || quatslice2(0,0,2) !=  0 || quatslice2(0,0,3) !=   0 ||
+          quatslice2(0,1,0) !=  0 || quatslice2(0,1,1) !=   0 || quatslice2(0,1,2) !=  0 || quatslice2(0,1,3) !=   0 ||
+          quatslice2(0,2,0) !=  0 || quatslice2(0,2,1) !=  36 || quatslice2(0,2,2) != -9 || quatslice2(0,2,3) !=   0 ||
+          quatslice2(0,3,0) !=  0 || quatslice2(0,3,1) !=  12 || quatslice2(0,3,2) != 15 || quatslice2(0,3,3) != -18 ||
+          quatslice2(0,4,0) != 21 || quatslice2(0,4,1) !=  84 || quatslice2(0,4,2) != 27 || quatslice2(0,4,3) !=  30 ||
+          quatslice2(1,0,0) !=  0 || quatslice2(1,0,1) !=   0 || quatslice2(1,0,2) !=  0 || quatslice2(1,0,3) !=   0 ||
+          quatslice2(1,1,0) !=  0 || quatslice2(1,1,1) !=   3 || quatslice2(1,1,2) !=  0 || quatslice2(1,1,3) !=   0 ||
+          quatslice2(1,2,0) != -6 || quatslice2(1,2,1) !=   0 || quatslice2(1,2,2) !=  0 || quatslice2(1,2,3) !=   0 ||
+          quatslice2(1,3,0) != -9 || quatslice2(1,3,1) !=  12 || quatslice2(1,3,2) != 15 || quatslice2(1,3,3) !=  99 ||
+          quatslice2(1,4,0) != 21 || quatslice2(1,4,1) != -24 || quatslice2(1,4,2) != 27 || quatslice2(1,4,3) !=  33) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice2 << "\n"
+                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // self-scaling (v=v*2)
+   //=====================================================================================
+
+   {
+      test_ = "self-scaling (v=v*3)";
+
+      initialize();
+
+      RT quatslice2 = blaze::quatslice( quat_, 1UL );
+      quatslice2 = quatslice2 * 3;
+
+      checkPages   ( quatslice2, 2UL );
+      checkRows    ( quatslice2, 5UL );
+      checkColumns ( quatslice2, 4UL );
+      checkCapacity( quatslice2, 40UL );
+      checkNonZeros( quatslice2, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice2(0,0,0) !=  0 || quatslice2(0,0,1) !=   3 || quatslice2(0,0,2) !=  0 || quatslice2(0,0,3) !=   0 ||
+          quatslice2(0,1,0) !=  0 || quatslice2(0,1,1) !=   0 || quatslice2(0,1,2) !=  0 || quatslice2(0,1,3) !=   0 ||
+          quatslice2(0,2,0) !=  0 || quatslice2(0,2,1) !=  36 || quatslice2(0,2,2) != -9 || quatslice2(0,2,3) !=   0 ||
+          quatslice2(0,3,0) !=  0 || quatslice2(0,3,1) !=  12 || quatslice2(0,3,2) != 15 || quatslice2(0,3,3) != -18 ||
+          quatslice2(0,4,0) != 21 || quatslice2(0,4,1) !=  84 || quatslice2(0,4,2) != 27 || quatslice2(0,4,3) !=  30 ||
+          quatslice2(1,0,0) !=  0 || quatslice2(1,0,1) !=   0 || quatslice2(1,0,2) !=  0 || quatslice2(1,0,3) !=   0 ||
+          quatslice2(1,1,0) !=  0 || quatslice2(1,1,1) !=   3 || quatslice2(1,1,2) !=  0 || quatslice2(1,1,3) !=   0 ||
+          quatslice2(1,2,0) != -6 || quatslice2(1,2,1) !=   0 || quatslice2(1,2,2) !=  0 || quatslice2(1,2,3) !=   0 ||
+          quatslice2(1,3,0) != -9 || quatslice2(1,3,1) !=  12 || quatslice2(1,3,2) != 15 || quatslice2(1,3,3) !=  99 ||
+          quatslice2(1,4,0) != 21 || quatslice2(1,4,1) != -24 || quatslice2(1,4,2) != 27 || quatslice2(1,4,3) !=  33) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice2 << "\n"
+                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // self-scaling (v=3*v)
+   //=====================================================================================
+
+   {
+      test_ = "self-scaling (v=3*v)";
+
+      initialize();
+
+      RT quatslice2 = blaze::quatslice( quat_, 1UL );
+      quatslice2 = 3 * quatslice2;
+
+      checkPages   ( quatslice2, 2UL );
+      checkRows    ( quatslice2, 5UL );
+      checkColumns ( quatslice2, 4UL );
+      checkCapacity( quatslice2, 40UL );
+      checkNonZeros( quatslice2, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice2(0,0,0) !=  0 || quatslice2(0,0,1) !=   3 || quatslice2(0,0,2) !=  0 || quatslice2(0,0,3) !=   0 ||
+          quatslice2(0,1,0) !=  0 || quatslice2(0,1,1) !=   0 || quatslice2(0,1,2) !=  0 || quatslice2(0,1,3) !=   0 ||
+          quatslice2(0,2,0) !=  0 || quatslice2(0,2,1) !=  36 || quatslice2(0,2,2) != -9 || quatslice2(0,2,3) !=   0 ||
+          quatslice2(0,3,0) !=  0 || quatslice2(0,3,1) !=  12 || quatslice2(0,3,2) != 15 || quatslice2(0,3,3) != -18 ||
+          quatslice2(0,4,0) != 21 || quatslice2(0,4,1) !=  84 || quatslice2(0,4,2) != 27 || quatslice2(0,4,3) !=  30 ||
+          quatslice2(1,0,0) !=  0 || quatslice2(1,0,1) !=   0 || quatslice2(1,0,2) !=  0 || quatslice2(1,0,3) !=   0 ||
+          quatslice2(1,1,0) !=  0 || quatslice2(1,1,1) !=   3 || quatslice2(1,1,2) !=  0 || quatslice2(1,1,3) !=   0 ||
+          quatslice2(1,2,0) != -6 || quatslice2(1,2,1) !=   0 || quatslice2(1,2,2) !=  0 || quatslice2(1,2,3) !=   0 ||
+          quatslice2(1,3,0) != -9 || quatslice2(1,3,1) !=  12 || quatslice2(1,3,2) != 15 || quatslice2(1,3,3) !=  99 ||
+          quatslice2(1,4,0) != 21 || quatslice2(1,4,1) != -24 || quatslice2(1,4,2) != 27 || quatslice2(1,4,3) !=  33) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice2 << "\n"
+                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // self-scaling (v/=s)
+   //=====================================================================================
+
+   {
+      test_ = "self-scaling (v/=s)";
+
+      initialize();
+
+      RT quatslice2 = blaze::quatslice( quat_, 1UL );
+      quatslice2 /= (1.0/3.0);
+
+      checkPages   ( quatslice2, 2UL );
+      checkRows    ( quatslice2, 5UL );
+      checkColumns ( quatslice2, 4UL );
+      checkCapacity( quatslice2, 40UL );
+      checkNonZeros( quatslice2, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice2(0,0,0) !=  0 || quatslice2(0,0,1) !=   3 || quatslice2(0,0,2) !=  0 || quatslice2(0,0,3) !=   0 ||
+          quatslice2(0,1,0) !=  0 || quatslice2(0,1,1) !=   0 || quatslice2(0,1,2) !=  0 || quatslice2(0,1,3) !=   0 ||
+          quatslice2(0,2,0) !=  0 || quatslice2(0,2,1) !=  36 || quatslice2(0,2,2) != -9 || quatslice2(0,2,3) !=   0 ||
+          quatslice2(0,3,0) !=  0 || quatslice2(0,3,1) !=  12 || quatslice2(0,3,2) != 15 || quatslice2(0,3,3) != -18 ||
+          quatslice2(0,4,0) != 21 || quatslice2(0,4,1) !=  84 || quatslice2(0,4,2) != 27 || quatslice2(0,4,3) !=  30 ||
+          quatslice2(1,0,0) !=  0 || quatslice2(1,0,1) !=   0 || quatslice2(1,0,2) !=  0 || quatslice2(1,0,3) !=   0 ||
+          quatslice2(1,1,0) !=  0 || quatslice2(1,1,1) !=   3 || quatslice2(1,1,2) !=  0 || quatslice2(1,1,3) !=   0 ||
+          quatslice2(1,2,0) != -6 || quatslice2(1,2,1) !=   0 || quatslice2(1,2,2) !=  0 || quatslice2(1,2,3) !=   0 ||
+          quatslice2(1,3,0) != -9 || quatslice2(1,3,1) !=  12 || quatslice2(1,3,2) != 15 || quatslice2(1,3,3) !=  99 ||
+          quatslice2(1,4,0) != 21 || quatslice2(1,4,1) != -24 || quatslice2(1,4,2) != 27 || quatslice2(1,4,3) !=  33) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice2 << "\n"
+                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // self-scaling (v=v/s)
+   //=====================================================================================
+
+   {
+      test_ = "self-scaling (v=v/s)";
+
+      initialize();
+
+      RT quatslice2 = blaze::quatslice( quat_, 1UL );
+      quatslice2 = quatslice2 / (1.0/3.0);
+
+            checkPages   ( quatslice2, 2UL );
+      checkRows    ( quatslice2, 5UL );
+      checkColumns ( quatslice2, 4UL );
+      checkCapacity( quatslice2, 40UL );
+      checkNonZeros( quatslice2, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice2(0,0,0) !=  0 || quatslice2(0,0,1) !=   3 || quatslice2(0,0,2) !=  0 || quatslice2(0,0,3) !=   0 ||
+          quatslice2(0,1,0) !=  0 || quatslice2(0,1,1) !=   0 || quatslice2(0,1,2) !=  0 || quatslice2(0,1,3) !=   0 ||
+          quatslice2(0,2,0) !=  0 || quatslice2(0,2,1) !=  36 || quatslice2(0,2,2) != -9 || quatslice2(0,2,3) !=   0 ||
+          quatslice2(0,3,0) !=  0 || quatslice2(0,3,1) !=  12 || quatslice2(0,3,2) != 15 || quatslice2(0,3,3) != -18 ||
+          quatslice2(0,4,0) != 21 || quatslice2(0,4,1) !=  84 || quatslice2(0,4,2) != 27 || quatslice2(0,4,3) !=  30 ||
+          quatslice2(1,0,0) !=  0 || quatslice2(1,0,1) !=   0 || quatslice2(1,0,2) !=  0 || quatslice2(1,0,3) !=   0 ||
+          quatslice2(1,1,0) !=  0 || quatslice2(1,1,1) !=   3 || quatslice2(1,1,2) !=  0 || quatslice2(1,1,3) !=   0 ||
+          quatslice2(1,2,0) != -6 || quatslice2(1,2,1) !=   0 || quatslice2(1,2,2) !=  0 || quatslice2(1,2,3) !=   0 ||
+          quatslice2(1,3,0) != -9 || quatslice2(1,3,1) !=  12 || quatslice2(1,3,2) != 15 || quatslice2(1,3,3) !=  99 ||
+          quatslice2(1,4,0) != 21 || quatslice2(1,4,1) != -24 || quatslice2(1,4,2) != 27 || quatslice2(1,4,3) !=  33) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Failed self-scaling operation\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice2 << "\n"
+                << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+
+
+   //=====================================================================================
+   // QuatSlice::scale()
+   //=====================================================================================
+
+   {
+      test_ = "QuatSlice::scale()";
+
+      initialize();
+
+      // Integral scaling the 2nd quatslice
+      {
+         RT quatslice2 = blaze::quatslice( quat_, 1UL );
+         quatslice2.scale( 3 );
+
+         checkPages   ( quatslice2, 2UL );
+         checkRows    ( quatslice2, 5UL );
+         checkColumns ( quatslice2, 4UL );
+         checkCapacity( quatslice2, 40UL );
+         checkNonZeros( quatslice2, 20UL );
+         checkPages   ( quat_,  2UL );
+         checkRows    ( quat_,  5UL );
+         checkColumns ( quat_,  4UL );
+         checkQuats   ( quat_,  3UL );
+
+         if( quatslice2(0,0,0) !=  0 || quatslice2(0,0,1) !=   3 || quatslice2(0,0,2) !=  0 || quatslice2(0,0,3) !=   0 ||
+             quatslice2(0,1,0) !=  0 || quatslice2(0,1,1) !=   0 || quatslice2(0,1,2) !=  0 || quatslice2(0,1,3) !=   0 ||
+             quatslice2(0,2,0) !=  0 || quatslice2(0,2,1) !=  36 || quatslice2(0,2,2) != -9 || quatslice2(0,2,3) !=   0 ||
+             quatslice2(0,3,0) !=  0 || quatslice2(0,3,1) !=  12 || quatslice2(0,3,2) != 15 || quatslice2(0,3,3) != -18 ||
+             quatslice2(0,4,0) != 21 || quatslice2(0,4,1) !=  84 || quatslice2(0,4,2) != 27 || quatslice2(0,4,3) !=  30 ||
+             quatslice2(1,0,0) !=  0 || quatslice2(1,0,1) !=   0 || quatslice2(1,0,2) !=  0 || quatslice2(1,0,3) !=   0 ||
+             quatslice2(1,1,0) !=  0 || quatslice2(1,1,1) !=   3 || quatslice2(1,1,2) !=  0 || quatslice2(1,1,3) !=   0 ||
+             quatslice2(1,2,0) != -6 || quatslice2(1,2,1) !=   0 || quatslice2(1,2,2) !=  0 || quatslice2(1,2,3) !=   0 ||
+             quatslice2(1,3,0) != -9 || quatslice2(1,3,1) !=  12 || quatslice2(1,3,2) != 15 || quatslice2(1,3,3) !=  99 ||
+             quatslice2(1,4,0) != 21 || quatslice2(1,4,1) != -24 || quatslice2(1,4,2) != 27 || quatslice2(1,4,3) !=  33) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed self-scaling operation\n"
+                << " Details:\n"
+                << "   Result:\n" << quatslice2 << "\n"
+                   << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      initialize();
+
+      // Floating point scaling the 2nd quatslice
+      {
+         RT quatslice2 = blaze::quatslice( quat_, 1UL );
+         quatslice2.scale(0.5);
+
+         checkPages   ( quatslice2, 2UL );
+         checkRows    ( quatslice2, 5UL );
+         checkColumns ( quatslice2, 4UL );
+         checkCapacity( quatslice2, 40UL );
+         checkNonZeros( quatslice2, 18UL );
+         checkPages   ( quat_,  2UL );
+         checkRows    ( quat_,  5UL );
+         checkColumns ( quat_,  4UL );
+         checkQuats   ( quat_,  3UL );
+
+         if( quatslice2(0,0,0) !=  0 || quatslice2(0,0,1) !=  0 || quatslice2(0,0,2) !=  0 || quatslice2(0,0,3) !=   0 ||
+             quatslice2(0,1,0) !=  0 || quatslice2(0,1,1) !=   0 || quatslice2(0,1,2) !=  0 || quatslice2(0,1,3) !=   0 ||
+             quatslice2(0,2,0) !=  0 || quatslice2(0,2,1) !=   6 || quatslice2(0,2,2) != -1 || quatslice2(0,2,3) !=   0 ||
+             quatslice2(0,3,0) !=  0 || quatslice2(0,3,1) !=   2 || quatslice2(0,3,2) !=  2 || quatslice2(0,3,3) !=  -3 ||
+             quatslice2(0,4,0) !=  3 || quatslice2(0,4,1) !=  14 || quatslice2(0,4,2) !=  4 || quatslice2(0,4,3) !=  5 ||
+             quatslice2(1,0,0) !=  0 || quatslice2(1,0,1) !=   0 || quatslice2(1,0,2) !=  0 || quatslice2(1,0,3) !=   0 ||
+             quatslice2(1,1,0) !=  0 || quatslice2(1,1,1) !=   0 || quatslice2(1,1,2) !=  0 || quatslice2(1,1,3) !=   0 ||
+             quatslice2(1,2,0) != -1 || quatslice2(1,2,1) !=   0 || quatslice2(1,2,2) !=  0 || quatslice2(1,2,3) !=   0 ||
+             quatslice2(1,3,0) != -1 || quatslice2(1,3,1) !=  2 || quatslice2(1,3,2) != 2 || quatslice2(1,3,3) !=  16 ||
+             quatslice2(1,4,0) !=  3 || quatslice2(1,4,1) != -4 || quatslice2(1,4,2) != 4 || quatslice2(1,4,3) !=  5) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed self-scaling operation\n"
+                << " Details:\n"
+                << "   Result:\n" << quatslice2 << "\n"
+                   << "   Expected result:\n(( 0 0 0 0 )\n( 0 3 0 0 )\n( -6 0 -9 0 )\n( 0 12 15 -18 )\n( 21 -24 27 30 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the QuatSlice function call operator.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of adding and accessing elements via the function call operator
+// of the QuatSlice specialization. In case an error is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+void DenseGeneralTest::testFunctionCall()
+{
+   //=====================================================================================
+   // quaternion tests
+   //=====================================================================================
+
+   {
+      test_ = "QuatSlice::operator()";
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      // Assignment to the element at index (0,1)
+      quatslice1(0,1,2) = 9;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 21UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  9 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  5 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -8 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Assignment to the element at index (2,2)
+      quatslice1(1,3,2) = 0;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  9 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -8 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Assignment to the element at index (4,1)
+      quatslice1(1,4,1) = -9;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  1 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  9 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+
+      // Addition assignment to the element at index (0,1)
+      quatslice1(0,0,1) += -3;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) != -2 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  9 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Subtraction assignment to the element at index (2,0)
+      quatslice1(0,2,0) -= 6;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 21UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) != -2 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  9 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) != -6 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Multiplication assignment to the element at index (4,0)
+      quatslice1(1,4,0) *= -3;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 21UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) != -2 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  9 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) != -6 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=-21 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Division assignment to the element at index (3,3)
+      quatslice1(1,3,3) /= 2;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 21UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) != -2 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  9 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) != -6 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 16 ||
+          quatslice1(1,4,0) !=-21 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the QuatSlice at() operator.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of adding and accessing elements via the at() operator
+// of the QuatSlice specialization. In case an error is detected, a \a std::runtime_error exception
+// is thrown.
+*/
+void DenseGeneralTest::testAt()
+{
+   //=====================================================================================
+   // quaternion tests
+   //=====================================================================================
+
+   {
+      test_ = "QuatSlice::at()";
+
+      initialize();
+
+      RT quatslice1 = blaze::quatslice( quat_, 1UL );
+
+      // Assignment to the element at index (0,1)
+      quatslice1.at(0,0,1) = 9;
+
+         checkPages   ( quatslice1, 2UL  );
+         checkRows    ( quatslice1, 5UL );
+         checkColumns ( quatslice1, 4UL );
+         checkCapacity( quatslice1, 40UL );
+         checkNonZeros( quatslice1, 20UL );
+
+         if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  9 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+             quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+             quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+             quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+             quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+             quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+             quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+             quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+             quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  5 || quatslice1(1,3,3) != 33 ||
+             quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -8 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Setup of 1st dense quatslice failed\n"
+                << " Details:\n"
+                << "   Result:\n"
+                << quatslice1 << "\n"
+                << "   Expected result:\n((     0   1   0   0 ) (     0   0   "
+                   "0   0 ) (     0     12     -3   0 ) (     0   4   5     -6 "
+                   ") (     7     28   9     10 ) )\n((     0   0   0   0 ) (  "
+                   "   0   1   0   0 ) (    -2   0   0   0 ) (    -3   4   5   "
+                   "  33 ) (     7     -8   9     11 ) )\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+      // Assignment to the element at index (2,2)
+      quatslice1.at(1,3,2) = 0;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 19UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  9 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -8 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Assignment to the element at index (4,1)
+      quatslice1.at(1,4,1) = -9;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 19UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  9 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+
+      // Addition assignment to the element at index (0,1)
+      quatslice1.at(0,0,1) += -3;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 19UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  6 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) !=  0 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Subtraction assignment to the element at index (2,0)
+      quatslice1.at(0,2,0) -= 6;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  6 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) != -6 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=  7 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Multiplication assignment to the element at index (4,0)
+      quatslice1.at(1,4,0) *= -3;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  6 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) != -6 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 33 ||
+          quatslice1(1,4,0) !=-21 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+
+      // Division assignment to the element at index (3,3)
+      quatslice1.at(1,3,3) /= 2;
+
+      checkPages   ( quatslice1, 2UL  );
+      checkRows    ( quatslice1, 5UL );
+      checkColumns ( quatslice1, 4UL );
+      checkCapacity( quatslice1, 40UL );
+      checkNonZeros( quatslice1, 20UL );
+      checkPages   ( quat_,  2UL );
+      checkRows    ( quat_,  5UL );
+      checkColumns ( quat_,  4UL );
+      checkQuats   ( quat_,  3UL );
+
+      if( quatslice1(0,0,0) !=  0 || quatslice1(0,0,1) !=  6 || quatslice1(0,0,2) !=  0 || quatslice1(0,0,3) !=  0 ||
+          quatslice1(0,1,0) !=  0 || quatslice1(0,1,1) !=  0 || quatslice1(0,1,2) !=  0 || quatslice1(0,1,3) !=  0 ||
+          quatslice1(0,2,0) != -6 || quatslice1(0,2,1) != 12 || quatslice1(0,2,2) != -3 || quatslice1(0,2,3) !=  0 ||
+          quatslice1(0,3,0) !=  0 || quatslice1(0,3,1) !=  4 || quatslice1(0,3,2) !=  5 || quatslice1(0,3,3) != -6 ||
+          quatslice1(0,4,0) !=  7 || quatslice1(0,4,1) != 28 || quatslice1(0,4,2) !=  9 || quatslice1(0,4,3) != 10 ||
+          quatslice1(1,0,0) !=  0 || quatslice1(1,0,1) !=  0 || quatslice1(1,0,2) !=  0 || quatslice1(1,0,3) !=  0 ||
+          quatslice1(1,1,0) !=  0 || quatslice1(1,1,1) !=  1 || quatslice1(1,1,2) !=  0 || quatslice1(1,1,3) !=  0 ||
+          quatslice1(1,2,0) != -2 || quatslice1(1,2,1) !=  0 || quatslice1(1,2,2) !=  0 || quatslice1(1,2,3) !=  0 ||
+          quatslice1(1,3,0) != -3 || quatslice1(1,3,1) !=  4 || quatslice1(1,3,2) !=  0 || quatslice1(1,3,3) != 16 ||
+          quatslice1(1,4,0) !=-21 || quatslice1(1,4,1) != -9 || quatslice1(1,4,2) !=  9 || quatslice1(1,4,3) != 11) {
+         std::ostringstream oss;
+         oss << " Test: " << test_ << "\n"
+             << " Error: Function call operator failed\n"
+             << " Details:\n"
+             << "   Result:\n" << quatslice1 << "\n"
+             << "   Expected result:\n(( 0 9 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 7 -8 9 10 ))\n";
+         throw std::runtime_error( oss.str() );
+      }
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Test of the QuatSlice iterator implementation.
+//
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function performs a test of the iterator implementation of the QuatSlice specialization.
+// In case an error is detected, a \a std::runtime_error exception is thrown.
+*/
+void DenseGeneralTest::testIterator()
+{
+   //=====================================================================================
+   // quaternion tests
+   //=====================================================================================
+
+   {
+      initialize();
+
+      // Testing the Iterator default constructor
+      {
+         test_ = "Iterator default constructor";
+
+         RT::Iterator it{};
+
+         if( it != RT::Iterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing the ConstIterator default constructor
+      {
+         test_ = "ConstIterator default constructor";
+
+         RT::ConstIterator it{};
+
+         if( it != RT::ConstIterator() ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator default constructor\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing conversion from Iterator to ConstIterator
+      {
+         test_ = "Iterator/ConstIterator conversion";
+
+         RT quatslice2 = blaze::quatslice( quat_, 1UL );
+         RT::ConstIterator it( begin( quatslice2, 1UL, 2UL ) );
+
+         if( it == end( quatslice2, 1UL, 2UL ) || *it != -2 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Failed iterator conversion detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 1st quatslice via Iterator (end-begin)
+      {
+         test_ = "Iterator subtraction (end-begin)";
+
+         RT quatslice1 = blaze::quatslice( quat_, 1UL );
+         const ptrdiff_t number( end( quatslice1, 1UL, 2UL ) - begin( quatslice1, 1UL, 2UL ) );
+
+         if( number != 4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 1st quatslice via Iterator (begin-end)
+      {
+         test_ = "Iterator subtraction (begin-end)";
+
+         RT quatslice1 = blaze::quatslice( quat_, 1UL );
+         const ptrdiff_t number( begin( quatslice1, 1UL, 2UL ) - end( quatslice1, 1UL, 2UL ) );
+
+         if( number != -4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 2nd quatslice via ConstIterator (end-begin)
+      {
+         test_ = "ConstIterator subtraction (end-begin)";
+
+         RT quatslice2 = blaze::quatslice( quat_, 1UL );
+         const ptrdiff_t number( cend( quatslice2, 1UL, 2UL ) - cbegin( quatslice2, 1UL, 2UL ) );
+
+         if( number != 4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: 4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Counting the number of elements in 2nd quatslice via ConstIterator (begin-end)
+      {
+         test_ = "ConstIterator subtraction (begin-end)";
+
+         RT quatslice2 = blaze::quatslice( quat_, 1UL );
+         const ptrdiff_t number( cbegin( quatslice2, 1UL, 2UL ) - cend( quatslice2, 1UL, 2UL ) );
+
+         if( number != -4L ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid number of elements detected\n"
+                << " Details:\n"
+                << "   Number of elements         : " << number << "\n"
+                << "   Expected number of elements: -4\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing read-only access via ConstIterator
+      {
+         test_ = "read-only access via ConstIterator";
+
+         RT quatslice3 = blaze::quatslice( quat_, 0UL );
+         RT::ConstIterator it ( cbegin( quatslice3, 0UL, 4UL ) );
+         RT::ConstIterator end( cend( quatslice3, 0UL, 4UL ) );
+
+         if( it == end || *it != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Invalid initial iterator detected\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         ++it;
+
+         if( it == end || *it != -8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         --it;
+
+         if( it == end || *it != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator pre-decrement failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it++;
+
+         if( it == end || *it != -8 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-increment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it--;
+
+         if( it == end || *it != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator post-decrement failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it += 2UL;
+
+         if( it == end || *it != 9 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator addition assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it -= 2UL;
+
+         if( it == end || *it != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator subtraction assignment failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it + 3UL;
+
+         if( it == end || *it != 10 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar addition failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = it - 3UL;
+
+         if( it == end || *it != 7 ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Iterator/scalar subtraction failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+
+         it = 4UL + it;
+
+         if( it != end ) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Scalar/iterator addition failed\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
+
+      // Testing assignment via Iterator
+      {
+         test_ = "assignment via Iterator";
+
+         RT quatslice2 = blaze::quatslice( quat_, 1UL );
+         int value = 6;
+
+         for( RT::Iterator it=begin( quatslice2, 0UL, 3UL ); it!=end( quatslice2, 0UL, 3UL ); ++it ) {
+            *it = value++;
+         }
+
+         if( quatslice2(0,0,0) !=  0 || quatslice2(0,0,1) !=   1 || quatslice2(0,0,2) !=  0 || quatslice2(0,0,3) !=   0 ||
+             quatslice2(0,1,0) !=  0 || quatslice2(0,1,1) !=   0 || quatslice2(0,1,2) !=  0 || quatslice2(0,1,3) !=   0 ||
+             quatslice2(0,2,0) !=  0 || quatslice2(0,2,1) !=  12 || quatslice2(0,2,2) != -3 || quatslice2(0,2,3) !=   0 ||
+             quatslice2(0,3,0) !=  6 || quatslice2(0,3,1) !=   7 || quatslice2(0,3,2) !=  8 || quatslice2(0,3,3) !=   9 ||
+             quatslice2(0,4,0) !=  7 || quatslice2(0,4,1) !=  28 || quatslice2(0,4,2) !=  9 || quatslice2(0,4,3) !=  10 ||
+             quatslice2(1,0,0) !=  0 || quatslice2(1,0,1) !=   0 || quatslice2(1,0,2) !=  0 || quatslice2(1,0,3) !=   0 ||
+             quatslice2(1,1,0) !=  0 || quatslice2(1,1,1) !=   1 || quatslice2(1,1,2) !=  0 || quatslice2(1,1,3) !=   0 ||
+             quatslice2(1,2,0) != -2 || quatslice2(1,2,1) !=   0 || quatslice2(1,2,2) !=  0 || quatslice2(1,2,3) !=   0 ||
+             quatslice2(1,3,0) != -3 || quatslice2(1,3,1) !=   4 || quatslice2(1,3,2) !=  5 || quatslice2(1,3,3) !=  33 ||
+             quatslice2(1,4,0) !=  7 || quatslice2(1,4,1) !=  -8 || quatslice2(1,4,2) !=  9 || quatslice2(1,4,3) !=  11) {
+            std::ostringstream oss;
+            oss << " Test: " << test_ << "\n"
+                << " Error: Assignment via iterator failed\n"
+                << " Details:\n"
+                << "   Result:\n" << quatslice2 << "\n"
+                << "   Expected result:\n(( 0 0 0 0 )\n( 0 1 0 0 )\n( -2 0 -3 0 )\n( 0 4 5 -6 )\n( 6 7 8 9 ))\n";
+            throw std::runtime_error( oss.str() );
+         }
+      }
 //
 //      // Testing addition assignment via Iterator
-//      {
+//      {std::cout << quat_ << "\n***********\n";
 //         test_ = "addition assignment via Iterator";
 //
 //         RT quatslice2 = blaze::quatslice( quat_, 1UL );
@@ -3756,8 +3179,8 @@ void DenseGeneralTest::testConstructors()
 //            throw std::runtime_error( oss.str() );
 //         }
 //      }
-//   }
-//}
+   }
+}
 ////*************************************************************************************************
 //
 //
@@ -5159,27 +4582,67 @@ void DenseGeneralTest::testConstructors()
 void DenseGeneralTest::initialize()
 {
    // Initializing the quatslice-major dynamic quaternion
-   //quat_.reset();
-   //quat_(0,1,1) =  1;
-   //quat_(0,2,0) = -2;
-   //quat_(0,2,2) = -3;
-   //quat_(0,3,1) =  4;
-   //quat_(0,3,2) =  5;
-   //quat_(0,3,3) = -6;
-   //quat_(0,4,0) =  7;
-   //quat_(0,4,1) = -8;
-   //quat_(0,4,2) =  9;
-   //quat_(0,4,3) = 10;
-   //quat_(1,1,1) =  1;
-   //quat_(1,2,0) = -2;
-   //quat_(1,2,2) = -3;
-   //quat_(1,3,1) =  4;
-   //quat_(1,3,2) =  5;
-   //quat_(1,3,3) = -6;
-   //quat_(1,4,0) =  7;
-   //quat_(1,4,1) = -8;
-   //quat_(1,4,2) =  9;
-   //quat_(1,4,3) = 10;
+   quat_.reset();
+   quat_(0,0,1,1) =  1;
+   quat_(0,0,2,0) = -2;
+   quat_(0,0,2,2) = -3;
+   quat_(0,0,3,1) =  4;
+   quat_(0,0,3,2) =  5;
+   quat_(0,0,3,3) = -6;
+   quat_(0,0,4,0) =  7;
+   quat_(0,0,4,1) = -8;
+   quat_(0,0,4,2) =  9;
+   quat_(0,0,4,3) = 10;
+   quat_(0,1,1,1) =  1;
+   quat_(0,1,2,0) = -2;
+   quat_(0,1,2,2) = 13;
+   quat_(0,1,3,1) =  4;
+   quat_(0,1,3,2) =  5;
+   quat_(0,1,3,3) = -6;
+   quat_(0,1,4,0) =  7;
+   quat_(0,1,4,1) = -8;
+   quat_(0,1,4,2) =  9;
+   quat_(0,1,4,3) = 10;
+   quat_(1,0,0,1) =  1;
+   quat_(1,0,2,1) = 12;
+   quat_(1,0,2,2) = -3;
+   quat_(1,0,3,1) =  4;
+   quat_(1,0,3,2) =  5;
+   quat_(1,0,3,3) = -6;
+   quat_(1,0,4,0) =  7;
+   quat_(1,0,4,1) = 28;
+   quat_(1,0,4,2) =  9;
+   quat_(1,0,4,3) = 10;
+   quat_(1,1,1,1) =  1;
+   quat_(1,1,2,0) = -2;
+   quat_(1,1,3,0) = -3;
+   quat_(1,1,3,1) =  4;
+   quat_(1,1,3,2) =  5;
+   quat_(1,1,3,3) = 33;
+   quat_(1,1,4,0) =  7;
+   quat_(1,1,4,1) = -8;
+   quat_(1,1,4,2) =  9;
+   quat_(1,1,4,3) = 11;
+   quat_(2,0,1,1) =  1;
+   quat_(2,0,2,0) = -2;
+   quat_(2,0,2,2) = -3;
+   quat_(2,0,2,3) =  4;
+   quat_(2,0,3,2) =  5;
+   quat_(2,0,3,3) =  2;
+   quat_(2,0,4,0) =  7;
+   quat_(2,0,4,1) = -8;
+   quat_(2,0,4,2) =  9;
+   quat_(2,0,4,3) = 10;
+   quat_(2,1,1,1) =  1;
+   quat_(2,1,2,0) = 62;
+   quat_(2,1,2,2) = -3;
+   quat_(2,1,3,1) =  5;
+   quat_(2,1,3,2) = 15;
+   quat_(2,1,3,3) = 16;
+   quat_(2,1,4,0) = -7;
+   quat_(2,1,4,1) = -8;
+   quat_(2,1,4,2) = 19;
+   quat_(2,1,4,3) = 10;
 }
 //*************************************************************************************************
 

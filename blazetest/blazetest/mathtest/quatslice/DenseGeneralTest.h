@@ -47,8 +47,10 @@
 #include <string>
 #include <blazetest/system/Types.h>
 
+#include <blaze_tensor/math/DynamicArray.h>
 #include <blaze_tensor/math/DynamicTensor.h>
 #include <blaze_tensor/math/QuatSlice.h>
+#include <blaze_tensor/math/constraints/DenseArray.h>
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/constraints/QuatSliceTensor.h>
 #include <blaze_tensor/math/typetraits/IsQuatSliceTensor.h>
@@ -94,7 +96,6 @@ class DenseGeneralTest
    void testAssignment();
    void testAddAssign();
    void testSubAssign();
-   void testMultAssign();
    void testSchurAssign();
    void testScaling();
    void testFunctionCall();
@@ -153,7 +154,7 @@ class DenseGeneralTest
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   //AT  quat_;   //!< dynamic quaternion.
+   AT  quat_;          //!< dynamic quaternion.
    std::string test_;  //!< Label of the currently performed test.
    //@}
    //**********************************************************************************************

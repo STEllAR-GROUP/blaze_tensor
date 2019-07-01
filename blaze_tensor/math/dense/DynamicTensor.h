@@ -3511,18 +3511,24 @@ struct PageSliceTraitEval2<
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template <typename MT, size_t M>
-struct QuatSliceTraitEval2<
-   MT, M,
-   EnableIf_t< IsDenseArray_v<MT> &&
-               ( Size_v< MT,1UL > == DefaultSize_v ||
-                 Size_v< MT,2UL > == DefaultSize_v ||
-                 Size_v< MT,3UL > == DefaultSize_v ) &&
-               ( MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
-                 MaxSize_v< MT,2UL > == DefaultMaxSize_v ||
-                 MaxSize_v< MT,3UL > == DefaultMaxSize_v ) > >
+//template <typename MT, size_t M>
+//struct QuatSliceTraitEval2<
+//   MT, M,
+//   EnableIf_t< IsDenseArray_v<MT> &&
+//               ( Size_v< MT,1UL > == DefaultSize_v ||
+//                 Size_v< MT,2UL > == DefaultSize_v ||
+//                 Size_v< MT,3UL > == DefaultSize_v ) &&
+//               ( MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
+//                 MaxSize_v< MT,2UL > == DefaultMaxSize_v ||
+//                 MaxSize_v< MT,3UL > == DefaultMaxSize_v ) > >
+//{
+//   using Type = DynamicTensor< RemoveConst_t< ElementType_t<MT> > >;
+//};
+
+template< typename ET, size_t I >
+struct QuatSliceTraitEval2< DynamicArray<4, ET>, I >
 {
-   using Type = DynamicTensor< RemoveConst_t< ElementType_t<MT> > >;
+   using Type = DynamicTensor< ET >;
 };
 /*! \endcond */
 //*************************************************************************************************

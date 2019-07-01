@@ -127,7 +127,7 @@
 // #include <blaze_tensor/math/expressions/DTensEvalExpr.h>
 #include <blaze_tensor/math/expressions/DArrMapExpr.h>
 #include <blaze_tensor/math/expressions/DArrNormExpr.h>
-#include <blaze_tensor/math/expressions/DArrReduceExpr.h>
+//#include <blaze_tensor/math/expressions/DArrReduceExpr.h>
 #include <blaze_tensor/math/expressions/DArrScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/DArrScalarMultExpr.h>
 // #include <blaze_tensor/math/expressions/DTensSerialExpr.h>

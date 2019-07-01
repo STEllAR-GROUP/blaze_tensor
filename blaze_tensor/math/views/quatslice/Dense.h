@@ -94,6 +94,7 @@
 
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/constraints/DenseArray.h>
+#include <blaze_tensor/math/expressions/Array.h>
 #include <blaze_tensor/math/traits/QuatSliceTrait.h>
 #include <blaze_tensor/math/views/quatslice/BaseTemplate.h>
 #include <blaze_tensor/math/views/quatslice/QuatSliceData.h>
@@ -132,11 +133,11 @@ class QuatSlice
    //! Type of this QuatSlice instance.
    using This = QuatSlice<AT,CRAs...>;
 
-   using BaseType      = DenseTensor<This>;   //!< Base type of this QuatSlice instance.
+   using BaseType      = DenseTensor<This>;            //!< Base type of this QuatSlice instance.
    using ViewedType    = AT;                           //!< The type viewed by this QuatSlice instance.
    using ResultType    = QuatSliceTrait_t<AT,CRAs...>; //!< Result type for expression template evaluations.
    //using OppositeType  = OppositeType_t<ResultType>;   //!< Result type with opposite storage order for expression template evaluations.
-   using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
+   //using TransposeType = TransposeType_t<ResultType>;  //!< Transpose type for expression template evaluations.
    using ElementType   = ElementType_t<AT>;            //!< Type of the quatslice elements.
    using SIMDType      = SIMDTrait_t<ElementType>;     //!< SIMD type of the quatslice elements.
    using ReturnType    = ReturnType_t<AT>;             //!< Return type for expression template evaluations
@@ -548,7 +549,7 @@ template< typename AT       // Type of the dense quaternion
 inline typename QuatSlice<AT,CRAs...>::Pointer
    QuatSlice<AT,CRAs...>::data() noexcept
 {
-   return quaternion_.data( quat(), 0, 0 );
+   return quaternion_.data( 0, 0, quat() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -568,7 +569,7 @@ template< typename AT       // Type of the dense quaternion
 inline typename QuatSlice<AT,CRAs...>::ConstPointer
    QuatSlice<AT,CRAs...>::data() const noexcept
 {
-   return quaternion_.data( quat(), 0, 0 );
+   return quaternion_.data( 0, 0, quat() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -588,7 +589,7 @@ template< typename AT       // Type of the dense quaternion
 inline typename QuatSlice<AT,CRAs...>::Pointer
    QuatSlice<AT,CRAs...>::data( size_t i, size_t k  ) noexcept
 {
-   return quaternion_.data( quat(), k, i );
+   return quaternion_.data( k, i, quat() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -606,9 +607,9 @@ inline typename QuatSlice<AT,CRAs...>::Pointer
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::ConstPointer
-   QuatSlice<AT,CRAs...>::data( size_t i, size_t k ) const noexcept
+   QuatSlice<AT,CRAs...>::data( size_t k, size_t i ) const noexcept
 {
-   return quaternion_.data( quat(), k, i );
+   return quaternion_.data( k, i, quat() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -626,9 +627,9 @@ inline typename QuatSlice<AT,CRAs...>::ConstPointer
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::Iterator
-   QuatSlice<AT,CRAs...>::begin( size_t i, size_t k )
+   QuatSlice<AT,CRAs...>::begin( size_t k, size_t i )
 {
-   return quaternion_.begin( quat(), k, i );
+   return quaternion_.begin( i, quat(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -646,9 +647,9 @@ inline typename QuatSlice<AT,CRAs...>::Iterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::ConstIterator
-   QuatSlice<AT,CRAs...>::begin( size_t i, size_t k ) const
+   QuatSlice<AT,CRAs...>::begin( size_t k, size_t i ) const
 {
-   return quaternion_.cbegin( quat(), k, i );
+   return quaternion_.cbegin( i, quat(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -666,9 +667,9 @@ inline typename QuatSlice<AT,CRAs...>::ConstIterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::ConstIterator
-   QuatSlice<AT,CRAs...>::cbegin( size_t i, size_t k ) const
+   QuatSlice<AT,CRAs...>::cbegin( size_t k, size_t i ) const
 {
-   return quaternion_.cbegin( quat(), k, i );
+   return quaternion_.cbegin( i, quat(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -686,9 +687,9 @@ inline typename QuatSlice<AT,CRAs...>::ConstIterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::Iterator
-   QuatSlice<AT,CRAs...>::end( size_t i, size_t k )
+   QuatSlice<AT,CRAs...>::end( size_t k, size_t i )
 {
-   return quaternion_.end( quat(), k, i );
+   return quaternion_.end( i, quat(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -706,9 +707,9 @@ inline typename QuatSlice<AT,CRAs...>::Iterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::ConstIterator
-   QuatSlice<AT,CRAs...>::end( size_t i, size_t k ) const
+   QuatSlice<AT,CRAs...>::end( size_t k, size_t i ) const
 {
-   return quaternion_.cend( quat(), k, i );
+   return quaternion_.cend( i, quat(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -726,9 +727,9 @@ inline typename QuatSlice<AT,CRAs...>::ConstIterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::ConstIterator
-   QuatSlice<AT,CRAs...>::cend( size_t i, size_t k ) const
+   QuatSlice<AT,CRAs...>::cend( size_t k, size_t i ) const
 {
-   return quaternion_.cend( quat(), k, i );
+   return quaternion_.cend( i, quat(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -762,12 +763,10 @@ inline QuatSlice<AT,CRAs...>&
 
    for( size_t k=0; k<pages(); ++k )
    {
-
        for( size_t i=0; i<rows(); ++i )
        {
-
-          for( size_t j=0; j<columns(); ++j ) {
-             if( !IsRestricted_v<AT> || IsTriangular_v<AT> || trySet( quaternion_, i, j, k, rhs ) )
+          for (size_t j = 0; j < columns(); ++j) {
+             if (!IsRestricted_v<AT> || IsTriangular_v<AT> || trySet(quaternion_, std::array<size_t, 3>{ i, j, k }, rhs))
                 left(quat(),k,i,j) = rhs;
           }
        }
@@ -798,16 +797,17 @@ template< typename AT       // Type of the dense quaternion
 inline QuatSlice<AT,CRAs...>&
    QuatSlice<AT,CRAs...>::operator=( initializer_list< initializer_list< initializer_list<ElementType> > > list )
 {
-   if (list.size() > pages() ) {
+   if (list.size() != pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to quatslice" );
    }
 
-   if( IsRestricted_v<AT> ) {
-      const InitializerTensor<ElementType> tmp( list, rows(), columns()  );
-      if( !tryAssign( quaternion_, tmp, quat(), 0UL, 0UL, 0UL ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
-      }
-   }
+   //if( IsRestricted_v<AT> ) {
+   //   const InitializerTensor<ElementType> tmp( list, rows(), columns()  );
+   //   if (!tryAssign(quaternion_, tmp, std::array<size_t, 4>{quat(),0,0,0})) {
+   //      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
+   //   }
+   //}
+
 
    decltype(auto) left( derestrict( *this ) );
 
@@ -815,7 +815,7 @@ inline QuatSlice<AT,CRAs...>&
    for( const auto& colList : list ) {
       size_t i( 0UL );
       for( const auto& rowList : colList ) {
-         std::fill( std::copy( rowList.begin(), rowList.end(), left.begin(i, k) ), left.end(i, k), ElementType() );
+         std::fill( std::copy( rowList.begin(), rowList.end(), left.begin( k,i) ), left.end(k,i), ElementType() );
          ++i;
       }
       ++k;
@@ -854,9 +854,9 @@ inline QuatSlice<AT,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "QuatSlice sizes do not match" );
    }
 
-   if( !tryAssign( quaternion_, rhs, quat(), 0UL, 0UL, 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
-   }
+   //if (!tryAssign(quaternion_, rhs, std::array<size_t, 4>{quat(), 0UL, 0UL, 0UL})) {
+   //   BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
+   //}
 
    decltype(auto) left( derestrict( *this ) );
 
@@ -906,9 +906,9 @@ inline QuatSlice<AT,CRAs...>&
    using Right = If_t< IsRestricted_v<AT>, CompositeType_t<AT2>, const AT2& >;
    Right right( ~rhs );
 
-   if( !tryAssign( quaternion_, right, quat(), 0UL, 0UL, 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
-   }
+   //if( !tryAssign( quaternion_, right, std::array<size_t, 4>{quat(), 0UL, 0UL, 0UL} ) ) {
+   //   BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
+   //}
 
    decltype(auto) left( derestrict( *this ) );
 
@@ -960,9 +960,9 @@ inline QuatSlice<AT,CRAs...>&
    using Right = If_t< IsRestricted_v<AT>, CompositeType_t<AT2>, const AT2& >;
    Right right( ~rhs );
 
-   if( !tryAddAssign( quaternion_, right, quat(), 0UL, 0UL, 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
-   }
+   //if( !tryAddAssign( quaternion_, right, quat(), 0UL, 0UL, 0UL ) ) {
+   //   BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
+   //}
 
    decltype(auto) left( derestrict( *this ) );
 
@@ -1012,9 +1012,9 @@ inline QuatSlice<AT,CRAs...>&
    using Right = If_t< IsRestricted_v<AT>, CompositeType_t<AT2>, const AT2& >;
    Right right( ~rhs );
 
-   if( !trySubAssign( quaternion_, right, quat(), 0UL, 0UL, 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
-   }
+   //if( !trySubAssign( quaternion_, right, quat(), 0UL, 0UL, 0UL ) ) {
+   //   BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
+   //}
 
    decltype(auto) left( derestrict( *this ) );
 
@@ -1065,9 +1065,9 @@ inline QuatSlice<AT,CRAs...>&
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !trySchurAssign( quaternion_, (~rhs), quat(), 0UL, 0UL, 0UL ) ) {
-      BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
-   }
+   //if( !trySchurAssign( quaternion_, (~rhs), quat(), 0UL, 0UL, 0UL ) ) {
+   //   BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
+   //}
 
    decltype(auto) left( derestrict( *this ) );
 
@@ -1242,7 +1242,7 @@ inline size_t QuatSlice<AT,CRAs...>::nonZeros() const
    size_t count ( 0 );
    for (size_t k = 0; k < pages(); ++k) {
       for (size_t i = 0; i < rows(); ++i) {
-         count += quaternion_.nonZeros( quat(), k, i );
+         count += quaternion_.nonZeros( i, quat(), k);
       }
    }
    return count;

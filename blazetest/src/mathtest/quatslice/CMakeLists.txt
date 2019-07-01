@@ -34,6 +34,7 @@ set(category QuatSlice)
 
 set(tests
     IncludeTest
+    DenseGeneralTest
 )
 
 foreach(test ${tests})

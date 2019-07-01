@@ -64,9 +64,11 @@
 #include <blaze_tensor/math/InitFromValue.h>
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/SMP.h>
+#include <blaze_tensor/math/dense/DynamicTensor.h>
 #include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseArray.h>
-#include <blaze_tensor/math/traits/ArraySliceTrait.h>
+//#include <blaze_tensor/math/traits/ArraySliceTrait.h>
+#include <blaze_tensor/math/traits/QuatSliceTrait.h>
 #include <blaze_tensor/math/typetraits/IsArray.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
 #include <blaze_tensor/math/typetraits/IsRowMajorArray.h>
@@ -311,6 +313,10 @@ class DynamicArray
    //@{
    inline static constexpr size_t num_dimensions() noexcept { return N; }
    inline constexpr std::array< size_t, N > const& dimensions() const noexcept;
+   inline size_t quats() const noexcept;
+   inline size_t pages() const noexcept;
+   inline size_t rows() const noexcept;
+   inline size_t columns() const noexcept;
    template < size_t Dim >
    inline size_t dimension() const noexcept;
    inline size_t spacing() const noexcept;
@@ -2552,6 +2558,73 @@ inline constexpr std::array< size_t, N > const& DynamicArray< N, Type >::dimensi
 //*************************************************************************************************
 
 
+//*************************************************************************************************
+/*!\brief Calculate index of first element in given row.
+//
+// \param value The index-array for the row access.
+// \return The index of the first element in the given row.
+//
+// This function calculates the overall index of the first of the give row
+*/
+template< size_t N   // The dimensionality of the array
+        , typename Type >   // Data type of the array
+inline size_t DynamicArray< N, Type >::quats() const noexcept
+{
+   return dims_[3];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculate index of first element in given row.
+//
+// \param value The index-array for the row access.
+// \return The index of the first element in the given row.
+//
+// This function calculates the overall index of the first of the give row
+*/
+template< size_t N   // The dimensionality of the array
+        , typename Type >   // Data type of the array
+inline size_t DynamicArray< N, Type >::pages() const noexcept
+{
+   return dims_[2];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculate index of first element in given row.
+//
+// \param value The index-array for the row access.
+// \return The index of the first element in the given row.
+//
+// This function calculates the overall index of the first of the give row
+*/
+template< size_t N   // The dimensionality of the array
+        , typename Type >   // Data type of the array
+inline size_t DynamicArray< N, Type >::rows() const noexcept
+{
+   return dims_[1];
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculate index of first element in given row.
+//
+// \param value The index-array for the row access.
+// \return The index of the first element in the given row.
+//
+// This function calculates the overall index of the first of the give row
+*/
+template< size_t N   // The dimensionality of the array
+        , typename Type >   // Data type of the array
+inline size_t DynamicArray< N, Type >::columns() const noexcept
+{
+   return dims_[0];
+}
+//*************************************************************************************************
+
 
 //=================================================================================================
 //
@@ -3986,14 +4059,13 @@ struct DivTraitEval2< DynamicArray<N, ET1>, T2
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t M, size_t N, typename ET, size_t I >
-struct ArraySliceTraitEval2< M, DynamicArray<N, ET>, I >
-{
-   using Type = DynamicArray< N - 1, ET >;
-};
+//template< size_t M, size_t N, typename ET, size_t I >
+//struct ArraySliceTraitEval2< M, DynamicArray<N, ET>, I >
+//{
+//   using Type = DynamicArray< N - 1, ET >;
+//};
 /*! \endcond */
 //*************************************************************************************************
-
 
 
 
