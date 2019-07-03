@@ -60,6 +60,7 @@
 #include <blaze/util/StaticAssert.h>
 
 #include <blaze_tensor/math/Array.h>
+#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitFromValue.h>
 #include <blaze_tensor/math/InitializerList.h>
@@ -69,7 +70,7 @@
 #include <blaze_tensor/math/expressions/DenseArray.h>
 //#include <blaze_tensor/math/traits/ArraySliceTrait.h>
 #include <blaze_tensor/math/traits/QuatSliceTrait.h>
-#include <blaze_tensor/math/typetraits/IsArray.h>
+#include <blaze_tensor/math/typetraits/IsNdArray.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
 #include <blaze_tensor/math/typetraits/IsRowMajorArray.h>
 #include <blaze_tensor/util/ArrayForEach.h>
@@ -443,28 +444,28 @@ class DynamicArray
    BLAZE_ALWAYS_INLINE void stream( const SIMDType& value, Dims... dims ) noexcept;
 
    template< typename MT >
-   inline auto assign( const DenseArray<MT>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT> >;
+   inline auto assign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedAssign_v<MT> >*/;
+
+   //template< typename MT >
+   //inline auto assign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT> >;
 
    template< typename MT >
-   inline auto assign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT> >;
+   inline auto addAssign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedAddAssign_v<MT> >*/;
+
+   //template< typename MT >
+   //inline auto addAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT> >;
 
    template< typename MT >
-   inline auto addAssign( const DenseArray<MT>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT> >;
+   inline auto subAssign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedSubAssign_v<MT> >*/;
+
+   //template< typename MT >
+   //inline auto subAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT> >;
 
    template< typename MT >
-   inline auto addAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT> >;
+   inline auto schurAssign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedSchurAssign_v<MT> >*/;
 
-   template< typename MT >
-   inline auto subAssign( const DenseArray<MT>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT> >;
-
-   template< typename MT >
-   inline auto subAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT> >;
-
-   template< typename MT >
-   inline auto schurAssign( const DenseArray<MT>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT> >;
-
-   template< typename MT >
-   inline auto schurAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT> >;
+   //template< typename MT >
+   //inline auto schurAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT> >;
    //@}
    //**********************************************************************************************
 
@@ -647,7 +648,7 @@ inline DynamicArray<N, Type>::DynamicArray( const Other* array, Dims... dims )
 {
    BLAZE_STATIC_ASSERT( N == sizeof...( dims ) );
 
-   if( IsNothrowMoveAssignable_v< ValueType > ) {
+   if( IsNothrowMoveAssignable_v< Type > ) {
       ArrayForEach2( dims_, nn_, [&]( size_t i, size_t j ) {
          v_[j] = std::move( array[i] );
       } );
@@ -888,6 +889,7 @@ inline typename DynamicArray<N, Type>::Reference
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
+   MAYBE_UNUSED( indices );
 #endif
 
    return v_[index( dims... )];
@@ -920,6 +922,7 @@ inline typename DynamicArray<N, Type>::ConstReference
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
+   MAYBE_UNUSED( indices );
 #endif
 
    return v_[index( dims... )];
@@ -2054,6 +2057,7 @@ inline size_t DynamicArray<N, Type>::capacity( size_t i, Dims... dims ) const no
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
+   MAYBE_UNUSED( indices );
 #endif
 
    MAYBE_UNUSED( dims... );
@@ -2107,6 +2111,7 @@ inline size_t DynamicArray<N, Type>::nonZeros( size_t i, Dims... dims ) const
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
+   MAYBE_UNUSED( indices );
 #endif
 
    const size_t jstart = row_index( i, dims... );
@@ -2358,7 +2363,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline void DynamicArray<N, Type>::shrinkToFit()
 {
-   if( ( l_ * o_ * m_ * nn_ ) < capacity_ ) {
+   if( calcCapacity() < capacity_ ) {
       DynamicArray( *this ).swap( *this );
    }
 }
@@ -2466,7 +2471,7 @@ inline size_t DynamicArray<N, Type>::row_index( size_t i, Dims... dims ) const n
 {
    BLAZE_STATIC_ASSERT( N - 2 == sizeof...( dims ) );
 
-   size_t indices[] = { dims..., i, 0 };
+   size_t indices[] = { static_cast<size_t>(dims)..., i, 0UL };
 
    size_t idx = 0UL;
    for( size_t i = N - 1; i > 1; --i ) {
@@ -2976,6 +2981,7 @@ BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
+   MAYBE_UNUSED( indices );
 #endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
@@ -3016,6 +3022,7 @@ BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
+   MAYBE_UNUSED( indices );
 #endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
 
@@ -3191,7 +3198,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
-   -> DisableIf_t< VectorizedAssign_v<MT> >
+   //-> DisableIf_t< VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
@@ -3217,20 +3224,20 @@ inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< size_t N         // The dimensionality of the array
-        , typename Type >  // Data type of the array
-template< typename MT >  // Type of the right-hand side dense array
-inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
-   -> EnableIf_t< VectorizedAssign_v<MT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
-
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
-
-   const size_t jpos( ( remainder )?( dims_[0] & size_t(-SIMDSIZE) ):( dims_[0] ) );
-   BLAZE_INTERNAL_ASSERT( !remainder || ( dims_[0] - ( dims_[0] % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
+//template< size_t N         // The dimensionality of the array
+//        , typename Type >  // Data type of the array
+//template< typename MT >  // Type of the right-hand side dense array
+//inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
+//   -> EnableIf_t< VectorizedAssign_v<MT> >
+//{
+//   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+//
+//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//
+//   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+//
+//   const size_t jpos( ( remainder )?( dims_[0] & size_t(-SIMDSIZE) ):( dims_[0] ) );
+//   BLAZE_INTERNAL_ASSERT( !remainder || ( dims_[0] - ( dims_[0] % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
 //    if( usePadding && useStreaming &&
 //        ( o_*m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
@@ -3273,7 +3280,7 @@ inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
 //          }
 //       }
 //    }
-}
+//}
 //*************************************************************************************************
 
 
@@ -3292,28 +3299,17 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
-   -> DisableIf_t< VectorizedAddAssign_v<MT> >
+   //-> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
-//    for (size_t k=0UL; k<o_; ++k) {
-//       for (size_t i=0UL; i<m_; ++i) {
-//          size_t row_elements = (k*m_+i)*nn_;
-//          const size_t jbegin(0UL);
-//          const size_t jend  (n_);
-//          BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
-//
-//          size_t j(jbegin);
-//
-//          for (; (j+2UL) <= jend; j+=2UL) {
-//             v_[row_elements+j] += (~rhs)(k, i, j);
-//             v_[row_elements+j+1UL] += (~rhs)(k, i, j+1UL);
-//          }
-//          if (j < jend) {
-//             v_[row_elements+j] += (~rhs)(k, i, j);
-//          }
-//       }
-//    }
+   const size_t jpos( dims_[0] & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( dims_[0] - ( dims_[0] % 2UL ) ) == jpos, "Invalid end calculation" );
+
+   ArrayForEachGrouped(
+      dims_, nn_, [&]( size_t i, std::array< size_t, N > const& dims ) {
+         v_[i] += ( ~rhs )( dims );
+      } );
 }
 //*************************************************************************************************
 
@@ -3329,46 +3325,46 @@ inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< size_t N         // The dimensionality of the array
-        , typename Type >  // Data type of the array
-template< typename MT >  // Type of the right-hand side dense array
-inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
-   -> EnableIf_t< VectorizedAddAssign_v<MT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
-
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
-
-   for (size_t k=0UL; k<o_; ++k) {
-      for (size_t i=0UL; i<m_; ++i) {
-         const size_t jbegin(0UL);
-         const size_t jend  (n_);
-         BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
-
-         const size_t jpos((remainder)?(jend & size_t(-SIMDSIZE)):(jend));
-         BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
-
-         size_t j(jbegin);
-         Iterator left(begin(i, k) + jbegin);
-         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
-
-         for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
-            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
-            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
-            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
-            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
-         }
-         for (; j<jpos; j+=SIMDSIZE) {
-            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
-         }
-         for (; remainder && j<jend; ++j) {
-            *left += *right; ++left; ++right;
-         }
-      }
-   }
-}
+//template< size_t N         // The dimensionality of the array
+//        , typename Type >  // Data type of the array
+//template< typename MT >  // Type of the right-hand side dense array
+//inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
+//   -> EnableIf_t< VectorizedAddAssign_v<MT> >
+//{
+//   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+//
+//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//
+//   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+//
+//   for (size_t k=0UL; k<o_; ++k) {
+//      for (size_t i=0UL; i<m_; ++i) {
+//         const size_t jbegin(0UL);
+//         const size_t jend  (n_);
+//         BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
+//
+//         const size_t jpos((remainder)?(jend & size_t(-SIMDSIZE)):(jend));
+//         BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
+//
+//         size_t j(jbegin);
+//         Iterator left(begin(i, k) + jbegin);
+//         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
+//
+//         for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
+//            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//         }
+//         for (; j<jpos; j+=SIMDSIZE) {
+//            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//         }
+//         for (; remainder && j<jend; ++j) {
+//            *left += *right; ++left; ++right;
+//         }
+//      }
+//   }
+//}
 //*************************************************************************************************
 
 
@@ -3387,28 +3383,17 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
-   -> DisableIf_t< VectorizedSubAssign_v<MT> >
+   //-> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
-//    for (size_t k=0UL; k<o_; ++k) {
-//       for (size_t i=0UL; i<m_; ++i) {
-//          size_t row_elements = (k*m_+i)*nn_;
-//          const size_t jbegin(0UL);
-//          const size_t jend  (n_);
-//          BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
-//
-//          size_t j(jbegin);
-//
-//          for (; (j+2UL) <= jend; j+=2UL) {
-//             v_[row_elements+j] -= (~rhs)(k, i, j);
-//             v_[row_elements+j+1UL] -= (~rhs)(k, i, j+1UL);
-//          }
-//          if (j < jend) {
-//             v_[row_elements+j] -= (~rhs)(k, i, j);
-//          }
-//       }
-//    }
+   const size_t jpos( dims_[0] & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( dims_[0] - ( dims_[0] % 2UL ) ) == jpos, "Invalid end calculation" );
+
+   ArrayForEachGrouped(
+      dims_, nn_, [&]( size_t i, std::array< size_t, N > const& dims ) {
+         v_[i] -= ( ~rhs )( dims );
+      } );
 }
 //*************************************************************************************************
 
@@ -3424,47 +3409,47 @@ inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< size_t N         // The dimensionality of the array
-        , typename Type >  // Data type of the array
-template< typename MT >  // Type of the right-hand side dense array
-inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
-   -> EnableIf_t< VectorizedSubAssign_v<MT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
-
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
-
-   for (size_t k=0UL; k<o_; ++k) {
-      for (size_t i=0UL; i<m_; ++i)
-      {
-         const size_t jbegin(0UL);
-         const size_t jend  (n_);
-         BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
-
-         const size_t jpos((remainder)?(jend & size_t(-SIMDSIZE)):(jend));
-         BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
-
-         size_t j(jbegin);
-         Iterator left(begin(i, k) + jbegin);
-         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
-
-         for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
-            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
-            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
-            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
-            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
-         }
-         for (; j<jpos; j+=SIMDSIZE) {
-            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
-         }
-         for (; remainder && j<jend; ++j) {
-            *left -= *right; ++left; ++right;
-         }
-      }
-   }
-}
+//template< size_t N         // The dimensionality of the array
+//        , typename Type >  // Data type of the array
+//template< typename MT >  // Type of the right-hand side dense array
+//inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
+//   -> EnableIf_t< VectorizedSubAssign_v<MT> >
+//{
+//   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+//
+//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//
+//   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+//
+//   for (size_t k=0UL; k<o_; ++k) {
+//      for (size_t i=0UL; i<m_; ++i)
+//      {
+//         const size_t jbegin(0UL);
+//         const size_t jend  (n_);
+//         BLAZE_INTERNAL_ASSERT(jbegin <= jend, "Invalid loop indices detected");
+//
+//         const size_t jpos((remainder)?(jend & size_t(-SIMDSIZE)):(jend));
+//         BLAZE_INTERNAL_ASSERT(!remainder || (jend - (jend % (SIMDSIZE))) == jpos, "Invalid end calculation");
+//
+//         size_t j(jbegin);
+//         Iterator left(begin(i, k) + jbegin);
+//         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
+//
+//         for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
+//            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//         }
+//         for (; j<jpos; j+=SIMDSIZE) {
+//            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//         }
+//         for (; remainder && j<jend; ++j) {
+//            *left -= *right; ++left; ++right;
+//         }
+//      }
+//   }
+//}
 //*************************************************************************************************
 
 
@@ -3483,25 +3468,17 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
-   -> DisableIf_t< VectorizedSchurAssign_v<MT> >
+   //-> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
-//    const size_t jpos( n_ & size_t(-2) );
-//    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
-//
-//    for (size_t k=0UL; k<o_; ++k) {
-//       for (size_t i=0UL; i<m_; ++i) {
-//          size_t row_elements = (k*m_+i)*nn_;
-//          for (size_t j=0UL; j<jpos; j+=2UL) {
-//             v_[row_elements+j] *= (~rhs)(k, i, j);
-//             v_[row_elements+j+1UL] *= (~rhs)(k, i, j+1UL);
-//          }
-//          if (jpos < n_) {
-//             v_[row_elements+jpos] *= (~rhs)(k, i, jpos);
-//          }
-//       }
-//    }
+   const size_t jpos( dims_[0] & size_t(-2) );
+   BLAZE_INTERNAL_ASSERT( ( dims_[0] - ( dims_[0] % 2UL ) ) == jpos, "Invalid end calculation" );
+
+   ArrayForEachGrouped(
+      dims_, nn_, [&]( size_t i, std::array< size_t, N > const& dims ) {
+         v_[i] *= ( ~rhs )( dims );
+      } );
 }
 //*************************************************************************************************
 
@@ -3517,43 +3494,43 @@ inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< size_t N         // The dimensionality of the array
-        , typename Type >  // Data type of the array
-template< typename MT >  // Type of the right-hand side dense array
-inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
-   -> EnableIf_t< VectorizedSchurAssign_v<MT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
-
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
-
-   for (size_t k=0UL; k<o_; ++k) {
-      for (size_t i=0UL; i<m_; ++i)
-      {
-         const size_t jpos((remainder)?(n_ & size_t(-SIMDSIZE)):(n_));
-         BLAZE_INTERNAL_ASSERT(!remainder || (n_ - (n_ % (SIMDSIZE))) == jpos, "Invalid end calculation");
-
-         size_t j(0UL);
-         Iterator left(begin(i, k));
-         ConstIterator_t<MT> right((~rhs).begin(i, k));
-
-         for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
-            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
-            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
-            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
-            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
-         }
-         for (; j<jpos; j+=SIMDSIZE) {
-            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
-         }
-         for (; remainder && j<n_; ++j) {
-            *left *= *right; ++left; ++right;
-         }
-      }
-   }
-}
+//template< size_t N         // The dimensionality of the array
+//        , typename Type >  // Data type of the array
+//template< typename MT >  // Type of the right-hand side dense array
+//inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
+//   -> EnableIf_t< VectorizedSchurAssign_v<MT> >
+//{
+//   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+//
+//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//
+//   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+//
+//   for (size_t k=0UL; k<o_; ++k) {
+//      for (size_t i=0UL; i<m_; ++i)
+//      {
+//         const size_t jpos((remainder)?(n_ & size_t(-SIMDSIZE)):(n_));
+//         BLAZE_INTERNAL_ASSERT(!remainder || (n_ - (n_ % (SIMDSIZE))) == jpos, "Invalid end calculation");
+//
+//         size_t j(0UL);
+//         Iterator left(begin(i, k));
+//         ConstIterator_t<MT> right((~rhs).begin(i, k));
+//
+//         for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
+//            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//         }
+//         for (; j<jpos; j+=SIMDSIZE) {
+//            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;
+//         }
+//         for (; remainder && j<n_; ++j) {
+//            *left *= *right; ++left; ++right;
+//         }
+//      }
+//   }
+//}
 //*************************************************************************************************
 
 

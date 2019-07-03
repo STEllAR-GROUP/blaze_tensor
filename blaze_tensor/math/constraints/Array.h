@@ -41,7 +41,7 @@
 // Includes
 //*************************************************************************************************
 
-#include <blaze_tensor/math/typetraits/IsArray.h>
+#include <blaze_tensor/math/typetraits/IsNdArray.h>
 
 
 namespace blaze {
@@ -60,7 +60,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_BE_ARRAY_TYPE(T) \
-   static_assert( ::blaze::IsArray_v<T>, "Non-array type detected" )
+   static_assert( ::blaze::IsNdArray_v<T>, "Non-array type detected" )
 //*************************************************************************************************
 
 
@@ -80,7 +80,7 @@ namespace blaze {
 // is created.
 */
 #define BLAZE_CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE(T) \
-   static_assert( !::blaze::IsArray_v<T>, "Array type detected" )
+   static_assert( !::blaze::IsNdArray_v<T>, "Array type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

@@ -346,10 +346,11 @@ inline decltype(auto) dilatedsubtensor( Tensor<TT>&& tensor, RSAs... args )
 // Please note that this function creates an unaligned dense or sparse DilatedSubtensor. For instance,
 // the creation of the dense DilatedSubtensor is equivalent to the following function call:
 
-*************************************************************************************************
+*/
+//*************************************************************************************************
 
 
-*************************************************************************************************
+//*************************************************************************************************
 /*!\brief Creating a view on a specific DilatedSubtensor of the given tensor.
 // \ingroup DilatedSubtensor
 //

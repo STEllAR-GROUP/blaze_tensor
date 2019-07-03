@@ -47,6 +47,7 @@
 #include <string>
 #include <blazetest/system/Types.h>
 
+#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/DynamicArray.h>
 #include <blaze_tensor/math/DynamicTensor.h>
 #include <blaze_tensor/math/QuatSlice.h>
@@ -107,11 +108,10 @@ class DenseGeneralTest
    void testIsDefault();
    void testIsSame();
    void testSubtensor();
-   //void testRow();
-   //void testRows();
-   //void testColumn();
-   //void testColumns();
-   //void testBand();
+   void testPageslice();
+   void testRowslice();
+   void testColumnslice();
+
 
    template< typename Type >
    void checkSize( const Type& quatslice, size_t expectedSize ) const;

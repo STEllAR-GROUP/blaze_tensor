@@ -969,8 +969,6 @@ inline decltype(auto) subtensor( const TensMatSchurExpr<TT>& tensor, RSAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   using TT1 = RemoveReference_t< LeftOperand_t< TensorType_t<TT> > >;
-
    const SubtensorData<CSAs...> st( args... );
 
    BLAZE_DECLTYPE_AUTO( left , (~tensor).leftOperand()  );

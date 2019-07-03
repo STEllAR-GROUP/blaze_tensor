@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/util/ArrayForEach.h
+//  \file blaze_tensor/util/ArrayForEach.h
 //  \brief Header file for the ArrayForEach function
 //
 //  Copyright (C) 2012-2019 Klaus Iglberger - All Rights Reserved

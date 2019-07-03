@@ -59,6 +59,7 @@
 #include <blaze/util/typetraits/IsSame.h>
 
 #include <blaze_tensor/math/expressions/Forward.h>
+#include <blaze_tensor/util/ArrayForEach.h>
 
 #include <initializer_list>
 #include <type_traits>

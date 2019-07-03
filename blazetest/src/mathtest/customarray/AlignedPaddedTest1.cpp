@@ -53,6 +53,7 @@
 #include <blazetest/mathtest/RandomMinimum.h>
 
 #include <blazetest/mathtest/customarray/AlignedPaddedTest.h>
+#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/DynamicArray.h>
 
 namespace blazetest {

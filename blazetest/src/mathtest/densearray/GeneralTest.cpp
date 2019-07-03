@@ -43,6 +43,7 @@
 #include <blaze/system/Platform.h>
 #include <blazetest/mathtest/IsEqual.h>
 
+#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/DynamicArray.h>
 #include <blaze_tensor/math/dense/DenseArray.h>
 

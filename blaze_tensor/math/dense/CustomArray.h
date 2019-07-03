@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze_array/math/dense/CustomArray.h
+//  \file blaze_tensor/math/dense/CustomArray.h
 //  \brief Header file for the implementation of a customizable array
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
@@ -52,7 +52,7 @@
 #include <blaze_tensor/math/expressions/DenseArray.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
-#include <blaze_tensor/math/typetraits/IsArray.h>
+#include <blaze_tensor/math/typetraits/IsNdArray.h>
 
 namespace blaze {
 

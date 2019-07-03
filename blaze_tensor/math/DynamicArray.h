@@ -115,7 +115,7 @@ template< typename... Dims >
 inline const DynamicArray<N, Type>
    Rand< DynamicArray<N, Type> >::generate( Dims... dims ) const
 {
-   DynamicArray<Type> array( dims... );
+   DynamicArray<N, Type> array( dims... );
    randomize( array );
    return array;
 }
@@ -139,7 +139,7 @@ template< typename Arg, typename... Dims >  // Min/max argument type
 inline const DynamicArray<N, Type>
    Rand< DynamicArray<N, Type> >::generate( const Arg& min, const Arg& max, Dims... dims ) const
 {
-   DynamicArray<Type> array( dims... );
+   DynamicArray<N, Type> array( dims... );
    randomize( array, min, max );
    return array;
 }

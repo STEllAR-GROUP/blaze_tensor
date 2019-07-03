@@ -1264,7 +1264,7 @@ template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline size_t QuatSlice<AT,CRAs...>::nonZeros( size_t i, size_t k ) const
 {
-   return quaternion_.nonZeros( quat(), k, i );
+   return quaternion_.nonZeros( i, quat(), k );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1282,7 +1282,7 @@ inline void QuatSlice<AT,CRAs...>::reset()
 {
    for (size_t k = 0; k < pages(); ++k) {
       for (size_t i = 0; i < rows(); ++i) {
-         quaternion_.reset( quat(), k, i );
+         quaternion_.reset( i, quat(), k );
       }
    }
 }
@@ -1298,9 +1298,10 @@ inline void QuatSlice<AT,CRAs...>::reset()
 */
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
-inline void QuatSlice<AT,CRAs...>::reset( size_t i, size_t k )
+inline void QuatSlice<AT,CRAs...>::reset( size_t k, size_t i )
 {
-   quaternion_.reset( quat(), k, i );
+   std::cout << quat() << "\n***********\n";
+   quaternion_.reset( i, quat(), k );
 }
 /*! \endcond */
 //*************************************************************************************************

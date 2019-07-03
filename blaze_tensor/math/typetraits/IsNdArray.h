@@ -1,7 +1,7 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/typetraits/IsArray.h
-//  \brief Header file for the IsArray type trait
+//  \file blaze_tensor/math/typetraits/IsNdArray.h
+//  \brief Header file for the IsNdArray type trait
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
@@ -33,8 +33,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISARRAY_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISARRAY_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISNDARRAY_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISNDARRAY_H_
 
 
 //*************************************************************************************************
@@ -57,11 +57,11 @@ namespace blaze {
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Auxiliary helper struct for the IsArray type trait.
+/*!\brief Auxiliary helper struct for the IsNdArray type trait.
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsArrayHelper
+struct IsNdArrayHelper
 {
  private:
    //**********************************************************************************************
@@ -94,34 +94,34 @@ struct IsArrayHelper
 // class derives from \a FalseType.
 
    \code
-   blaze::IsArray< const DynamicArray<double> >::Type        // Results in TrueType
-   blaze::IsArray< StaticVector<float,3U,false> >::value     // Evaluates to 0
-   blaze::IsArray< const DynamicVector<double,true> >::Type  // Results in FalseType
-   blaze::IsArray< volatile CompressedVector<int,true> >     // Is derived from FalseType
+   blaze::IsNdArray< const DynamicArray<double> >::Type        // Results in TrueType
+   blaze::IsNdArray< StaticVector<float,3U,false> >::value     // Evaluates to 0
+   blaze::IsNdArray< const DynamicVector<double,true> >::Type  // Results in FalseType
+   blaze::IsNdArray< volatile CompressedVector<int,true> >     // Is derived from FalseType
    \endcode
 */
 template< typename T >
-struct IsArray
-   : public IsArrayHelper<T>::Type
+struct IsNdArray
+   : public IsNdArrayHelper<T>::Type
 {};
 //*************************************************************************************************
 
 
 //*************************************************************************************************
-/*!\brief Auxiliary variable template for the IsArray type trait.
+/*!\brief Auxiliary variable template for the IsNdArray type trait.
 // \ingroup type_traits
 //
-// The IsArray_v variable template provides a convenient shortcut to access the nested \a value
-// of the IsArray class template. For instance, given the type \a T the following two statements
+// The IsNdArray_v variable template provides a convenient shortcut to access the nested \a value
+// of the IsNdArray class template. For instance, given the type \a T the following two statements
 // are identical:
 
    \code
-   constexpr bool value1 = blaze::IsArray<T>::value;
-   constexpr bool value2 = blaze::IsArray_v<T>;
+   constexpr bool value1 = blaze::IsNdArray<T>::value;
+   constexpr bool value2 = blaze::IsNdArray_v<T>;
    \endcode
 */
 template< typename T >
-constexpr bool IsArray_v = IsArray<T>::value;
+constexpr bool IsNdArray_v = IsNdArray<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze
