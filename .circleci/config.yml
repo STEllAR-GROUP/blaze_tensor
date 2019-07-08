@@ -41,6 +41,8 @@ jobs:
             # Run all tests
             - run:
                 name: Run all the tests
+                environment:
+                    CTEST_OUTPUT_ON_FAILURE: TRUE
                 command: cmake --build build --target test -- -j1
 
 ################################################################################
