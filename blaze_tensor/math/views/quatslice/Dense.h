@@ -627,7 +627,7 @@ inline typename QuatSlice<AT,CRAs...>::ConstPointer
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::Iterator
-   QuatSlice<AT,CRAs...>::begin( size_t k, size_t i )
+   QuatSlice<AT,CRAs...>::begin( size_t i, size_t k )
 {
    return quaternion_.begin( i, quat(), k );
 }
@@ -647,7 +647,7 @@ inline typename QuatSlice<AT,CRAs...>::Iterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::ConstIterator
-   QuatSlice<AT,CRAs...>::begin( size_t k, size_t i ) const
+   QuatSlice<AT,CRAs...>::begin( size_t i, size_t k ) const
 {
    return quaternion_.cbegin( i, quat(), k );
 }
@@ -667,7 +667,7 @@ inline typename QuatSlice<AT,CRAs...>::ConstIterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::ConstIterator
-   QuatSlice<AT,CRAs...>::cbegin( size_t k, size_t i ) const
+   QuatSlice<AT,CRAs...>::cbegin( size_t i, size_t k ) const
 {
    return quaternion_.cbegin( i, quat(), k );
 }
@@ -687,7 +687,7 @@ inline typename QuatSlice<AT,CRAs...>::ConstIterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::Iterator
-   QuatSlice<AT,CRAs...>::end( size_t k, size_t i )
+   QuatSlice<AT,CRAs...>::end( size_t i, size_t k )
 {
    return quaternion_.end( i, quat(), k );
 }
@@ -707,7 +707,7 @@ inline typename QuatSlice<AT,CRAs...>::Iterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::ConstIterator
-   QuatSlice<AT,CRAs...>::end( size_t k, size_t i ) const
+   QuatSlice<AT,CRAs...>::end( size_t i, size_t k ) const
 {
    return quaternion_.cend( i, quat(), k );
 }
@@ -727,7 +727,7 @@ inline typename QuatSlice<AT,CRAs...>::ConstIterator
 template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline typename QuatSlice<AT,CRAs...>::ConstIterator
-   QuatSlice<AT,CRAs...>::cend( size_t k, size_t i ) const
+   QuatSlice<AT,CRAs...>::cend( size_t i, size_t k ) const
 {
    return quaternion_.cend( i, quat(), k );
 }
@@ -815,7 +815,8 @@ inline QuatSlice<AT,CRAs...>&
    for( const auto& colList : list ) {
       size_t i( 0UL );
       for( const auto& rowList : colList ) {
-         std::fill( std::copy( rowList.begin(), rowList.end(), left.begin( k,i) ), left.end(k,i), ElementType() );
+         std::fill(
+            std::copy( rowList.begin(), rowList.end(), left.begin( i, k ) ), left.end( i, k ), ElementType() );
          ++i;
       }
       ++k;

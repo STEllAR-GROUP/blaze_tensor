@@ -602,7 +602,6 @@ void DenseGeneralTest::testAssignment()
 
       quatslice1 = t1;
 
-
       checkPages   ( quatslice1, 2UL );
       checkRows    ( quatslice1, 5UL );
       checkColumns ( quatslice1, 4UL );
@@ -2754,9 +2753,9 @@ void DenseGeneralTest::testIterator()
          test_ = "Iterator/ConstIterator conversion";
 
          RT quatslice2 = blaze::quatslice( quat_, 1UL );
-         RT::ConstIterator it( begin( quatslice2, 1UL, 2UL ) );
+         RT::ConstIterator it( begin( quatslice2, 2UL, 1UL ) );
 
-         if( it == end( quatslice2, 1UL, 2UL ) || *it != -2 ) {
+         if( it == end( quatslice2, 2UL, 1UL ) || *it != -2 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Failed iterator conversion detected\n";
@@ -2769,7 +2768,7 @@ void DenseGeneralTest::testIterator()
          test_ = "Iterator subtraction (end-begin)";
 
          RT quatslice1 = blaze::quatslice( quat_, 1UL );
-         const ptrdiff_t number( end( quatslice1, 1UL, 2UL ) - begin( quatslice1, 1UL, 2UL ) );
+         const ptrdiff_t number( end( quatslice1, 2UL, 1UL ) - begin( quatslice1, 2UL, 1UL ) );
 
          if( number != 4L ) {
             std::ostringstream oss;
@@ -2787,7 +2786,7 @@ void DenseGeneralTest::testIterator()
          test_ = "Iterator subtraction (begin-end)";
 
          RT quatslice1 = blaze::quatslice( quat_, 1UL );
-         const ptrdiff_t number( begin( quatslice1, 1UL, 2UL ) - end( quatslice1, 1UL, 2UL ) );
+         const ptrdiff_t number( begin( quatslice1, 2UL, 1UL ) - end( quatslice1, 2UL, 1UL ) );
 
          if( number != -4L ) {
             std::ostringstream oss;
@@ -2805,7 +2804,7 @@ void DenseGeneralTest::testIterator()
          test_ = "ConstIterator subtraction (end-begin)";
 
          RT quatslice2 = blaze::quatslice( quat_, 1UL );
-         const ptrdiff_t number( cend( quatslice2, 1UL, 2UL ) - cbegin( quatslice2, 1UL, 2UL ) );
+         const ptrdiff_t number( cend( quatslice2, 2UL, 1UL ) - cbegin( quatslice2, 2UL, 1UL ) );
 
          if( number != 4L ) {
             std::ostringstream oss;
@@ -2823,7 +2822,7 @@ void DenseGeneralTest::testIterator()
          test_ = "ConstIterator subtraction (begin-end)";
 
          RT quatslice2 = blaze::quatslice( quat_, 1UL );
-         const ptrdiff_t number( cbegin( quatslice2, 1UL, 2UL ) - cend( quatslice2, 1UL, 2UL ) );
+         const ptrdiff_t number( cbegin( quatslice2, 2UL, 1UL ) - cend( quatslice2, 2UL, 1UL ) );
 
          if( number != -4L ) {
             std::ostringstream oss;
@@ -2841,8 +2840,8 @@ void DenseGeneralTest::testIterator()
          test_ = "read-only access via ConstIterator";
 
          RT quatslice3 = blaze::quatslice( quat_, 0UL );
-         RT::ConstIterator it ( cbegin( quatslice3, 0UL, 4UL ) );
-         RT::ConstIterator end( cend( quatslice3, 0UL, 4UL ) );
+         RT::ConstIterator it ( cbegin( quatslice3, 4UL, 0UL ) );
+         RT::ConstIterator end( cend( quatslice3, 4UL, 0UL ) );
 
          if( it == end || *it != 7 ) {
             std::ostringstream oss;
@@ -2940,7 +2939,7 @@ void DenseGeneralTest::testIterator()
          RT quatslice2 = blaze::quatslice( quat_, 1UL );
          int value = 6;
 
-         for( RT::Iterator it=begin( quatslice2, 0UL, 3UL ); it!=end( quatslice2, 0UL, 3UL ); ++it ) {
+         for( RT::Iterator it=begin( quatslice2, 3UL, 0UL ); it!=end( quatslice2, 3UL, 0UL ); ++it ) {
             *it = value++;
          }
 
@@ -2971,7 +2970,7 @@ void DenseGeneralTest::testIterator()
          RT quatslice2 = blaze::quatslice( quat_, 1UL );
          int value = 2;
 
-         for( RT::Iterator it=begin( quatslice2, 0UL, 3UL ); it!=end( quatslice2, 0UL, 3UL  ); ++it ) {
+         for( RT::Iterator it=begin( quatslice2, 3UL, 0UL ); it!=end( quatslice2, 3UL, 0UL  ); ++it ) {
             *it += value++;
          }
 
@@ -3002,7 +3001,7 @@ void DenseGeneralTest::testIterator()
          RT quatslice2 = blaze::quatslice( quat_, 1UL );
          int value = 2;
 
-         for( RT::Iterator it=begin( quatslice2, 0UL, 3UL ); it!=end( quatslice2, 0UL, 3UL ); ++it ) {
+         for( RT::Iterator it=begin( quatslice2, 3UL, 0UL ); it!=end( quatslice2, 3UL, 0UL ); ++it ) {
             *it -= value++;
          }
 
@@ -3033,7 +3032,7 @@ void DenseGeneralTest::testIterator()
          RT quatslice2 = blaze::quatslice( quat_, 1UL );
          int value = 1;
 
-         for( RT::Iterator it=begin( quatslice2, 0UL, 3UL ); it!=end( quatslice2, 0UL, 3UL ); ++it ) {
+         for( RT::Iterator it=begin( quatslice2, 3UL, 0UL ); it!=end( quatslice2, 3UL, 0UL ); ++it ) {
             *it *= value++;
          }
 
@@ -3063,7 +3062,7 @@ void DenseGeneralTest::testIterator()
 
          RT quatslice2 = blaze::quatslice( quat_, 1UL );
 
-         for( RT::Iterator it=begin( quatslice2, 0UL, 3UL ); it!=end( quatslice2, 0UL, 3UL ); ++it ) {
+         for( RT::Iterator it=begin( quatslice2, 3UL, 0UL ); it!=end( quatslice2, 3UL, 0UL ); ++it ) {
             *it /= 2;
          }
 
@@ -4073,7 +4072,7 @@ void DenseGeneralTest::testSubtensor()
          }
 
          // sm.begin( page, row)
-         if( *sm.begin(0,1) != 0 ) {
+         if( *sm.begin(1,0) != 0 ) {
             std::ostringstream oss;
             oss << " Test: " << test_ << "\n"
                 << " Error: Iterator access failed\n"
