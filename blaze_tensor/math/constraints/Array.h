@@ -59,7 +59,7 @@ namespace blaze {
 // In case the given data type \a T is not a N-dimensional array type, a compilation error
 // is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_ARRAY_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_BE_ND_ARRAY_TYPE(T) \
    static_assert( ::blaze::IsNdArray_v<T>, "Non-array type detected" )
 //*************************************************************************************************
 
@@ -79,7 +79,7 @@ namespace blaze {
 // In case the given data type \a T is a N-dimensional array type, a compilation error
 // is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_ARRAY_TYPE(T) \
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_ND_ARRAY_TYPE(T) \
    static_assert( !::blaze::IsNdArray_v<T>, "Array type detected" )
 //*************************************************************************************************
 

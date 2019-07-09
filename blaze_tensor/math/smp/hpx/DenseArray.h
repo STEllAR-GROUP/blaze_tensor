@@ -4,7 +4,7 @@
 //  \brief Header file for the HPX-based dense array SMP implementation
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -71,6 +71,7 @@
 #include <blaze_tensor/math/expressions/DenseArray.h>
 #include <blaze_tensor/math/smp/ArrayThreadMapping.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
+#include <blaze_tensor/math/views/QuatSlice.h>
 // #include <blaze_tensor/math/views/ArraySlice.h>
 
 namespace blaze {

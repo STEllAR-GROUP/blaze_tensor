@@ -167,7 +167,7 @@ void ArrayForEachPadded(
    }
 }
 
-template< size_t N, typename F >
+template< typename F >
 void ArrayForEachPadded(
    std::array< size_t, 2 > const& dims, size_t nn, F const& f, size_t base = 0 )
 {

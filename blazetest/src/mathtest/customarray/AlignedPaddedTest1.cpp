@@ -75,10 +75,10 @@ namespace customarray {
 */
 AlignedPaddedTest::AlignedPaddedTest()
 {
-   testConstructors();
+   //testConstructors();
    testAssignment();
-   testAddAssign();
-   testSubAssign();
+   //testAddAssign();
+   //testSubAssign();
 }
 //*************************************************************************************************
 
@@ -460,7 +460,7 @@ void AlignedPaddedTest::testAssignment()
 
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
       MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
-      mat = {{{1, 2, 3}, {4, 5, 6}}, {{1, 2, 3}, {4, 5, 6}}};
+      mat = {{{1, 2, 3}, {4, 5, 6}}, {{-1, -2, -3}, {-4, -5, -6}}};
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );
@@ -472,10 +472,10 @@ void AlignedPaddedTest::testAssignment()
       checkNonZeros( mat, 0UL, 1UL, 3UL );
       checkNonZeros( mat, 1UL, 1UL, 3UL );
 
-      if( mat(0,0,0) != 1 || mat(0,0,1) != 2 || mat(0,0,2) != 3 ||
-          mat(0,1,0) != 4 || mat(0,1,1) != 5 || mat(0,1,2) != 6 ||
-          mat(1,0,0) != 1 || mat(1,0,1) != 2 || mat(1,0,2) != 3 ||
-          mat(1,1,0) != 4 || mat(1,1,1) != 5 || mat(1,1,2) != 6 ) {
+      if( mat(0,0,0) !=  1 || mat(0,0,1) !=  2 || mat(0,0,2) !=  3 ||
+          mat(0,1,0) !=  4 || mat(0,1,1) !=  5 || mat(0,1,2) !=  6 ||
+          mat(1,0,0) != -1 || mat(1,0,1) != -2 || mat(1,0,2) != -3 ||
+          mat(1,1,0) != -4 || mat(1,1,1) != -5 || mat(1,1,2) != -6 ) {
          std::ostringstream oss;
          oss << " Test: " << test_ << "\n"
              << " Error: Assignment failed\n"
@@ -525,10 +525,10 @@ void AlignedPaddedTest::testAssignment()
    {
       test_ = "Row-major CustomArray array assignment";
 
-      const int array[2UL][2UL][3UL] = {{{1, 2, 3}, {4, 5, 6}}, {{1, 2, 3}, {4, 5, 6}}};
+      const int arr[2UL][2UL][3UL] = {{{1, 2, 3}, {4, 5, 6}}, {{1, 2, 3}, {4, 5, 6}}};
       std::unique_ptr<int[],blaze::Deallocate> memory( blaze::allocate<int>( 64UL ) );
       MT mat( memory.get(), 2UL, 2UL, 3UL, 16UL );
-      mat = MT( &array[0][0][0], 2UL, 2UL, 3UL );
+      mat = arr;
 
       checkRows    ( mat, 2UL );
       checkColumns ( mat, 3UL );

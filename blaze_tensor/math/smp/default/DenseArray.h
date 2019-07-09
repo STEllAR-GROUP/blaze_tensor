@@ -47,8 +47,8 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
 
-#include <blaze_array/math/expressions/Array.h>
-#include <blaze_array/math/typetraits/IsDenseArray.h>
+#include <blaze_tensor/math/expressions/Array.h>
+#include <blaze_tensor/math/typetraits/IsDenseArray.h>
 
 namespace blaze {
 

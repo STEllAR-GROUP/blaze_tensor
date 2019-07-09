@@ -488,7 +488,7 @@ class DynamicArray
    //**Member variables****************************************************************************
    /*!\name Member variables */
    //@{
-   std::array< size_t, N > dims_;  //!< The current dimensions of the array (dims[1]...dims_[N]) .
+   std::array< size_t, N > dims_;  //!< The current dimensions of the array (dims[0]...dims_[N-1]) .
    size_t nn_;                     //!< The alignment adjusted number of columns.
    size_t capacity_;               //!< The maximum capacity of the array.
    Type* BLAZE_RESTRICT v_;        //!< The dynamically allocated array elements.

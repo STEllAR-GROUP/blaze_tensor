@@ -55,6 +55,10 @@ integration service tracks the current build status for the master branch:
 
 ### Datastructures
 
+- `blaze::DynamicArray<N, T>`: a resizable, row-major ND dense array data structure
+  of arbitrary types
+- `blaze::CustomArray<N, T, ...>`: a non-owning ND dense array data structure usable
+  to refer to some other ND dense array
 - `blaze::DynamicTensor<T>`: a resizable, row-major 3D dense array data structure
   of arbitrary types
 - `blaze::CustomTensor<T, ...>`: a non-owning 3D dense array data structure usable
@@ -85,6 +89,9 @@ integration service tracks the current build status for the master branch:
   tensor-like data structure with three additional argumnts: 'pagedilation',  
   'rowdilation' and 'columndilation' (step-size between the pages, rows and the 
   columns of the underlying tensor, respectively).
+- `blaze::QuatSlice<...>`: a view representing a slice of 'thickness' one along
+  the page/row/column tensor of a 4D dense array
+  
 ### Operations
 
 - All element-wise arithmetic operations that are supported by the Blaze library:

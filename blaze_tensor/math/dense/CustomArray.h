@@ -475,6 +475,21 @@ class CustomArray
    inline CustomArray& operator=( const Type& set );
    inline CustomArray& operator=( nested_initializer_list< N, Type > list );
 
+   template< typename Other, size_t N1, size_t Dummy = N, typename = EnableIf_t< Dummy == 1 > >
+   inline CustomArray& operator=( const Other (&array)[N1] );
+
+   template< typename Other, size_t M, size_t N1, size_t Dummy = N, typename = EnableIf_t< Dummy == 2 > >
+   inline CustomArray& operator=( const Other (&array)[M][N1] );
+
+   template< typename Other, size_t O, size_t M, size_t N1, size_t Dummy = N, typename = EnableIf_t< Dummy == 3 > >
+   inline CustomArray& operator=( const Other (&array)[O][M][N1] );
+
+   template< typename Other, size_t P, size_t O, size_t M, size_t N1, size_t Dummy = N, typename = EnableIf_t< Dummy == 4 > >
+   inline CustomArray& operator=( const Other (&array)[P][O][M][N1] );
+
+   template< typename Other, size_t Q, size_t P, size_t O, size_t M, size_t N1, size_t Dummy = N, typename = EnableIf_t< Dummy == 5 > >
+   inline CustomArray& operator=(const Other (&array)[Q][P][O][M][N1]);
+
    inline CustomArray& operator=( const CustomArray& rhs );
    inline CustomArray& operator=( CustomArray&& rhs ) noexcept;
 
@@ -642,28 +657,28 @@ class CustomArray
    BLAZE_ALWAYS_INLINE void stream( const SIMDType& value, Dims... dims ) noexcept;
 
    template< typename MT >
-   inline auto assign( const DenseArray<MT>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT> >;
+   inline auto assign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedAssign_v<MT> >*/;
+
+   //template< typename MT >
+   //inline auto assign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT> >;
 
    template< typename MT >
-   inline auto assign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT> >;
+   inline auto addAssign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedAddAssign_v<MT> >*/;
+
+   //template< typename MT >
+   //inline auto addAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT> >;
 
    template< typename MT >
-   inline auto addAssign( const DenseArray<MT>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT> >;
+   inline auto subAssign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedSubAssign_v<MT> >*/;
+
+   //template< typename MT >
+   //inline auto subAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT> >;
 
    template< typename MT >
-   inline auto addAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT> >;
+   inline auto schurAssign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedSchurAssign_v<MT> >*/;
 
-   template< typename MT >
-   inline auto subAssign( const DenseArray<MT>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT> >;
-
-   template< typename MT >
-   inline auto subAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT> >;
-
-   template< typename MT >
-   inline auto schurAssign( const DenseArray<MT>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT> >;
-
-   template< typename MT >
-   inline auto schurAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT> >;
+   //template< typename MT >
+   //inline auto schurAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT> >;
    //@}
    //**********************************************************************************************
 
@@ -1694,6 +1709,301 @@ inline CustomArray<N,Type,AF,PF,RT>&
       ArrayForEachPadded( dims_, nn_, [&]( size_t i ) { v_[i] = Type(); } );
    }
 
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all tensor elements.
+//
+// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned tensor.
+// \exception std::invalid_argument Invalid array size.
+//
+// This assignment operator offers the option to directly set all elements of the tensor:
+
+   \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   const int array[9] = { 0, 0, 0,
+                          0, 0, 0,
+                          0, 0, 0 };
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
+   blaze::CustomTensor<int,unaligned,unpadded> A( array, 3UL, 3UL );
+   A = init;
+   \endcode
+
+// The tensor is assigned the values from the given array. Missing values are initialized with
+// default values (as e.g. the value 6 in the example). Note that the size of the array must
+// match the size of the custom tensor. Otherwise a \a std::invalid_argument exception is thrown.
+// Also note that after the assignment \a array will have the same entries as \a init.
+*/
+template< size_t N        // Dimensionality of the array
+        , typename Type   // Data type of the tensor
+        , bool AF         // Alignment flag
+        , bool PF         // Padding flag
+        , typename RT >   // Result type
+template< typename Other  // Data type of the initialization array
+        , size_t N1       // Number of columns of the initialization array
+        , size_t Dummy    // Dummy variable equal to N
+        , typename Enable >
+inline CustomArray<N,Type,AF,PF,RT>&
+   CustomArray<N,Type,AF,PF,RT>::operator=( const Other (&array)[N1] )
+{
+   if( dims_[0] != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
+   }
+
+   for (size_t j=0UL; j<N; ++j) {
+      v_[j] = array[j];
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all tensor elements.
+//
+// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned tensor.
+// \exception std::invalid_argument Invalid array size.
+//
+// This assignment operator offers the option to directly set all elements of the tensor:
+
+   \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   const int array[9] = { 0, 0, 0,
+                          0, 0, 0,
+                          0, 0, 0 };
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
+   blaze::CustomTensor<int,unaligned,unpadded> A( array, 3UL, 3UL );
+   A = init;
+   \endcode
+
+// The tensor is assigned the values from the given array. Missing values are initialized with
+// default values (as e.g. the value 6 in the example). Note that the size of the array must
+// match the size of the custom tensor. Otherwise a \a std::invalid_argument exception is thrown.
+// Also note that after the assignment \a array will have the same entries as \a init.
+*/
+template< size_t N        // Dimensionality of the array
+        , typename Type   // Data type of the tensor
+        , bool AF         // Alignment flag
+        , bool PF         // Padding flag
+        , typename RT >   // Result type
+template< typename Other  // Data type of the initialization array
+        , size_t M        // Number of rows of the initialization array
+        , size_t N1       // Number of columns of the initialization array
+        , size_t Dummy    // Dummy variable equal to N
+        , typename Enable >
+inline CustomArray<N,Type,AF,PF,RT>&
+   CustomArray<N,Type,AF,PF,RT>::operator=( const Other (&array)[M][N1] )
+{
+   if( dims_[1] != M || dims_[0] != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
+   }
+
+   for (size_t i=0UL; i<M; ++i) {
+      for (size_t j=0UL; j<N; ++j) {
+         v_[i*nn_+j] = array[i][j];
+      }
+   }
+
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all tensor elements.
+//
+// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned tensor.
+// \exception std::invalid_argument Invalid array size.
+//
+// This assignment operator offers the option to directly set all elements of the tensor:
+
+   \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   const int array[9] = { 0, 0, 0,
+                          0, 0, 0,
+                          0, 0, 0 };
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
+   blaze::CustomTensor<int,unaligned,unpadded> A( array, 3UL, 3UL );
+   A = init;
+   \endcode
+
+// The tensor is assigned the values from the given array. Missing values are initialized with
+// default values (as e.g. the value 6 in the example). Note that the size of the array must
+// match the size of the custom tensor. Otherwise a \a std::invalid_argument exception is thrown.
+// Also note that after the assignment \a array will have the same entries as \a init.
+*/
+template< size_t N        // Dimensionality of the array
+        , typename Type   // Data type of the tensor
+        , bool AF         // Alignment flag
+        , bool PF         // Padding flag
+        , typename RT >   // Result type
+template< typename Other  // Data type of the initialization array
+        , size_t O        // Number of pages of the initialization array
+        , size_t M        // Number of rows of the initialization array
+        , size_t N1       // Number of columns of the initialization array
+        , size_t Dummy    // Dummy variable equal to N
+        , typename Enable >
+inline CustomArray<N,Type,AF,PF,RT>&
+   CustomArray<N,Type,AF,PF,RT>::operator=( const Other (&array)[O][M][N1] )
+{
+   if( dims_[1] != M || dims_[0] != N || dims_[2] != O ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
+   }
+
+   for (size_t k=0UL; k<O; ++k) {
+      for (size_t i=0UL; i<M; ++i) {
+         for (size_t j=0UL; j<N; ++j) {
+            v_[(k*M+i)*nn_+j] = array[k][i][j];
+         }
+      }
+   }
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all tensor elements.
+//
+// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned tensor.
+// \exception std::invalid_argument Invalid array size.
+//
+// This assignment operator offers the option to directly set all elements of the tensor:
+
+   \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   const int array[9] = { 0, 0, 0,
+                          0, 0, 0,
+                          0, 0, 0 };
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
+   blaze::CustomTensor<int,unaligned,unpadded> A( array, 3UL, 3UL );
+   A = init;
+   \endcode
+
+// The tensor is assigned the values from the given array. Missing values are initialized with
+// default values (as e.g. the value 6 in the example). Note that the size of the array must
+// match the size of the custom tensor. Otherwise a \a std::invalid_argument exception is thrown.
+// Also note that after the assignment \a array will have the same entries as \a init.
+*/
+template< size_t N        // Dimensionality of the array
+        , typename Type   // Data type of the tensor
+        , bool AF         // Alignment flag
+        , bool PF         // Padding flag
+        , typename RT >   // Result type
+template< typename Other  // Data type of the initialization array
+        , size_t P        // Number of quats of the initialization array
+        , size_t O        // Number of pages of the initialization array
+        , size_t M        // Number of rows of the initialization array
+        , size_t N1       // Number of columns of the initialization array
+        , size_t Dummy    // Dummy variable equal to N
+        , typename Enable >
+inline CustomArray<N,Type,AF,PF,RT>&
+   CustomArray<N,Type,AF,PF,RT>::operator=( const Other (&array)[P][O][M][N1] )
+{
+   if( dims_[3] != P || dims_[2] != O || dims_[1] != M || dims_[0] != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
+   }
+   for (size_t l = 0UL; l < P; ++l) {
+      for (size_t k = 0UL; k < O; ++k) {
+         for (size_t i = 0UL; i < M; ++i) {
+            for (size_t j = 0UL; j < N; ++j) {
+               v_[((l*O + k)*M + i)*nn_ + j] = array[l][k][i][j];
+            }
+         }
+      }
+   }
+   return *this;
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Array assignment to all tensor elements.
+//
+// \param array \f$ M \times N \f$ dimensional array for the assignment.
+// \return Reference to the assigned tensor.
+// \exception std::invalid_argument Invalid array size.
+//
+// This assignment operator offers the option to directly set all elements of the tensor:
+
+   \code
+   using blaze::unaligned;
+   using blaze::unpadded;
+   using blaze::rowMajor;
+
+   const int array[9] = { 0, 0, 0,
+                          0, 0, 0,
+                          0, 0, 0 };
+   const int init[3][3] = { { 1, 2, 3 },
+                            { 4, 5 },
+                            { 7, 8, 9 } };
+   blaze::CustomTensor<int,unaligned,unpadded> A( array, 3UL, 3UL );
+   A = init;
+   \endcode
+
+// The tensor is assigned the values from the given array. Missing values are initialized with
+// default values (as e.g. the value 6 in the example). Note that the size of the array must
+// match the size of the custom tensor. Otherwise a \a std::invalid_argument exception is thrown.
+// Also note that after the assignment \a array will have the same entries as \a init.
+*/
+template< size_t N        // Dimensionality of the array
+        , typename Type   // Data type of the tensor
+        , bool AF         // Alignment flag
+        , bool PF         // Padding flag
+        , typename RT >   // Result type
+template< typename Other  // Data type of the initialization array
+        , size_t Q        // Number of  of the initialization array
+        , size_t P        // Number of quats of the initialization array
+        , size_t O        // Number of pages of the initialization array
+        , size_t M        // Number of rows of the initialization array
+        , size_t N1       // Number of columns of the initialization array
+        , size_t Dummy    // Dummy variable equal to N
+        , typename Enable >
+inline CustomArray<N,Type,AF,PF,RT>&
+   CustomArray<N,Type,AF,PF,RT>::operator=( const Other (&array)[Q][P][O][M][N1] )
+{
+   if( dims_[4] != Q || dims_[3] != P || dims_[2] != O || dims_[1] != M || dims_[0] != N ) {
+      BLAZE_THROW_INVALID_ARGUMENT( "Invalid array size" );
+   }
+   for (size_t m = 0UL; m < Q; ++m) {
+      for (size_t l = 0UL; l < P; ++l) {
+         for (size_t k = 0UL; k < O; ++k) {
+            for (size_t i = 0UL; i < M; ++i) {
+               for (size_t j = 0UL; j < N; ++j) {
+                  v_[(((m*P + l)*O + k)*M + i)*nn_ + j] = array[m][l][k][i][j];
+               }
+            }
+         }
+      }
+   }
    return *this;
 }
 //*************************************************************************************************
@@ -2788,7 +3098,7 @@ template< size_t N       // Dimensionality of the array
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense array
 inline auto CustomArray<N,Type,AF,PF,RT>::assign( const DenseArray<MT>& rhs )
-   -> DisableIf_t< VectorizedAssign_v<MT> >
+   /*-> DisableIf_t< VectorizedAssign_v<MT> >*/
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
@@ -2814,19 +3124,19 @@ inline auto CustomArray<N,Type,AF,PF,RT>::assign( const DenseArray<MT>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< size_t N       // Dimensionality of the array
-        , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , typename RT >  // Result type
-template< typename MT >  // Type of the right-hand side dense array
-inline auto CustomArray<N,Type,AF,PF,RT>::assign( const DenseArray<MT>& rhs )
-   -> EnableIf_t< VectorizedAssign_v<MT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
-
+//template< size_t N       // Dimensionality of the array
+//        , typename Type  // Data type of the array
+//        , bool AF        // Alignment flag
+//        , bool PF        // Padding flag
+//        , typename RT >  // Result type
+//template< typename MT >  // Type of the right-hand side dense array
+//inline auto CustomArray<N,Type,AF,PF,RT>::assign( const DenseArray<MT>& rhs )
+//   -> EnableIf_t< VectorizedAssign_v<MT> >
+//{
+//   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+//
+//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//
 //    constexpr bool remainder( !PF || !IsPadded_v<MT> );
 //
 //    const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
@@ -2874,7 +3184,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::assign( const DenseArray<MT>& rhs )
 //          }
 //       }
 //    }
-}
+//}
 //*************************************************************************************************
 
 
@@ -2896,7 +3206,7 @@ template< size_t N       // Dimensionality of the array
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense array
 inline auto CustomArray<N,Type,AF,PF,RT>::addAssign( const DenseArray<MT>& rhs )
-   -> DisableIf_t< VectorizedAddAssign_v<MT> >
+   //-> DisableIf_t< VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
@@ -2922,19 +3232,19 @@ inline auto CustomArray<N,Type,AF,PF,RT>::addAssign( const DenseArray<MT>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< size_t N       // Dimensionality of the array
-        , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , typename RT >  // Result type
-template< typename MT >  // Type of the right-hand side dense array
-inline auto CustomArray<N,Type,AF,PF,RT>::addAssign( const DenseArray<MT>& rhs )
-   -> EnableIf_t< VectorizedAddAssign_v<MT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
-
+//template< size_t N       // Dimensionality of the array
+//        , typename Type  // Data type of the array
+//        , bool AF        // Alignment flag
+//        , bool PF        // Padding flag
+//        , typename RT >  // Result type
+//template< typename MT >  // Type of the right-hand side dense array
+//inline auto CustomArray<N,Type,AF,PF,RT>::addAssign( const DenseArray<MT>& rhs )
+//   -> EnableIf_t< VectorizedAddAssign_v<MT> >
+//{
+//   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+//
+//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//
 //    constexpr bool remainder( !PF || !IsPadded_v<MT> );
 //
 //    for (size_t k=0UL; k<o_; ++k) {
@@ -2965,7 +3275,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::addAssign( const DenseArray<MT>& rhs )
 //          }
 //       }
 //    }
-}
+//}
 //*************************************************************************************************
 
 
@@ -2987,7 +3297,7 @@ template< size_t N       // Dimensionality of the array
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense array
 inline auto CustomArray<N,Type,AF,PF,RT>::subAssign( const DenseArray<MT>& rhs )
-   -> DisableIf_t< VectorizedSubAssign_v<MT> >
+   //-> DisableIf_t< VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
@@ -3013,18 +3323,18 @@ inline auto CustomArray<N,Type,AF,PF,RT>::subAssign( const DenseArray<MT>& rhs )
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< size_t N       // Dimensionality of the array
-        , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , typename RT >  // Result type
-template< typename MT >  // Type of the right-hand side dense array
-inline auto CustomArray<N,Type,AF,PF,RT>::subAssign( const DenseArray<MT>& rhs )
-   -> EnableIf_t< VectorizedSubAssign_v<MT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//template< size_t N       // Dimensionality of the array
+//        , typename Type  // Data type of the array
+//        , bool AF        // Alignment flag
+//        , bool PF        // Padding flag
+//        , typename RT >  // Result type
+//template< typename MT >  // Type of the right-hand side dense array
+//inline auto CustomArray<N,Type,AF,PF,RT>::subAssign( const DenseArray<MT>& rhs )
+//   -> EnableIf_t< VectorizedSubAssign_v<MT> >
+//{
+//   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+//
+//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
 //    constexpr bool remainder( !PF || !IsPadded_v<MT> );
 //
@@ -3056,7 +3366,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::subAssign( const DenseArray<MT>& rhs )
 //          }
 //       }
 //    }
-}
+//}
 //*************************************************************************************************
 
 
@@ -3078,7 +3388,7 @@ template< size_t N       // Dimensionality of the array
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense array
 inline auto CustomArray<N,Type,AF,PF,RT>::schurAssign( const DenseArray<MT>& rhs )
-   -> DisableIf_t< VectorizedSchurAssign_v<MT> >
+   //-> DisableIf_t< VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
@@ -3104,18 +3414,18 @@ inline auto CustomArray<N,Type,AF,PF,RT>::schurAssign( const DenseArray<MT>& rhs
 // in erroneous results and/or in compilation errors. Instead of using this function use the
 // assignment operator.
 */
-template< size_t N       // Dimensionality of the array
-        , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
-        , typename RT >  // Result type
-template< typename MT >  // Type of the right-hand side dense array
-inline auto CustomArray<N,Type,AF,PF,RT>::schurAssign( const DenseArray<MT>& rhs )
-   -> EnableIf_t< VectorizedSchurAssign_v<MT> >
-{
-   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
-
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//template< size_t N       // Dimensionality of the array
+//        , typename Type  // Data type of the array
+//        , bool AF        // Alignment flag
+//        , bool PF        // Padding flag
+//        , typename RT >  // Result type
+//template< typename MT >  // Type of the right-hand side dense array
+//inline auto CustomArray<N,Type,AF,PF,RT>::schurAssign( const DenseArray<MT>& rhs )
+//   -> EnableIf_t< VectorizedSchurAssign_v<MT> >
+//{
+//   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
+//
+//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
 //    constexpr bool remainder( !PF || !IsPadded_v<MT> );
 //
@@ -3143,7 +3453,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::schurAssign( const DenseArray<MT>& rhs
 //          }
 //       }
 //    }
-}
+//}
 //*************************************************************************************************
 
 

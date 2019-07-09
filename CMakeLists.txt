@@ -47,6 +47,9 @@ project(BlazeTensor
    LANGUAGES CXX
    VERSION "${BLAZE_TENSOR_MAJOR_VERSION}.${BLAZE_TENSOR_MINOR_VERSION}")
 
+option(BLAZETENSOR_WITH_TESTS "Build BlazeTensor tests" OFF)
+option(BLAZETENSOR_USE_HPX_THREADS "Use HPX thread backend" OFF)
+
 # set minimally required C++ Standard
 set(CMAKE_CXX_STANDARD 14)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -81,10 +84,18 @@ target_link_libraries(BlazeTensor INTERFACE blaze::blaze)
 
 # setup HPX, if needed
 get_target_property(blaze_parallelization_mode blaze::blaze INTERFACE_COMPILE_DEFINITIONS)
-if(blaze_parallelization_mode AND "${blaze_parallelization_mode}" STREQUAL "BLAZE_USE_HPX_THREADS")
+if(
+   (blaze_parallelization_mode AND "${blaze_parallelization_mode}" STREQUAL "BLAZE_USE_HPX_THREADS")
+   OR BLAZETENSOR_USE_HPX_THREADS)
+
    find_package(HPX REQUIRED NO_CMAKE_PACKAGE_REGISTRY)
    target_include_directories(BlazeTensor INTERFACE ${HPX_INCLUDE_DIRS})
    target_link_libraries(BlazeTensor INTERFACE ${HPX_LIBRARIES})
+
+   # Force using HPX
+   if(BLAZETENSOR_USE_HPX_THREADS)
+     add_compile_definitions(BLAZE_USE_HPX_THREADS)
+   endif()
 endif()
 
 include(CMakePackageConfigHelpers)
@@ -130,7 +141,6 @@ install(
 )
 
 # Optionally build tests (primarily for devs)
-option(BLAZETENSOR_WITH_TESTS "Build BlazeTensor tests" OFF)
 if(BLAZETENSOR_WITH_TESTS)
    enable_testing()
    include(CTest)
