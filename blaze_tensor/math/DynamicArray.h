@@ -51,6 +51,7 @@
 #include <blaze/math/ZeroMatrix.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/constraints/Numeric.h>
+#include <blaze/util/EnableIf.h>
 #include <blaze/util/Random.h>
 
 #include <blaze_tensor/math/DenseArray.h>
@@ -79,10 +80,10 @@ class Rand< DynamicArray<N, Type> >
    //**Generate functions**************************************************************************
    /*!\name Generate functions */
    //@{
-   template< typename... Dims >
+   template< typename... Dims>
    inline const DynamicArray<N, Type> generate( Dims... dims ) const;
 
-   template< typename Arg, typename... Dims >
+   template< typename Arg, typename... Dims, size_t DummyN = N, typename = EnableIf_t< sizeof...(Dims) == DummyN > >
    inline const DynamicArray<N, Type> generate( const Arg& min, const Arg& max, Dims... dims ) const;
    //@}
    //**********************************************************************************************
@@ -110,7 +111,7 @@ class Rand< DynamicArray<N, Type> >
 // \return The generated random array.
 */
 template< size_t N         // The dimensionality of the array
-        , typename Type >  // Data type of the array
+        , typename Type>   // Data type of the array
 template< typename... Dims >
 inline const DynamicArray<N, Type>
    Rand< DynamicArray<N, Type> >::generate( Dims... dims ) const
@@ -135,7 +136,10 @@ inline const DynamicArray<N, Type>
 */
 template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
-template< typename Arg, typename... Dims >  // Min/max argument type
+template< typename Arg     // Min/max argument type
+        , typename... Dims
+        , size_t DummyN     // Dummy variable equal to N
+        , typename Enable >
 inline const DynamicArray<N, Type>
    Rand< DynamicArray<N, Type> >::generate( const Arg& min, const Arg& max, Dims... dims ) const
 {
