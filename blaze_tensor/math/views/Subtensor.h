@@ -969,8 +969,6 @@ inline decltype(auto) subtensor( const TensMatSchurExpr<TT>& tensor, RSAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   using TT1 = RemoveReference_t< LeftOperand_t< TensorType_t<TT> > >;
-
    const SubtensorData<CSAs...> st( args... );
 
    BLAZE_DECLTYPE_AUTO( left , (~tensor).leftOperand()  );
@@ -1756,8 +1754,6 @@ inline decltype(auto)
  inline decltype(auto) submatrix( const TensVecMultExpr<MT>& matrix, RSAs... args )
  {
     BLAZE_FUNCTION_TRACE;
-
-    using TT = RemoveReference_t< LeftOperand_t< MatrixType_t<MT> > >;
 
     const SubmatrixData<CSAs...> sm( args... );
 

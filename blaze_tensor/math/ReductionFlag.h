@@ -71,6 +71,22 @@ namespace blaze {
 constexpr size_t pagewise = 2UL;
 //*************************************************************************************************
 
+//*************************************************************************************************
+/*!\brief Reduction flag for arbitrary reduction operations.
+//
+// This flag can be used to perform arbitrary reduction operations on arrays. The following
+// example shows the row-wise summation of a tensor:
+
+   \code
+   blaze::DynamicArray<3, int> A{ { { 4, 1, 2 }, { -2, 0, 3 } }, { { 4, 1, 2 }, { -2, 0, 3 } } };
+
+   auto m = sum<reduction<2>>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
+   \endcode
+*/
+template< size_t N >
+constexpr size_t reduction = N;
+//*************************************************************************************************
+
 } // namespace blaze
 
 #endif

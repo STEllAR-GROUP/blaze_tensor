@@ -45,7 +45,9 @@
 
 #include <blaze_tensor/math/Aliases.h>
 #include <blaze_tensor/math/Constraints.h>
+#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/CustomTensor.h>
+#include <blaze_tensor/math/DynamicArray.h>
 #include <blaze_tensor/math/DynamicTensor.h>
 #include <blaze_tensor/math/UniformTensor.h>
 #include <blaze_tensor/math/StaticTensor.h>

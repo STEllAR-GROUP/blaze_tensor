@@ -48,6 +48,7 @@
 // #include <blaze_tensor/math/Elements.h>
 #include <blaze_tensor/math/ColumnSlice.h>
 #include <blaze_tensor/math/PageSlice.h>
+#include <blaze_tensor/math/QuatSlice.h>
 #include <blaze_tensor/math/RowSlice.h>
 // #include <blaze_tensor/math/Rows.h>
 #include <blaze_tensor/math/Subtensor.h>

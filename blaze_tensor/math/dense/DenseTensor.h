@@ -235,11 +235,11 @@ template< typename TT    // Type of the left-hand side dense tensor
 inline auto operator*=( DenseTensor<TT>& tens, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, TT& >
 {
-   if( IsRestricted_v<TT> ) {
-      if( !tryMult( ~tens, 0UL, 0UL, 0UL, (~tens).pages(), (~tens).rows(), (~tens).columns(), scalar ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted tensor" );
-      }
-   }
+   //if( IsRestricted_v<TT> ) {
+   //   if( !tryMult( ~tens, 0UL, 0UL, 0UL, (~tens).pages(), (~tens).rows(), (~tens).columns(), scalar ) ) {
+   //      BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted tensor" );
+   //   }
+   //}
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( ~tens ) );
 
@@ -299,11 +299,11 @@ inline auto operator/=( DenseTensor<TT>& tens, ST scalar )
 
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
-   if( IsRestricted_v<TT> ) {
-      if( !tryDiv( ~tens, 0UL, 0UL, 0UL, (~tens).pages(), (~tens).rows(), (~tens).columns(), scalar ) ) {
-         BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted tensor" );
-      }
-   }
+   //if( IsRestricted_v<TT> ) {
+   //   if( !tryDiv( ~tens, 0UL, 0UL, 0UL, (~tens).pages(), (~tens).rows(), (~tens).columns(), scalar ) ) {
+   //      BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted tensor" );
+   //   }
+   //}
 
    BLAZE_DECLTYPE_AUTO( left, derestrict( ~tens ) );
 

@@ -32,7 +32,9 @@
 
 set(subdirs
    columnslice
+   customarray
    customtensor
+   densearray
    densetensor
    dilatedsubmatrix
    dilatedsubvector
@@ -46,6 +48,7 @@ set(subdirs
    dynamictensor
    initializertensor
    pageslice
+   quatslice
    rowslice
    statictensor
    subtensor

@@ -44,7 +44,7 @@ BinPackArguments: true
 BinPackParameters: true
 BraceWrapping:
     AfterClass: true
-    AfterControlStatement: true
+    AfterControlStatement: false
     AfterEnum: true
     AfterFunction: true
     AfterNamespace: false
