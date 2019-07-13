@@ -75,10 +75,10 @@ namespace customarray {
 */
 AlignedPaddedTest::AlignedPaddedTest()
 {
-   //testConstructors();
+   testConstructors();
    testAssignment();
-   //testAddAssign();
-   //testSubAssign();
+   testAddAssign();
+   testSubAssign();
 }
 //*************************************************************************************************
 

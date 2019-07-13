@@ -2226,7 +2226,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 void DynamicArray<N, Type>::resize( std::array< size_t, N > const& dims, bool preserve )
 {
-   BLAZE_USER_ASSERT( N == n, "invalid dimensionality specified" );
+   BLAZE_USER_ASSERT( N == dims.size(), "invalid dimensionality specified" );
 
    using std::swap;
    using blaze::min;

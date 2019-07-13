@@ -118,12 +118,18 @@ void hpxAssign( DenseArray<TT1>& lhs, const DenseArray<TT2>& rhs, OP op )
    const bool lhsAligned( (~lhs).isAligned() );
    const bool rhsAligned( (~rhs).isAligned() );
 
-   const size_t rows = (~rhs).template dimension<1>();
+   const size_t pages = (~rhs).template dimension<2>();
+   const size_t rows  = (~rhs).template dimension<1>();
    const size_t columns = (~rhs).template dimension<0>();
 
    const size_t threads    ( getNumThreads() );
-   const size_t numRows ( min( static_cast<std::size_t>( BLAZE_HPX_MATRIX_BLOCK_SIZE_ROW ), rows ) );
-   const size_t numCols ( min( static_cast<std::size_t>( BLAZE_HPX_MATRIX_BLOCK_SIZE_COLUMN ), columns ) );
+   const size_t numPages( min( static_cast<std::size_t>( BLAZE_HPX_TENSOR_BLOCK_SIZE_PAGE ), pages ) );
+   const size_t numRows ( min( static_cast<std::size_t>( BLAZE_HPX_TENSOR_BLOCK_SIZE_ROW ),  rows ) );
+   const size_t numCols ( min( static_cast<std::size_t>( BLAZE_HPX_TENSOR_BLOCK_SIZE_COLUMN ), columns ) );
+
+   const size_t pagesPerIter( numPages );
+   const size_t addon0     ( ( ( pages % pagesPerIter ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare0( pages / pagesPerIter + addon0 );
 
    const size_t rowsPerIter( numRows );
    const size_t addon1     ( ( ( rows % rowsPerIter ) != 0UL )? 1UL : 0UL );
@@ -134,46 +140,48 @@ void hpxAssign( DenseArray<TT1>& lhs, const DenseArray<TT2>& rhs, OP op )
    const size_t addon2     ( ( ( columns % colsPerIter ) != 0UL )? 1UL : 0UL );
    const size_t equalShare2( columns / colsPerIter + addon2 );
 
-   hpx::parallel::execution::dynamic_chunk_size chunkSize ( BLAZE_HPX_MATRIX_CHUNK_SIZE );
+   hpx::parallel::execution::dynamic_chunk_size chunkSize ( BLAZE_HPX_TENSOR_CHUNK_SIZE );
 
-   for_loop( par.with( chunkSize ), size_t(0), equalShare1 * equalShare2, [&](int i)
-   {
-      const size_t row   ( ( i / equalShare2 ) * rowsPerIter );
-      const size_t column( ( i % equalShare2 ) * colsPerIter );
+   //for_loop( par.with( chunkSize ), size_t(0), equalShare0 * equalShare1 * equalShare2, [&](int i)
+   //{
+   //   //const size_t page  ( ( i / (equalShare1 * equalShare2 )) * pagesPerIter );
+   //   const size_t row   ( ( i / equalShare2 ) * rowsPerIter );
+   //   const size_t column( ( i % equalShare2 ) * colsPerIter );
 
-      if( row >= rows || column >= columns )
-         return;
+   //   if( page >= pages || row >= rows || column >= columns )
+   //      return;
 
-//       for (size_t k = 0; k != (~rhs).pages(); ++k)
-//       {
-//          const size_t m( min( rowsPerIter, rows    - row    ) );
-//          const size_t n( min( colsPerIter, columns - column ) );
-//
-//          auto lhs_slice = pageslice( ~lhs, k );
-//          auto rhs_slice = pageslice( ~rhs, k );
-//
-//          if( simdEnabled && lhsAligned && rhsAligned ) {
-//             auto       target( submatrix<aligned>  ( ~lhs_slice, row, column, m, n ) );
-//             const auto source( submatrix<aligned>  ( ~rhs_slice, row, column, m, n ) );
-//             op( target, source );
-//          }
-//          else if( simdEnabled && lhsAligned ) {
-//             auto       target( submatrix<aligned>  ( ~lhs_slice, row, column, m, n ) );
-//             const auto source( submatrix<unaligned>( ~rhs_slice, row, column, m, n ) );
-//             op( target, source );
-//          }
-//          else if( simdEnabled && rhsAligned ) {
-//             auto       target( submatrix<unaligned>( ~lhs_slice, row, column, m, n ) );
-//             const auto source( submatrix<aligned>  ( ~rhs_slice, row, column, m, n ) );
-//             op( target, source );
-//          }
-//          else {
-//             auto       target(submatrix<unaligned>(~lhs_slice, row, column, m, n ));
-//             const auto source(submatrix<unaligned>(~rhs_slice, row, column, m, n ));
-//             op(target, source);
-//          }
-//       }
-   } );
+   //    for (size_t k = 0; k != (~rhs).quats(); ++k)
+   //    {
+   //       const size_t o( min( pagesPerIter, pages   - page    ) );
+   //       const size_t m( min( rowsPerIter,  rows    - row    ) );
+   //       const size_t n( min( colsPerIter,  columns - column ) );
+
+   //       auto lhs_slice = quatslice( ~lhs, k );
+   //       auto rhs_slice = quatslice( ~rhs, k );
+
+   //       if( simdEnabled && lhsAligned && rhsAligned ) {
+   //          auto       target( subtensor  ( ~lhs_slice, page, row, column, o, m, n ) );
+   //          const auto source( subtensor  ( ~rhs_slice, page, row, column, o, m, n ) );
+   //          op( target, source );
+   //       }
+   //       else if( simdEnabled && lhsAligned ) {
+   //          auto       target( subtensor  ( ~lhs_slice, page, row, column, o, m, n ) );
+   //          const auto source( subtensor  ( ~rhs_slice, page, row, column, o, m, n ) );
+   //          op( target, source );
+   //       }
+   //       else if( simdEnabled && rhsAligned ) {
+   //          auto       target( subtensor  ( ~lhs_slice, page, row, column, o, m, n ) );
+   //          const auto source( subtensor  ( ~rhs_slice, page, row, column, o, m, n ) );
+   //          op( target, source );
+   //       }
+   //       else {
+   //          auto       target( subtensor  ( ~lhs_slice, page, row, column, o, m, n ));
+   //          const auto source( subtensor  ( ~rhs_slice, page, row, column, o, m, n ));
+   //          op(target, source);
+   //       }
+   //    }
+   //} );
 }
 /*! \endcond */
 //*************************************************************************************************
