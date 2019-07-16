@@ -513,8 +513,18 @@ class DArrDArrMapExpr
    //
    // \return The number of rows of the array.
    */
-   inline constexpr size_t num_dimensions() const noexcept {
-      return lhs_.num_dimensions();
+   inline static constexpr size_t num_dimensions() noexcept {
+      return RemoveCV_t<RemoveReference_t<LeftOperand>>::num_dimensions();
+   }
+   //**********************************************************************************************
+
+   //**Dimensions function****************************************************************************
+   /*!\brief Returns the current dimensions of the array.
+   //
+   // \return The dimensions of the array.
+   */
+   inline decltype(auto) dimensions() const noexcept {
+      return lhs_.dimensions();
    }
    //**********************************************************************************************
 

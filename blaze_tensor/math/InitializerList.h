@@ -4,7 +4,7 @@
 //  \brief Header file for the extended initializer_list functionality
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
-//  Copyright (C) 2018 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -85,7 +85,7 @@ inline constexpr size_t nonZeros(
 // \return The maximum number of pages.
 */
 template< typename Type >
-inline constexpr size_t determineCubes( initializer_list< initializer_list<
+inline constexpr size_t determineQuats( initializer_list< initializer_list<
       initializer_list< initializer_list< initializer_list< Type > > > > >
       list ) noexcept
 {
@@ -137,7 +137,7 @@ inline constexpr size_t determineRows( initializer_list< initializer_list<
    size_t rows( 0UL );
 
    for( const auto& cube : list ) {
-      for( const auto& page_list : list ) {
+      for( const auto& page_list : cube ) {
          for( const auto& row_list : page_list ) {
             rows = max( rows, row_list.size() );
          }
@@ -163,7 +163,7 @@ inline constexpr size_t determineColumns( initializer_list< initializer_list<
    size_t cols( 0UL );
 
    for( const auto& cube : list ) {
-      for( const auto& page_list : list ) {
+      for( const auto& page_list : cube ) {
          for( const auto& row_list : page_list ) {
             for(const auto& col_list : row_list) {
                cols = max( cols, col_list.size() );
@@ -213,7 +213,7 @@ inline constexpr size_t determineColumns( initializer_list<
    size_t cols( 0UL );
 
    for( const auto& cube : list ) {
-      for( const auto& page_list : list ) {
+      for( const auto& page_list : cube ) {
          for( const auto& row_list : page_list ) {
             cols = max( cols, row_list.size() );
          }
@@ -454,7 +454,7 @@ struct nested_initializer_list< 5, Type >
          determineColumns( *this ),
          determineRows( *this ),
          determinePages( *this ),
-         determineCubes( *this ),
+         determineQuats( *this ),
          this->type::size()
       };
       return dims;
