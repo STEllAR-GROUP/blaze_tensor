@@ -2506,7 +2506,7 @@ inline size_t DynamicArray<N, Type>::index( Dims... dims ) const noexcept
 
    size_t idx = 0UL;
    for( size_t i = N - 1; i > 1; --i ) {
-      BLAZE_USER_ASSERT(indices[N - i] < dims_[i], "Invalid access index" );
+      BLAZE_USER_ASSERT(indices[N - i - 1] < dims_[i], "Invalid access index" );
       idx = (idx + indices[N - i - 1]) * dims_[i - 1];
    }
 
