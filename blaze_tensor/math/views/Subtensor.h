@@ -69,7 +69,6 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -971,8 +970,8 @@ inline decltype(auto) subtensor( const TensMatSchurExpr<TT>& tensor, RSAs... arg
 
    const SubtensorData<CSAs...> st( args... );
 
-   BLAZE_DECLTYPE_AUTO( left , (~tensor).leftOperand()  );
-   BLAZE_DECLTYPE_AUTO( right, (~tensor).rightOperand() );
+   decltype(auto) left( (~tensor).leftOperand()  );
+   decltype(auto) right((~tensor).rightOperand() );
 
    return subtensor<AF>( left, st.page(), st.row(), st.column(), st.pages(), st.rows(), st.columns()) %
           submatrix<AF>( right, st.row(), st.column(), st.rows(), st.columns() );
@@ -1747,24 +1746,24 @@ inline decltype(auto)
 // This function returns an expression representing the specified subvector of the given
 // tensor/vector multiplication.
 */
- template< AlignmentFlag AF    // Alignment flag
-         , size_t... CSAs      // Compile time submatrix arguments
-         , typename MT         // Vector base type of the expression
-         , typename... RSAs >  // Runtime submatrix arguments
- inline decltype(auto) submatrix( const TensVecMultExpr<MT>& matrix, RSAs... args )
- {
-    BLAZE_FUNCTION_TRACE;
+template< AlignmentFlag AF    // Alignment flag
+        , size_t... CSAs      // Compile time submatrix arguments
+        , typename MT         // Vector base type of the expression
+        , typename... RSAs >  // Runtime submatrix arguments
+inline decltype(auto) submatrix( const TensVecMultExpr<MT>& matrix, RSAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
 
-    const SubmatrixData<CSAs...> sm( args... );
+   const SubmatrixData<CSAs...> sm( args... );
 
-    BLAZE_DECLTYPE_AUTO( left , (~matrix).leftOperand()  );
-    BLAZE_DECLTYPE_AUTO( right, (~matrix).rightOperand() );
+   decltype(auto) left( (~matrix).leftOperand() );
+   decltype(auto) right( (~matrix).rightOperand() );
 
-    const size_t column( 0UL );
-    const size_t n( left.columns() );
+   const size_t column( 0UL );
+   const size_t n( left.columns() );
 
-    return subtensor<AF>( left, sm.row(), sm.column(), column, sm.rows(), sm.columns(), n ) * subvector<AF>( right, column, n );
- }
+   return subtensor<AF>( left, sm.row(), sm.column(), column, sm.rows(), sm.columns(), n ) * subvector<AF>( right, column, n );
+}
 /*! \endcond */
 //*************************************************************************************************
 

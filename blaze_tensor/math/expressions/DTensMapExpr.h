@@ -43,6 +43,7 @@
 
 #include <iterator>
 #include <utility>
+#include <blaze/math/functors/Bind2nd.h>
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/DMatMapExpr.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
@@ -1465,8 +1466,7 @@ inline decltype(auto) pow( const DenseTensor<MT>& dm, ST exp )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
-   using ReturnType = const DTensMapExpr<MT,UnaryPow<ScalarType>>;
-   return ReturnType( ~dm, UnaryPow<ScalarType>( exp ) );
+   return map( ~dm, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
 }
 //*************************************************************************************************
 

@@ -52,7 +52,6 @@
 #include <blaze/math/typetraits/IsExpression.h>
 #include <blaze/math/typetraits/IsRestricted.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DecltypeAuto.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FalseType.h>
 #include <blaze/util/mpl/If.h>
@@ -241,7 +240,7 @@ inline auto operator*=( DenseTensor<TT>& tens, ST scalar )
    //   }
    //}
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~tens ) );
+   decltype(auto) left( derestrict( ~tens ) );
 
    smpAssign( left, left * scalar );
 
@@ -305,7 +304,7 @@ inline auto operator/=( DenseTensor<TT>& tens, ST scalar )
    //   }
    //}
 
-   BLAZE_DECLTYPE_AUTO( left, derestrict( ~tens ) );
+   decltype(auto) left( derestrict( ~tens ) );
 
    smpAssign( left, left / scalar );
 
