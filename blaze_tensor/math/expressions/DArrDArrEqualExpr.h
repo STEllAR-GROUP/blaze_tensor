@@ -118,7 +118,7 @@ inline bool //DisableIf_t< DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
       return false;
    }
 
-   constexpr size_t N = MT1::num_dimensions();
+   constexpr size_t N = MT1::num_dimensions;
 
    // Evaluation of the two dense array operands
    CT1 A( ~lhs );

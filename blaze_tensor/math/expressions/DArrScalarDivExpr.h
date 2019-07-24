@@ -480,9 +480,9 @@ class DArrScalarDivExpr
    //
    // \return The number of rows of the array.
    */
-   inline static constexpr size_t num_dimensions() noexcept {
-      return RemoveCV_t<RemoveReference_t<LeftOperand>>::num_dimensions();
-   }
+   static constexpr size_t num_dimensions =
+      RemoveCV_t< RemoveReference_t< LeftOperand > >::num_dimensions;
+
    //**********************************************************************************************
 
    //**Dimensions function****************************************************************************

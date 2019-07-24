@@ -60,7 +60,7 @@
 #include <blaze/util/StaticAssert.h>
 
 #include <blaze_tensor/math/Array.h>
-#include <blaze_tensor/math/CustomArray.h>
+//#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitFromValue.h>
 #include <blaze_tensor/math/InitializerList.h>
@@ -68,7 +68,6 @@
 #include <blaze_tensor/math/dense/DynamicTensor.h>
 #include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseArray.h>
-//#include <blaze_tensor/math/traits/ArraySliceTrait.h>
 #include <blaze_tensor/math/traits/QuatSliceTrait.h>
 #include <blaze_tensor/math/typetraits/IsNdArray.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
@@ -2506,7 +2505,7 @@ inline size_t DynamicArray<N, Type>::index( Dims... dims ) const noexcept
 
    size_t idx = 0UL;
    for( size_t i = N - 1; i > 1; --i ) {
-      BLAZE_USER_ASSERT(indices[N - i - 1] < dims_[i], "Invalid access index" );
+      BLAZE_USER_ASSERT(indices[N - i] < dims_[i], "Invalid access index" );
       idx = (idx + indices[N - i - 1]) * dims_[i - 1];
    }
 

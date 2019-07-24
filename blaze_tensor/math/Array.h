@@ -140,7 +140,7 @@ inline std::ostream& operator<<( std::ostream& os, const Array<MT>& m )
 
    ArrayForEachGrouped(
       tmp.dimensions(),
-      [&]( std::array< size_t, MT::num_dimensions() > const& dims ) {
+      [&]( std::array< size_t, MT::num_dimensions > const& dims ) {
          os << std::setw( 12 ) << tmp( dims ) << " ";
       },
       [&]( size_t ) { os << "("; },

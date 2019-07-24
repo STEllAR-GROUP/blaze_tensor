@@ -136,7 +136,7 @@ inline auto operator==( const DenseArray<T1>& arr, T2 scalar )
    using CT1 = CompositeType_t<T1>;
 
    constexpr size_t N =
-      RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions();
+      RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions;
 
    // Evaluation of the dense array operand
    CT1 A( ~arr );
@@ -237,7 +237,7 @@ inline auto operator*=( DenseArray<TT>& arr, ST scalar )
 {
    if( IsRestricted_v<TT> ) {
       constexpr size_t N =
-         RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions();
+         RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions;
 
       std::array< size_t, N > dims{};
       if( !tryMult( ~arr, dims, (~arr).dimensions(), scalar ) ) {
@@ -305,7 +305,7 @@ inline auto operator/=( DenseArray<TT>& arr, ST scalar )
 
    if( IsRestricted_v<TT> ) {
       constexpr size_t N =
-         RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions();
+         RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions;
 
       std::array< size_t, N > dims{};
       if( !tryDiv( ~arr, dims, (~arr).dimensions(), scalar ) ) {
@@ -428,7 +428,7 @@ bool isnan( const DenseArray<TT>& dm )
    using CT = CompositeType_t<TT>;
 
    constexpr size_t N =
-      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions();
+      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions;
 
    CT A( ~dm );  // Evaluation of the dense array operand
 
@@ -482,7 +482,7 @@ bool isUniform_backend( const DenseArray<MT>& dm )
 #endif
 
    constexpr size_t N =
-      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions();
+      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions;
 
    std::array< size_t, N > dims{};
    const auto& cmp( (~dm)( dims ) );

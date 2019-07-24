@@ -489,9 +489,9 @@ class ReducedArray
    //
    // \return The size of the array.
    */
-   inline static constexpr size_t num_dimensions() noexcept {
-      return RemoveCV_t<RemoveReference_t<Operand>>::num_dimensions();
-   }
+   static constexpr size_t num_dimensions =
+      RemoveCV_t< RemoveReference_t< Operand > >::num_dimensions;
+
    //**********************************************************************************************
 
    //**Dimensions function****************************************************************************
@@ -945,7 +945,7 @@ inline ElementType_t<MT> darrayreduce( const DenseArray<MT>& dm, OP op )
    using ET = ElementType_t<MT>;
 
    constexpr size_t N =
-      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions();
+      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions;
 
    std::array< size_t, N > dims{};
 
