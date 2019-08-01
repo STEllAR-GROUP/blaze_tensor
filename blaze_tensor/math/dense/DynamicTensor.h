@@ -47,7 +47,7 @@
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/Tensor.h>
-#include <blaze_tensor/math/dense/DynamicArray.h>
+//#include <blaze_tensor/math/dense/DynamicArray.h>
 #include <blaze_tensor/math/dense/DynamicMatrix.h>
 #include <blaze_tensor/math/dense/HybridMatrix.h>
 #include <blaze_tensor/math/dense/Transposition.h>

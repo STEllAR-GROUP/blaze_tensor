@@ -193,6 +193,10 @@ class DynamicArray
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
    static constexpr bool smpAssignable = !IsSMPAssignable_v<Type>;
+
+   //**********************************************************************************************
+
+   static constexpr size_t num_dimensions = N; // Dimensionality of the array
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -311,7 +315,6 @@ class DynamicArray
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline static constexpr size_t num_dimensions() noexcept { return N; }
    inline constexpr std::array< size_t, N > const& dimensions() const noexcept;
    inline size_t quats() const noexcept;
    inline size_t pages() const noexcept;

@@ -46,9 +46,9 @@
 #include <blaze/math/dense/CustomMatrix.h>
 #include <blaze/util/EnableIf.h>
 
+#include <blaze_tensor/math/Array.h>
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitializerList.h>
-#include <blaze_tensor/math/Array.h>
 #include <blaze_tensor/math/expressions/DenseArray.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
