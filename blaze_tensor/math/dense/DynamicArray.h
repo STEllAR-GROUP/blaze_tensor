@@ -60,7 +60,6 @@
 #include <blaze/util/StaticAssert.h>
 
 #include <blaze_tensor/math/Array.h>
-//#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitFromValue.h>
 #include <blaze_tensor/math/InitializerList.h>
@@ -2508,7 +2507,7 @@ inline size_t DynamicArray<N, Type>::index( Dims... dims ) const noexcept
 
    size_t idx = 0UL;
    for( size_t i = N - 1; i > 1; --i ) {
-      BLAZE_USER_ASSERT(indices[N - i] < dims_[i], "Invalid access index" );
+      BLAZE_USER_ASSERT(indices[N - i - 1] < dims_[i], "Invalid access index" );
       idx = (idx + indices[N - i - 1]) * dims_[i - 1];
    }
 
@@ -2648,14 +2647,15 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::transpose()
 {
+   using std::swap;
 //    if( l_ == n_ && o_ == n_ && m_ == n_ )
 //    {
 //       transposeGeneral( *this );
 //    }
 //    else
 //    {
-//       DynamicArray tmp( trans( *this ) );
-//       this->swap( tmp );
+       DynamicArray tmp( trans( *this ) );
+       this->swap( tmp );
 //    }
 
    return *this;
@@ -2673,14 +2673,15 @@ template< size_t N         // The dimensionality of the array
 template< typename T >     // Type of the mapping indices
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::transpose( const T* indices, size_t n )
 {
+   using std::swap;
 //    if( l_ == n_ && o_ == n_ && m_ == n_ )
 //    {
 //       transposeGeneral( *this, indices, n );
 //    }
 //    else
 //    {
-//       DynamicArray tmp( trans(*this, indices, n ) );
-//       this->swap( tmp );
+       DynamicArray tmp( trans(*this, indices, n ) );
+       this->swap( tmp );
 //    }
 
    return *this;
@@ -2697,6 +2698,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::ctranspose()
 {
+   using std::swap;
 //    constexpr size_t block( BLOCK_SIZE );
 //
 //    if( o_ == n_ && m_ == n_ )
@@ -2721,8 +2723,8 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::ctranspose()
 //    }
 //    else
 //    {
-//       DynamicArray tmp( ctrans( *this ) );
-//       swap( tmp );
+       DynamicArray tmp( ctrans( *this ) );
+       swap( tmp );
 //    }
 
    return *this;
@@ -2740,6 +2742,7 @@ template< size_t N         // The dimensionality of the array
 template< typename T >     // Type of the mapping indices
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::ctranspose( const T* indices, size_t n )
 {
+   using std::swap;
 //    constexpr size_t block( BLOCK_SIZE );
 //
 //    if( o_ == n_ && m_ == n_ )
@@ -2764,8 +2767,8 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::ctranspose( const T* indice
 //    }
 //    else
 //    {
-//       DynamicArray tmp( ctrans(*this, indices, n ) );
-//       swap( tmp );
+       DynamicArray tmp( ctrans(*this, indices, n ) );
+       swap( tmp );
 //    }
 
    return *this;

@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/typetraits/IsTensTransExpr.h
+//  \file blaze_tensor/math/typetraits/IsQuatTransExpr.h
 //  \brief Header file for the IsTensTransExpr type trait class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,17 +34,18 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSTRANSEXPR_H_
-#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISTENSTRANSEXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISQUATTRANSEXPR_H_
+#define _BLAZE_TENSOR_MATH_TYPETRAITS_ISQUATTRANSEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/IntegralConstant.h>
+#include <blaze/util/FalseType.h>
+#include <blaze/util/TrueType.h>
 
-#include <blaze_tensor/math/expressions/TensTransExpr.h>
+#include <blaze_tensor/math/expressions/QuatTransExpr.h>
 
 namespace blaze {
 
@@ -59,17 +61,17 @@ namespace blaze {
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsTensTransExprHelper
+struct IsQuatTransExprHelper
 {
  private:
    //**********************************************************************************************
    static T* create();
 
    template< typename MT >
-   static TrueType test( const TensTransExpr<MT>* );
+   static TrueType test( const QuatTransExpr<MT>* );
 
    template< typename MT >
-   static TrueType test( const volatile TensTransExpr<MT>* );
+   static TrueType test( const volatile QuatTransExpr<MT>* );
 
    static FalseType test( ... );
    //**********************************************************************************************
@@ -96,8 +98,8 @@ struct IsTensTransExprHelper
 // class derives from \a FalseType.
 */
 template< typename T >
-struct IsTensTransExpr
-   : public IsTensTransExprHelper<T>::Type
+struct IsQuatTransExpr
+   : public IsQuatTransExprHelper<T>::Type
 {};
 //*************************************************************************************************
 
@@ -108,7 +110,7 @@ struct IsTensTransExpr
 // \ingroup math_type_traits
 */
 template< typename T >
-struct IsTensTransExpr<T&>
+struct IsQuatTransExpr<T&>
    : public FalseType
 {};
 /*! \endcond */
@@ -129,7 +131,7 @@ struct IsTensTransExpr<T&>
    \endcode
 */
 template< typename T >
-constexpr bool IsTensTransExpr_v = IsTensTransExpr<T>::value;
+constexpr bool IsQuatTransExpr_v = IsQuatTransExpr<T>::value;
 //*************************************************************************************************
 
 } // namespace blaze

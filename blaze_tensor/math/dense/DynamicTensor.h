@@ -43,14 +43,17 @@
 
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 
+#include <blaze_tensor/math/Array.h>
+#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/Tensor.h>
-//#include <blaze_tensor/math/dense/DynamicArray.h>
+#include <blaze_tensor/math/dense/DynamicArray.h>
 #include <blaze_tensor/math/dense/DynamicMatrix.h>
 #include <blaze_tensor/math/dense/HybridMatrix.h>
 #include <blaze_tensor/math/dense/Transposition.h>
+#include <blaze_tensor/math/expressions/DenseArray.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
 #include <blaze_tensor/math/traits/DilatedSubtensorTrait.h>
@@ -3512,25 +3515,25 @@ struct PageSliceTraitEval2<
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template <typename MT, size_t I>
-struct QuatSliceTraitEval2<
-   MT, I,
-   EnableIf_t< IsDenseArray_v<MT> && MT::num_dimensions == 4 &&
-               ( Size_v< MT,1UL > == DefaultSize_v ||
-                 Size_v< MT,2UL > == DefaultSize_v ||
-                 Size_v< MT,3UL > == DefaultSize_v ) &&
-               ( MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
-                 MaxSize_v< MT,2UL > == DefaultMaxSize_v ||
-                 MaxSize_v< MT,3UL > == DefaultMaxSize_v ) > >
-{
-   using Type = DynamicTensor< RemoveConst_t< ElementType_t<MT> > >;
-};
-
-//template< typename ET, size_t I >
-//struct QuatSliceTraitEval2< DynamicArray<4, ET>, I >
+//template <typename MT, size_t M>
+//struct QuatSliceTraitEval2<
+//   MT, M,
+//   EnableIf_t< IsDenseArray_v<MT> &&
+//               ( Size_v< MT,1UL > == DefaultSize_v ||
+//                 Size_v< MT,2UL > == DefaultSize_v ||
+//                 Size_v< MT,3UL > == DefaultSize_v ) &&
+//               ( MaxSize_v< MT,1UL > == DefaultMaxSize_v ||
+//                 MaxSize_v< MT,2UL > == DefaultMaxSize_v ||
+//                 MaxSize_v< MT,3UL > == DefaultMaxSize_v ) > >
 //{
-//   using Type = DynamicTensor< ET >;
+//   using Type = DynamicTensor< RemoveConst_t< ElementType_t<MT> > >;
 //};
+
+template< typename ET, size_t I >
+struct QuatSliceTraitEval2< DynamicArray<4, ET>, I >
+{
+   using Type = DynamicTensor< ET >;
+};
 /*! \endcond */
 //*************************************************************************************************
 

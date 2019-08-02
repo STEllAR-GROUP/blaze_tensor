@@ -69,6 +69,7 @@ template< typename, typename > class DTensScalarMultExpr;
 template< typename, typename > class DTensScalarDivExpr;
 template< typename, typename, typename > class DTensDTensMapExpr;
 template< typename, size_t... > class DTensTransExpr;
+template< typename, size_t... > class DQuatTransExpr;
 
 template< typename, size_t... > class DMatExpandExpr;
 template< typename > class DMatRavelExpr;
@@ -103,6 +104,12 @@ decltype(auto) trans( const DenseTensor<MT>& dm, RTAs... args );
 
 template< typename MT, typename ... RTAs>
 decltype(auto) trans( const DenseTensor<MT>& dm, RTAs... args );
+
+template< size_t P, size_t O, size_t M, size_t N, typename MT, typename ... RTAs>
+decltype(auto) trans( const DenseArray<MT>& dm, RTAs... args );
+
+template< typename MT, typename ... RTAs>
+decltype(auto) trans( const DenseArray<MT>& dm, RTAs... args );
 
 
 template< typename TT >

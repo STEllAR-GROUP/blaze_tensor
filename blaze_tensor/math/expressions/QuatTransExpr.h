@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/TensTransExpr.h
-//  \brief Constraint on the data type
+//  \file blaze_tensor/math/expressions/QuatTransExpr.h
+//  \brief Header file for the QuatTransExpr base class
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,54 +34,40 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSTRANSEXPR_H_
-#define _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSTRANSEXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_QUATTRANSEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_QUATTRANSEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze_tensor/math/typetraits/IsTensTransExpr.h>
+#include <blaze/math/expressions/TransExpr.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_TENSTRANSEXPR_TYPE CONSTRAINT
+//  CLASS DEFINITION
 //
 //=================================================================================================
 
 //*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
+/*!\brief Base class for all tensor transposition expression templates.
+// \ingroup math
 //
-// In case the given data type \a T is not a tensor transposition expression (i.e. a type derived
-// from the TensTransExpr base class), a compilation error is created.
+// The TensTransExpr class serves as a tag for all expression templates that implement a tensor
+// transposition operation. All classes, that represent a tensor transposition operation and
+// that are used within the expression template environment of the Blaze library have to derive
+// publicly from this class in order to qualify as tensor transposition expression template. Only
+// in case a class is derived publicly from the TensTransExpr base class, the IsTensTransExpr type
+// trait recognizes the class as valid tensor transposition expression template.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_TENSTRANSEXPR_TYPE(T) \
-   static_assert( ::blaze::IsTensTransExpr_v<T>, "Non-tensor transposition expression type detected" )
-//*************************************************************************************************
-
-
-
-
-//=================================================================================================
-//
-//  MUST_NOT_BE_TENSTRANSEXPR_TYPE CONSTRAINT
-//
-//=================================================================================================
-
-//*************************************************************************************************
-/*!\brief Constraint on the data type.
-// \ingroup math_constraints
-//
-// In case the given data type \a T is a tensor transposition expression (i.e. a type derived from
-// the TensTransExpr base class), a compilation error is created.
-*/
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_TENSTRANSEXPR_TYPE(T) \
-   static_assert( !::blaze::IsTensTransExpr_v<T>, "Tensor transposition expression type detected" )
+template< typename MT >  // Tensor base type of the expression
+struct QuatTransExpr
+   : public TransExpr<MT>
+{};
 //*************************************************************************************************
 
 } // namespace blaze

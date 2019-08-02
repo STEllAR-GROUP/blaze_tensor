@@ -70,7 +70,7 @@
 #include <blaze_tensor/math/expressions/TensScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/TensScalarMultExpr.h>
 #include <blaze_tensor/math/expressions/TensSerialExpr.h>
-// #include <blaze_tensor/math/expressions/TensTransExpr.h>
+#include <blaze_tensor/math/expressions/TensTransExpr.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
 
 

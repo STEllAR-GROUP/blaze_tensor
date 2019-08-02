@@ -132,6 +132,7 @@
 #include <blaze_tensor/math/expressions/DArrScalarMultExpr.h>
 // #include <blaze_tensor/math/expressions/DTensSerialExpr.h>
 #include <blaze_tensor/math/expressions/DenseArray.h>
+#include <blaze_tensor/math/expressions/DQuatTransExpr.h>
 #include <blaze_tensor/math/smp/DenseArray.h>
 
 #endif
