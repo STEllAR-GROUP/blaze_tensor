@@ -177,7 +177,7 @@ decltype(auto) norm_backend( const DenseArray<MT>& dm, Abs abs, Power power, Roo
    BLAZE_INTERNAL_ASSERT( tmp.dimensions() == (~dm).dimensions(), "Invalid number of elements" );
 
    using AT = RemoveCV_t<RemoveReference_t< decltype( ~dm ) > >;
-   constexpr size_t N = AT::num_dimensions();
+   constexpr size_t N = AT::num_dimensions;
 
    std::array< size_t, N > dims{};
    ET norm( power( abs( tmp( dims ) ) ) );

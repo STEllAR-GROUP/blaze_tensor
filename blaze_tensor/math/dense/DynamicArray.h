@@ -60,7 +60,7 @@
 #include <blaze/util/StaticAssert.h>
 
 #include <blaze_tensor/math/Array.h>
-#include <blaze_tensor/math/CustomArray.h>
+//#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitFromValue.h>
 #include <blaze_tensor/math/InitializerList.h>
@@ -68,7 +68,6 @@
 #include <blaze_tensor/math/dense/DynamicTensor.h>
 #include <blaze_tensor/math/dense/Transposition.h>
 #include <blaze_tensor/math/expressions/DenseArray.h>
-//#include <blaze_tensor/math/traits/ArraySliceTrait.h>
 #include <blaze_tensor/math/traits/QuatSliceTrait.h>
 #include <blaze_tensor/math/typetraits/IsNdArray.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
@@ -194,6 +193,10 @@ class DynamicArray
        (shared memory parallel) assignments (both on the left-hand and right-hand side of the
        assignment). */
    static constexpr bool smpAssignable = !IsSMPAssignable_v<Type>;
+
+   //**********************************************************************************************
+
+   static constexpr size_t num_dimensions = N; // Dimensionality of the array
    //**********************************************************************************************
 
    //**Constructors********************************************************************************
@@ -312,7 +315,6 @@ class DynamicArray
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline static constexpr size_t num_dimensions() noexcept { return N; }
    inline constexpr std::array< size_t, N > const& dimensions() const noexcept;
    inline size_t quats() const noexcept;
    inline size_t pages() const noexcept;

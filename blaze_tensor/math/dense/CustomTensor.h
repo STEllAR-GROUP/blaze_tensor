@@ -3010,7 +3010,6 @@ inline void swap( CustomTensor<Type,AF,PF,RT>& a, CustomTensor<Type,AF,PF,RT>& b
 
 
 
-
 //=================================================================================================
 //
 //  HASCONSTDATAACCESS SPECIALIZATIONS

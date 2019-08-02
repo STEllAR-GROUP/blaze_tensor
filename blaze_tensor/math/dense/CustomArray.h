@@ -46,9 +46,9 @@
 #include <blaze/math/dense/CustomMatrix.h>
 #include <blaze/util/EnableIf.h>
 
+#include <blaze_tensor/math/Array.h>
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitializerList.h>
-#include <blaze_tensor/math/Array.h>
 #include <blaze_tensor/math/expressions/DenseArray.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
@@ -414,6 +414,8 @@ class CustomArray
    static constexpr bool smpAssignable = !IsSMPAssignable_v<Type>;
    //**********************************************************************************************
 
+   static constexpr size_t num_dimensions = N; // Dimensionality of the array
+
    //**Constructors********************************************************************************
    /*!\name Constructors */
    //@{
@@ -530,7 +532,6 @@ class CustomArray
    //**Utility functions***************************************************************************
    /*!\name Utility functions */
    //@{
-   inline static constexpr size_t num_dimensions() noexcept { return N; }
    inline constexpr std::array< size_t, N > const& dimensions() const noexcept;
    inline size_t quats() const noexcept;
    inline size_t pages() const noexcept;

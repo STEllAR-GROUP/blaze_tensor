@@ -1223,7 +1223,7 @@ inline bool tryAssign( const QuatSlice<AT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.quat(), k, i, j  );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1257,7 +1257,7 @@ inline bool tryAddAssign( const QuatSlice<AT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.quat(), k, i, j );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1291,7 +1291,7 @@ inline bool trySubAssign( const QuatSlice<AT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.quat(), k, i, j );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1325,7 +1325,7 @@ inline bool tryMultAssign( const QuatSlice<AT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, lhs.quat(), k, i, j );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1359,7 +1359,7 @@ inline bool tryDivAssign( const QuatSlice<AT,CRAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, lhs.quat(), k, i, j  );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
