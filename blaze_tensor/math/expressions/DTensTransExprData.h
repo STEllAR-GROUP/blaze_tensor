@@ -994,6 +994,7 @@ template< typename T          // Type of the element indices
         , typename... RTAs >  // Optional element arguments
 inline DTensTransExprData<>::DTensTransExprData( const T* indices, size_t n, RTAs... args )
    : indices_( indices, indices+n )  // The indices of the elements in the tensor
+   , reverse_indices_(n)
 {
    BLAZE_USER_ASSERT( n == 3, "Invalid number of transpose mapping indices (should be three)" );
    MAYBE_UNUSED( args... );
