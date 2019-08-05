@@ -45,11 +45,6 @@
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/constraints/SMPAssignable.h>
-#include <blaze/math/functors/AddAssign.h>
-#include <blaze/math/functors/Assign.h>
-#include <blaze/math/functors/MultAssign.h>
-#include <blaze/math/functors/SchurAssign.h>
-#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/ParallelSection.h>
 #include <blaze/math/smp/SerialSection.h>
@@ -521,7 +516,7 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, SchurAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
       }
    }
 }

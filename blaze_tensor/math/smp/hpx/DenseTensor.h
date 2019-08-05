@@ -48,11 +48,6 @@
 #include <blaze/math/AlignmentFlag.h>
 #include <blaze/math/StorageOrder.h>
 #include <blaze/math/constraints/SMPAssignable.h>
-#include <blaze/math/functors/AddAssign.h>
-#include <blaze/math/functors/Assign.h>
-#include <blaze/math/functors/MultAssign.h>
-#include <blaze/math/functors/SchurAssign.h>
-#include <blaze/math/functors/SubAssign.h>
 #include <blaze/math/simd/SIMDTrait.h>
 #include <blaze/math/smp/Functions.h>
 #include <blaze/math/smp/SerialSection.h>
@@ -512,7 +507,7 @@ inline EnableIf_t< IsDenseTensor_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssign
       schurAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, SchurAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
    }
 }
 /*! \endcond */
