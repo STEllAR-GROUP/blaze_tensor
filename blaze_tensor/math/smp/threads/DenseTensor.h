@@ -251,7 +251,7 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
          assign( ~lhs, ~rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, Assign() );
+         threadAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
       }
    }
 }
@@ -341,7 +341,7 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
          addAssign( ~lhs, ~rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, AddAssign() );
+         threadAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
       }
    }
 }
@@ -432,7 +432,7 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
          subAssign( ~lhs, ~rhs );
       }
       else {
-         threadAssign( ~lhs, ~rhs, SubAssign() );
+         threadAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
       }
    }
 }

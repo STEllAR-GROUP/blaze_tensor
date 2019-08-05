@@ -246,7 +246,7 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, Assign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
       }
    }
 }
@@ -336,7 +336,7 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, AddAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
       }
    }
 }
@@ -426,7 +426,7 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, SubAssign() );
+         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
       }
    }
 }

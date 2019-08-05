@@ -249,7 +249,7 @@ inline EnableIf_t< IsDenseTensor_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssign
       assign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, Assign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -335,7 +335,7 @@ inline EnableIf_t< IsDenseTensor_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssign
       addAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, AddAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -421,7 +421,7 @@ inline EnableIf_t< IsDenseTensor_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssign
       subAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, SubAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
    }
 }
 /*! \endcond */

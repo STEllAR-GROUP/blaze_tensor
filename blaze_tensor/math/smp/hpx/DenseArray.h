@@ -257,7 +257,7 @@ inline EnableIf_t< IsDenseArray_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssigna
       assign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, Assign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -339,7 +339,7 @@ inline EnableIf_t< IsDenseArray_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssigna
       addAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, AddAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -421,7 +421,7 @@ inline EnableIf_t< IsDenseArray_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssigna
       subAssign( ~lhs, ~rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, SubAssign() );
+      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
    }
 }
 /*! \endcond */
