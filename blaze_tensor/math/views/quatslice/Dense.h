@@ -1580,7 +1580,8 @@ template< typename AT       // Type of the dense quaternion
 BLAZE_ALWAYS_INLINE void
    QuatSlice<AT,CRAs...>::store( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   quaternion_.store( quat(), k, i, j, value );
+
+   quaternion_.store( value, quat(), k, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1605,7 +1606,7 @@ template< typename AT       // Type of the dense quaternion
 BLAZE_ALWAYS_INLINE void
    QuatSlice<AT,CRAs...>::storea( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   quaternion_.storea( quat(), k, i, j, value );
+   quaternion_.storea( value, quat(), k, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1630,7 +1631,7 @@ template< typename AT       // Type of the dense quaternion
 BLAZE_ALWAYS_INLINE void
    QuatSlice<AT,CRAs...>::storeu( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   quaternion_.storeu( quat(), k, i, j, value );
+   quaternion_.storeu( value, quat(), k, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1655,7 +1656,7 @@ template< typename AT       // Type of the dense quaternion
 BLAZE_ALWAYS_INLINE void
    QuatSlice<AT,CRAs...>::stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   quaternion_.stream( quat(), k, i, j, value );
+   quaternion_.stream( value, quat(), k, i, j );
 }
 /*! \endcond */
 //*************************************************************************************************
