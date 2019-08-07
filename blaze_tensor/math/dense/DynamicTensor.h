@@ -43,17 +43,13 @@
 
 #include <blaze/math/typetraits/IsDenseMatrix.h>
 
-#include <blaze_tensor/math/Array.h>
-#include <blaze_tensor/math/CustomArray.h>
 #include <blaze_tensor/math/Forward.h>
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/SMP.h>
 #include <blaze_tensor/math/Tensor.h>
-#include <blaze_tensor/math/dense/DynamicArray.h>
 #include <blaze_tensor/math/dense/DynamicMatrix.h>
 #include <blaze_tensor/math/dense/HybridMatrix.h>
 #include <blaze_tensor/math/dense/Transposition.h>
-#include <blaze_tensor/math/expressions/DenseArray.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/traits/ColumnSliceTrait.h>
 #include <blaze_tensor/math/traits/DilatedSubtensorTrait.h>

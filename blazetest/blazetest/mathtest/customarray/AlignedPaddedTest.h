@@ -109,6 +109,9 @@ class AlignedPaddedTest
    void testIsDefault   ();
 
    template< typename Type >
+   void checkQuats( const Type& tensor, size_t expectedQuats ) const;
+
+   template< typename Type >
    void checkRows( const Type& tensor, size_t expectedRows ) const;
 
    template< typename Type >
@@ -138,6 +141,7 @@ class AlignedPaddedTest
    //**Type definitions****************************************************************************
    //! Type of the row-major custom tensor.
    using MT = blaze::CustomArray<3,int,blaze::aligned,blaze::padded>;
+   using QT = blaze::CustomArray<4,int,blaze::aligned,blaze::padded>;
 
    using RMT  = MT::Rebind<const double>::Other;   //!< Rebound row-major custom tensor type.
    //**********************************************************************************************
@@ -179,6 +183,62 @@ class AlignedPaddedTest
 //  TEST FUNCTIONS
 //
 //=================================================================================================
+
+//*************************************************************************************************
+/*!\brief Checking the number of pages of the given dynamic tensor.
+//
+// \param tensor The dynamic tensor to be checked.
+// \param expectedPages The expected number of columns of the dynamic tensor.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the number of pages of the given dynamic tensor. In case the
+// actual number of pages does not correspond to the given expected number of pages,
+// a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >  // Type of the dynamic tensor
+void AlignedPaddedTest::checkQuats( const Type& tensor, size_t expectedQuats ) const
+{
+   if( tensor.template dimension<3>() != expectedQuats ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid number of quats detected\n"
+          << " Details:\n"
+          << "   Number of quats         : " << tensor.template dimension<3>() << "\n"
+          << "   Expected number of quats: " << expectedQuats << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Checking the number of pages of the given dynamic tensor.
+//
+// \param tensor The dynamic tensor to be checked.
+// \param expectedPages The expected number of columns of the dynamic tensor.
+// \return void
+// \exception std::runtime_error Error detected.
+//
+// This function checks the number of pages of the given dynamic tensor. In case the
+// actual number of pages does not correspond to the given expected number of pages,
+// a \a std::runtime_error exception is thrown.
+*/
+template< typename Type >  // Type of the dynamic tensor
+void AlignedPaddedTest::checkPages( const Type& tensor, size_t expectedPages ) const
+{
+   if( tensor.template dimension<2>() != expectedPages ) {
+      std::ostringstream oss;
+      oss << " Test: " << test_ << "\n"
+          << " Error: Invalid number of pages detected\n"
+          << " Details:\n"
+          << "   Number of pages         : " << tensor.template dimension<2>() << "\n"
+          << "   Expected number of pages: " << expectedPages << "\n";
+      throw std::runtime_error( oss.str() );
+   }
+}
+//*************************************************************************************************
+
 
 //*************************************************************************************************
 /*!\brief Checking the number of rows of the given custom tensor.
@@ -230,34 +290,6 @@ void AlignedPaddedTest::checkColumns( const Type& tensor, size_t expectedColumns
           << " Details:\n"
           << "   Number of columns         : " << tensor.template dimension<0>() << "\n"
           << "   Expected number of columns: " << expectedColumns << "\n";
-      throw std::runtime_error( oss.str() );
-   }
-}
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*!\brief Checking the number of pages of the given dynamic tensor.
-//
-// \param tensor The dynamic tensor to be checked.
-// \param expectedPages The expected number of columns of the dynamic tensor.
-// \return void
-// \exception std::runtime_error Error detected.
-//
-// This function checks the number of pages of the given dynamic tensor. In case the
-// actual number of pages does not correspond to the given expected number of pages,
-// a \a std::runtime_error exception is thrown.
-*/
-template< typename Type >  // Type of the dynamic tensor
-void AlignedPaddedTest::checkPages( const Type& tensor, size_t expectedPages ) const
-{
-   if( tensor.template dimension<2>() != expectedPages ) {
-      std::ostringstream oss;
-      oss << " Test: " << test_ << "\n"
-          << " Error: Invalid number of pages detected\n"
-          << " Details:\n"
-          << "   Number of pages         : " << tensor.template dimension<2>() << "\n"
-          << "   Expected number of pages: " << expectedPages << "\n";
       throw std::runtime_error( oss.str() );
    }
 }

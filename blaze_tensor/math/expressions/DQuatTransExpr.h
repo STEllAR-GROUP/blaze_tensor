@@ -112,6 +112,7 @@ class DQuatTransExpr
    using CT = CompositeType_t<MT>;  //!< Composite type of the dense tensor expression.
 
    //! Definition of the GetConstIterator type trait.
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetIterator, Iterator, INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
 
@@ -157,8 +158,23 @@ class DQuatTransExpr
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const DQuatTransExpr& >;
 
+   //! Reference to a constant transpose value.
+   using ConstReference = ConstReference_t<MT>;
+
+   //! Reference to a non-constant transpose value.
+   using Reference = If_t< IsConst_v< MT >, ConstReference, Reference_t< MT > >;
+
+   //! Pointer to a constant transpose value.
+   using ConstPointer = ConstPointer_t<MT>;
+
+   //! Pointer to a non-constant transpose value.
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
+
    //! Iterator over the elements of the dense tensor.
    using ConstIterator = GetConstIterator_t<MT>;
+
+   //! Iterator over non-constant elements.
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, GetIterator_t<MT> >;
 
    //! Composite data type of the dense tensor expression.
    using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
@@ -361,7 +377,7 @@ class DQuatTransExpr
 
    template<>
    inline size_t dimension<0>() const noexcept {
-      return columns( );
+      return columns();
    }
 
    template< >

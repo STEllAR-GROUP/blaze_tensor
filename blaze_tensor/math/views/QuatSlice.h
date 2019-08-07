@@ -60,7 +60,6 @@
 //#include <blaze_tensor/math/expressions/ArrVecMultExpr.h>
 #include <blaze_tensor/math/expressions/Array.h>
 #include <blaze_tensor/math/expressions/Forward.h>
-#include <blaze_tensor/math/expressions/QuatTransExpr.h>
 #include <blaze_tensor/math/views/Forward.h>
 #include <blaze_tensor/math/views/PageSlice.h>
 #include <blaze_tensor/math/views/quatslice/BaseTemplate.h>
@@ -680,18 +679,18 @@ inline decltype(auto) quatslice( const ArrArrMapExpr<AT>& quaternion, RRAs... ar
 // This function returns an expression representing the specified quatslice of the given quaternion
 // transpose operation.
 */
-template< size_t ML           // Compile time quatslice arguments
-        , size_t MK
-        , size_t MI
-        , size_t MJ
-        , typename AT         // Array base type of the expression
-        , typename... RRAs >  // Runtime arguments
-inline decltype(auto) quatslice( const QuatTransExpr<AT>& quaternion, size_t index, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return quatslice<ML, MK, MI, MJ>( evaluate( ~quaternion ), index, args... );
-}
+//template< size_t ML           // Compile time quatslice arguments
+//        , size_t MK
+//        , size_t MI
+//        , size_t MJ
+//        , typename AT         // Array base type of the expression
+//        , typename... RRAs >  // Runtime arguments
+//inline decltype(auto) quatslice( const QuatTransExpr<AT>& quaternion, size_t index, RRAs... args )
+//{
+//   BLAZE_FUNCTION_TRACE;
+//
+//   return quatslice<ML, MK, MI, MJ>( evaluate( ~quaternion ), index, args... );
+//}
 /*! \endcond */
 //*************************************************************************************************
 
@@ -708,14 +707,14 @@ inline decltype(auto) quatslice( const QuatTransExpr<AT>& quaternion, size_t ind
 // This function returns an expression representing the specified quatslice of the given quaternion
 // transpose operation.
 */
-template< typename AT         // Array base type of the expression
-        , typename... RRAs >  // Runtime arguments
-inline decltype(auto) quatslice( const QuatTransExpr<AT>& quaternion, size_t index, RRAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return quatslice( evaluate( ~quaternion ), index, args... );
-}
+//template< typename AT         // Array base type of the expression
+//        , typename... RRAs >  // Runtime arguments
+//inline decltype(auto) quatslice( const QuatTransExpr<AT>& quaternion, size_t index, RRAs... args )
+//{
+//   BLAZE_FUNCTION_TRACE;
+//
+//   return quatslice( evaluate( ~quaternion ), index, args... );
+//}
 /*! \endcond */
 //*************************************************************************************************
 
