@@ -996,7 +996,7 @@ inline bool trySet( const QuatSlice<AT,CRAs...>& quatslice, size_t k, size_t i, 
    BLAZE_INTERNAL_ASSERT( i < quatslice.rows(),    "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < quatslice.columns(), "Invalid column access index" );
 
-   return trySet( quatslice.operand(), quatslice.quat(), k, i, j, value );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1027,7 +1027,7 @@ inline bool tryAdd( const QuatSlice<AT,CRAs...>& quatslice, size_t k, size_t i, 
    BLAZE_INTERNAL_ASSERT( i < quatslice.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < quatslice.columns(), "Invalid column access index" );
 
-   return tryAdd( quatslice.operand(), quatslice.quat(), k, i, j, value );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1058,7 +1058,7 @@ inline bool trySub( const QuatSlice<AT,CRAs...>& quatslice, size_t k, size_t i, 
    BLAZE_INTERNAL_ASSERT( i < quatslice.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < quatslice.columns(), "Invalid column access index" );
 
-   return trySub( quatslice.operand(), quatslice.quat(), k, i, j, value );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1089,7 +1089,7 @@ inline bool tryMult( const QuatSlice<AT,CRAs...>& quatslice, size_t k, size_t i,
    BLAZE_INTERNAL_ASSERT( i < quatslice.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < quatslice.columns(), "Invalid column access index" );
 
-   return tryMult( quatslice.operand(), quatslice.quat(), k, i, j, value );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1124,7 +1124,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( col <= (~quatslice).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( col + cols <= (~quatslice).columns(), "Invalid columns range size" );
 
-   return tryMult( quatslice.operand(), quatslice.quat(), page, row, col, 1UL, pages, rows, cols, value );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1154,7 +1154,7 @@ inline bool tryDiv( const QuatSlice<AT,CRAs...>& quatslice, size_t k, size_t i, 
    BLAZE_INTERNAL_ASSERT( i < quatslice.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < quatslice.columns(), "Invalid column access index" );
 
-   return tryDiv( quatslice.operand(), quatslice.quat(), k, i, j, value );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1189,7 +1189,7 @@ BLAZE_ALWAYS_INLINE bool
    BLAZE_INTERNAL_ASSERT( col <= (~quatslice).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( col + cols <= (~quatslice).columns(), "Invalid columns range size" );
 
-   return tryDiv( quatslice.operand(), quatslice.quat(), page, row, col, 1UL, pages, rows, cols, value );
+   return true;
 }
 /*! \endcond */
 //*************************************************************************************************
