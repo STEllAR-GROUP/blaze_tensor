@@ -95,11 +95,9 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/FalseType.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/algorithms/Max.h>
@@ -110,7 +108,6 @@
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
 #include <blaze/util/constraints/Volatile.h>
-#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/typetraits/AlignmentOf.h>
 #include <blaze/util/typetraits/IsNumeric.h>
 #include <blaze/util/typetraits/IsSame.h>
@@ -3227,17 +3224,17 @@ inline auto StaticTensor<Type,O,M,N>::schurAssign( const DenseTensor<MT>& rhs )
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t O, size_t M, size_t N >
 struct Size< StaticTensor<T,O,M,N>, 0UL >
-   : public PtrdiffT<O>
+   : public Ptrdiff_t<O>
 {};
 
 template< typename T, size_t O, size_t M, size_t N >
 struct Size< StaticTensor<T,O,M,N>, 1UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename T, size_t O, size_t M, size_t N >
 struct Size< StaticTensor<T,O,M,N>, 2UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -3255,17 +3252,17 @@ struct Size< StaticTensor<T,O,M,N>, 2UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t O, size_t M, size_t N >
 struct MaxSize< StaticTensor<T,O,M,N>, 0UL >
-   : public PtrdiffT<O>
+   : public Ptrdiff_t<O>
 {};
 
 template< typename T, size_t O, size_t M, size_t N >
 struct MaxSize< StaticTensor<T,O,M,N>, 1UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename T, size_t O, size_t M, size_t N >
 struct MaxSize< StaticTensor<T,O,M,N>, 2UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

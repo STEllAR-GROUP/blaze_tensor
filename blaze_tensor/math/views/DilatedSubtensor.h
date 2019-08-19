@@ -80,10 +80,8 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/MaybeUnused.h>
-#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsPointer.h>
@@ -4402,17 +4400,17 @@ inline decltype(auto) derestrict( DilatedSubtensor<TT,DF>&& dm )
 /*! \cond BLAZE_INTERNAL */
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
 struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
 struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
 struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 2UL >
-   : public PtrdiffT<O>
+   : public Ptrdiff_t<O>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -4430,17 +4428,17 @@ struct Size< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnD
 /*! \cond BLAZE_INTERNAL */
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
 struct MaxSize< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
 struct MaxSize< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 
 template< typename TT, bool DF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N, size_t PageDilation, size_t RowDilation, size_t ColumnDilation >
 struct MaxSize< DilatedSubtensor<TT,DF,K,I,J,O,M,N,PageDilation,RowDilation,ColumnDilation>, 2UL >
-   : public PtrdiffT<O>
+   : public Ptrdiff_t<O>
 {};
 /*! \endcond */
 //*************************************************************************************************

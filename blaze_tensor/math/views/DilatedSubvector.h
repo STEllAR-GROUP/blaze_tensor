@@ -50,13 +50,13 @@
 #include <blaze/math/expressions/VecScalarDivExpr.h>
 #include <blaze/math/expressions/VecScalarMultExpr.h>
 #include <blaze/math/expressions/VecSerialExpr.h>
-#include <blaze/math/expressions/Vector.h>
 #include <blaze/math/expressions/VecTransExpr.h>
 #include <blaze/math/expressions/VecVecAddExpr.h>
 #include <blaze/math/expressions/VecVecDivExpr.h>
 #include <blaze/math/expressions/VecVecMapExpr.h>
 #include <blaze/math/expressions/VecVecMultExpr.h>
 #include <blaze/math/expressions/VecVecSubExpr.h>
+#include <blaze/math/expressions/Vector.h>
 #include <blaze/math/shims/IsDefault.h>
 #include <blaze/math/shims/Serial.h>
 #include <blaze/math/typetraits/HasConstDataAccess.h>
@@ -67,10 +67,9 @@
 #include <blaze/math/views/Check.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/FunctionTrace.h>
-#include <blaze/util/mpl/PtrdiffT.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -2352,7 +2351,7 @@ inline decltype(auto) derestrict( DilatedSubvector<VT,TF,DF>&& sv )
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF, bool DF, size_t I, size_t N, size_t Dilation >
 struct Size< DilatedSubvector<VT,TF,DF,I,N,Dilation>, 0UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2370,7 +2369,7 @@ struct Size< DilatedSubvector<VT,TF,DF,I,N,Dilation>, 0UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename VT, bool TF, bool DF, size_t I, size_t N, size_t Dilation >
 struct MaxSize< DilatedSubvector<VT,TF,DF,I,N,Dilation>, 0UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

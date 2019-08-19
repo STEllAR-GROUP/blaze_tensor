@@ -54,9 +54,8 @@
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
-#include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/typetraits/Decay.h>
@@ -360,14 +359,14 @@ OperationTest<MT,E>::OperationTest( const Creator<MT>& creator )
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testSubtensorOperation( Not< IsUniform<DRE> >() );
-   testRowSliceOperation( Not< IsUniform<DRE> >() );
-   testRowSlicesOperation( Not< IsUniform<DRE> >() );
-   testColumnSliceOperation( Not< IsUniform<DRE> >() );
-   testColumnSlicesOperation( Not< IsUniform<DRE> >() );
-   testPageSliceOperation( Not< IsUniform<DRE> >() );
-   testPageSlicesOperation( Not< IsUniform<DRE> >() );
-   testBandOperation( Not< IsUniform<DRE> >() );
+   testSubtensorOperation( Not_t< IsUniform<DRE> >() );
+   testRowSliceOperation( Not_t< IsUniform<DRE> >() );
+   testRowSlicesOperation( Not_t< IsUniform<DRE> >() );
+   testColumnSliceOperation( Not_t< IsUniform<DRE> >() );
+   testColumnSlicesOperation( Not_t< IsUniform<DRE> >() );
+   testPageSliceOperation( Not_t< IsUniform<DRE> >() );
+   testPageSlicesOperation( Not_t< IsUniform<DRE> >() );
+   testBandOperation( Not_t< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 

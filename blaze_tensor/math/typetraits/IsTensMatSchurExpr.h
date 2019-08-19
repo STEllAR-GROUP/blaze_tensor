@@ -43,8 +43,7 @@
 //*************************************************************************************************
 
 #include <utility>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 #include <blaze_tensor/math/expressions/TensMatSchurExpr.h>
 

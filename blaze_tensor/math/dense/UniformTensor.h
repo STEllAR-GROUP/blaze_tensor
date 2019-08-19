@@ -82,7 +82,7 @@
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
 #include <blaze/util/EnableIf.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/constraints/Const.h>

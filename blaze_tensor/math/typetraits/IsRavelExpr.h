@@ -35,14 +35,12 @@
 
 #ifndef _BLAZE_TENSOR_MATH_TYPETRAITS_ISRAVELEXPR_H_
 #define _BLAZE_TENSOR_MATH_TYPETRAITS_ISRAVELEXPR_H_
-               TENSOR_
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 
 #include <blaze_tensor/math/expressions/RavelExpr.h>
 

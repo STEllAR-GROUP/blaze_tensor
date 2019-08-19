@@ -64,12 +64,11 @@
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/mpl/Nor.h>
 #include <blaze/util/mpl/Or.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blaze/util/typetraits/IsComplex.h>
 #include <blazetest/system/LAPACK.h>
@@ -390,8 +389,8 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    , test_()             // Label of the currently performed test
    , error_()            // Description of the current error type
 {
-   using blaze::Or;
-   using blaze::Nor;
+   using blaze::Or_t;
+   using blaze::Nor_t;
 
    using Scalar = blaze::UnderlyingNumeric_t<DET>;
 
@@ -415,18 +414,18 @@ OperationTest<MT1,MT2>::OperationTest( const Creator<MT1>& creator1, const Creat
    testInvOperation();
    testEvalOperation();
    testSerialOperation();
-//    testDeclSymOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-//    testDeclHermOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-//    testDeclLowOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-//    testDeclUppOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-//    testDeclDiagOperation( Or< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
-   testSubtensorOperation( blaze::Not< blaze::IsUniform<DRE> >() );
-   testRowSliceOperation( blaze::Not< blaze::IsUniform<DRE> >() );
-//    testRowSlicesOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
-   testColumnSliceOperation( blaze::Not< blaze::IsUniform<DRE> >() );
-//    testColumnSlicesOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
-   testPageSliceOperation( blaze::Not< blaze::IsUniform<DRE> >() );
-//    testPageSlicesOperation( Nor< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
+//    testDeclSymOperation( Or_t< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+//    testDeclHermOperation( Or_t< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+//    testDeclLowOperation( Or_t< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+//    testDeclUppOperation( Or_t< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+//    testDeclDiagOperation( Or_t< blaze::IsSquare<DRE>, blaze::IsResizable<DRE> >() );
+   testSubtensorOperation( blaze::Not_t< blaze::IsUniform<DRE> >() );
+   testRowSliceOperation( blaze::Not_t< blaze::IsUniform<DRE> >() );
+//    testRowSlicesOperation( Nor_t< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
+   testColumnSliceOperation( blaze::Not_t< blaze::IsUniform<DRE> >() );
+//    testColumnSlicesOperation( Nor_t< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
+   testPageSliceOperation( blaze::Not_t< blaze::IsUniform<DRE> >() );
+//    testPageSlicesOperation( Nor_t< blaze::IsSymmetric<DRE>, blaze::IsHermitian<DRE> >() );
 //    testBandOperation();
 }
 //*************************************************************************************************

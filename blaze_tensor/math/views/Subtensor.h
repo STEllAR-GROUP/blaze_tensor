@@ -72,9 +72,7 @@
 #include <blaze/util/DisableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
-#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/RemoveReference.h>
@@ -5714,17 +5712,17 @@ inline decltype(auto) derestrict( Subtensor<TT,AF>&& dm )
 /*! \cond BLAZE_INTERNAL */
 template< typename TT, AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N >
 struct Size< Subtensor<TT,AF,K,I,J,O,M,N>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename TT, AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N >
 struct Size< Subtensor<TT,AF,K,I,J,O,M,N>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 
 template< typename TT, AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N >
 struct Size< Subtensor<TT,AF,K,I,J,O,M,N>, 2UL >
-   : public PtrdiffT<O>
+   : public Ptrdiff_t<O>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5742,17 +5740,17 @@ struct Size< Subtensor<TT,AF,K,I,J,O,M,N>, 2UL >
 /*! \cond BLAZE_INTERNAL */
 template< typename TT, AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N >
 struct MaxSize< Subtensor<TT,AF,K,I,J,O,M,N>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename TT, AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N >
 struct MaxSize< Subtensor<TT,AF,K,I,J,O,M,N>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 
 template< typename TT, AlignmentFlag AF, size_t K, size_t I, size_t J, size_t O, size_t M, size_t N >
 struct MaxSize< Subtensor<TT,AF,K,I,J,O,M,N>, 2UL >
-   : public PtrdiffT<O>
+   : public Ptrdiff_t<O>
 {};
 /*! \endcond */
 //*************************************************************************************************
