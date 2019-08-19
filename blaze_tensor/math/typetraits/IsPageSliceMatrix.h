@@ -43,8 +43,7 @@
 
 #include <blaze/math/TransposeFlag.h>
 #include <blaze/math/expressions/Matrix.h>
-#include <blaze/util/FalseType.h>
-#include <blaze/util/TrueType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <utility>
 
 namespace blaze {

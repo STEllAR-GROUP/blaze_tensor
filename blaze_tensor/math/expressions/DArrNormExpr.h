@@ -71,14 +71,12 @@
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/mpl/And.h>
-#include <blaze/util/mpl/Bool.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/HasMember.h>
 #include <blaze/util/typetraits/RemoveConst.h>
@@ -118,8 +116,8 @@ struct DArrNormHelper
       ( useOptimizedKernels &&
         CT::simdEnabled &&
         If_t< HasSIMDEnabled_v<Abs> && HasSIMDEnabled_v<Power>
-            , And< GetSIMDEnabled<Abs,ET>, GetSIMDEnabled<Power,ET> >
-            , And< HasLoad<Abs>, HasLoad<Power> > >::value &&
+            , And_t< GetSIMDEnabled<Abs,ET>, GetSIMDEnabled<Power,ET> >
+            , And_t< HasLoad<Abs>, HasLoad<Power> > >::value &&
         HasSIMDAdd_v< ElementType_t<CT>, ElementType_t<CT> > );
    //**********************************************************************************************
 };

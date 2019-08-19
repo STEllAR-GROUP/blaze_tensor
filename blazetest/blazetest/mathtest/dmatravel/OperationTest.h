@@ -53,9 +53,8 @@
 #include <blaze/math/typetraits/IsUniform.h>
 #include <blaze/math/typetraits/UnderlyingBuiltin.h>
 #include <blaze/math/typetraits/UnderlyingNumeric.h>
-#include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/constraints/SameType.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/typetraits/Decay.h>
@@ -283,8 +282,8 @@ OperationTest<MT>::OperationTest( const Creator<MT>& creator )
    testScaledOperation( Scalar( 2 ) );
    testTransOperation();
    testCTransOperation();
-   testSubvectorOperation( Not< IsUniform<DRE> >() );
-   testElementsOperation( Not< IsUniform<DRE> >() );
+   testSubvectorOperation( Not_t< IsUniform<DRE> >() );
+   testElementsOperation( Not_t< IsUniform<DRE> >() );
 }
 //*************************************************************************************************
 

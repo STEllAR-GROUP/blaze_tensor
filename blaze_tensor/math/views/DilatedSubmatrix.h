@@ -93,10 +93,8 @@
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/MaybeUnused.h>
-#include <blaze/util/mpl/PtrdiffT.h>
 #include <blaze/util/SmallArray.h>
 #include <blaze/util/StaticAssert.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
 #include <blaze/util/typetraits/IsPointer.h>
@@ -5283,12 +5281,12 @@ inline decltype(auto) derestrict( DilatedSubmatrix<MT,SO,DF>&& dm )
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation >
 struct Size< DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,ColumnDilation>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename MT, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation >
 struct Size< DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,ColumnDilation>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -5306,12 +5304,12 @@ struct Size< DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,ColumnDilation>, 1UL 
 /*! \cond BLAZE_INTERNAL */
 template< typename MT, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation >
 struct MaxSize< DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,ColumnDilation>, 0UL >
-   : public PtrdiffT<M>
+   : public Ptrdiff_t<M>
 {};
 
 template< typename MT, bool SO, bool DF, size_t I, size_t J, size_t M, size_t N, size_t RowDilation, size_t ColumnDilation >
 struct MaxSize< DilatedSubmatrix<MT,SO,DF,I,J,M,N,RowDilation,ColumnDilation>, 1UL >
-   : public PtrdiffT<N>
+   : public Ptrdiff_t<N>
 {};
 /*! \endcond */
 //*************************************************************************************************

@@ -71,10 +71,9 @@
 #include <blaze/math/Views.h>
 #include <blaze/util/constraints/Numeric.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/FalseType.h>
+#include <blaze/util/IntegralConstant.h>
 #include <blaze/util/mpl/Not.h>
 #include <blaze/util/Random.h>
-#include <blaze/util/TrueType.h>
 #include <blaze/util/typetraits/Decay.h>
 #include <blazetest/system/MathTest.h>
 #include <blazetest/mathtest/Creator.h>
@@ -292,11 +291,11 @@ OperationTest<TT,VT>::OperationTest( const Creator<TT>& creator1, const Creator<
    testImagOperation();
    testEvalOperation();
    testSerialOperation();
-   testSubmatrixOperation( Not< IsUniform<DRE> >() );
-   testRowOperation      ( Not< IsUniform<DRE> >() );
-   testColumnOperation   ( Not< IsUniform<DRE> >() );
-   //testRowsOperation      ( Not< IsUniform<DRE> >() ); // needs pageslices
-   //testColumnsOperation   ( Not< IsUniform<DRE> >() ); // needs rowslices
+   testSubmatrixOperation( Not_t< IsUniform<DRE> >() );
+   testRowOperation      ( Not_t< IsUniform<DRE> >() );
+   testColumnOperation   ( Not_t< IsUniform<DRE> >() );
+   //testRowsOperation      ( Not_t< IsUniform<DRE> >() ); // needs pageslices
+   //testColumnsOperation   ( Not_t< IsUniform<DRE> >() ); // needs rowslices
 }
 //*************************************************************************************************
 
