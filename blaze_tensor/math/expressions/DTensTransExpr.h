@@ -111,6 +111,7 @@ class DTensTransExpr
    using CT = CompositeType_t<MT>;  //!< Composite type of the dense tensor expression.
 
    //! Definition of the GetConstIterator type trait.
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetIterator, Iterator, INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
 
@@ -156,8 +157,23 @@ class DTensTransExpr
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const DTensTransExpr& >;
 
+   //! Reference to a constant transpose value.
+   using ConstReference = ConstReference_t<MT>;
+
+   //! Reference to a non-constant transpose value.
+   using Reference      = If_t< IsConst_v<MT>, ConstReference, Reference_t<MT> >;
+
+   //! Pointer to a constant transpose value.
+   using ConstPointer = ConstPointer_t<MT>;
+
+   //! Pointer to a non-constant transpose value.
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
+
    //! Iterator over the elements of the dense tensor.
    using ConstIterator = GetConstIterator_t<MT>;
+
+   //! Iterator over non-constant elements.
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, GetIterator_t<MT> >;
 
    //! Composite data type of the dense tensor expression.
    using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
@@ -248,6 +264,17 @@ class DTensTransExpr
    }
    //**********************************************************************************************
 
+   //**Data function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i of page \a k.
+   //
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
+   */
+   inline const ElementType* data( size_t i, size_t k ) const {
+      return dm_.data( reverse_row(k, i, 0), reverse_page(k, i, 0) );
+   }
+   //**********************************************************************************************
+
    //**Begin function******************************************************************************
    /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
    //
@@ -297,6 +324,16 @@ class DTensTransExpr
    */
    inline size_t pages() const noexcept {
       return page( dm_.pages(), dm_.rows(), dm_.columns() );
+   }
+   //**********************************************************************************************
+
+   //**Pages function****************************************************************************
+   /*!\brief Returns the current spacing of the tensor.
+   //
+   // \return The spacing of the tensor.
+   */
+   inline size_t spacing() const noexcept {
+      return dm_.spacing();
    }
    //**********************************************************************************************
 

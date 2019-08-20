@@ -59,7 +59,6 @@
 #include <blaze_tensor/math/expressions/TensTensMapExpr.h>
 #include <blaze_tensor/math/expressions/TensTensMultExpr.h>
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
-#include <blaze_tensor/math/expressions/TensTransExpr.h>
 #include <blaze_tensor/math/expressions/TensVecMultExpr.h>
 #include <blaze_tensor/math/expressions/Tensor.h>
 #include <blaze_tensor/math/views/Forward.h>
@@ -693,55 +692,6 @@ inline decltype(auto) rowslice( const DeclExpr<MT>& tensor, RRAs... args )
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific rowslice of the given tensor transpose operation.
-// \ingroup rowslice
-//
-// \param tensor The constant tensor transpose operation.
-// \param args The runtime rowslice arguments
-// \return View on the specified rowslice of the transpose operation.
-//
-// This function returns an expression representing the specified rowslice of the given tensor
-// transpose operation.
-*/
-template< size_t MK           // Compile time pageslice arguments
-        , size_t MI
-        , size_t MJ
-        , typename MT         // Tensor base type of the expression
-        , typename... RTAs >  // Runtime rowslice arguments
-inline decltype(auto) rowslice( const TensTransExpr<MT>& tensor, size_t index, RTAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return rowslice<MK, MI, MJ>( evaluate( ~tensor ), index, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
-//*************************************************************************************************
-/*! \cond BLAZE_INTERNAL */
-/*!\brief Creating a view on a specific rowslice of the given tensor transpose operation.
-// \ingroup rowslice
-//
-// \param tensor The constant tensor transpose operation.
-// \param args The runtime rowslice arguments
-// \return View on the specified rowslice of the transpose operation.
-//
-// This function returns an expression representing the specified rowslice of the given tensor
-// transpose operation.
-*/
-template< typename MT         // Tensor base type of the expression
-        , typename... RTAs >  // Runtime rowslice arguments
-inline decltype(auto) rowslice( const TensTransExpr<MT>& tensor, size_t index, RTAs... args )
-{
-   BLAZE_FUNCTION_TRACE;
-
-   return rowslice( evaluate( ~tensor ), index, args... );
-}
-/*! \endcond */
-//*************************************************************************************************
-
-
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 /*!\brief Creating a view on a specific rowslice of the given matrix expansion operation.
