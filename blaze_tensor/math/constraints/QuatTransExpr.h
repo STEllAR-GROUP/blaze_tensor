@@ -1,6 +1,6 @@
 //=================================================================================================
 /*!
-//  \file blaze/math/constraints/TensTransExpr.h
+//  \file blaze/math/constraints/QuatTransExpr.h
 //  \brief Constraint on the data type
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
@@ -33,22 +33,22 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSTRANSEXPR_H_
-#define _BLAZE_TENSOR_MATH_CONSTRAINTS_TENSTRANSEXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_CONSTRAINTS_QUATTRANSEXPR_H_
+#define _BLAZE_TENSOR_MATH_CONSTRAINTS_QUATTRANSEXPR_H_
 
 
 //*************************************************************************************************
 // Includes
 //*************************************************************************************************
 
-#include <blaze_tensor/math/typetraits/IsTensTransExpr.h>
+#include <blaze_tensor/math/typetraits/IsQuatTransExpr.h>
 
 
 namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_BE_TENSTRANSEXPR_TYPE CONSTRAINT
+//  MUST_BE_QUATTRANSEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -59,8 +59,8 @@ namespace blaze {
 // In case the given data type \a T is not a tensor transposition expression (i.e. a type derived
 // from the TensTransExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_BE_TENSTRANSEXPR_TYPE(T) \
-   static_assert( ::blaze::IsTensTransExpr_v<T>, "Non-tensor transposition expression type detected" )
+#define BLAZE_CONSTRAINT_MUST_BE_QUATTRANSEXPR_TYPE(T) \
+   static_assert( ::blaze::IsQuatTransExpr_v<T>, "Non-quatern transposition expression type detected" )
 //*************************************************************************************************
 
 
@@ -68,7 +68,7 @@ namespace blaze {
 
 //=================================================================================================
 //
-//  MUST_NOT_BE_TENSTRANSEXPR_TYPE CONSTRAINT
+//  MUST_NOT_BE_QUATTRANSEXPR_TYPE CONSTRAINT
 //
 //=================================================================================================
 
@@ -79,8 +79,8 @@ namespace blaze {
 // In case the given data type \a T is a tensor transposition expression (i.e. a type derived from
 // the TensTransExpr base class), a compilation error is created.
 */
-#define BLAZE_CONSTRAINT_MUST_NOT_BE_TENSTRANSEXPR_TYPE(T) \
-   static_assert( !::blaze::IsTensTransExpr_v<T>, "Tensor transposition expression type detected" )
+#define BLAZE_CONSTRAINT_MUST_NOT_BE_QUATTRANSEXPR_TYPE(T) \
+   static_assert( !::blaze::IsQuatTransExpr_v<T>, "Quatern transposition expression type detected" )
 //*************************************************************************************************
 
 } // namespace blaze

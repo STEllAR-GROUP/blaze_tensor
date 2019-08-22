@@ -45,6 +45,7 @@
 
 #include <blaze/math/CustomMatrix.h>
 
+#include <blaze_tensor/math/CustomTensor.h>
 #include <blaze_tensor/math/DenseArray.h>
 #include <blaze_tensor/math/dense/CustomArray.h>
 #include <blaze_tensor/math/dense/DynamicArray.h>

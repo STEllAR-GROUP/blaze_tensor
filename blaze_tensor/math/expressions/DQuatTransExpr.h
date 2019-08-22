@@ -1,10 +1,11 @@
 //=================================================================================================
 /*!
-//  \file blaze_tensor/math/expressions/DTensTransExpr.h
+//  \file blaze_tensor/math/expressions/DQuatTransExpr.h
 //  \brief Header file for the dense tensor transpose expression
 //
 //  Copyright (C) 2012-2018 Klaus Iglberger - All Rights Reserved
 //  Copyright (C) 2018-2019 Hartmut Kaiser - All Rights Reserved
+//  Copyright (C) 2019 Bita Hasheminezhad - All Rights Reserved
 //
 //  This file is part of the Blaze library. You can redistribute it and/or modify it under
 //  the terms of the New (Revised) BSD License. Redistribution and use in source and binary
@@ -33,8 +34,8 @@
 */
 //=================================================================================================
 
-#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_DTENSTRANSEXPR_H_
-#define _BLAZE_TENSOR_MATH_EXPRESSIONS_DTENSTRANSEXPR_H_
+#ifndef _BLAZE_TENSOR_MATH_EXPRESSIONS_DQUATTRANSEXPR_H_
+#define _BLAZE_TENSOR_MATH_EXPRESSIONS_DQUATTRANSEXPR_H_
 
 
 //*************************************************************************************************
@@ -75,11 +76,11 @@
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/typetraits/GetMemberType.h>
 
-#include <blaze_tensor/math/constraints/DenseTensor.h>
-#include <blaze_tensor/math/expressions/DTensTransExprData.h>
-#include <blaze_tensor/math/expressions/DTensTransposer.h>
-#include <blaze_tensor/math/expressions/DenseTensor.h>
-#include <blaze_tensor/math/expressions/TensTransExpr.h>
+#include <blaze_tensor/math/constraints/DenseArray.h>
+#include <blaze_tensor/math/expressions/DenseArray.h>
+#include <blaze_tensor/math/expressions/DQuatTransExprData.h>
+#include <blaze_tensor/math/expressions/DQuatTransposer.h>
+#include <blaze_tensor/math/expressions/QuatTransExpr.h>
 
 
 namespace blaze {
@@ -94,23 +95,24 @@ namespace blaze {
 /*!\brief Expression object for dense tensor transpositions.
 // \ingroup dense_tensor_expression
 //
-// The DTensTransExpr class represents the compile time expression for transpositions of
+// The DQuatTransExpr class represents the compile time expression for transpositions of
 // dense tensors.
 */
 template< typename MT,        // Type of the dense tensor
           size_t... CTAs >    // Compile time arguments
-class DTensTransExpr
-   : public TensTransExpr< DenseTensor< DTensTransExpr<MT> > >
-   , public DTensTransExprData<CTAs...>
+class DQuatTransExpr
+   : public QuatTransExpr< DenseArray< DQuatTransExpr<MT> > >
+   , public DQuatTransExprData<CTAs...>
    , private If< IsComputation_v<MT>, Computation, Transformation >::Type
 {
  private:
    //**Type definitions****************************************************************************
-   using DataType = DTensTransExprData<CTAs...>;  //!< The type of the DTensTransExprData base class.
+   using DataType = DQuatTransExprData<CTAs...>;  //!< The type of the DQuatTransExprData base class.
    using RT = ResultType_t<MT>;     //!< Result type of the dense tensor expression.
    using CT = CompositeType_t<MT>;  //!< Composite type of the dense tensor expression.
 
    //! Definition of the GetConstIterator type trait.
+   BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetIterator, Iterator, INVALID_TYPE );
    BLAZE_CREATE_GET_TYPE_MEMBER_TYPE_TRAIT( GetConstIterator, ConstIterator, INVALID_TYPE );
    //**********************************************************************************************
 
@@ -146,7 +148,7 @@ class DTensTransExpr
 
  public:
    //**Type definitions****************************************************************************
-   using This          = DTensTransExpr<MT>;          //!< Type of this DTensTransExpr instance.
+   using This          = DQuatTransExpr<MT>;          //!< Type of this DQuatTransExpr instance.
    using ResultType    = TransposeType_t<MT>;         //!< Result type for expression template evaluations.
    using OppositeType  = OppositeType_t<ResultType>;  //!< Result type with opposite storage order for expression template evaluations.
    using TransposeType = ResultType_t<MT>;            //!< Transpose type for expression template evaluations.
@@ -154,10 +156,25 @@ class DTensTransExpr
    using ReturnType    = ReturnType_t<MT>;            //!< Return type for expression template evaluations.
 
    //! Data type for composite expression templates.
-   using CompositeType = If_t< useAssign, const ResultType, const DTensTransExpr& >;
+   using CompositeType = If_t< useAssign, const ResultType, const DQuatTransExpr& >;
+
+   //! Reference to a constant transpose value.
+   using ConstReference = ConstReference_t<MT>;
+
+   //! Reference to a non-constant transpose value.
+   using Reference = If_t< IsConst_v< MT >, ConstReference, Reference_t< MT > >;
+
+   //! Pointer to a constant transpose value.
+   using ConstPointer = ConstPointer_t<MT>;
+
+   //! Pointer to a non-constant transpose value.
+   using Pointer = If_t< IsConst_v<MT> || !HasMutableDataAccess_v<MT>, ConstPointer, Pointer_t<MT> >;
 
    //! Iterator over the elements of the dense tensor.
    using ConstIterator = GetConstIterator_t<MT>;
+
+   //! Iterator over non-constant elements.
+   using Iterator = If_t< IsConst_v<MT>, ConstIterator, GetIterator_t<MT> >;
 
    //! Composite data type of the dense tensor expression.
    using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
@@ -167,9 +184,11 @@ class DTensTransExpr
    /*!\name Utility functions */
    //@{
    using DataType::idces;
+   using DataType::quat;
    using DataType::page;
    using DataType::row;
    using DataType::column;
+   using DataType::reverse_quat;
    using DataType::reverse_page;
    using DataType::reverse_row;
    using DataType::reverse_column;
@@ -190,29 +209,77 @@ class DTensTransExpr
    //**********************************************************************************************
 
    //**Constructor*********************************************************************************
-   /*!\brief Constructor for the DTensTransExpr class.
+   /*!\brief Constructor for the DQuatTransExpr class.
    //
    // \param dm The dense tensor operand of the transposition expression.
    */
    template< typename... RTAs >
-   explicit inline DTensTransExpr( const MT& dm, RTAs... args ) noexcept
+   explicit inline DQuatTransExpr( const MT& dm, RTAs... args ) noexcept
       : DataType( args... )   // Base class initialization
       , dm_( dm )             // Dense tensor of the transposition expression
    {}
    //**********************************************************************************************
 
    //**Access operator*****************************************************************************
-   /*!\brief 3D-access to the tensor elements.
+   /*!\brief 4D-access to the array elements.
    //
    // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
    */
-   inline ReturnType operator()( size_t k, size_t i, size_t j ) const {
+   inline ReturnType operator()( size_t l, size_t k, size_t i, size_t j ) const {
+      BLAZE_INTERNAL_ASSERT( l < quats()  , "Invalid quat access index" );
       BLAZE_INTERNAL_ASSERT( k < pages()  , "Invalid page access index" );
       BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < columns()   , "Invalid column access index" );
-      return dm_( reverse_page(k, i, j), reverse_row(k, i, j), reverse_column(k, i, j) );
+      return dm_( reverse_quat(l, k, i, j), reverse_page(l, k, i, j), reverse_row(l, k, i, j), reverse_column(l, k, i, j) );
+   }
+   //**********************************************************************************************
+
+   //**Access operator*****************************************************************************
+   /*!\brief 4D-access to the array elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   */
+   inline ReturnType operator()( std::array< size_t, 4UL > dims ) const
+   {
+      size_t j = dims[0];
+      size_t i = dims[1];
+      size_t k = dims[2];
+      size_t l = dims[3];
+
+      BLAZE_INTERNAL_ASSERT( l < quats()  , "Invalid quat access index" );
+      BLAZE_INTERNAL_ASSERT( k < pages()  , "Invalid page access index" );
+      BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( j < columns()   , "Invalid column access index" );
+      return dm_( reverse_quat(l, k, i, j), reverse_page(l, k, i, j), reverse_row(l, k, i, j), reverse_column(l, k, i, j) );
+   }
+   //**********************************************************************************************
+
+   //**At function*********************************************************************************
+   /*!\brief Checked access to the quatern elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   // \exception std::out_of_range Invalid tensor access index.
+   */
+   inline ReturnType at( size_t l, size_t k, size_t i, size_t j ) const {
+      if( l >= quats() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid quat access index" );
+      }
+      if( k >= pages() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
+      }
+      if( i >= rows() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid row access index" );
+      }
+      if( j >= columns() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
+      }
+      return (*this)(l,k,i,j);
    }
    //**********************************************************************************************
 
@@ -224,7 +291,16 @@ class DTensTransExpr
    // \return The resulting value.
    // \exception std::out_of_range Invalid tensor access index.
    */
-   inline ReturnType at( size_t k, size_t i, size_t j ) const {
+   inline ReturnType at( std::array< size_t, 4UL > dims ) const
+   {
+      size_t j = dims[0];
+      size_t i = dims[1];
+      size_t k = dims[2];
+      size_t l = dims[3];
+
+      if( l >= quats() ) {
+         BLAZE_THROW_OUT_OF_RANGE( "Invalid quat access index" );
+      }
       if( k >= pages() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid page access index" );
       }
@@ -234,7 +310,7 @@ class DTensTransExpr
       if( j >= columns() ) {
          BLAZE_THROW_OUT_OF_RANGE( "Invalid column access index" );
       }
-      return (*this)(k,i,j);
+      return (*this)(l,k,i,j);
    }
    //**********************************************************************************************
 
@@ -254,8 +330,8 @@ class DTensTransExpr
    // \param i The row/column index.
    // \return Iterator to the first non-zero element of row/column \a i.
    */
-   inline ConstIterator begin( size_t i, size_t k ) const {
-      return ConstIterator( dm_.begin( reverse_row(k, i, 0), reverse_page(k, i, 0) ) );
+   inline ConstIterator begin( size_t i, size_t l, size_t k ) const {
+      return ConstIterator( dm_.begin( reverse_row(l, k, i, 0), reverse_quat(l, k, i, 0), reverse_page(l, k, i, 0) ) );
    }
    //**********************************************************************************************
 
@@ -265,8 +341,58 @@ class DTensTransExpr
    // \param i The row/column index.
    // \return Iterator just past the last non-zero element of row/column \a i.
    */
-   inline ConstIterator end( size_t i, size_t k ) const {
-      return ConstIterator( dm_.end( reverse_row(k, i, 0), reverse_page(k, i, 0) ) );
+   inline ConstIterator end( size_t i, size_t l, size_t k ) const {
+      return ConstIterator( dm_.end( reverse_row(l, k, i, 0), reverse_quat(l, k, i, 0), reverse_page(l, k, i, 0) ) );
+   }
+   //**********************************************************************************************
+
+   //**Num_dimensions function*********************************************************************
+   /*!\brief Returns the current number of dimensions of the array.
+   //
+   // \return The number of rows of the array.
+   */
+   static constexpr size_t num_dimensions = 4UL;
+
+   //**********************************************************************************************
+
+   //**Dimensions function*************************************************************************
+   /*!\brief Returns the current dimensions of the array.
+   //
+   // \return The dimensions of the array.
+   */
+   inline decltype(auto) dimensions() const noexcept {
+      using array_type =
+         RemoveCV_t< RemoveReference_t< decltype( dm_.dimensions() ) > >;
+      return array_type{ columns(), rows(), pages(), quats() };
+   }
+   //**********************************************************************************************
+
+   //**Dimension function**************************************************************************
+   /*!\brief Returns the current number of columns of the array.
+   //
+   // \return The number of columns of the array.
+   */
+   template< size_t Dim >
+   size_t dimension() const noexcept;
+
+   template<>
+   inline size_t dimension<0>() const noexcept {
+      return columns();
+   }
+
+   template< >
+   inline size_t dimension<1>() const noexcept {
+      return rows();
+   }
+
+   template< >
+   inline size_t dimension<2>() const noexcept {
+      return pages();
+   }
+
+   template< >
+   inline size_t dimension<3>() const noexcept {
+      return quats();
    }
    //**********************************************************************************************
 
@@ -276,7 +402,7 @@ class DTensTransExpr
    // \return The number of rows of the tensor.
    */
    inline size_t rows() const noexcept {
-      return row( dm_.pages(), dm_.rows(), dm_.columns() );
+      return row( dm_.quats(), dm_.pages(), dm_.rows(), dm_.columns() );
    }
    //**********************************************************************************************
 
@@ -286,7 +412,7 @@ class DTensTransExpr
    // \return The number of columns of the tensor.
    */
    inline size_t columns() const noexcept {
-      return column( dm_.pages(), dm_.rows(), dm_.columns() );
+      return column( dm_.quats(), dm_.pages(), dm_.rows(), dm_.columns() );
    }
    //**********************************************************************************************
 
@@ -296,7 +422,17 @@ class DTensTransExpr
    // \return The number of pages of the tensor.
    */
    inline size_t pages() const noexcept {
-      return page( dm_.pages(), dm_.rows(), dm_.columns() );
+      return page( dm_.quats(), dm_.pages(), dm_.rows(), dm_.columns() );
+   }
+   //**********************************************************************************************
+
+   //**Quats function****************************************************************************
+   /*!\brief Returns the current number of pages of the tensor.
+   //
+   // \return The number of pages of the tensor.
+   */
+   inline size_t quats() const noexcept {
+      return quat( dm_.quats(), dm_.pages(), dm_.rows(), dm_.columns() );
    }
    //**********************************************************************************************
 
@@ -316,8 +452,8 @@ class DTensTransExpr
    // \param i The index of the row/column.
    // \return The number of non-zero elements of row/column \a i.
    */
-   inline size_t nonZeros( size_t i, size_t k ) const {
-      return dm_.nonZeros( reverse_row(k, i, 0), reverse_page(k, i, 0) );
+   inline size_t nonZeros( size_t i, size_t l, size_t k ) const {
+      return dm_.nonZeros( reverse_row(l, k, i, 0), reverse_quat(l, k, i, 0), reverse_page(l, k, i, 0) );
    }
    //**********************************************************************************************
 
@@ -377,7 +513,7 @@ class DTensTransExpr
 
  private:
    //**Member variables****************************************************************************
-   Operand dm_;  //!< Dense tensor of the transposition expression.
+   Operand dm_;  //!< Dense Array of the transposition expression.
    //**********************************************************************************************
 
    //**Assignment to dense tensors****************************************************************
@@ -394,17 +530,18 @@ class DTensTransExpr
    // the SFINAE principle, this function can only be selected by the compiler in case
    // the operand requires an intermediate evaluation.
    */
-   template< typename MT2 > // Type of the target dense tensor
+   template< typename MT2 > // Type of the target dense quaternion
    friend inline EnableIf_t< UseAssign_v<MT2> >
-      assign( DenseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+      assign( DenseArray<MT2>& lhs, const DQuatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DTensTransposer<MT2> tmp( ~lhs, rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       assign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -426,7 +563,7 @@ class DTensTransExpr
    */
 //    template< typename MT2 > // Type of the target dense tensor
 //    friend inline EnableIf_t< UseAssign_v<MT2> >
-//       assign( SparseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+//       assign( SparseArray<MT2>& lhs, const DQuatTransExpr& rhs )
 //    {
 //       BLAZE_FUNCTION_TRACE;
 //
@@ -464,15 +601,16 @@ class DTensTransExpr
    */
    template< typename MT2 > // Type of the target dense tensor
    friend inline EnableIf_t< UseAssign_v<MT2> >
-      addAssign( DenseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+      addAssign( DenseArray<MT2>& lhs, const DQuatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DTensTransposer<MT2> tmp( ~lhs, rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       addAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -498,15 +636,16 @@ class DTensTransExpr
    */
    template< typename MT2 > // Type of the target dense tensor
    friend inline EnableIf_t< UseAssign_v<MT2> >
-      subAssign( DenseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+      subAssign( DenseArray<MT2>& lhs, const DQuatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DTensTransposer<MT2> tmp( ~lhs, rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       subAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -532,15 +671,16 @@ class DTensTransExpr
    */
    template< typename MT2 > // Type of the target dense tensor
    friend inline EnableIf_t< UseAssign_v<MT2> >
-      schurAssign( DenseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+      schurAssign( DenseArray<MT2>& lhs, const DQuatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DTensTransposer<MT2> tmp( ~lhs, rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       schurAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -574,15 +714,16 @@ class DTensTransExpr
    */
    template< typename MT2 > // Type of the target dense tensor
    friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAssign( DenseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+      smpAssign( DenseArray<MT2>& lhs, const DQuatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DTensTransposer<MT2> tmp( ~lhs, rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       smpAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -604,7 +745,7 @@ class DTensTransExpr
    */
 //    template< typename MT2 > // Type of the target dense tensor
 //    friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-//       smpAssign( SparseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+//       smpAssign( SparseArray<MT2>& lhs, const DQuatTransExpr& rhs )
 //    {
 //       BLAZE_FUNCTION_TRACE;
 //
@@ -642,15 +783,16 @@ class DTensTransExpr
    */
    template< typename MT2 > // Type of the target dense tensor
    friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpAddAssign( DenseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+      smpAddAssign( DenseArray<MT2>& lhs, const DQuatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DTensTransposer<MT2> tmp( ~lhs, rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       smpAddAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -676,15 +818,16 @@ class DTensTransExpr
    */
    template< typename MT2 > // Type of the target dense tensor
    friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSubAssign( DenseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+      smpSubAssign( DenseArray<MT2>& lhs, const DQuatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DTensTransposer<MT2> tmp( ~lhs, rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       smpSubAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -711,15 +854,16 @@ class DTensTransExpr
    */
    template< typename MT2 > // Type of the target dense tensor
    friend inline EnableIf_t< UseSMPAssign_v<MT2> >
-      smpSchurAssign( DenseTensor<MT2>& lhs, const DTensTransExpr& rhs )
+      smpSchurAssign( DenseArray<MT2>& lhs, const DQuatTransExpr& rhs )
    {
       BLAZE_FUNCTION_TRACE;
 
+      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DTensTransposer<MT2> tmp( ~lhs, rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       smpSchurAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -739,7 +883,7 @@ class DTensTransExpr
 
    //**Compile time checks*************************************************************************
    /*! \cond BLAZE_INTERNAL */
-   BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( MT );
+   BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( MT );
 //    BLAZE_CONSTRAINT_MUST_BE_TENSOR_WITH_STORAGE_ORDER( MT, !SO );
    /*! \endcond */
    //**********************************************************************************************
@@ -765,22 +909,23 @@ class DTensTransExpr
 // This function returns an expression representing the transpose of the given dense tensor:
 
    \code
-   blaze::DynamicTensor<double> A;
-   blaze::DynamicTensor<double,> B;
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
    // ... Resizing and initialization
    B = trans<2UL, 0UL, 1UL>( A );      // rotate tensor
    \endcode
 */
-template< size_t O            // Mapping index for page dimension
+template< size_t P            // Mapping index for quat dimension
+        , size_t O            // Mapping index for page dimension
         , size_t M            // Mapping index for row dimension
         , size_t N            // Mapping index for column dimension
         , typename MT         // Type of the target dense tensor
         , typename ... RTAs>  // Runtime arguments
-inline decltype(auto) trans( const DenseTensor<MT>& dm, RTAs... args )
+inline decltype(auto) trans( const DenseArray<MT>& dm, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DTensTransExpr<MT, O, M, N>;
+   using ReturnType = const DQuatTransExpr<MT, P, O, M, N>;
    return ReturnType( ~dm, args... );
 }
 //*************************************************************************************************
@@ -796,19 +941,19 @@ inline decltype(auto) trans( const DenseTensor<MT>& dm, RTAs... args )
 // This function returns an expression representing the transpose of the given dense tensor:
 
    \code
-   blaze::DynamicTensor<double> A;
-   blaze::DynamicTensor<double,> B;
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
    // ... Resizing and initialization
    B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
    \endcode
 */
 template< typename MT         // Type of the target dense tensor
         , typename ... RTAs>  // Runtime arguments
-inline decltype(auto) trans( const DenseTensor<MT>& dm, RTAs... args )
+inline decltype(auto) trans( const DenseArray<MT>& dm, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DTensTransExpr<MT>;
+   using ReturnType = const DQuatTransExpr<MT>;
    return ReturnType( ~dm, args... );
 }
 //*************************************************************************************************
@@ -824,8 +969,8 @@ inline decltype(auto) trans( const DenseTensor<MT>& dm, RTAs... args )
 // This function returns an expression representing the transpose of the given dense tensor:
 
    \code
-   blaze::DynamicTensor<double> A;
-   blaze::DynamicTensor<double,> B;
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
    // ... Resizing and initialization
    B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
    \endcode
@@ -833,11 +978,11 @@ inline decltype(auto) trans( const DenseTensor<MT>& dm, RTAs... args )
 template< typename MT         // Type of the target dense tensor
         , typename T          // Type of the element indices
         , typename ... RTAs>  // Runtime arguments
-inline decltype(auto) trans( const DenseTensor<MT>& dm, const T* indices, size_t n, RTAs... args )
+inline decltype(auto) trans( const DenseArray<MT>& dm, const T* indices, size_t n, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DTensTransExpr<MT>;
+   using ReturnType = const DQuatTransExpr<MT>;
    return ReturnType( ~dm, indices, n, args... );
 }
 //*************************************************************************************************
@@ -853,8 +998,8 @@ inline decltype(auto) trans( const DenseTensor<MT>& dm, const T* indices, size_t
 // This function returns an expression representing the transpose of the given dense tensor:
 
    \code
-   blaze::DynamicTensor<double> A;
-   blaze::DynamicTensor<double,> B;
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
    // ... Resizing and initialization
    B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
    \endcode
@@ -862,7 +1007,7 @@ inline decltype(auto) trans( const DenseTensor<MT>& dm, const T* indices, size_t
 template< typename MT         // Type of the target dense tensor
         , size_t... Is        // Element indices
         , typename ... RTAs>  // Runtime arguments
-inline decltype(auto) trans( const DenseTensor<MT>& dm, std::index_sequence<Is...> indices, RTAs... args )
+inline decltype(auto) trans( const DenseArray<MT>& dm, std::index_sequence<Is...> indices, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -881,8 +1026,8 @@ inline decltype(auto) trans( const DenseTensor<MT>& dm, std::index_sequence<Is..
 // This function returns an expression representing the transpose of the given dense tensor:
 
    \code
-   blaze::DynamicTensor<double> A;
-   blaze::DynamicTensor<double,> B;
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
    // ... Resizing and initialization
    B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
    \endcode
@@ -890,7 +1035,7 @@ inline decltype(auto) trans( const DenseTensor<MT>& dm, std::index_sequence<Is..
 template< typename MT         // Type of the target dense tensor
         , typename T          // Type of the element indices
         , typename ... RTAs>  // Runtime arguments
-inline decltype(auto) trans( const DenseTensor<MT>& dm, std::initializer_list<T> indices, RTAs... args )
+inline decltype(auto) trans( const DenseArray<MT>& dm, std::initializer_list<T> indices, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -921,22 +1066,23 @@ inline decltype(auto) trans( const DenseTensor<MT>& dm, std::initializer_list<T>
 // transpose dense tensor:
 
    \code
-   blaze::DynamicTensor<double> A, B;
+   blaze::DynamicArray<double> A, B;
    // ... Resizing and initialization
    B = trans<2UL, 0UL, 1UL>( trans( A ) );
    \endcode
 */
-template< size_t O               // Mapping index for page dimension
+template< size_t P               // Mapping index for quat dimension
+        , size_t O               // Mapping index for page dimension
         , size_t M               // Mapping index for row dimension
         , size_t N               // Mapping index for column dimension
         , typename MT            // Type of the target dense tensor
         , size_t... CTAs         // Compile time arguments of source
         , typename ... RTAs>     // Runtime arguments
-inline decltype(auto) trans( const DTensTransExpr<MT, CTAs...>& dm, RTAs... args )
+inline decltype(auto) trans( const DQuatTransExpr<MT, CTAs...>& dm, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DTensTransExpr<MT, O, M, N>;
+   using ReturnType = const DQuatTransExpr<MT, P, O, M, N>;
    return ReturnType( ~dm, args... );
 }
 /*! \endcond */
@@ -956,7 +1102,7 @@ inline decltype(auto) trans( const DTensTransExpr<MT, CTAs...>& dm, RTAs... args
 // transpose dense tensor:
 
    \code
-   blaze::DynamicTensor<double> A, B;
+   blaze::DynamicArray<double> A, B;
    // ... Resizing and initialization
    B = trans( trans( A ), { 2UL, 0UL, 1UL } );
    \endcode
@@ -964,11 +1110,11 @@ inline decltype(auto) trans( const DTensTransExpr<MT, CTAs...>& dm, RTAs... args
 template< typename MT            // Type of the target dense tensor
         , size_t... CTAs         // Compile time arguments of source
         , typename ... RTAs >     // Runtime arguments
-inline decltype(auto) trans( const DTensTransExpr<MT, CTAs...>& dm, RTAs... args )
+inline decltype(auto) trans( const DQuatTransExpr<MT, CTAs...>& dm, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DTensTransExpr<MT, CTAs...>;
+   using ReturnType = const DQuatTransExpr<MT, CTAs...>;
    return ReturnType( ~dm, args... );
 }
 /*! \endcond */
@@ -990,7 +1136,7 @@ inline decltype(auto) trans( const DTensTransExpr<MT, CTAs...>& dm, RTAs... args
 template< typename MT  // Type of the left-hand side dense tensor
         , typename ST  // Type of the right-hand side scalar value
         , typename ... RTAs >     // Runtime arguments
-inline decltype(auto) trans( const DTensScalarMultExpr<MT,ST>& dm, RTAs... args )
+inline decltype(auto) trans( const DArrScalarMultExpr<MT,ST>& dm, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
@@ -1011,7 +1157,7 @@ inline decltype(auto) trans( const DTensScalarMultExpr<MT,ST>& dm, RTAs... args 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct HasConstDataAccess< DTensTransExpr<MT> >
+struct HasConstDataAccess< DQuatTransExpr<MT> >
    : public HasConstDataAccess<MT>
 {};
 /*! \endcond */
@@ -1029,7 +1175,7 @@ struct HasConstDataAccess< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsAligned< DTensTransExpr<MT> >
+struct IsAligned< DQuatTransExpr<MT> >
    : public IsAligned<MT>
 {};
 /*! \endcond */
@@ -1047,7 +1193,7 @@ struct IsAligned< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsPadded< DTensTransExpr<MT> >
+struct IsPadded< DQuatTransExpr<MT> >
    : public IsPadded<MT>
 {};
 /*! \endcond */
@@ -1065,7 +1211,7 @@ struct IsPadded< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsSymmetric< DTensTransExpr<MT> >
+struct IsSymmetric< DQuatTransExpr<MT> >
    : public IsSymmetric<MT>
 {};
 /*! \endcond */
@@ -1083,7 +1229,7 @@ struct IsSymmetric< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsHermitian< DTensTransExpr<MT> >
+struct IsHermitian< DQuatTransExpr<MT> >
    : public IsHermitian<MT>
 {};
 /*! \endcond */
@@ -1101,7 +1247,7 @@ struct IsHermitian< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsLower< DTensTransExpr<MT> >
+struct IsLower< DQuatTransExpr<MT> >
    : public IsUpper<MT>
 {};
 /*! \endcond */
@@ -1119,7 +1265,7 @@ struct IsLower< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsUniLower< DTensTransExpr<MT> >
+struct IsUniLower< DQuatTransExpr<MT> >
    : public IsUniUpper<MT>
 {};
 /*! \endcond */
@@ -1137,7 +1283,7 @@ struct IsUniLower< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsStrictlyLower< DTensTransExpr<MT> >
+struct IsStrictlyLower< DQuatTransExpr<MT> >
    : public IsStrictlyUpper<MT>
 {};
 /*! \endcond */
@@ -1155,7 +1301,7 @@ struct IsStrictlyLower< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsUpper< DTensTransExpr<MT> >
+struct IsUpper< DQuatTransExpr<MT> >
    : public IsLower<MT>
 {};
 /*! \endcond */
@@ -1173,7 +1319,7 @@ struct IsUpper< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsUniUpper< DTensTransExpr<MT> >
+struct IsUniUpper< DQuatTransExpr<MT> >
    : public IsUniLower<MT>
 {};
 /*! \endcond */
@@ -1191,7 +1337,7 @@ struct IsUniUpper< DTensTransExpr<MT> >
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
 template< typename MT > // Type of the target dense tensor
-struct IsStrictlyUpper< DTensTransExpr<MT> >
+struct IsStrictlyUpper< DQuatTransExpr<MT> >
    : public IsStrictlyLower<MT>
 {};
 /*! \endcond */

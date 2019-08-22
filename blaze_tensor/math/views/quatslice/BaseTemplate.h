@@ -69,7 +69,7 @@
 #include <blaze_tensor/math/expressions/ArrScalarDivExpr.h>
 #include <blaze_tensor/math/expressions/ArrScalarMultExpr.h>
 // #include <blaze_tensor/math/expressions/ArrSerialExpr.h>
-// #include <blaze_tensor/math/expressions/ArrTransExpr.h>
+#include <blaze_tensor/math/expressions/QuatTransExpr.h>
 #include <blaze_tensor/math/typetraits/IsDenseTensor.h>
 #include <blaze_tensor/math/typetraits/IsRowMajorTensor.h>
 

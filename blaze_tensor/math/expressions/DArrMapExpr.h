@@ -2216,11 +2216,11 @@ inline decltype(auto) conj( const DArrMapExpr<MT,Conj>& dm )
 template< typename MT         // Type of the dense array
         , typename Conj       // Type of the custom operation
         , size_t ... CTAs>  // Compile time arguments
-inline decltype(auto) conj( const DTensTransExpr<DArrMapExpr<MT,Conj>, CTAs... >& dm )
+inline decltype(auto) conj( const DQuatTransExpr<DArrMapExpr<MT,Conj>, CTAs... >& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DTensTransExpr<MT,CTAs...>;
+   using ReturnType = const DQuatTransExpr<MT,CTAs...>;
    return ReturnType( dm.operand().operand(), (~dm).idces() );
 }
 /*! \endcond */
