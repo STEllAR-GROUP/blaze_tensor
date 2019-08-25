@@ -51,6 +51,7 @@
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/expressions/DenseArray.h>
 #include <blaze_tensor/math/SMP.h>
+#include <blaze_tensor/math/traits/QuatSliceTrait.h>
 #include <blaze_tensor/math/typetraits/IsDenseArray.h>
 #include <blaze_tensor/math/typetraits/IsNdArray.h>
 
@@ -3680,6 +3681,25 @@ inline void swap( CustomArray<N,Type,AF,PF,RT>& a, CustomArray<N,Type,AF,PF,RT>&
 {
    a.swap( b );
 }
+//*************************************************************************************************
+
+
+
+
+//=================================================================================================
+//
+//  QUATSLICETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename ET, bool AF, bool PF, typename RT, size_t I >
+struct QuatSliceTraitEval2< CustomArray< 4, ET, AF, PF, RT >, I >
+{
+   using Type = DynamicTensor< ET >;
+};
+/*! \endcond */
 //*************************************************************************************************
 
 

@@ -885,7 +885,7 @@ inline typename DynamicArray<N, Type>::Reference
    BLAZE_STATIC_ASSERT( N == sizeof...( dims ) );
 
 #if defined(BLAZE_USER_ASSERTION)
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
 
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
@@ -918,7 +918,7 @@ inline typename DynamicArray<N, Type>::ConstReference
    BLAZE_STATIC_ASSERT( N == sizeof...( dims ) );
 
 #if defined(BLAZE_USER_ASSERTION)
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
 
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
@@ -1005,7 +1005,7 @@ inline typename DynamicArray<N, Type>::Reference
 {
    BLAZE_STATIC_ASSERT( N == sizeof...( dims ) );
 
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
 
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       if( indices[N - i - 1] >= dim ) {
@@ -1038,7 +1038,7 @@ inline typename DynamicArray<N, Type>::ConstReference
 {
    BLAZE_STATIC_ASSERT( N == sizeof...( dims ) );
 
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
 
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       if( indices[N - i - 1] >= dim ) {
@@ -2426,7 +2426,7 @@ inline std::array< size_t, N > DynamicArray<N, Type>::initDimensions( Dims... di
    BLAZE_STATIC_ASSERT( N == sizeof...( dims ) );
 
    // the last given dimension is always the lowest
-   const size_t indices[] = { dims... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
 
    std::array< size_t, N > result;
    for( size_t i = 0; i != N; ++i ) {
@@ -2472,7 +2472,7 @@ inline size_t DynamicArray<N, Type>::row_index( size_t i, Dims... dims ) const n
 {
    BLAZE_STATIC_ASSERT( N - 2 == sizeof...( dims ) );
 
-   size_t indices[] = { static_cast<size_t>(dims)..., i, 0UL };
+   const size_t indices[] = { static_cast<size_t>(dims)..., i, 0UL };
 
    size_t idx = 0UL;
    for( size_t i = N - 1; i > 1; --i ) {
@@ -2503,7 +2503,7 @@ inline size_t DynamicArray<N, Type>::index( Dims... dims ) const noexcept
 {
    BLAZE_STATIC_ASSERT( N == sizeof...( dims ) );
 
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
 
    size_t idx = 0UL;
    for( size_t i = N - 1; i > 1; --i ) {
@@ -2982,7 +2982,7 @@ BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
@@ -3023,7 +3023,7 @@ BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
@@ -3093,7 +3093,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
@@ -3134,7 +3134,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
@@ -3174,7 +3174,7 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   size_t indices[] = { size_t(dims)... };
+   const size_t indices[] = { static_cast<size_t>(dims)... };
    ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
@@ -4035,17 +4035,17 @@ struct DivTraitEval2< DynamicArray<N, ET1>, T2
 
 //=================================================================================================
 //
-//  ARRAYSLICETRAIT SPECIALIZATIONS
+//  QUATSLICETRAIT SPECIALIZATIONS
 //
 //=================================================================================================
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-//template< size_t M, size_t N, typename ET, size_t I >
-//struct ArraySliceTraitEval2< M, DynamicArray<N, ET>, I >
-//{
-//   using Type = DynamicArray< N - 1, ET >;
-//};
+template< typename ET, size_t I >
+struct QuatSliceTraitEval2< DynamicArray<4, ET>, I >
+{
+   using Type = DynamicTensor< ET >;
+};
 /*! \endcond */
 //*************************************************************************************************
 
