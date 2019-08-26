@@ -373,26 +373,15 @@ class DQuatTransExpr
    // \return The number of columns of the array.
    */
    template< size_t Dim >
-   size_t dimension() const noexcept;
-
-   template<>
-   inline size_t dimension<0>() const noexcept {
-      return columns();
-   }
-
-   template< >
-   inline size_t dimension<1>() const noexcept {
-      return rows();
-   }
-
-   template< >
-   inline size_t dimension<2>() const noexcept {
-      return pages();
-   }
-
-   template< >
-   inline size_t dimension<3>() const noexcept {
-      return quats();
+   size_t dimension() const noexcept {
+     if(Dim == 0)
+       return columns();
+     else if(Dim == 1)
+       return rows();
+     else if(Dim == 2)
+       return pages();
+     else
+       return quats();
    }
    //**********************************************************************************************
 
