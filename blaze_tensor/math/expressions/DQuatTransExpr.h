@@ -81,6 +81,7 @@
 #include <blaze_tensor/math/expressions/DQuatTransExprData.h>
 #include <blaze_tensor/math/expressions/DQuatTransposer.h>
 #include <blaze_tensor/math/expressions/QuatTransExpr.h>
+#include <blaze_tensor/math/traits/QuatSliceTrait.h>
 
 
 namespace blaze {
@@ -1134,6 +1135,24 @@ inline decltype(auto) trans( const DArrScalarMultExpr<MT,ST>& dm, RTAs... args )
 /*! \endcond */
 //*************************************************************************************************
 
+
+
+
+//=================================================================================================
+//
+//  QUATSLICETRAIT SPECIALIZATIONS
+//
+//=================================================================================================
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+template< typename ET, size_t... CTAs, size_t I >
+struct QuatSliceTraitEval2< DQuatTransExpr<ET, CTAs...>, I >
+{
+   using Type = QuatSliceTrait_t< ET >;
+};
+/*! \endcond */
+//*************************************************************************************************
 
 
 
