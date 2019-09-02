@@ -960,7 +960,7 @@ inline ElementType_t<MT> darrayreduce( const DenseArray<MT>& dm, OP op )
 
    BLAZE_INTERNAL_ASSERT( tmp.dimensions() == (~dm).dimensions(), "Invalid number of elements" );
 
-   ET redux{};
+   ET redux = ( ~dm )( dims );   // start with first element
 
    ArrayForEachGrouped( ( ~dm ).dimensions(),
       [&]( std::array< size_t, N > const& dims ) {
