@@ -962,10 +962,12 @@ inline ElementType_t<MT> darrayreduce( const DenseArray<MT>& dm, OP op )
 
    ET redux = ( ~dm )( dims );   // start with first element
 
-   ArrayForEachGrouped( ( ~dm ).dimensions(),
+   std::array< size_t, N > starts_with{1};
+   ArrayForEachGroupedStartsWith( ( ~dm ).dimensions(),
       [&]( std::array< size_t, N > const& dims ) {
          redux = op( redux, tmp( dims ) );
-      } );
+      },
+      starts_with );
 
    return redux;
 }
