@@ -178,7 +178,7 @@ class DQuatTransExpr
    using Iterator = If_t< IsConst_v<MT>, ConstIterator, GetIterator_t<MT> >;
 
    //! Composite data type of the dense tensor expression.
-   using Operand = If_t< IsExpression_v<MT>, const MT, const MT& >;
+   using Operand = If_t< IsExpression_v<MT>, MT, MT& >;
    //**********************************************************************************************
 
    //**Utility functions***************************************************************************
@@ -215,10 +215,19 @@ class DQuatTransExpr
    // \param dm The dense tensor operand of the transposition expression.
    */
    template< typename... RTAs >
-   explicit inline DQuatTransExpr( const MT& dm, RTAs... args ) noexcept
+   explicit inline DQuatTransExpr( MT& dm, RTAs... args ) noexcept
       : DataType( args... )   // Base class initialization
       , dm_( dm )             // Dense tensor of the transposition expression
    {}
+   //**********************************************************************************************
+
+   DQuatTransExpr( const DQuatTransExpr& ) = default;
+
+   //**Destructor**********************************************************************************
+   /*!\name Destructor */
+   //@{
+   ~DQuatTransExpr() = default;
+   //@}
    //**********************************************************************************************
 
    //**Access operator*****************************************************************************
@@ -228,7 +237,7 @@ class DQuatTransExpr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
    */
-   inline ReturnType operator()( size_t l, size_t k, size_t i, size_t j ) const {
+   inline Reference operator()( size_t l, size_t k, size_t i, size_t j ) {
       BLAZE_INTERNAL_ASSERT( l < quats()  , "Invalid quat access index" );
       BLAZE_INTERNAL_ASSERT( k < pages()  , "Invalid page access index" );
       BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index"    );
@@ -244,7 +253,45 @@ class DQuatTransExpr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return The resulting value.
    */
-   inline ReturnType operator()( std::array< size_t, 4UL > dims ) const
+   inline ConstReference operator()( size_t l, size_t k, size_t i, size_t j ) const {
+      BLAZE_INTERNAL_ASSERT( l < quats()  , "Invalid quat access index" );
+      BLAZE_INTERNAL_ASSERT( k < pages()  , "Invalid page access index" );
+      BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( j < columns()   , "Invalid column access index" );
+      return dm_( reverse_quat(l, k, i, j), reverse_page(l, k, i, j), reverse_row(l, k, i, j), reverse_column(l, k, i, j) );
+   }
+   //**********************************************************************************************
+
+   //**Access operator*****************************************************************************
+   /*!\brief 4D-access to the array elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   */
+   inline Reference operator()( std::array< size_t, 4UL > dims )
+   {
+      size_t j = dims[0];
+      size_t i = dims[1];
+      size_t k = dims[2];
+      size_t l = dims[3];
+
+      BLAZE_INTERNAL_ASSERT( l < quats()  , "Invalid quat access index" );
+      BLAZE_INTERNAL_ASSERT( k < pages()  , "Invalid page access index" );
+      BLAZE_INTERNAL_ASSERT( i < rows(), "Invalid row access index"    );
+      BLAZE_INTERNAL_ASSERT( j < columns()   , "Invalid column access index" );
+      return dm_( reverse_quat(l, k, i, j), reverse_page(l, k, i, j), reverse_row(l, k, i, j), reverse_column(l, k, i, j) );
+   }
+   //**********************************************************************************************
+
+   //**Access operator*****************************************************************************
+   /*!\brief 4D-access to the array elements.
+   //
+   // \param i Access index for the row. The index has to be in the range \f$[0..M-1]\f$.
+   // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
+   // \return The resulting value.
+   */
+   inline ConstReference operator()( std::array< size_t, 4UL > dims ) const
    {
       size_t j = dims[0];
       size_t i = dims[1];
@@ -315,6 +362,31 @@ class DQuatTransExpr
    }
    //**********************************************************************************************
 
+   //*************************************************************************************************
+   /*! \cond BLAZE_INTERNAL */
+   /*!\brief Returns the minimum capacity of the pageslice.
+   //
+   // \return The minimum capacity of the pageslice.
+   //
+   // This function returns the minimum capacity of the pageslice, which corresponds to the current size
+   // plus padding.
+   */
+   inline size_t spacing() const noexcept {
+      return dm_.spacing();
+   }
+   /*! \endcond */
+   //**********************************************************************************************
+
+   //**Low-level data access***********************************************************************
+   /*!\brief Low-level data access to the tensor elements.
+   //
+   // \return Pointer to the internal element storage.
+   */
+   inline ElementType* data() noexcept {
+      return dm_.data();
+   }
+   //**********************************************************************************************
+
    //**Low-level data access***********************************************************************
    /*!\brief Low-level data access to the tensor elements.
    //
@@ -322,6 +394,26 @@ class DQuatTransExpr
    */
    inline const ElementType* data() const noexcept {
       return dm_.data();
+   }
+   //**********************************************************************************************
+
+   //**Low-level data access***********************************************************************
+   /*!\brief Low-level data access to the tensor elements.
+   //
+   // \return Pointer to the internal element storage.
+   */
+   inline ElementType* data( size_t i, size_t l, size_t k ) noexcept {
+      return dm_.data( reverse_row(l, k, i, 0), reverse_quat(l, k, i, 0), reverse_page(l, k, i, 0) );
+   }
+   //**********************************************************************************************
+
+   //**Low-level data access***********************************************************************
+   /*!\brief Low-level data access to the tensor elements.
+   //
+   // \return Pointer to the internal element storage.
+   */
+   inline const ElementType* data( size_t i, size_t l, size_t k ) const noexcept {
+      return dm_.data( reverse_row(l, k, i, 0), reverse_quat(l, k, i, 0), reverse_page(l, k, i, 0) );
    }
    //**********************************************************************************************
 
@@ -934,6 +1026,70 @@ inline decltype(auto) trans( const DenseArray<MT>& dm, RTAs... args )
    blaze::DynamicArray<double> A;
    blaze::DynamicArray<double,> B;
    // ... Resizing and initialization
+   B = trans<2UL, 0UL, 1UL>( A );      // rotate tensor
+   \endcode
+*/
+template< size_t P            // Mapping index for quat dimension
+        , size_t O            // Mapping index for page dimension
+        , size_t M            // Mapping index for row dimension
+        , size_t N            // Mapping index for column dimension
+        , typename MT         // Type of the target dense tensor
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>& dm, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = DQuatTransExpr<MT, P, O, M, N>;
+   return ReturnType( ~dm, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
+   B = trans<2UL, 0UL, 1UL>( A );      // rotate tensor
+   \endcode
+*/
+template< size_t P            // Mapping index for quat dimension
+        , size_t O            // Mapping index for page dimension
+        , size_t M            // Mapping index for row dimension
+        , size_t N            // Mapping index for column dimension
+        , typename MT         // Type of the target dense tensor
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>&& dm, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = DQuatTransExpr<MT, P, O, M, N>;
+   return ReturnType( ~dm, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
    B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
    \endcode
 */
@@ -944,6 +1100,62 @@ inline decltype(auto) trans( const DenseArray<MT>& dm, RTAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DQuatTransExpr<MT>;
+   return ReturnType( ~dm, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
+   B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
+   \endcode
+*/
+template< typename MT         // Type of the target dense tensor
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>& dm, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = DQuatTransExpr<MT>;
+   return ReturnType( ~dm, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
+   B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
+   \endcode
+*/
+template< typename MT         // Type of the target dense tensor
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>&& dm, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = DQuatTransExpr<MT>;
    return ReturnType( ~dm, args... );
 }
 //*************************************************************************************************
@@ -995,6 +1207,64 @@ inline decltype(auto) trans( const DenseArray<MT>& dm, const T* indices, size_t 
    \endcode
 */
 template< typename MT         // Type of the target dense tensor
+        , typename T          // Type of the element indices
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>& dm, const T* indices, size_t n, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = DQuatTransExpr<MT>;
+   return ReturnType( ~dm, indices, n, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
+   B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
+   \endcode
+*/
+template< typename MT         // Type of the target dense tensor
+        , typename T          // Type of the element indices
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>&& dm, const T* indices, size_t n, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   using ReturnType = DQuatTransExpr<MT>;
+   return ReturnType( ~dm, indices, n, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
+   B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
+   \endcode
+*/
+template< typename MT         // Type of the target dense tensor
         , size_t... Is        // Element indices
         , typename ... RTAs>  // Runtime arguments
 inline decltype(auto) trans( const DenseArray<MT>& dm, std::index_sequence<Is...> indices, RTAs... args )
@@ -1023,9 +1293,121 @@ inline decltype(auto) trans( const DenseArray<MT>& dm, std::index_sequence<Is...
    \endcode
 */
 template< typename MT         // Type of the target dense tensor
+        , size_t... Is        // Element indices
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>& dm, std::index_sequence<Is...> indices, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans<Is...>( ~dm, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
+   B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
+   \endcode
+*/
+template< typename MT         // Type of the target dense tensor
+        , size_t... Is        // Element indices
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>&& dm, std::index_sequence<Is...> indices, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans<Is...>( ~dm, args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
+   B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
+   \endcode
+*/
+template< typename MT         // Type of the target dense tensor
         , typename T          // Type of the element indices
         , typename ... RTAs>  // Runtime arguments
 inline decltype(auto) trans( const DenseArray<MT>& dm, std::initializer_list<T> indices, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( ~dm, indices.begin(), indices.size(), args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
+   B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
+   \endcode
+*/
+template< typename MT         // Type of the target dense tensor
+        , typename T          // Type of the element indices
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>& dm, std::initializer_list<T> indices, RTAs... args )
+{
+   BLAZE_FUNCTION_TRACE;
+
+   return trans( ~dm, indices.begin(), indices.size(), args... );
+}
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*!\brief Calculation of the transpose of the given dense tensor.
+// \ingroup dense_tensor
+//
+// \param dm The dense tensor to be transposed.
+// \return The transpose of the tensor.
+//
+// This function returns an expression representing the transpose of the given dense tensor:
+
+   \code
+   blaze::DynamicArray<double> A;
+   blaze::DynamicArray<double,> B;
+   // ... Resizing and initialization
+   B = trans( A, { 2UL, 0UL, 1UL } );     // rotate tensor
+   \endcode
+*/
+template< typename MT         // Type of the target dense tensor
+        , typename T          // Type of the element indices
+        , typename ... RTAs>  // Runtime arguments
+inline decltype(auto) trans( DenseArray<MT>&& dm, std::initializer_list<T> indices, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
