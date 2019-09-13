@@ -926,7 +926,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::row_index( size_t i, Dims... dims ) 
 {
    BLAZE_STATIC_ASSERT( N - 2 == sizeof...( dims ) );
 
-   size_t indices[] = { dims..., i, 0 };
+   size_t indices[] = { size_t(dims)..., i, 0 };
 
    size_t idx = 0UL;
    for( size_t i = N - 1; i > 1; --i ) {
