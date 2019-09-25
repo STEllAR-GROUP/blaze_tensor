@@ -57,6 +57,31 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 # Add cmake directory
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
+# Import Blaze and "link" to BlazeTensor
+find_package(blaze REQUIRED NO_CMAKE_PACKAGE_REGISTRY)
+
+# setup HPX, if needed
+get_target_property(blaze_parallelization_mode blaze::blaze INTERFACE_COMPILE_DEFINITIONS)
+if(
+   (blaze_parallelization_mode AND "${blaze_parallelization_mode}" STREQUAL "BLAZE_USE_HPX_THREADS")
+   OR BLAZETENSOR_USE_HPX_THREADS)
+
+  find_package(HPX REQUIRED NO_CMAKE_PACKAGE_REGISTRY)
+
+  # Force using HPX
+  if(BLAZETENSOR_USE_HPX_THREADS)
+    add_compile_definitions(BLAZE_USE_HPX_THREADS)
+  endif()
+
+  # propagate the C++ standard used by HPX to this library
+  if(HPX_CXX_STANDARD)
+    if("${HPX_CXX_STANDARD}" STREQUAL "17" OR
+       "${HPX_CXX_STANDARD}" STREQUAL "2a")
+      set(CMAKE_CXX_STANDARD 17)
+    endif()
+  endif()
+endif()
+
 # find out about Git commit hash
 include(BlazeTensor_GitCommit)
 message(STATUS "Configuring BlazeTensor version ${PROJECT_VERSION}")
@@ -71,32 +96,17 @@ set(SOURCE_FILES
 )
 
 target_sources(BlazeTensor INTERFACE $<BUILD_INTERFACE:${SOURCE_FILES}>)
-
+target_link_libraries(BlazeTensor INTERFACE blaze::blaze)
+if(BLAZETENSOR_USE_HPX_THREADS)
+  target_include_directories(BlazeTensor INTERFACE ${HPX_INCLUDE_DIRS})
+  target_link_libraries(BlazeTensor INTERFACE ${HPX_LIBRARIES})
+endif()
 target_include_directories(
    BlazeTensor
       INTERFACE
          $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>
          $<INSTALL_INTERFACE:include>)
 
-# Import Blaze and "link" to BlazeTensor
-find_package(blaze REQUIRED NO_CMAKE_PACKAGE_REGISTRY)
-target_link_libraries(BlazeTensor INTERFACE blaze::blaze)
-
-# setup HPX, if needed
-get_target_property(blaze_parallelization_mode blaze::blaze INTERFACE_COMPILE_DEFINITIONS)
-if(
-   (blaze_parallelization_mode AND "${blaze_parallelization_mode}" STREQUAL "BLAZE_USE_HPX_THREADS")
-   OR BLAZETENSOR_USE_HPX_THREADS)
-
-   find_package(HPX REQUIRED NO_CMAKE_PACKAGE_REGISTRY)
-   target_include_directories(BlazeTensor INTERFACE ${HPX_INCLUDE_DIRS})
-   target_link_libraries(BlazeTensor INTERFACE ${HPX_LIBRARIES})
-
-   # Force using HPX
-   if(BLAZETENSOR_USE_HPX_THREADS)
-     add_compile_definitions(BLAZE_USE_HPX_THREADS)
-   endif()
-endif()
 
 include(CMakePackageConfigHelpers)
 
