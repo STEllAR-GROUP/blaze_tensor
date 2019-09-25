@@ -377,6 +377,20 @@ class DQuatTransExpr
    /*! \endcond */
    //**********************************************************************************************
 
+   //*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Reset to the default initial values.
+//
+// \return void
+*/
+
+inline void reset(size_t i, size_t l, size_t k)
+{
+   dm_.reset( i, l, k );
+}
+/*! \endcond */
+//*************************************************************************************************
+
    //**Low-level data access***********************************************************************
    /*!\brief Low-level data access to the tensor elements.
    //
@@ -423,8 +437,30 @@ class DQuatTransExpr
    // \param i The row/column index.
    // \return Iterator to the first non-zero element of row/column \a i.
    */
+   inline Iterator begin( size_t i, size_t l, size_t k )  {
+      return Iterator( dm_.begin( reverse_row(l, k, i, 0), reverse_quat(l, k, i, 0), reverse_page(l, k, i, 0) ) );
+   }
+   //**********************************************************************************************
+
+   //**Begin function******************************************************************************
+   /*!\brief Returns an iterator to the first non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator to the first non-zero element of row/column \a i.
+   */
    inline ConstIterator begin( size_t i, size_t l, size_t k ) const {
       return ConstIterator( dm_.begin( reverse_row(l, k, i, 0), reverse_quat(l, k, i, 0), reverse_page(l, k, i, 0) ) );
+   }
+   //**********************************************************************************************
+
+   //**End function********************************************************************************
+   /*!\brief Returns an iterator just past the last non-zero element of row/column \a i.
+   //
+   // \param i The row/column index.
+   // \return Iterator just past the last non-zero element of row/column \a i.
+   */
+   inline Iterator end( size_t i, size_t l, size_t k ) {
+      return Iterator( dm_.end( reverse_row(l, k, i, 0), reverse_quat(l, k, i, 0), reverse_page(l, k, i, 0) ) );
    }
    //**********************************************************************************************
 
