@@ -1301,7 +1301,6 @@ template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline void QuatSlice<AT,CRAs...>::reset( size_t k, size_t i )
 {
-   std::cout << quat() << "\n***********\n";
    quaternion_.reset( i, quat(), k );
 }
 /*! \endcond */
