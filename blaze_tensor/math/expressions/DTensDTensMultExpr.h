@@ -717,7 +717,7 @@ class DTensDTensMultExpr
    template< typename MT3    // Type of the left-hand side target tensor
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5 >  // Type of the right-hand side tensor operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAssignKernel( C, A, B );
@@ -1293,7 +1293,7 @@ class DTensDTensMultExpr
    template< typename MT3    // Type of the left-hand side target tensor
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5 >  // Type of the right-hand side tensor operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAssignKernel( C, A, B );
@@ -1351,7 +1351,7 @@ class DTensDTensMultExpr
    template< typename MT3    // Type of the left-hand side target tensor
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5 >  // Type of the right-hand side tensor operand
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
+   static inline EnableIf_t< !UseBlasKernel_v<MT3,MT4,MT5> >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeAssignKernel( C, A, B );
@@ -1668,7 +1668,7 @@ class DTensDTensMultExpr
    template< typename MT3    // Type of the left-hand side target tensor
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5 >  // Type of the right-hand side tensor operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAddAssignKernel( C, A, B );
@@ -2407,7 +2407,7 @@ class DTensDTensMultExpr
    template< typename MT3    // Type of the left-hand side target tensor
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5 >  // Type of the right-hand side tensor operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultAddAssignKernel( C, A, B );
@@ -2463,7 +2463,7 @@ class DTensDTensMultExpr
    template< typename MT3    // Type of the left-hand side target tensor
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5 >  // Type of the right-hand side tensor operand
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
+   static inline EnableIf_t< !UseBlasKernel_v<MT3,MT4,MT5> >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeAddAssignKernel( C, A, B );
@@ -2794,7 +2794,7 @@ class DTensDTensMultExpr
    template< typename MT3    // Type of the left-hand side target tensor
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5 >  // Type of the right-hand side tensor operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultSubAssignKernel( C, A, B );
@@ -3533,7 +3533,7 @@ class DTensDTensMultExpr
    template< typename MT3    // Type of the left-hand side target tensor
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5 >  // Type of the right-hand side tensor operand
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5> >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectDefaultSubAssignKernel( C, A, B );
@@ -3589,7 +3589,7 @@ class DTensDTensMultExpr
    template< typename MT3    // Type of the left-hand side target tensor
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5 >  // Type of the right-hand side tensor operand
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5> >
+   static inline EnableIf_t< !UseBlasKernel_v<MT3,MT4,MT5> >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B )
    {
       selectLargeSubAssignKernel( C, A, B );
@@ -4512,7 +4512,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5    // Type of the right-hand side tensor operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAssignKernel( C, A, B, scalar );
@@ -5220,7 +5220,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5    // Type of the right-hand side tensor operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectLargeAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAssignKernel( C, A, B, scalar );
@@ -5280,7 +5280,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5    // Type of the right-hand side tensor operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< !UseBlasKernel_v<MT3,MT4,MT5,ST2> >
       selectBlasAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeAssignKernel( C, A, B, scalar );
@@ -5568,7 +5568,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5    // Type of the right-hand side tensor operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
@@ -6244,7 +6244,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5    // Type of the right-hand side tensor operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectLargeAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultAddAssignKernel( C, A, B, scalar );
@@ -6300,7 +6300,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5    // Type of the right-hand side tensor operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< !UseBlasKernel_v<MT3,MT4,MT5,ST2> >
       selectBlasAddAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeAddAssignKernel( C, A, B, scalar );
@@ -6590,7 +6590,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5    // Type of the right-hand side tensor operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectSmallSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
@@ -7266,7 +7266,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5    // Type of the right-hand side tensor operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< !UseVectorizedDefaultKernel_v<MT3,MT4,MT5,ST2> >
       selectLargeSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectDefaultSubAssignKernel( C, A, B, scalar );
@@ -7322,7 +7322,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
            , typename MT4    // Type of the left-hand side tensor operand
            , typename MT5    // Type of the right-hand side tensor operand
            , typename ST2 >  // Type of the scalar value
-   static inline DisableIf_t< UseBlasKernel_v<MT3,MT4,MT5,ST2> >
+   static inline EnableIf_t< !UseBlasKernel_v<MT3,MT4,MT5,ST2> >
       selectBlasSubAssignKernel( MT3& C, const MT4& A, const MT5& B, ST2 scalar )
    {
       selectLargeSubAssignKernel( C, A, B, scalar );

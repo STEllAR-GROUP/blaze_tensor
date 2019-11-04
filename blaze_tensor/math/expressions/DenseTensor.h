@@ -44,7 +44,6 @@
 #include <blaze/math/typetraits/HasConstDataAccess.h>
 #include <blaze/math/typetraits/HasMutableDataAccess.h>
 #include <blaze/system/Inline.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
 
@@ -115,7 +114,7 @@ BLAZE_ALWAYS_INLINE size_t spacing( const DenseTensor<TT>& dm ) noexcept;
 // which is represented by \c nullptr.
 */
 template< typename TT > // Type of the tensor
-BLAZE_ALWAYS_INLINE DisableIf_t< HasMutableDataAccess_v<TT>, typename TT::ElementType* >
+BLAZE_ALWAYS_INLINE EnableIf_t< !HasMutableDataAccess_v<TT>, typename TT::ElementType* >
    data_backend( DenseTensor<TT>& dm ) noexcept
 {
    MAYBE_UNUSED( dm );
@@ -179,7 +178,7 @@ BLAZE_ALWAYS_INLINE typename TT::ElementType* data( DenseTensor<TT>& dm ) noexce
 // which is represented by \c nullptr.
 */
 template< typename TT > // Type of the tensor
-BLAZE_ALWAYS_INLINE DisableIf_t< HasConstDataAccess_v<TT>, typename TT::ElementType* >
+BLAZE_ALWAYS_INLINE EnableIf_t< !HasConstDataAccess_v<TT>, typename TT::ElementType* >
    data_backend( const DenseTensor<TT>& dm ) noexcept
 {
    MAYBE_UNUSED( dm );

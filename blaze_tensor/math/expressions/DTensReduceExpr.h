@@ -61,7 +61,6 @@
 #include <blaze/math/views/Check.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/mpl/If.h>
@@ -2668,7 +2667,7 @@ struct DTensReduceExprHelper
 template< typename MT    // Type of the dense tensor
         , typename OP >  // Type of the reduction operation
 inline auto dtensreduce( const DenseTensor<MT>& dm, OP op )
-   -> DisableIf_t< DTensReduceExprHelper<MT,OP>::value, ElementType_t<MT> >
+   -> EnableIf_t< !DTensReduceExprHelper<MT,OP>::value, ElementType_t<MT> >
 {
    using CT = CompositeType_t<MT>;
    using ET = ElementType_t<MT>;

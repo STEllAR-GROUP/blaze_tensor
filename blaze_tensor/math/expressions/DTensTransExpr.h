@@ -102,7 +102,7 @@ template< typename MT,        // Type of the dense tensor
 class DTensTransExpr
    : public TensTransExpr< DenseTensor< DTensTransExpr<MT> > >
    , public DTensTransExprData<CTAs...>
-   , private If< IsComputation_v<MT>, Computation, Transformation >::Type
+   , private If< IsComputation_v<MT> >::template Type< Computation, Transformation >
 {
  private:
    //**Type definitions****************************************************************************

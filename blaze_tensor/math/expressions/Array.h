@@ -51,7 +51,6 @@
 #include <blaze/math/typetraits/IsSymmetric.h>
 #include <blaze/system/Inline.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/MaybeUnused.h>
@@ -1052,7 +1051,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Array<MT>& array, size_t i, size_t k 
 // is thrown.
 */
 template< typename MT > // Type of the array
-BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<MT> >
+BLAZE_ALWAYS_INLINE EnableIf_t< !IsResizable_v<MT> >
    resize_backend( Array<MT>& array, size_t o, size_t m, size_t n, bool preserve )
 {
    MAYBE_UNUSED( preserve );
@@ -1171,7 +1170,7 @@ BLAZE_ALWAYS_INLINE void resize( Array<MT>& array, size_t o, size_t m, size_t n,
 // \return void
 */
 template< typename MT > // Type of the array
-BLAZE_ALWAYS_INLINE DisableIf_t< IsShrinkable_v<MT> >
+BLAZE_ALWAYS_INLINE EnableIf_t< !IsShrinkable_v<MT> >
    shrinkToFit_backend( Array<MT>& array )
 {
    MAYBE_UNUSED( array );
@@ -1770,6 +1769,52 @@ BLAZE_ALWAYS_INLINE void multAssign( Array<TT1>& lhs, const Array<TT2>& rhs )
 */
 template< typename TT > // Type of the array
 BLAZE_ALWAYS_INLINE TT& derestrict( Array<TT>& array )
+{
+   return ~array;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of the top-level view on the given array.
+// \ingroup column
+//
+// \param c The given array.
+// \return Reference to the array without view.
+//
+// This function removes the top-level view on the given array and returns a reference to the
+// unviewed array.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename TT > // Type of the array
+inline decltype(auto) unview( Array<TT>& array )
+{
+   return ~array;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of the top-level view on the given array.
+// \ingroup column
+//
+// \param c The given array.
+// \return Reference to the array without view.
+//
+// This function removes the top-level view on the given array and returns a reference to the
+// unviewed array.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename TT > // Type of the array
+inline decltype(auto) unview( const Array<TT>& array )
 {
    return ~array;
 }

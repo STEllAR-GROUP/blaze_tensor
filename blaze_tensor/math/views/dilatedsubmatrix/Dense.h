@@ -100,7 +100,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
@@ -549,7 +548,7 @@ class DilatedSubmatrix<MT,false,true,CSAs...>
 
    template< typename MT2, bool SO2 >
    inline auto operator+=( const Matrix<MT2,SO2>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
+      -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
 
    template< typename MT2, bool SO2 >
    inline auto operator+=( const Matrix<MT2,SO2>& rhs )
@@ -557,7 +556,7 @@ class DilatedSubmatrix<MT,false,true,CSAs...>
 
    template< typename MT2, bool SO2 >
    inline auto operator-=( const Matrix<MT2,SO2>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
+      -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
 
    template< typename MT2, bool SO2 >
    inline auto operator-=( const Matrix<MT2,SO2>& rhs )
@@ -565,7 +564,7 @@ class DilatedSubmatrix<MT,false,true,CSAs...>
 
    template< typename MT2, bool SO2 >
    inline auto operator%=( const Matrix<MT2,SO2>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
+      -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
 
    template< typename MT2, bool SO2 >
    inline auto operator%=( const Matrix<MT2,SO2>& rhs )
@@ -1291,7 +1290,7 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline auto DilatedSubmatrix<MT,false,true,CSAs...>::operator+=( const Matrix<MT2,SO2>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
+   -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1400,7 +1399,7 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline auto DilatedSubmatrix<MT,false,true,CSAs...>::operator-=( const Matrix<MT2,SO2>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
+   -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1509,7 +1508,7 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO2 >        // Storage order of the right-hand side matrix
 inline auto DilatedSubmatrix<MT,false,true,CSAs...>::operator%=( const Matrix<MT2,SO2>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
+   -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -2882,7 +2881,7 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
 
    template< typename MT2, bool SO >
    inline auto operator+=( const Matrix<MT2,SO>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
+      -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
 
    template< typename MT2, bool SO >
    inline auto operator+=( const Matrix<MT2,SO>& rhs )
@@ -2890,7 +2889,7 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
 
    template< typename MT2, bool SO >
    inline auto operator-=( const Matrix<MT2,SO>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
+      -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
 
    template< typename MT2, bool SO >
    inline auto operator-=( const Matrix<MT2,SO>& rhs )
@@ -2898,7 +2897,7 @@ class DilatedSubmatrix<MT,true,true,CSAs...>
 
    template< typename MT2, bool SO >
    inline auto operator%=( const Matrix<MT2,SO>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
+      -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >;
 
    template< typename MT2, bool SO >
    inline auto operator%=( const Matrix<MT2,SO>& rhs )
@@ -3598,7 +3597,7 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
 inline auto DilatedSubmatrix<MT,true,true,CSAs...>::operator+=( const Matrix<MT2,SO>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
+   -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -3707,7 +3706,7 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO >         // Storage order of the right-hand side matrix
 inline auto DilatedSubmatrix<MT,true,true,CSAs...>::operator-=( const Matrix<MT2,SO>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
+   -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -3816,7 +3815,7 @@ template< typename MT       // Type of the dense matrix
 template< typename MT2      // Type of the right-hand side matrix
         , bool SO  >        // Storage order of the right-hand side matrix
 inline auto DilatedSubmatrix<MT,true,true,CSAs...>::operator%=( const Matrix<MT2,SO>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
+   -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, DilatedSubmatrix& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_MATRIX_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );

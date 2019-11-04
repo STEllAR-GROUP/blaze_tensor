@@ -69,7 +69,6 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/StaticAssert.h>
@@ -4827,7 +4826,7 @@ template< InversionFlag IF  // Inversion algorithm
         , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time subtensor arguments
 inline auto invert( Subtensor<TT,AF,CSAs...>& sm )
-   -> DisableIf_t< HasMutableDataAccess_v<TT> >
+   -> EnableIf_t< !HasMutableDataAccess_v<TT> >
 {
    using RT = ResultType_t< Subtensor<TT,AF,CSAs...> >;
 

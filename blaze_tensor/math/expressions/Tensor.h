@@ -1,4 +1,5 @@
 //=================================================================================================
+//=================================================================================================
 /*!
 //  \file blaze_tensor/math/expressions/Tensor.h
 //  \brief Header file for the Tensor base class
@@ -1287,7 +1288,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Tensor<MT>& tensor, size_t i, size_t 
 // is thrown.
 */
 template< typename MT > // Type of the tensor
-BLAZE_ALWAYS_INLINE DisableIf_t< IsResizable_v<MT> >
+BLAZE_ALWAYS_INLINE EnableIf_t< !IsResizable_v<MT> >
    resize_backend( Tensor<MT>& tensor, size_t o, size_t m, size_t n, bool preserve )
 {
    MAYBE_UNUSED( preserve );
@@ -1406,7 +1407,7 @@ BLAZE_ALWAYS_INLINE void resize( Tensor<MT>& tensor, size_t o, size_t m, size_t 
 // \return void
 */
 template< typename MT > // Type of the tensor
-BLAZE_ALWAYS_INLINE DisableIf_t< IsShrinkable_v<MT> >
+BLAZE_ALWAYS_INLINE EnableIf_t< !IsShrinkable_v<MT> >
    shrinkToFit_backend( Tensor<MT>& tensor )
 {
    MAYBE_UNUSED( tensor );
@@ -2007,6 +2008,52 @@ template< typename TT > // Type of the tensor
 BLAZE_ALWAYS_INLINE TT& derestrict( Tensor<TT>& tensor )
 {
    return ~tensor;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of the top-level view on the given tensor.
+// \ingroup column
+//
+// \param c The given tensor.
+// \return Reference to the tensor without view.
+//
+// This function removes the top-level view on the given tensor and returns a reference to the
+// unviewed tensor.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename TT > // Type of the tensor
+inline decltype(auto) unview( Tensor<TT>& t )
+{
+   return ~t;
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief Removal of the top-level view on the given tensor.
+// \ingroup column
+//
+// \param c The given tensor.
+// \return Reference to the tensor without view.
+//
+// This function removes the top-level view on the given tensor and returns a reference to the
+// unviewed tensor.\n
+// This function must \b NOT be called explicitly! It is used internally for the performance
+// optimized evaluation of expression templates. Calling this function explicitly might result
+// in the violation of invariants, erroneous results and/or in compilation errors.
+*/
+template< typename TT > // Type of the tensor
+inline decltype(auto) unview( const Tensor<TT>& t )
+{
+   return ~t;
 }
 /*! \endcond */
 //*************************************************************************************************
