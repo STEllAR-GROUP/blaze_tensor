@@ -82,7 +82,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
@@ -321,7 +320,7 @@ class PageSlice
    BLAZE_ALWAYS_INLINE void stream( size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline auto assign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT2> >;
+   inline auto assign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< !VectorizedAssign_v<MT2> >;
 
    template< typename MT2 >
    inline auto assign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT2> >;
@@ -329,7 +328,7 @@ class PageSlice
    template< typename MT2 > inline void assign( const DenseMatrix<MT2,columnMajor>&  rhs );
 
    template< typename MT2 >
-   inline auto addAssign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT2> >;
+   inline auto addAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< !VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 >
    inline auto addAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT2> >;
@@ -337,7 +336,7 @@ class PageSlice
    template< typename MT2 > inline void addAssign( const DenseMatrix<MT2,columnMajor>&  rhs );
 
    template< typename MT2 >
-   inline auto subAssign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT2> >;
+   inline auto subAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< !VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 >
    inline auto subAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT2> >;
@@ -345,7 +344,7 @@ class PageSlice
    template< typename MT2 > inline void subAssign( const DenseMatrix<MT2,columnMajor>&  rhs );
 
    template< typename MT2 >
-   inline auto schurAssign( const DenseMatrix<MT2,false>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT2> >;
+   inline auto schurAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< !VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 >
    inline auto schurAssign( const DenseMatrix<MT2,false>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT2> >;
@@ -1646,7 +1645,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 template< typename MT2 >     // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<MT2,false>& rhs )
-   -> DisableIf_t< VectorizedAssign_v<MT2> >
+   -> EnableIf_t< !VectorizedAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid matrix sizes" );
@@ -1784,7 +1783,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 template< typename MT2 >     // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
-   -> DisableIf_t< VectorizedAddAssign_v<MT2> >
+   -> EnableIf_t< !VectorizedAddAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -1922,7 +1921,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 template< typename MT2 >     // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
-   -> DisableIf_t< VectorizedSubAssign_v<MT2> >
+   -> EnableIf_t< !VectorizedSubAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2060,7 +2059,7 @@ template< typename MT       // Type of the tensor
         , size_t... CSAs >  // Compile time pageslice arguments
 template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
-   -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
+   -> EnableIf_t< !VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );

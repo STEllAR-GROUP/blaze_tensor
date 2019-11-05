@@ -72,7 +72,6 @@
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/TypeList.h>
 #include <blaze/util/Types.h>
@@ -222,7 +221,7 @@ class Subtensor<MT,aligned,CSAs...>
 
    template< typename MT2 >
    inline auto operator+=( const Tensor<MT2>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Subtensor& >;
+      -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, Subtensor& >;
 
    template< typename MT2 >
    inline auto operator+=( const Tensor<MT2>& rhs )
@@ -230,7 +229,7 @@ class Subtensor<MT,aligned,CSAs...>
 
    template< typename MT2 >
    inline auto operator-=( const Tensor<MT2>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Subtensor& >;
+      -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, Subtensor& >;
 
    template< typename MT2 >
    inline auto operator-=( const Tensor<MT2>& rhs )
@@ -238,7 +237,7 @@ class Subtensor<MT,aligned,CSAs...>
 
    template< typename MT2 >
    inline auto operator%=( const Tensor<MT2>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Subtensor& >;
+      -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, Subtensor& >;
 
    template< typename MT2 >
    inline auto operator%=( const Tensor<MT2>& rhs )
@@ -360,25 +359,25 @@ class Subtensor<MT,aligned,CSAs...>
    BLAZE_ALWAYS_INLINE void stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT2 >
-   inline auto assign( const DenseTensor<MT2>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT2> >;
+   inline auto assign( const DenseTensor<MT2>& rhs ) -> EnableIf_t< !VectorizedAssign_v<MT2> >;
 
    template< typename MT2 >
    inline auto assign( const DenseTensor<MT2>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline auto addAssign( const DenseTensor<MT2>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT2> >;
+   inline auto addAssign( const DenseTensor<MT2>& rhs ) -> EnableIf_t< !VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 >
    inline auto addAssign( const DenseTensor<MT2>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline auto subAssign( const DenseTensor<MT2>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT2> >;
+   inline auto subAssign( const DenseTensor<MT2>& rhs ) -> EnableIf_t< !VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 >
    inline auto subAssign( const DenseTensor<MT2>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT2> >;
 
    template< typename MT2 >
-   inline auto schurAssign( const DenseTensor<MT2>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT2> >;
+   inline auto schurAssign( const DenseTensor<MT2>& rhs ) -> EnableIf_t< !VectorizedSchurAssign_v<MT2> >;
 
    template< typename MT2 >
    inline auto schurAssign( const DenseTensor<MT2>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT2> >;
@@ -1034,7 +1033,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 template< typename MT2 >     // Type of the right-hand side tensor
 inline auto Subtensor<MT,aligned,CSAs...>::operator+=( const Tensor<MT2>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Subtensor& >
+   -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, Subtensor& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1140,7 +1139,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 template< typename MT2 >     // Type of the right-hand side tensor
 inline auto Subtensor<MT,aligned,CSAs...>::operator-=( const Tensor<MT2>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Subtensor& >
+   -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, Subtensor& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1246,7 +1245,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 template< typename MT2 >     // Type of the right-hand side tensor
 inline auto Subtensor<MT,aligned,CSAs...>::operator%=( const Tensor<MT2>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<MT,MT2>, Subtensor& >
+   -> EnableIf_t< !EnforceEvaluation_v<MT,MT2>, Subtensor& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -2170,7 +2169,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 template< typename MT2 >    // Type of the right-hand side dense tensor
 inline auto Subtensor<MT,aligned,CSAs...>::assign( const DenseTensor<MT2>& rhs )
-   -> DisableIf_t< VectorizedAssign_v<MT2> >
+   -> EnableIf_t< !VectorizedAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2289,7 +2288,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 template< typename MT2 >    // Type of the right-hand side dense tensor
 inline auto Subtensor<MT,aligned,CSAs...>::addAssign( const DenseTensor<MT2>& rhs )
-   -> DisableIf_t< VectorizedAddAssign_v<MT2> >
+   -> EnableIf_t< !VectorizedAddAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2390,7 +2389,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 template< typename MT2 >    // Type of the right-hand side dense tensor
 inline auto Subtensor<MT,aligned,CSAs...>::subAssign( const DenseTensor<MT2>& rhs )
-   -> DisableIf_t< VectorizedSubAssign_v<MT2> >
+   -> EnableIf_t< !VectorizedSubAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
@@ -2491,7 +2490,7 @@ template< typename MT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 template< typename MT2 >    // Type of the right-hand side dense tensor
 inline auto Subtensor<MT,aligned,CSAs...>::schurAssign( const DenseTensor<MT2>& rhs )
-   -> DisableIf_t< VectorizedSchurAssign_v<MT2> >
+   -> EnableIf_t< !VectorizedSchurAssign_v<MT2> >
 {
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );

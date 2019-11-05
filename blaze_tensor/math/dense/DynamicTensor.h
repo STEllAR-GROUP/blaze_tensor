@@ -370,25 +370,25 @@ class DynamicTensor
    BLAZE_ALWAYS_INLINE void stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT >
-   inline auto assign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT> >;
+   inline auto assign( const DenseTensor<MT>& rhs ) -> EnableIf_t< !VectorizedAssign_v<MT> >;
 
    template< typename MT >
    inline auto assign( const DenseTensor<MT>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT> >;
 
    template< typename MT >
-   inline auto addAssign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT> >;
+   inline auto addAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< !VectorizedAddAssign_v<MT> >;
 
    template< typename MT >
    inline auto addAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT> >;
 
    template< typename MT >
-   inline auto subAssign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT> >;
+   inline auto subAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< !VectorizedSubAssign_v<MT> >;
 
    template< typename MT >
    inline auto subAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT> >;
 
    template< typename MT >
-   inline auto schurAssign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT> >;
+   inline auto schurAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< !VectorizedSchurAssign_v<MT> >;
 
    template< typename MT >
    inline auto schurAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT> >;
@@ -2328,7 +2328,7 @@ BLAZE_ALWAYS_INLINE void
 template< typename Type > // Data type of the tensor
 template< typename MT >  // Type of the right-hand side dense tensor
 inline auto DynamicTensor<Type>::assign( const DenseTensor<MT>& rhs )
-   -> DisableIf_t< VectorizedAssign_v<MT> >
+   -> EnableIf_t< !VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2439,7 +2439,7 @@ inline auto DynamicTensor<Type>::assign( const DenseTensor<MT>& rhs )
 template< typename Type > // Data type of the tensor
 template< typename MT >  // Type of the right-hand side dense tensor
 inline auto DynamicTensor<Type>::addAssign( const DenseTensor<MT>& rhs )
-   -> DisableIf_t< VectorizedAddAssign_v<MT> >
+   -> EnableIf_t< !VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2536,7 +2536,7 @@ inline auto DynamicTensor<Type>::addAssign( const DenseTensor<MT>& rhs )
 template< typename Type > // Data type of the tensor
 template< typename MT >  // Type of the right-hand side dense tensor
 inline auto DynamicTensor<Type>::subAssign( const DenseTensor<MT>& rhs )
-   -> DisableIf_t< VectorizedSubAssign_v<MT> >
+   -> EnableIf_t< !VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
@@ -2634,7 +2634,7 @@ inline auto DynamicTensor<Type>::subAssign( const DenseTensor<MT>& rhs )
 template< typename Type > // Data type of the tensor
 template< typename MT >  // Type of the right-hand side dense tensor
 inline auto DynamicTensor<Type>::schurAssign( const DenseTensor<MT>& rhs )
-   -> DisableIf_t< VectorizedSchurAssign_v<MT> >
+   -> EnableIf_t< !VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );

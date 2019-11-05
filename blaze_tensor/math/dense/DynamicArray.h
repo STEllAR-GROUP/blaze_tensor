@@ -445,25 +445,25 @@ class DynamicArray
    BLAZE_ALWAYS_INLINE void stream( const SIMDType& value, Dims... dims ) noexcept;
 
    template< typename MT >
-   inline auto assign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedAssign_v<MT> >*/;
+   inline auto assign( const DenseArray<MT>& rhs ) /*-> EnableIf_t< !VectorizedAssign_v<MT> >*/;
 
    //template< typename MT >
    //inline auto assign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT> >;
 
    template< typename MT >
-   inline auto addAssign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedAddAssign_v<MT> >*/;
+   inline auto addAssign( const DenseArray<MT>& rhs ) /*-> EnableIf_t< !VectorizedAddAssign_v<MT> >*/;
 
    //template< typename MT >
    //inline auto addAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT> >;
 
    template< typename MT >
-   inline auto subAssign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedSubAssign_v<MT> >*/;
+   inline auto subAssign( const DenseArray<MT>& rhs ) /*-> EnableIf_t< !VectorizedSubAssign_v<MT> >*/;
 
    //template< typename MT >
    //inline auto subAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT> >;
 
    template< typename MT >
-   inline auto schurAssign( const DenseArray<MT>& rhs ) /*-> DisableIf_t< VectorizedSchurAssign_v<MT> >*/;
+   inline auto schurAssign( const DenseArray<MT>& rhs ) /*-> EnableIf_t< !VectorizedSchurAssign_v<MT> >*/;
 
    //template< typename MT >
    //inline auto schurAssign( const DenseArray<MT>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT> >;
@@ -3203,7 +3203,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
-   //-> DisableIf_t< VectorizedAssign_v<MT> >
+   //-> EnableIf_t< !VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
@@ -3304,7 +3304,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
-   //-> DisableIf_t< VectorizedAddAssign_v<MT> >
+   //-> EnableIf_t< !VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
@@ -3388,7 +3388,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
-   //-> DisableIf_t< VectorizedSubAssign_v<MT> >
+   //-> EnableIf_t< !VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 
@@ -3473,7 +3473,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
-   //-> DisableIf_t< VectorizedSchurAssign_v<MT> >
+   //-> EnableIf_t< !VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 

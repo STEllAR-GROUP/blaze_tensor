@@ -106,7 +106,7 @@ struct DTensDTensEqualExprHelper
 template< bool RF         // Relaxation flag
         , typename MT1    // Type of the left-hand side dense tensor
         , typename MT2 >  // Type of the right-hand side dense tensor
-inline DisableIf_t< DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
+inline EnableIf_t< !DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
    equal( const DenseTensor<MT1>& lhs, const DenseTensor<MT2>& rhs )
 {
    using CT1 = CompositeType_t<MT1>;

@@ -107,7 +107,7 @@ struct DArrDArrEqualExprHelper
 template< bool RF         // Relaxation flag
         , typename MT1    // Type of the left-hand side dense array
         , typename MT2 >  // Type of the right-hand side dense array
-inline bool //DisableIf_t< DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
+inline bool //EnableIf_t< !DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
    equal( const DenseArray<MT1>& lhs, const DenseArray<MT2>& rhs )
 {
    using CT1 = CompositeType_t<MT1>;

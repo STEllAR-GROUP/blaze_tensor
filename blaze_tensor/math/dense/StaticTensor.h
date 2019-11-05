@@ -93,7 +93,6 @@
 #include <blaze/util/AlignedArray.h>
 #include <blaze/util/AlignmentCheck.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/IntegralConstant.h>
 #include <blaze/util/Memory.h>
@@ -489,7 +488,7 @@ class StaticTensor
    BLAZE_ALWAYS_INLINE void stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename MT >
-   inline auto assign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedAssign_v<MT> >;
+   inline auto assign( const DenseTensor<MT>& rhs ) -> EnableIf_t< !VectorizedAssign_v<MT> >;
 
    template< typename MT >
    inline auto assign( const DenseTensor<MT>& rhs ) -> EnableIf_t< VectorizedAssign_v<MT> >;
@@ -498,7 +497,7 @@ class StaticTensor
 //    template< typename MT > inline void assign( const SparseTensor<MT,!SO>& rhs );
 
    template< typename MT >
-   inline auto addAssign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<MT> >;
+   inline auto addAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< !VectorizedAddAssign_v<MT> >;
 
    template< typename MT >
    inline auto addAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<MT> >;
@@ -507,7 +506,7 @@ class StaticTensor
 //    template< typename MT > inline void addAssign( const SparseTensor<MT,!SO>& rhs );
 
    template< typename MT >
-   inline auto subAssign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<MT> >;
+   inline auto subAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< !VectorizedSubAssign_v<MT> >;
 
    template< typename MT >
    inline auto subAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<MT> >;
@@ -516,7 +515,7 @@ class StaticTensor
 //    template< typename MT > inline void subAssign( const SparseTensor<MT,!SO>& rhs );
 
    template< typename MT >
-   inline auto schurAssign( const DenseTensor<MT>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<MT> >;
+   inline auto schurAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< !VectorizedSchurAssign_v<MT> >;
 
    template< typename MT >
    inline auto schurAssign( const DenseTensor<MT>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<MT> >;
@@ -2657,7 +2656,7 @@ template< typename Type  // Data type of the tensor
         , size_t N >     // Number of columns
 template< typename MT >  // Type of the right-hand side dense tensor
 inline auto StaticTensor<Type,O,M,N>::assign( const DenseTensor<MT>& rhs )
-   -> DisableIf_t< VectorizedAssign_v<MT> >
+   -> EnableIf_t< !VectorizedAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
 
@@ -2789,7 +2788,7 @@ template< typename Type  // Data type of the tensor
         , size_t N >     // Number of columns
 template< typename MT >  // Type of the right-hand side dense tensor
 inline auto StaticTensor<Type,O,M,N>::addAssign( const DenseTensor<MT>& rhs )
-   -> DisableIf_t< VectorizedAddAssign_v<MT> >
+   -> EnableIf_t< !VectorizedAddAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
 
@@ -2938,7 +2937,7 @@ template< typename Type  // Data type of the tensor
         , size_t N >     // Number of columns
 template< typename MT >  // Type of the right-hand side dense tensor
 inline auto StaticTensor<Type,O,M,N>::subAssign( const DenseTensor<MT>& rhs )
-   -> DisableIf_t< VectorizedSubAssign_v<MT> >
+   -> EnableIf_t< !VectorizedSubAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
 
@@ -3086,7 +3085,7 @@ template< typename Type  // Data type of the tensor
         , size_t N >     // Number of columns
 template< typename MT >  // Type of the right-hand side dense tensor
 inline auto StaticTensor<Type,O,M,N>::schurAssign( const DenseTensor<MT>& rhs )
-   -> DisableIf_t< VectorizedSchurAssign_v<MT> >
+   -> EnableIf_t< !VectorizedSchurAssign_v<MT> >
 {
    BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
 

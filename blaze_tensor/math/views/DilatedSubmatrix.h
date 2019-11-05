@@ -88,7 +88,6 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -4380,7 +4379,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time DilatedSubmatrix arguments
 inline auto invert( DilatedSubmatrix<MT,SO,true,CSAs...>& sm )
-   -> DisableIf_t< HasMutableDataAccess_v<MT> >
+   -> EnableIf_t< !HasMutableDataAccess_v<MT> >
 {
    using RT = ResultType_t< DilatedSubmatrix<MT,SO,true,CSAs...> >;
 

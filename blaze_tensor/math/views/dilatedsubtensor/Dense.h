@@ -93,7 +93,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/MaybeUnused.h>
 #include <blaze/util/mpl/If.h>
@@ -561,7 +560,7 @@ class DilatedSubtensor<TT,true,CSAs...>
 
    template< typename TT2 >
    inline auto operator+=( const Tensor<TT2>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >;
+      -> EnableIf_t< !EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >;
 
    template< typename TT2 >
    inline auto operator+=( const Tensor<TT2>& rhs )
@@ -569,7 +568,7 @@ class DilatedSubtensor<TT,true,CSAs...>
 
    template< typename TT2 >
    inline auto operator-=( const Tensor<TT2>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >;
+      -> EnableIf_t< !EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >;
 
    template< typename TT2 >
    inline auto operator-=( const Tensor<TT2>& rhs )
@@ -577,7 +576,7 @@ class DilatedSubtensor<TT,true,CSAs...>
 
    template< typename TT2 >
    inline auto operator%=( const Tensor<TT2>& rhs )
-      -> DisableIf_t< EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >;
+      -> EnableIf_t< !EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >;
 
    template< typename TT2 >
    inline auto operator%=( const Tensor<TT2>& rhs )
@@ -1315,7 +1314,7 @@ template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 template< typename TT2 >    // Type of the right-hand side tensor
 inline auto DilatedSubtensor<TT,true,CSAs...>::operator+=( const Tensor<TT2>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >
+   -> EnableIf_t< !EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1421,7 +1420,7 @@ template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 template< typename TT2 >    // Type of the right-hand side tensor
 inline auto DilatedSubtensor<TT,true,CSAs...>::operator-=( const Tensor<TT2>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >
+   -> EnableIf_t< !EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
@@ -1527,7 +1526,7 @@ template< typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 template< typename TT2 >    // Type of the right-hand side tensor
 inline auto DilatedSubtensor<TT,true,CSAs...>::operator%=( const Tensor<TT2>& rhs )
-   -> DisableIf_t< EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >
+   -> EnableIf_t< !EnforceEvaluation_v<TT,TT2>, DilatedSubtensor& >
 {
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( ResultType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );

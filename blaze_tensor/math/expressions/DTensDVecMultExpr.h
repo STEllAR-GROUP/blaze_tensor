@@ -82,7 +82,6 @@
 #include <blaze/util/Assert.h>
 #include <blaze/util/Complex.h>
 #include <blaze/util/constraints/SameType.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -494,7 +493,7 @@ class DTensDVecMultExpr
            , typename TT1    // Type of the left-hand side tensor operand
            , typename VT1 >  // Type of the right-hand side vector operand
    static inline auto selectSmallAssignKernel( MT1& y, const TT1& A, const VT1& x )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
    {
       selectDefaultAssignKernel( y, A, x );
    }
@@ -727,7 +726,7 @@ class DTensDVecMultExpr
            , typename TT1    // Type of the left-hand side tensor operand
            , typename VT1 >  // Type of the right-hand side vector operand
    static inline auto selectLargeAssignKernel( MT1& y, const TT1& A, const VT1& x )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
    {
       selectDefaultAssignKernel( y, A, x );
    }
@@ -1000,7 +999,7 @@ class DTensDVecMultExpr
            , typename TT1    // Type of the left-hand side tensor operand
            , typename VT1 >  // Type of the right-hand side vector operand
    static inline auto selectBlasAssignKernel( MT1& y, const TT1& A, const VT1& x )
-      -> DisableIf_t< UseBlasKernel_v<MT1,TT1,VT1> >
+      -> EnableIf_t< !UseBlasKernel_v<MT1,TT1,VT1> >
    {
       selectLargeAssignKernel( y, A, x );
    }
@@ -1177,7 +1176,7 @@ class DTensDVecMultExpr
            , typename TT1    // Type of the left-hand side tensor operand
            , typename VT1 >  // Type of the right-hand side vector operand
    static inline auto selectSmallAddAssignKernel( MT1& y, const TT1& A, const VT1& x )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
    {
       selectDefaultAddAssignKernel( y, A, x );
    }
@@ -1410,7 +1409,7 @@ class DTensDVecMultExpr
            , typename TT1    // Type of the left-hand side tensor operand
            , typename VT1 >  // Type of the right-hand side vector operand
    static inline auto selectLargeAddAssignKernel( MT1& y, const TT1& A, const VT1& x )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
    {
       selectDefaultAddAssignKernel( y, A, x );
    }
@@ -1681,7 +1680,7 @@ class DTensDVecMultExpr
            , typename TT1    // Type of the left-hand side tensor operand
            , typename VT1 >  // Type of the right-hand side vector operand
    static inline auto selectBlasAddAssignKernel( MT1& y, const TT1& A, const VT1& x )
-      -> DisableIf_t< UseBlasKernel_v<MT1,TT1,VT1> >
+      -> EnableIf_t< !UseBlasKernel_v<MT1,TT1,VT1> >
    {
       selectLargeAddAssignKernel( y, A, x );
    }
@@ -1833,7 +1832,7 @@ class DTensDVecMultExpr
            , typename TT1    // Type of the left-hand side tensor operand
            , typename VT1 >  // Type of the right-hand side vector operand
    static inline auto selectSmallSubAssignKernel( MT1& y, const TT1& A, const VT1& x )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
    {
       selectDefaultSubAssignKernel( y, A, x );
    }
@@ -2066,7 +2065,7 @@ class DTensDVecMultExpr
            , typename TT1    // Type of the left-hand side tensor operand
            , typename VT1 >  // Type of the right-hand side vector operand
    static inline auto selectLargeSubAssignKernel( MT1& y, const TT1& A, const VT1& x )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1> >
    {
       selectDefaultSubAssignKernel( y, A, x );
    }
@@ -2337,7 +2336,7 @@ class DTensDVecMultExpr
            , typename TT1    // Type of the left-hand side tensor operand
            , typename VT1 >  // Type of the right-hand side vector operand
    static inline auto selectBlasSubAssignKernel( MT1& y, const TT1& A, const VT1& x )
-      -> DisableIf_t< UseBlasKernel_v<MT1,TT1,VT1> >
+      -> EnableIf_t< !UseBlasKernel_v<MT1,TT1,VT1> >
    {
       selectLargeSubAssignKernel( y, A, x );
    }
@@ -3001,7 +3000,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectDefaultAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
    {
       y.assign( A * x * scalar );
    }
@@ -3026,7 +3025,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectSmallAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
    {
       selectDefaultAssignKernel( y, A, x, scalar );
    }
@@ -3259,7 +3258,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectLargeAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
    {
       selectDefaultAssignKernel( y, A, x, scalar );
    }
@@ -3551,7 +3550,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectBlasAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseBlasKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseBlasKernel_v<MT1,TT1,VT1,ST2> >
    {
       selectLargeAssignKernel( y, A, x, scalar );
    }
@@ -3727,7 +3726,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectSmallAddAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
    {
       selectDefaultAddAssignKernel( y, A, x, scalar );
    }
@@ -3960,7 +3959,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectLargeAddAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
    {
       selectDefaultAddAssignKernel( y, A, x, scalar );
    }
@@ -4231,7 +4230,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectBlasAddAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseBlasKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseBlasKernel_v<MT1,TT1,VT1,ST2> >
    {
       selectLargeAddAssignKernel( y, A, x, scalar );
    }
@@ -4384,7 +4383,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectSmallSubAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
    {
       selectDefaultSubAssignKernel( y, A, x, scalar );
    }
@@ -4617,7 +4616,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectLargeSubAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseVectorizedDefaultKernel_v<MT1,TT1,VT1,ST2> >
    {
       selectDefaultSubAssignKernel( y, A, x, scalar );
    }
@@ -4888,7 +4887,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
            , typename VT1    // Type of the right-hand side vector operand
            , typename ST2 >  // Type of the scalar value
    static inline auto selectBlasSubAssignKernel( MT1& y, const TT1& A, const VT1& x, ST2 scalar )
-      -> DisableIf_t< UseBlasKernel_v<MT1,TT1,VT1,ST2> >
+      -> EnableIf_t< !UseBlasKernel_v<MT1,TT1,VT1,ST2> >
    {
       selectLargeSubAssignKernel( y, A, x, scalar );
    }

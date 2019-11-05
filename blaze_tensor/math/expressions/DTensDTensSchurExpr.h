@@ -74,7 +74,6 @@
 #include <blaze/system/Inline.h>
 #include <blaze/system/Thresholds.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -1115,7 +1114,7 @@ class DTensDTensSchurExpr
 */
 template< typename MT1  // Type of the left-hand side dense tensor
         , typename MT2  // Type of the right-hand side dense tensor
-        , DisableIf_t< ( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
+        , EnableIf_t< !( IsUniLower_v<MT1> && IsUniUpper_v<MT2> ) ||
                        ( IsUniUpper_v<MT1> && IsUniLower_v<MT2> ) >* = nullptr >
 inline const DTensDTensSchurExpr<MT1,MT2>
    dtensdtensschur( const DenseTensor<MT1>& lhs, const DenseTensor<MT2>& rhs )

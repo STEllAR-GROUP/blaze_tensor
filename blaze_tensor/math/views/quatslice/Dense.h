@@ -83,7 +83,6 @@
 #include <blaze/util/constraints/Pointer.h>
 #include <blaze/util/constraints/Reference.h>
 #include <blaze/util/constraints/Vectorizable.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/mpl/If.h>
 #include <blaze/util/TypeList.h>
@@ -323,25 +322,25 @@ class QuatSlice
    BLAZE_ALWAYS_INLINE void stream( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept;
 
    template< typename AT2 >
-   inline auto assign( const DenseTensor<AT2>& rhs ) -> DisableIf_t< VectorizedAssign_v<AT2> >;
+   inline auto assign( const DenseTensor<AT2>& rhs ) -> EnableIf_t< !VectorizedAssign_v<AT2> >;
 
    template< typename AT2 >
    inline auto assign( const DenseTensor<AT2>& rhs ) -> EnableIf_t< VectorizedAssign_v<AT2> >;
 
    template< typename AT2 >
-   inline auto addAssign( const DenseTensor<AT2>& rhs ) -> DisableIf_t< VectorizedAddAssign_v<AT2> >;
+   inline auto addAssign( const DenseTensor<AT2>& rhs ) -> EnableIf_t< !VectorizedAddAssign_v<AT2> >;
 
    template< typename AT2 >
    inline auto addAssign( const DenseTensor<AT2>& rhs ) -> EnableIf_t< VectorizedAddAssign_v<AT2> >;
 
    template< typename AT2 >
-   inline auto subAssign( const DenseTensor<AT2>& rhs ) -> DisableIf_t< VectorizedSubAssign_v<AT2> >;
+   inline auto subAssign( const DenseTensor<AT2>& rhs ) -> EnableIf_t< !VectorizedSubAssign_v<AT2> >;
 
    template< typename AT2 >
    inline auto subAssign( const DenseTensor<AT2>& rhs ) -> EnableIf_t< VectorizedSubAssign_v<AT2> >;
 
    template< typename AT2 >
-   inline auto schurAssign( const DenseTensor<AT2>& rhs ) -> DisableIf_t< VectorizedSchurAssign_v<AT2> >;
+   inline auto schurAssign( const DenseTensor<AT2>& rhs ) -> EnableIf_t< !VectorizedSchurAssign_v<AT2> >;
 
    template< typename AT2 >
    inline auto schurAssign( const DenseTensor<AT2>& rhs ) -> EnableIf_t< VectorizedSchurAssign_v<AT2> >;
@@ -1677,7 +1676,7 @@ template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 template< typename AT2 >     // Type of the right-hand side dense matrix
 inline auto QuatSlice<AT,CRAs...>::assign( const DenseTensor<AT2>& rhs )
-   -> DisableIf_t< VectorizedAssign_v<AT2> >
+   -> EnableIf_t< !VectorizedAssign_v<AT2> >
 {
    BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages(),   "Invalid number of pages" );
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows(),    "Invalid number of rows" );
@@ -1785,7 +1784,7 @@ template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 template< typename AT2 >     // Type of the right-hand side dense matrix
 inline auto QuatSlice<AT,CRAs...>::addAssign( const DenseTensor<AT2>& rhs )
-   -> DisableIf_t< VectorizedAddAssign_v<AT2> >
+   -> EnableIf_t< !VectorizedAddAssign_v<AT2> >
 {
    BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -1879,7 +1878,7 @@ template< typename AT       // Type of the dense quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 template< typename AT2 >     // Type of the right-hand side dense matrix
 inline auto QuatSlice<AT,CRAs...>::subAssign( const DenseTensor<AT2>& rhs )
-   -> DisableIf_t< VectorizedSubAssign_v<AT2> >
+   -> EnableIf_t< !VectorizedSubAssign_v<AT2> >
 {
    BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
@@ -1973,7 +1972,7 @@ template< typename AT       // Type of the quaternion
         , size_t... CSAs >  // Compile time quatslice arguments
 template< typename AT2 >    // Type of the right-hand side dense matrix
 inline auto QuatSlice<AT,CSAs...>::schurAssign( const DenseTensor<AT2>& rhs )
-   -> DisableIf_t< VectorizedSchurAssign_v<AT2> >
+   -> EnableIf_t< !VectorizedSchurAssign_v<AT2> >
 {
    BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
    BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );

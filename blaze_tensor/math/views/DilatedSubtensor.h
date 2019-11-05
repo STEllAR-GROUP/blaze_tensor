@@ -75,7 +75,6 @@
 #include <blaze/util/algorithms/Max.h>
 #include <blaze/util/algorithms/Min.h>
 #include <blaze/util/Assert.h>
-#include <blaze/util/DisableIf.h>
 #include <blaze/util/EnableIf.h>
 #include <blaze/util/FunctionTrace.h>
 #include <blaze/util/IntegralConstant.h>
@@ -3497,7 +3496,7 @@ template< InversionFlag IF  // Inversion algorithm
         , bool DF           // Density flag
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline auto invert( DilatedSubtensor<TT,DF,CSAs...>& st )
-   -> DisableIf_t< HasMutableDataAccess_v<TT> >
+   -> EnableIf_t< !HasMutableDataAccess_v<TT> >
 {
    using RT = ResultType_t< DilatedSubtensor<TT,DF,CSAs...> >;
 
