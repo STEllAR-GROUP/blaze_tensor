@@ -43,7 +43,7 @@
 
 #include <tuple>
 #include <utility>
-#include <blaze/math/IntegerSequence.h>
+#include <blaze/util/IntegerSequence.h>
 #include <blaze/util/StaticAssert.h>
 
 

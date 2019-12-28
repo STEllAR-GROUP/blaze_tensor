@@ -43,7 +43,6 @@
 
 #include <array>
 
-#include <blaze/math/IntegerSequence.h>
 #include <blaze/math/dense/DynamicMatrix.h>
 #include <blaze/math/traits/DivTrait.h>
 #include <blaze/math/traits/ExpandTrait.h>
@@ -57,6 +56,7 @@
 #include <blaze/math/typetraits/IsShrinkable.h>
 #include <blaze/system/Optimizations.h>
 #include <blaze/util/IntegralConstant.h>
+#include <blaze/util/IntegerSequence.h>
 #include <blaze/util/StaticAssert.h>
 
 #include <blaze_tensor/math/Array.h>

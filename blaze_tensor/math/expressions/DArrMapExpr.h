@@ -1405,8 +1405,7 @@ inline decltype(auto) clamp( const DenseArray<MT>& dm, const DT& min, const DT& 
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DArrMapExpr<MT,Clamp<DT>>;
-   return ReturnType( ~dm, Clamp<DT>( min, max ) );
+   return map( ~dm, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 

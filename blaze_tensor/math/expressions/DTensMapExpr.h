@@ -1434,8 +1434,7 @@ inline decltype(auto) clamp( const DenseTensor<MT>& dm, const DT& min, const DT&
 {
    BLAZE_FUNCTION_TRACE;
 
-   using ReturnType = const DTensMapExpr<MT,Clamp<DT>>;
-   return ReturnType( ~dm, Clamp<DT>( min, max ) );
+   return map( ~dm, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 
