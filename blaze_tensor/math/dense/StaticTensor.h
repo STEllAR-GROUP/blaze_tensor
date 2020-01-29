@@ -239,7 +239,7 @@ class StaticTensor
    static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
 
    //! Compilation switch for the choice of alignment.
-   static constexpr bool align = ( usePadding || NN % SIMDSIZE == 0UL );
+   static constexpr AlignmentFlag align = ( ( usePadding || NN % SIMDSIZE == 0UL ) ? aligned : unaligned);
    //**********************************************************************************************
 
  public:

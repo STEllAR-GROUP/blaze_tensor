@@ -749,7 +749,7 @@ template< typename MT, bool TF, size_t M, typename Enable >
 inline DynamicArray<N, Type>::DynamicArray( const Vector<MT, TF>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<1, ET, false, true>;
+   using custom_array = CustomArray<1, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -775,7 +775,7 @@ template< typename MT, bool SO, size_t M, typename Enable >
 inline DynamicArray<N, Type>::DynamicArray( const Matrix<MT,SO>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<2, ET, false, true>;
+   using custom_array = CustomArray<2, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -803,7 +803,7 @@ template< typename MT, size_t M, typename Enable >
 inline DynamicArray<N, Type>::DynamicArray( const Tensor<MT>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<2, ET, false, true>;
+   using custom_array = CustomArray<2, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1611,7 +1611,7 @@ template< typename MT, bool TF, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Vector<MT, TF>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<1, ET, false, true>;
+   using custom_array = CustomArray<1, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1641,7 +1641,7 @@ template< typename MT, bool TF, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Vector<MT, TF>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<1, ET, false, true>;
+   using custom_array = CustomArray<1, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1671,7 +1671,7 @@ template< typename MT, bool TF, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Vector<MT, TF>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<1, ET, false, true>;
+   using custom_array = CustomArray<1, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1701,7 +1701,7 @@ template< typename MT, bool TF, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Vector<MT, TF>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<1, ET, false, true>;
+   using custom_array = CustomArray<1, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1731,7 +1731,7 @@ template< typename MT, bool SO, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Matrix<MT, SO>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<2, ET, false, true>;
+   using custom_array = CustomArray<2, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1763,7 +1763,7 @@ template< typename MT, bool SO, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Matrix<MT, SO>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<2, ET, false, true>;
+   using custom_array = CustomArray<2, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1795,7 +1795,7 @@ template< typename MT, bool SO, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Matrix<MT, SO>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<2, ET, false, true>;
+   using custom_array = CustomArray<2, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1827,7 +1827,7 @@ template< typename MT, bool SO, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Matrix<MT, SO>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<2, ET, false, true>;
+   using custom_array = CustomArray<2, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1859,7 +1859,7 @@ template< typename MT, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Tensor<MT>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<3, ET, false, true>;
+   using custom_array = CustomArray<3, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1893,7 +1893,7 @@ template< typename MT, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Tensor<MT>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<3, ET, false, true>;
+   using custom_array = CustomArray<3, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1927,7 +1927,7 @@ template< typename MT, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Tensor<MT>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<3, ET, false, true>;
+   using custom_array = CustomArray<3, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
@@ -1961,7 +1961,7 @@ template< typename MT, size_t M, typename Enable >
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Tensor<MT>& rhs )
 {
    using ET = ElementType_t<MT>;
-   using custom_array = CustomArray<3, ET, false, true>;
+   using custom_array = CustomArray<3, ET, unaligned, padded>;
 
    if( (~rhs).canAlias( this ) ) {
       const ResultType_t<MT> tmp( ~rhs );
