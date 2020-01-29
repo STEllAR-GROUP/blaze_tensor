@@ -63,7 +63,7 @@ namespace blaze {
 // This specialization of the Rand class creates random instances of CustomTensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 class Rand< CustomTensor<Type,AF,PF,RT> >
@@ -91,7 +91,7 @@ class Rand< CustomTensor<Type,AF,PF,RT> >
 // \return void
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void Rand< CustomTensor<Type,AF,PF,RT> >::randomize( CustomTensor<Type,AF,PF,RT>& tensor ) const
@@ -124,7 +124,7 @@ inline void Rand< CustomTensor<Type,AF,PF,RT> >::randomize( CustomTensor<Type,AF
 // \return void
 */
 template< typename Type   // Data type of the tensor
-        , bool AF         // Alignment flag
+        , AlignmentFlag AF         // Alignment flag
         , bool PF         // Padding flag
         , typename RT >   // Result type
 template< typename Arg >  // Min/max argument type

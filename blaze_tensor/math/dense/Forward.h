@@ -52,9 +52,9 @@ namespace blaze {
 //
 //=================================================================================================
 
-template< size_t, typename, bool, bool, typename > class CustomArray;
+template< size_t, typename, AlignmentFlag, bool, typename > class CustomArray;
 template< size_t, typename > class DynamicArray;
-template< typename, bool, bool, typename > class CustomTensor;
+template< typename, AlignmentFlag, bool, typename > class CustomTensor;
 template< typename > class DynamicTensor;
 template< typename, size_t, size_t, size_t > class StaticTensor;
 template< typename > class UniformTensor;

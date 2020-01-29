@@ -78,7 +78,7 @@ namespace blaze {
 // of the tensor can be specified via the following four template parameters:
 
    \code
-   template< typename Type, bool AF, bool PF >
+   template< typename Type, AlignmentFlag AF, bool PF >
    class CustomTensor;
    \endcode
 
@@ -342,7 +342,7 @@ namespace blaze {
    \endcode
 */
 template< typename Type                                          // Data type of the tensor
-        , bool AF                                                // Alignment flag
+        , AlignmentFlag AF                                       // Alignment flag
         , bool PF                                                // Padding flag
         , typename RT = DynamicTensor<RemoveConst_t<Type>> >     // Result type
 class CustomTensor
@@ -655,7 +655,7 @@ class CustomTensor
 /*!\brief The default constructor for CustomTensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>::CustomTensor()
@@ -690,7 +690,7 @@ inline CustomTensor<Type,AF,PF,RT>::CustomTensor()
 // \note The custom tensor does \b NOT take responsibility for the given array of elements!
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>::CustomTensor( Type* ptr, size_t o, size_t m, size_t n )
@@ -737,7 +737,7 @@ inline CustomTensor<Type,AF,PF,RT>::CustomTensor( Type* ptr, size_t o, size_t m,
 // \note The custom tensor does \b NOT take responsibility for the given array of elements!
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>::CustomTensor( Type* ptr, size_t o, size_t m, size_t n, size_t nn )
@@ -784,7 +784,7 @@ inline CustomTensor<Type,AF,PF,RT>::CustomTensor( Type* ptr, size_t o, size_t m,
 // The copy constructor initializes the custom tensor as an exact copy of the given custom tensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>::CustomTensor( const CustomTensor& m )
@@ -803,7 +803,7 @@ inline CustomTensor<Type,AF,PF,RT>::CustomTensor( const CustomTensor& m )
 // \param m The tensor to be moved into this instance.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>::CustomTensor( CustomTensor&& m ) noexcept
@@ -843,7 +843,7 @@ inline CustomTensor<Type,AF,PF,RT>::CustomTensor( CustomTensor&& m ) noexcept
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::Reference
@@ -868,7 +868,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::Reference
 // the at() function is guaranteed to perform a check of the given access indices.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstReference
@@ -894,7 +894,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::ConstReference
 // access indices.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::Reference
@@ -926,7 +926,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::Reference
 // access indices.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstReference
@@ -959,7 +959,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::ConstReference
 // member function.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::Pointer
@@ -983,7 +983,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::Pointer
 // member function.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstPointer
@@ -1003,7 +1003,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::ConstPointer
 // This function returns a pointer to the internal storage for the elements in row/column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::Pointer
@@ -1025,7 +1025,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::Pointer
 // This function returns a pointer to the internal storage for the elements in row/column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstPointer
@@ -1050,7 +1050,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::ConstPointer
 // to the first element of column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::Iterator
@@ -1075,7 +1075,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::Iterator
 // to the first element of column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstIterator
@@ -1100,7 +1100,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::ConstIterator
 // to the first element of column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstIterator
@@ -1125,7 +1125,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::ConstIterator
 // returns an iterator just past the last element of column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::Iterator
@@ -1150,7 +1150,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::Iterator
 // returns an iterator just past the last element of column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstIterator
@@ -1175,7 +1175,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::ConstIterator
 // returns an iterator just past the last element of column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomTensor<Type,AF,PF,RT>::ConstIterator
@@ -1203,7 +1203,7 @@ inline typename CustomTensor<Type,AF,PF,RT>::ConstIterator
 // \return Reference to the assigned tensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>&
@@ -1251,7 +1251,7 @@ inline CustomTensor<Type,AF,PF,RT>&
 // exceeds the number of columns, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>&
@@ -1307,7 +1307,7 @@ inline CustomTensor<Type,AF,PF,RT>&
 // Also note that after the assignment \a array will have the same entries as \a init.
 */
 template< typename Type   // Data type of the tensor
-        , bool AF         // Alignment flag
+        , AlignmentFlag AF         // Alignment flag
         , bool PF         // Padding flag
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
@@ -1344,7 +1344,7 @@ inline CustomTensor<Type,AF,PF,RT>&
 // matrices don't match, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>&
@@ -1368,7 +1368,7 @@ inline CustomTensor<Type,AF,PF,RT>&
 // \return Reference to the assigned tensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>&
@@ -1404,7 +1404,7 @@ inline CustomTensor<Type,AF,PF,RT>&
 // matrices don't match, a \a std::invalid_argument exception is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side tensor
@@ -1435,7 +1435,7 @@ inline CustomTensor<Type,AF,PF,RT>&
 // is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side tensor
@@ -1470,7 +1470,7 @@ inline CustomTensor<Type,AF,PF,RT>&
 // is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side tensor
@@ -1505,7 +1505,7 @@ inline CustomTensor<Type,AF,PF,RT>&
 // is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side tensor
@@ -1543,7 +1543,7 @@ inline CustomTensor<Type,AF,PF,RT>&
 // \return The number of rows of the tensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::rows() const noexcept
@@ -1559,7 +1559,7 @@ inline size_t CustomTensor<Type,AF,PF,RT>::rows() const noexcept
 // \return The number of columns of the tensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::columns() const noexcept
@@ -1575,7 +1575,7 @@ inline size_t CustomTensor<Type,AF,PF,RT>::columns() const noexcept
 // \return The number of columns of the tensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::pages() const noexcept
@@ -1596,7 +1596,7 @@ inline size_t CustomTensor<Type,AF,PF,RT>::pages() const noexcept
 // \a columnMajor the function returns the spacing between two columns.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::spacing() const noexcept
@@ -1612,7 +1612,7 @@ inline size_t CustomTensor<Type,AF,PF,RT>::spacing() const noexcept
 // \return The capacity of the tensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::capacity() const noexcept
@@ -1634,7 +1634,7 @@ inline size_t CustomTensor<Type,AF,PF,RT>::capacity() const noexcept
 // of column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::capacity( size_t i, size_t k ) const noexcept
@@ -1653,7 +1653,7 @@ inline size_t CustomTensor<Type,AF,PF,RT>::capacity( size_t i, size_t k ) const 
 // \return The number of non-zero elements in the dense tensor.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::nonZeros() const
@@ -1686,7 +1686,7 @@ inline size_t CustomTensor<Type,AF,PF,RT>::nonZeros() const
 // the number of non-zero elements in column \a i.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomTensor<Type,AF,PF,RT>::nonZeros( size_t i, size_t k ) const
@@ -1712,7 +1712,7 @@ inline size_t CustomTensor<Type,AF,PF,RT>::nonZeros( size_t i, size_t k ) const
 // \return void
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void CustomTensor<Type,AF,PF,RT>::reset()
@@ -1743,7 +1743,7 @@ inline void CustomTensor<Type,AF,PF,RT>::reset()
 // Note that the capacity of the row/column remains unchanged.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void CustomTensor<Type,AF,PF,RT>::reset( size_t i, size_t k )
@@ -1769,7 +1769,7 @@ inline void CustomTensor<Type,AF,PF,RT>::reset( size_t i, size_t k )
 // After the clear() function, the size of the tensor is 0.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void CustomTensor<Type,AF,PF,RT>::clear()
@@ -1790,7 +1790,7 @@ inline void CustomTensor<Type,AF,PF,RT>::clear()
 // \return void
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void CustomTensor<Type,AF,PF,RT>::swap( CustomTensor& m ) noexcept
@@ -1823,7 +1823,7 @@ inline void CustomTensor<Type,AF,PF,RT>::swap( CustomTensor& m ) noexcept
 // In case the tensor is not a square tensor, a \a std::logic_error exception is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::transpose()
@@ -1852,7 +1852,7 @@ inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::transpose()
 // In case the tensor is not a square tensor, a \a std::logic_error exception is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename T >   // Type of the mapping indices
@@ -1882,7 +1882,7 @@ inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::transpose( cons
 // In case the tensor is not a square tensor, a \a std::logic_error exception is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::ctranspose()
@@ -1912,7 +1912,7 @@ inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::ctranspose()
 // In case the tensor is not a square tensor, a \a std::logic_error exception is thrown.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename T >   // Type of the mapping indices
@@ -1956,7 +1956,7 @@ inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::ctranspose( con
    \endcode
 */
 template< typename Type     // Data type of the tensor
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF           // Alignment flag
         , bool PF           // Padding flag
         , typename RT >     // Result type
 template< typename Other >  // Data type of the scalar value
@@ -2007,7 +2007,7 @@ inline CustomTensor<Type,AF,PF,RT>& CustomTensor<Type,AF,PF,RT>::scale( const Ot
 // \note The custom tensor does NOT take responsibility for the new array of elements!
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void CustomTensor<Type,AF,PF,RT>::reset( Type* ptr, size_t o, size_t m, size_t n )
@@ -2044,7 +2044,7 @@ inline void CustomTensor<Type,AF,PF,RT>::reset( Type* ptr, size_t o, size_t m, s
 // \note The custom tensor does NOT take responsibility for the new array of elements!
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void CustomTensor<Type,AF,PF,RT>::reset( Type* ptr, size_t o, size_t m, size_t n, size_t nn )
@@ -2074,7 +2074,7 @@ inline void CustomTensor<Type,AF,PF,RT>::reset( Type* ptr, size_t o, size_t m, s
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the tensor
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF           // Alignment flag
         , bool PF           // Padding flag
         , typename RT >     // Result type
 template< typename Other >  // Data type of the foreign expression
@@ -2096,7 +2096,7 @@ inline bool CustomTensor<Type,AF,PF,RT>::canAlias( const Other* alias ) const no
 // to optimize the evaluation.
 */
 template< typename Type     // Data type of the tensor
-        , bool AF           // Alignment flag
+        , AlignmentFlag AF           // Alignment flag
         , bool PF           // Padding flag
         , typename RT >     // Result type
 template< typename Other >  // Data type of the foreign expression
@@ -2117,7 +2117,7 @@ inline bool CustomTensor<Type,AF,PF,RT>::isAliased( const Other* alias ) const n
 // to the alignment restrictions of the element type \a Type.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool CustomTensor<Type,AF,PF,RT>::isAligned() const noexcept
@@ -2138,7 +2138,7 @@ inline bool CustomTensor<Type,AF,PF,RT>::isAligned() const noexcept
 // rows and/or columns of the tensor).
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool CustomTensor<Type,AF,PF,RT>::canSMPAssign() const noexcept
@@ -2164,7 +2164,7 @@ inline bool CustomTensor<Type,AF,PF,RT>::canSMPAssign() const noexcept
 // might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE typename CustomTensor<Type,AF,PF,RT>::SIMDType
@@ -2194,7 +2194,7 @@ BLAZE_ALWAYS_INLINE typename CustomTensor<Type,AF,PF,RT>::SIMDType
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE typename CustomTensor<Type,AF,PF,RT>::SIMDType
@@ -2232,7 +2232,7 @@ BLAZE_ALWAYS_INLINE typename CustomTensor<Type,AF,PF,RT>::SIMDType
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE typename CustomTensor<Type,AF,PF,RT>::SIMDType
@@ -2269,7 +2269,7 @@ BLAZE_ALWAYS_INLINE typename CustomTensor<Type,AF,PF,RT>::SIMDType
 // might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
@@ -2300,7 +2300,7 @@ BLAZE_ALWAYS_INLINE void
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
@@ -2339,7 +2339,7 @@ BLAZE_ALWAYS_INLINE void
 // function explicitly might result in erroneous results and/or in compilation errors.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
@@ -2377,7 +2377,7 @@ BLAZE_ALWAYS_INLINE void
 // compilation errors.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 BLAZE_ALWAYS_INLINE void
@@ -2411,7 +2411,7 @@ BLAZE_ALWAYS_INLINE void
 // assignment operator.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense tensor
@@ -2453,7 +2453,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::assign( const DenseTensor<MT>& rhs )
 // assignment operator.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense tensor
@@ -2529,7 +2529,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::assign( const DenseTensor<MT>& rhs )
 // assignment operator.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense tensor
@@ -2574,7 +2574,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::addAssign( const DenseTensor<MT>& rhs )
 // assignment operator.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense tensor
@@ -2633,7 +2633,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::addAssign( const DenseTensor<MT>& rhs )
 // assignment operator.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense tensor
@@ -2678,7 +2678,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::subAssign( const DenseTensor<MT>& rhs )
 // assignment operator.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense tensor
@@ -2737,7 +2737,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::subAssign( const DenseTensor<MT>& rhs )
 // assignment operator.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense tensor
@@ -2779,7 +2779,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::schurAssign( const DenseTensor<MT>& rhs
 // assignment operator.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense tensor
@@ -2836,22 +2836,22 @@ inline auto CustomTensor<Type,AF,PF,RT>::schurAssign( const DenseTensor<MT>& rhs
 //*************************************************************************************************
 /*!\name CustomTensor operators */
 //@{
-template< typename Type, bool AF, bool PF, typename RT >
+template< typename Type, AlignmentFlag AF, bool PF, typename RT >
 inline void reset( CustomTensor<Type,AF,PF,RT>& m );
 
-template< typename Type, bool AF, bool PF, typename RT >
+template< typename Type, AlignmentFlag AF, bool PF, typename RT >
 inline void reset( CustomTensor<Type,AF,PF,RT>& m, size_t i, size_t k );
 
-template< typename Type, bool AF, bool PF, typename RT >
+template< typename Type, AlignmentFlag AF, bool PF, typename RT >
 inline void clear( CustomTensor<Type,AF,PF,RT>& m );
 
-template< bool RF, typename Type, bool AF, bool PF, typename RT >
+template< bool RF, typename Type, AlignmentFlag AF, bool PF, typename RT >
 inline bool isDefault( const CustomTensor<Type,AF,PF,RT>& m );
 
-template< typename Type, bool AF, bool PF, typename RT >
+template< typename Type, AlignmentFlag AF, bool PF, typename RT >
 inline bool isIntact( const CustomTensor<Type,AF,PF,RT>& m );
 
-template< typename Type, bool AF, bool PF, typename RT >
+template< typename Type, AlignmentFlag AF, bool PF, typename RT >
 inline void swap( CustomTensor<Type,AF,PF,RT>& a, CustomTensor<Type,AF,PF,RT>& b ) noexcept;
 //@}
 //*************************************************************************************************
@@ -2865,7 +2865,7 @@ inline void swap( CustomTensor<Type,AF,PF,RT>& a, CustomTensor<Type,AF,PF,RT>& b
 // \return void
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void reset( CustomTensor<Type,AF,PF,RT>& m )
@@ -2890,7 +2890,7 @@ inline void reset( CustomTensor<Type,AF,PF,RT>& m )
 // \a i. Note that the capacity of the row/column remains unchanged.
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void reset( CustomTensor<Type,AF,PF,RT>& m, size_t i, size_t k )
@@ -2908,7 +2908,7 @@ inline void reset( CustomTensor<Type,AF,PF,RT>& m, size_t i, size_t k )
 // \return void
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void clear( CustomTensor<Type,AF,PF,RT>& m )
@@ -2948,7 +2948,7 @@ inline void clear( CustomTensor<Type,AF,PF,RT>& m )
 */
 template< bool RF        // Relaxation flag
         , typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool isDefault( const CustomTensor<Type,AF,PF,RT>& m )
@@ -2980,7 +2980,7 @@ inline bool isDefault( const CustomTensor<Type,AF,PF,RT>& m )
    \endcode
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool isIntact( const CustomTensor<Type,AF,PF,RT>& m )
@@ -2999,7 +2999,7 @@ inline bool isIntact( const CustomTensor<Type,AF,PF,RT>& m )
 // \return void
 */
 template< typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void swap( CustomTensor<Type,AF,PF,RT>& a, CustomTensor<Type,AF,PF,RT>& b ) noexcept
@@ -3018,7 +3018,7 @@ inline void swap( CustomTensor<Type,AF,PF,RT>& a, CustomTensor<Type,AF,PF,RT>& b
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, typename RT >
+template< typename T, AlignmentFlag AF, bool PF, typename RT >
 struct HasConstDataAccess< CustomTensor<T,AF,PF,RT> >
    : public TrueType
 {};
@@ -3036,7 +3036,7 @@ struct HasConstDataAccess< CustomTensor<T,AF,PF,RT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, typename RT >
+template< typename T, AlignmentFlag AF, bool PF, typename RT >
 struct HasMutableDataAccess< CustomTensor<T,AF,PF,RT> >
    : public TrueType
 {};
@@ -3054,7 +3054,7 @@ struct HasMutableDataAccess< CustomTensor<T,AF,PF,RT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, typename RT >
+template< typename T, AlignmentFlag AF, bool PF, typename RT >
 struct IsCustom< CustomTensor<T,AF,PF,RT> >
    : public TrueType
 {};
@@ -3090,7 +3090,7 @@ struct IsAligned< CustomTensor<T,aligned,PF,RT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, bool PF, typename RT >
+template< typename T, AlignmentFlag AF, bool PF, typename RT >
 struct IsContiguous< CustomTensor<T,AF,PF,RT> >
    : public TrueType
 {};
@@ -3109,7 +3109,7 @@ struct IsContiguous< CustomTensor<T,AF,PF,RT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename T, bool AF, typename RT >
+template< typename T, AlignmentFlag AF, typename RT >
 struct IsPadded< CustomTensor<T,AF,padded,RT> >
    : public TrueType
 {};

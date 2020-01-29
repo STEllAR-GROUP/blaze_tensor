@@ -139,6 +139,12 @@ template< size_t N, typename Type >                   // Data type of the array
 class DynamicArray
    : public DenseArray< DynamicArray<N, Type> >
 {
+ private:
+   //**********************************************************************************************
+   //! Compilation switch for the choice of alignment.
+   static constexpr AlignmentFlag align = ( usePadding ? aligned : unaligned );
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    using This          = DynamicArray<N, Type>;     //!< Type of this DynamicArray instance.
@@ -156,8 +162,8 @@ class DynamicArray
    using Pointer        = Type*;        //!< Pointer to a non-constant array value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant array value.
 
-   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************

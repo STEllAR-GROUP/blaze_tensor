@@ -137,7 +137,7 @@ void hpxAssign( DenseArray<TT1>& lhs, const DenseArray<TT2>& rhs, OP op )
 
    hpx::parallel::execution::dynamic_chunk_size chunkSize ( BLAZE_HPX_TENSOR_CHUNK_SIZE );
 
-   //for_loop( par.with( chunkSize ), size_t(0), equalShare0 * equalShare1 * equalShare2, [&](int i)
+   //for_loop( par.with( chunkSize ), size_t(0), equalShare0 * equalShare1 * equalShare2, [&](size_t i)
    //{
    //   //const size_t page  ( ( i / (equalShare1 * equalShare2 )) * pagesPerIter );
    //   const size_t row   ( ( i / equalShare2 ) * rowsPerIter );

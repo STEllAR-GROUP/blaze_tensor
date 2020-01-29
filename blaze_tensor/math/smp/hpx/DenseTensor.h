@@ -127,7 +127,7 @@ void hpxAssign( DenseTensor<TT1>& lhs, const DenseTensor<TT2>& rhs, OP op )
 
    hpx::parallel::execution::dynamic_chunk_size chunkSize ( BLAZE_HPX_MATRIX_CHUNK_SIZE );
 
-   for_loop( par.with( chunkSize ), size_t(0), equalShare1 * equalShare2, [&](int i)
+   for_loop( par.with( chunkSize ), size_t(0), equalShare1 * equalShare2, [&](size_t i)
    {
       const size_t row   ( ( i / equalShare2 ) * rowsPerIter );
       const size_t column( ( i % equalShare2 ) * colsPerIter );

@@ -80,7 +80,7 @@ namespace blaze {
 // of the array can be specified via the following four template parameters:
 
    \code
-   template< size_t N, typename T, bool AF, bool PF, typename RT >
+   template< size_t N, typename T, AlignmentFlag AF, bool PF, typename RT >
    class CustomArray;
    \endcode
 
@@ -346,7 +346,7 @@ namespace blaze {
 */
 template< size_t N                                               // Dimensionality of the array
         , typename Type                                          // Data type of the array
-        , bool AF                                                // Alignment flag
+        , AlignmentFlag AF                                       // Alignment flag
         , bool PF                                                // Padding flag
         , typename RT = DynamicArray<N, RemoveConst_t<Type>> >   // Result type
 class CustomArray
@@ -735,7 +735,7 @@ class CustomArray
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomArray<N,Type,AF,PF,RT>::CustomArray()
@@ -771,7 +771,7 @@ inline CustomArray<N,Type,AF,PF,RT>::CustomArray()
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -815,7 +815,7 @@ inline CustomArray<N,Type,AF,PF,RT>::CustomArray( Type const* ptr, Dims... dims 
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomArray<N,Type,AF,PF,RT>::CustomArray( const CustomArray& m )
@@ -833,7 +833,7 @@ inline CustomArray<N,Type,AF,PF,RT>::CustomArray( const CustomArray& m )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomArray<N,Type,AF,PF,RT>::CustomArray( CustomArray&& m ) noexcept
@@ -860,7 +860,7 @@ inline CustomArray<N,Type,AF,PF,RT>::CustomArray( CustomArray&& m ) noexcept
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -893,7 +893,7 @@ inline std::array< size_t, N > CustomArray<N,Type,AF,PF,RT>::initDimensions( Dim
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -918,7 +918,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::initSpacing( Dims... dims ) noexcept
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -952,7 +952,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::row_index( size_t i, Dims... dims ) 
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -988,7 +988,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::index( Dims... dims ) const noexcept
 // ( ( ( c + 0 ) * o_ + k ) * m_ + i ) * nn_ + j
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomArray<N,Type,AF,PF,RT>::index( std::array< size_t, N > const& indices ) const noexcept
@@ -1017,7 +1017,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::index( std::array< size_t, N > const
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline constexpr std::array< size_t, N > const& CustomArray<N,Type,AF,PF,RT>::dimensions() const noexcept
@@ -1037,7 +1037,7 @@ inline constexpr std::array< size_t, N > const& CustomArray<N,Type,AF,PF,RT>::di
 */
 template< size_t N       // The dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomArray<N,Type,AF,PF,RT>::quats() const noexcept
@@ -1057,7 +1057,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::quats() const noexcept
 */
 template< size_t N       // The dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomArray<N,Type,AF,PF,RT>::pages() const noexcept
@@ -1077,7 +1077,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::pages() const noexcept
 */
 template< size_t N       // The dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomArray<N,Type,AF,PF,RT>::rows() const noexcept
@@ -1097,7 +1097,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::rows() const noexcept
 */
 template< size_t N       // The dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomArray<N,Type,AF,PF,RT>::columns() const noexcept
@@ -1125,7 +1125,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::columns() const noexcept
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1159,7 +1159,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::Reference
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1194,7 +1194,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstReference
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomArray<N,Type,AF,PF,RT>::Reference
@@ -1224,7 +1224,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::Reference
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomArray<N,Type,AF,PF,RT>::ConstReference
@@ -1256,7 +1256,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstReference
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1291,7 +1291,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::Reference
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1327,7 +1327,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstReference
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomArray<N,Type,AF,PF,RT>::Reference
@@ -1358,7 +1358,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::Reference
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomArray<N,Type,AF,PF,RT>::ConstReference
@@ -1389,7 +1389,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstReference
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomArray<N,Type,AF,PF,RT>::Pointer
@@ -1414,7 +1414,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::Pointer
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline typename CustomArray<N,Type,AF,PF,RT>::ConstPointer
@@ -1435,7 +1435,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstPointer
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1459,7 +1459,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::Pointer
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1486,7 +1486,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstPointer
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1513,7 +1513,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::Iterator
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1540,7 +1540,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstIterator
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1567,7 +1567,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstIterator
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1594,7 +1594,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::Iterator
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1621,7 +1621,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstIterator
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -1651,7 +1651,7 @@ inline typename CustomArray<N,Type,AF,PF,RT>::ConstIterator
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomArray<N,Type,AF,PF,RT>&
@@ -1693,7 +1693,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomArray<N,Type,AF,PF,RT>&
@@ -1747,7 +1747,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N        // Dimensionality of the array
         , typename Type   // Data type of the tensor
-        , bool AF         // Alignment flag
+        , AlignmentFlag AF         // Alignment flag
         , bool PF         // Padding flag
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
@@ -1801,7 +1801,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N        // Dimensionality of the array
         , typename Type   // Data type of the tensor
-        , bool AF         // Alignment flag
+        , AlignmentFlag AF         // Alignment flag
         , bool PF         // Padding flag
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
@@ -1858,7 +1858,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N        // Dimensionality of the array
         , typename Type   // Data type of the tensor
-        , bool AF         // Alignment flag
+        , AlignmentFlag AF         // Alignment flag
         , bool PF         // Padding flag
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
@@ -1917,7 +1917,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N        // Dimensionality of the array
         , typename Type   // Data type of the tensor
-        , bool AF         // Alignment flag
+        , AlignmentFlag AF         // Alignment flag
         , bool PF         // Padding flag
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
@@ -1978,7 +1978,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N        // Dimensionality of the array
         , typename Type   // Data type of the tensor
-        , bool AF         // Alignment flag
+        , AlignmentFlag AF         // Alignment flag
         , bool PF         // Padding flag
         , typename RT >   // Result type
 template< typename Other  // Data type of the initialization array
@@ -2023,7 +2023,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomArray<N,Type,AF,PF,RT>&
@@ -2050,7 +2050,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomArray<N,Type,AF,PF,RT>&
@@ -2083,7 +2083,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side array
@@ -2119,7 +2119,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side array
@@ -2155,7 +2155,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side array
@@ -2191,7 +2191,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side array
@@ -2230,7 +2230,7 @@ inline CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template < size_t Dim >
@@ -2255,7 +2255,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::dimension() const noexcept
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomArray<N,Type,AF,PF,RT>::spacing() const noexcept
@@ -2272,7 +2272,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::spacing() const noexcept
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomArray<N,Type,AF,PF,RT>::capacity() const noexcept
@@ -2299,7 +2299,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::capacity() const noexcept
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -2329,7 +2329,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::capacity( size_t i, Dims... dims ) c
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline size_t CustomArray<N,Type,AF,PF,RT>::nonZeros() const
@@ -2360,7 +2360,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::nonZeros() const
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -2396,7 +2396,7 @@ inline size_t CustomArray<N,Type,AF,PF,RT>::nonZeros( size_t i, Dims... dims ) c
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void CustomArray<N,Type,AF,PF,RT>::reset()
@@ -2420,7 +2420,7 @@ inline void CustomArray<N,Type,AF,PF,RT>::reset()
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -2455,7 +2455,7 @@ inline void CustomArray<N,Type,AF,PF,RT>::reset( size_t i, Dims... dims )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void CustomArray<N,Type,AF,PF,RT>::clear()
@@ -2475,7 +2475,7 @@ inline void CustomArray<N,Type,AF,PF,RT>::clear()
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void CustomArray<N,Type,AF,PF,RT>::swap( CustomArray& m ) noexcept
@@ -2507,7 +2507,7 @@ inline void CustomArray<N,Type,AF,PF,RT>::swap( CustomArray& m ) noexcept
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomArray<N,Type,AF,PF,RT>& CustomArray<N,Type,AF,PF,RT>::transpose()
@@ -2537,7 +2537,7 @@ inline CustomArray<N,Type,AF,PF,RT>& CustomArray<N,Type,AF,PF,RT>::transpose()
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename T >   // Type of the mapping indices
@@ -2568,7 +2568,7 @@ inline CustomArray<N,Type,AF,PF,RT>& CustomArray<N,Type,AF,PF,RT>::transpose( co
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline CustomArray<N,Type,AF,PF,RT>& CustomArray<N,Type,AF,PF,RT>::ctranspose()
@@ -2599,7 +2599,7 @@ inline CustomArray<N,Type,AF,PF,RT>& CustomArray<N,Type,AF,PF,RT>::ctranspose()
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename T >   // Type of the mapping indices
@@ -2644,7 +2644,7 @@ inline CustomArray<N,Type,AF,PF,RT>& CustomArray<N,Type,AF,PF,RT>::ctranspose( c
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename Other >  // Data type of the scalar value
@@ -2689,7 +2689,7 @@ inline CustomArray<N,Type,AF,PF,RT>& CustomArray<N,Type,AF,PF,RT>::scale( const 
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -2724,7 +2724,7 @@ inline void CustomArray<N,Type,AF,PF,RT>::reset( Type* ptr, Dims... dims )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename Other >  // Data type of the foreign expression
@@ -2747,7 +2747,7 @@ inline bool CustomArray<N,Type,AF,PF,RT>::canAlias( const Other* alias ) const n
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename Other >  // Data type of the foreign expression
@@ -2769,7 +2769,7 @@ inline bool CustomArray<N,Type,AF,PF,RT>::isAliased( const Other* alias ) const 
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool CustomArray<N,Type,AF,PF,RT>::isAligned() const noexcept
@@ -2791,7 +2791,7 @@ inline bool CustomArray<N,Type,AF,PF,RT>::isAligned() const noexcept
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool CustomArray<N,Type,AF,PF,RT>::canSMPAssign() const noexcept
@@ -2818,7 +2818,7 @@ inline bool CustomArray<N,Type,AF,PF,RT>::canSMPAssign() const noexcept
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -2850,7 +2850,7 @@ BLAZE_ALWAYS_INLINE typename CustomArray<N,Type,AF,PF,RT>::SIMDType
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -2894,7 +2894,7 @@ BLAZE_ALWAYS_INLINE typename CustomArray<N,Type,AF,PF,RT>::SIMDType
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -2936,7 +2936,7 @@ BLAZE_ALWAYS_INLINE typename CustomArray<N,Type,AF,PF,RT>::SIMDType
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -2969,7 +2969,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -3013,7 +3013,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -3056,7 +3056,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename... Dims >
@@ -3095,7 +3095,7 @@ BLAZE_ALWAYS_INLINE void
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense array
@@ -3128,7 +3128,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::assign( const DenseArray<MT>& rhs )
 */
 //template< size_t N       // Dimensionality of the array
 //        , typename Type  // Data type of the array
-//        , bool AF        // Alignment flag
+//        , AlignmentFlag AF        // Alignment flag
 //        , bool PF        // Padding flag
 //        , typename RT >  // Result type
 //template< typename MT >  // Type of the right-hand side dense array
@@ -3203,7 +3203,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::assign( const DenseArray<MT>& rhs )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense array
@@ -3236,7 +3236,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::addAssign( const DenseArray<MT>& rhs )
 */
 //template< size_t N       // Dimensionality of the array
 //        , typename Type  // Data type of the array
-//        , bool AF        // Alignment flag
+//        , AlignmentFlag AF        // Alignment flag
 //        , bool PF        // Padding flag
 //        , typename RT >  // Result type
 //template< typename MT >  // Type of the right-hand side dense array
@@ -3294,7 +3294,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::addAssign( const DenseArray<MT>& rhs )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense array
@@ -3327,7 +3327,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::subAssign( const DenseArray<MT>& rhs )
 */
 //template< size_t N       // Dimensionality of the array
 //        , typename Type  // Data type of the array
-//        , bool AF        // Alignment flag
+//        , AlignmentFlag AF        // Alignment flag
 //        , bool PF        // Padding flag
 //        , typename RT >  // Result type
 //template< typename MT >  // Type of the right-hand side dense array
@@ -3385,7 +3385,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::subAssign( const DenseArray<MT>& rhs )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 template< typename MT >  // Type of the right-hand side dense array
@@ -3418,7 +3418,7 @@ inline auto CustomArray<N,Type,AF,PF,RT>::schurAssign( const DenseArray<MT>& rhs
 */
 //template< size_t N       // Dimensionality of the array
 //        , typename Type  // Data type of the array
-//        , bool AF        // Alignment flag
+//        , AlignmentFlag AF        // Alignment flag
 //        , bool PF        // Padding flag
 //        , typename RT >  // Result type
 //template< typename MT >  // Type of the right-hand side dense array
@@ -3475,14 +3475,14 @@ inline auto CustomArray<N,Type,AF,PF,RT>::schurAssign( const DenseArray<MT>& rhs
 //@{
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void reset( CustomArray<N,Type,AF,PF,RT>& m );
 
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT    // Result type
         , typename... Dims >   // indices of row
@@ -3490,7 +3490,7 @@ inline void reset( CustomArray<N,Type,AF,PF,RT>& m, size_t i, Dims... dims );
 
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void clear( CustomArray<N,Type,AF,PF,RT>& m );
@@ -3498,21 +3498,21 @@ inline void clear( CustomArray<N,Type,AF,PF,RT>& m );
 template< bool RF        // Relaxation flag
         , size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool isDefault( const CustomArray<N,Type,AF,PF,RT>& m );
 
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool isIntact( const CustomArray<N,Type,AF,PF,RT>& m );
 
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void swap( CustomArray<N,Type,AF,PF,RT>& a, CustomArray<N,Type,AF,PF,RT>& b ) noexcept;
@@ -3529,7 +3529,7 @@ inline void swap( CustomArray<N,Type,AF,PF,RT>& a, CustomArray<N,Type,AF,PF,RT>&
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void reset( CustomArray<N,Type,AF,PF,RT>& m )
@@ -3555,7 +3555,7 @@ inline void reset( CustomArray<N,Type,AF,PF,RT>& m )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT    // Result type
         , typename... Dims >   // indices of row
@@ -3575,7 +3575,7 @@ inline void reset( CustomArray<N,Type,AF,PF,RT>& m, size_t i, Dims... dims )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void clear( CustomArray<N,Type,AF,PF,RT>& m )
@@ -3616,7 +3616,7 @@ inline void clear( CustomArray<N,Type,AF,PF,RT>& m )
 template< bool RF        // Relaxation flag
         , size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool isDefault( const CustomArray<N,Type,AF,PF,RT>& m )
@@ -3650,7 +3650,7 @@ inline bool isDefault( const CustomArray<N,Type,AF,PF,RT>& m )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline bool isIntact( const CustomArray<N,Type,AF,PF,RT>& m )
@@ -3674,7 +3674,7 @@ inline bool isIntact( const CustomArray<N,Type,AF,PF,RT>& m )
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
-        , bool AF        // Alignment flag
+        , AlignmentFlag AF        // Alignment flag
         , bool PF        // Padding flag
         , typename RT >  // Result type
 inline void swap( CustomArray<N,Type,AF,PF,RT>& a, CustomArray<N,Type,AF,PF,RT>& b ) noexcept
@@ -3694,7 +3694,7 @@ inline void swap( CustomArray<N,Type,AF,PF,RT>& a, CustomArray<N,Type,AF,PF,RT>&
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< typename ET, bool AF, bool PF, typename RT, size_t I >
+template< typename ET, AlignmentFlag AF, bool PF, typename RT, size_t I >
 struct QuatSliceTraitEval2< CustomArray< 4, ET, AF, PF, RT >, I >
 {
    using Type = DynamicTensor< ET >;
@@ -3713,7 +3713,7 @@ struct QuatSliceTraitEval2< CustomArray< 4, ET, AF, PF, RT >, I >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t N, typename T, bool AF, bool PF, typename RT >
+template< size_t N, typename T, AlignmentFlag AF, bool PF, typename RT >
 struct HasConstDataAccess< CustomArray<N,T,AF,PF,RT> >
    : public TrueType
 {};
@@ -3731,7 +3731,7 @@ struct HasConstDataAccess< CustomArray<N,T,AF,PF,RT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t N, typename T, bool AF, bool PF, typename RT >
+template< size_t N, typename T, AlignmentFlag AF, bool PF, typename RT >
 struct HasMutableDataAccess< CustomArray<N,T,AF,PF,RT> >
    : public TrueType
 {};
@@ -3749,7 +3749,7 @@ struct HasMutableDataAccess< CustomArray<N,T,AF,PF,RT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t N, typename T, bool AF, bool PF, typename RT >
+template< size_t N, typename T, AlignmentFlag AF, bool PF, typename RT >
 struct IsCustom< CustomArray<N,T,AF,PF,RT> >
    : public TrueType
 {};
@@ -3785,7 +3785,7 @@ struct IsAligned< CustomArray<N,T,aligned,PF,RT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t N, typename T, bool AF, bool PF, typename RT >
+template< size_t N, typename T, AlignmentFlag AF, bool PF, typename RT >
 struct IsContiguous< CustomArray<N,T,AF,PF,RT> >
    : public TrueType
 {};
@@ -3804,7 +3804,7 @@ struct IsContiguous< CustomArray<N,T,AF,PF,RT> >
 
 //*************************************************************************************************
 /*! \cond BLAZE_INTERNAL */
-template< size_t N, typename T, bool AF, typename RT >
+template< size_t N, typename T, AlignmentFlag AF, typename RT >
 struct IsPadded< CustomArray<N,T,AF,padded,RT> >
    : public TrueType
 {};
