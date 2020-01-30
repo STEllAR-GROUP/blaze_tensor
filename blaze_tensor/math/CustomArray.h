@@ -68,8 +68,8 @@ namespace blaze {
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
         , typename RT >  // Result type
 class Rand< CustomArray<N,Type,AF,PF,RT> >
 {
@@ -97,8 +97,8 @@ class Rand< CustomArray<N,Type,AF,PF,RT> >
 */
 template< size_t N       // Dimensionality of the array
         , typename Type  // Data type of the tensor
-        , bool AF        // Alignment flag
-        , bool PF        // Padding flag
+        , AlignmentFlag AF  // Alignment flag
+        , PaddingFlag PF    // Padding flag
         , typename RT >  // Result type
 inline void Rand< CustomArray<N,Type,AF,PF,RT> >::randomize( CustomArray<N,Type,AF,PF,RT>& tensor ) const
 {
@@ -124,8 +124,8 @@ inline void Rand< CustomArray<N,Type,AF,PF,RT> >::randomize( CustomArray<N,Type,
 */
 template< size_t N       // Dimensionality of the array
         , typename Type   // Data type of the tensor
-        , bool AF         // Alignment flag
-        , bool PF         // Padding flag
+        , AlignmentFlag AF   // Alignment flag
+        , PaddingFlag PF     // Padding flag
         , typename RT >   // Result type
 template< typename Arg >  // Min/max argument type
 inline void Rand< CustomArray<N,Type,AF,PF,RT> >::randomize( CustomArray<N,Type,AF,PF,RT>& tensor,

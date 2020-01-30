@@ -128,6 +128,12 @@ template< typename Type >                   // Data type of the tensor
 class DynamicTensor
    : public DenseTensor< DynamicTensor<Type> >
 {
+ private:
+   //**********************************************************************************************
+   //! Compilation switch for the choice of alignment.
+   static constexpr AlignmentFlag align = ( usePadding ? aligned : unaligned );
+   //**********************************************************************************************
+
  public:
    //**Type definitions****************************************************************************
    using This          = DynamicTensor<Type>;       //!< Type of this DynamicTensor instance.
@@ -145,8 +151,8 @@ class DynamicTensor
    using Pointer        = Type*;        //!< Pointer to a non-constant tensor value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant tensor value.
 
-   using Iterator      = DenseIterator<Type,usePadding>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,usePadding>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
