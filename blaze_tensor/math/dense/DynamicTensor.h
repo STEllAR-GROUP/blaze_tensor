@@ -128,12 +128,6 @@ template< typename Type >                   // Data type of the tensor
 class DynamicTensor
    : public DenseTensor< DynamicTensor<Type> >
 {
- private:
-   //**********************************************************************************************
-   //! Compilation switch for the choice of alignment.
-   static constexpr AlignmentFlag align = ( usePadding ? aligned : unaligned );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using This          = DynamicTensor<Type>;       //!< Type of this DynamicTensor instance.
@@ -151,8 +145,8 @@ class DynamicTensor
    using Pointer        = Type*;        //!< Pointer to a non-constant tensor value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant tensor value.
 
-   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,aligned>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,aligned>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -1790,7 +1784,7 @@ inline void DynamicTensor<Type>::swap( DynamicTensor& m ) noexcept
 template< typename Type > // Data type of the tensor
 inline size_t DynamicTensor<Type>::addPadding( size_t value ) const noexcept
 {
-   if( usePadding && IsVectorizable_v<Type> )
+   if( IsVectorizable_v<Type> )
       return nextMultiple<size_t>( value, SIMDSIZE );
    else return value;
 }
@@ -2067,7 +2061,7 @@ inline bool DynamicTensor<Type>::isAliased( const Other* alias ) const noexcept
 template< typename Type > // Data type of the tensor
 inline bool DynamicTensor<Type>::isAligned() const noexcept
 {
-   return ( usePadding || columns() % SIMDSIZE == 0UL );
+   return true;
 }
 //*************************************************************************************************
 
@@ -2109,10 +2103,7 @@ template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE typename DynamicTensor<Type>::SIMDType
    DynamicTensor<Type>::load( size_t k, size_t i, size_t j ) const noexcept
 {
-   if( usePadding )
-      return loada( k, i, j );
-   else
-      return loadu( k, i, j );
+   return loada( k, i, j );
 }
 //*************************************************************************************************
 
@@ -2144,7 +2135,6 @@ BLAZE_ALWAYS_INLINE typename DynamicTensor<Type>::SIMDType
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < o_, "Invalid page access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_+(k*m_+i)*nn_+j ), "Invalid alignment detected" );
 
    return loada( v_+(k*m_+i)*nn_+j );
@@ -2205,10 +2195,7 @@ template< typename Type > // Data type of the tensor
 BLAZE_ALWAYS_INLINE void
    DynamicTensor<Type>::store( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   if( usePadding )
-      storea( k, i, j, value );
-   else
-      storeu( k, i, j, value );
+   storea( k, i, j, value );
 }
 //*************************************************************************************************
 
@@ -2241,7 +2228,6 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < o_, "Invalid page access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_+(k*m_+i)*nn_+j ), "Invalid alignment detected" );
 
    storea( v_+(k*m_+i)*nn_+j, value );
@@ -2312,7 +2298,6 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( j < n_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < o_, "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_+(k*m_+i)*nn_+j ), "Invalid alignment detected" );
 
    stream( v_+(k*m_+i)*nn_+j, value );
@@ -2381,12 +2366,12 @@ inline auto DynamicTensor<Type>::assign( const DenseTensor<MT>& rhs )
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    const size_t jpos( ( remainder )?( n_ & size_t(-SIMDSIZE) ):( n_ ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
-   if( usePadding && useStreaming &&
+   if( useStreaming &&
        ( o_*m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
    {
       for (size_t k=0UL; k<o_; ++k) {
@@ -2495,7 +2480,7 @@ inline auto DynamicTensor<Type>::addAssign( const DenseTensor<MT>& rhs )
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    for (size_t k=0UL; k<o_; ++k) {
       for (size_t i=0UL; i<m_; ++i) {
@@ -2592,7 +2577,7 @@ inline auto DynamicTensor<Type>::subAssign( const DenseTensor<MT>& rhs )
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    for (size_t k=0UL; k<o_; ++k) {
       for (size_t i=0UL; i<m_; ++i)
@@ -2687,7 +2672,7 @@ inline auto DynamicTensor<Type>::schurAssign( const DenseTensor<MT>& rhs )
    BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder( !IsPadded_v<MT> );
 
    for (size_t k=0UL; k<o_; ++k) {
       for (size_t i=0UL; i<m_; ++i)
@@ -2927,7 +2912,7 @@ struct HasMutableDataAccess< DynamicTensor<T> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T > // Data type of the tensor
 struct IsAligned< DynamicTensor<T> >
-   : public BoolConstant<usePadding>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -2963,7 +2948,7 @@ struct IsContiguous< DynamicTensor<T> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T > // Data type of the tensor
 struct IsPadded< DynamicTensor<T> >
-   : public BoolConstant<usePadding>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

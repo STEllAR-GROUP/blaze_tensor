@@ -171,7 +171,7 @@ inline bool //EnableIf_t< !DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
 //    CT2 B( ~rhs );
 //
 //    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
-//    constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
+//    constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 //
 //    const size_t M( A.rows()    );
 //    const size_t N( A.columns() );

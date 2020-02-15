@@ -236,11 +236,7 @@ class StaticTensor
    static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
 
    //! Alignment adjustment.
-   static constexpr size_t NN = ( usePadding ? nextMultiple( N, SIMDSIZE ) : N );
-
-   //! Compilation switch for the choice of alignment.
-   static constexpr AlignmentFlag align = ( ( usePadding || NN % SIMDSIZE == 0UL ) ? aligned : unaligned);
-   //**********************************************************************************************
+   static constexpr size_t NN = N;
 
  public:
    //**Type definitions****************************************************************************
@@ -259,8 +255,8 @@ class StaticTensor
    using Pointer        = Type*;        //!< Pointer to a non-constant tensor value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant tensor value.
 
-   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,aligned>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,aligned>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -537,8 +533,7 @@ class StaticTensor
 
    //**********************************************************************************************
    //! Alignment of the data elements.
-   static constexpr size_t Alignment =
-      ( align ? AlignmentOf_v<Type> : std::alignment_of<Type>::value );
+   static constexpr size_t Alignment = AlignmentOf_v<Type>;
 
    //! Type of the aligned storage.
    using AlignedStorage = AlignedArray<Type,O*M*NN,Alignment>;
@@ -566,7 +561,6 @@ class StaticTensor
    BLAZE_CONSTRAINT_MUST_NOT_BE_REFERENCE_TYPE( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_CONST         ( Type );
    BLAZE_CONSTRAINT_MUST_NOT_BE_VOLATILE      ( Type );
-   BLAZE_STATIC_ASSERT( !usePadding || NN % SIMDSIZE == 0UL );
    BLAZE_STATIC_ASSERT( NN >= N );
    /*! \endcond */
    //**********************************************************************************************
@@ -2383,7 +2377,7 @@ template< typename Type  // Data type of the tensor
         , size_t N >     // Number of columns
 inline constexpr bool StaticTensor<Type,O,M,N>::isAligned() noexcept
 {
-   return align;
+   return true;
 }
 //*************************************************************************************************
 
@@ -2410,10 +2404,7 @@ template< typename Type  // Data type of the tensor
 BLAZE_ALWAYS_INLINE typename StaticTensor<Type,O,M,N>::SIMDType
    StaticTensor<Type,O,M,N>::load( size_t k, size_t i, size_t j ) const noexcept
 {
-   if( align )
-      return loada( k, i, j );
-   else
-      return loadu( k, i, j );
+   return loada( k, i, j );
 }
 //*************************************************************************************************
 
@@ -2448,7 +2439,6 @@ BLAZE_ALWAYS_INLINE typename StaticTensor<Type,O,M,N>::SIMDType
    BLAZE_INTERNAL_ASSERT( i < M, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < N, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= NN, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[(k*M+i)*NN+j] ), "Invalid alignment detected" );
 
    return loada( &v_[(k*M+i)*NN+j] );
@@ -2515,10 +2505,7 @@ template< typename Type  // Data type of the tensor
 BLAZE_ALWAYS_INLINE void
    StaticTensor<Type,O,M,N>::store( size_t k, size_t i, size_t j, const SIMDType& value ) noexcept
 {
-   if( align )
-      storea( k, i, j, value );
-   else
-      storeu( k, i, j, value );
+   storea( k, i, j, value );
 }
 //*************************************************************************************************
 
@@ -2554,7 +2541,6 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < M, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < N, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= NN, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[(k*M+i)*NN+j] ), "Invalid alignment detected" );
 
    storea( &v_[(k*M+i)*NN+j], value );
@@ -2631,7 +2617,6 @@ BLAZE_ALWAYS_INLINE void
    BLAZE_INTERNAL_ASSERT( i < M, "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( j < N, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= NN, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( &v_[(k*M+i)*NN+j] ), "Invalid alignment detected" );
 
    stream( &v_[(k*M+i)*NN+j], value );
@@ -2693,7 +2678,7 @@ inline auto StaticTensor<Type,O,M,N>::assign( const DenseTensor<MT>& rhs )
 
    BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder = !IsPadded_v<MT>;
 
    const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
@@ -2838,7 +2823,7 @@ inline auto StaticTensor<Type,O,M,N>::addAssign( const DenseTensor<MT>& rhs )
 
    BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder = !IsPadded_v<MT>;
 
    for( size_t k=0UL; k<O; ++k )
       for( size_t i=0UL; i<M; ++i )
@@ -2987,7 +2972,7 @@ inline auto StaticTensor<Type,O,M,N>::subAssign( const DenseTensor<MT>& rhs )
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder = !IsPadded_v<MT>;
 
    for( size_t k=0UL; k<O; ++k )
       for( size_t i=0UL; i<M; ++i )
@@ -3122,7 +3107,7 @@ inline auto StaticTensor<Type,O,M,N>::schurAssign( const DenseTensor<MT>& rhs )
 
    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+   constexpr bool remainder = !IsPadded_v<MT>;
 
    for( size_t k=0UL; k<O; ++k )
       for( size_t i=0UL; i<M; ++i )
@@ -3387,7 +3372,7 @@ struct IsContiguous< StaticTensor<T,O,M,N> >
 /*! \cond BLAZE_INTERNAL */
 template< typename T, size_t O, size_t M, size_t N >
 struct IsPadded< StaticTensor<T,O,M,N> >
-   : public BoolConstant<usePadding>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

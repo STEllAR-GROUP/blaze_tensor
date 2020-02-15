@@ -257,7 +257,7 @@ inline decltype(auto) norm_backend( const DenseTensor<MT>& dm, Abs abs, Power po
    const size_t M( tmp.rows()    );
    const size_t N( tmp.columns() );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<CT> > );
+   constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
 
    const size_t jpos( ( remainder )?( N & size_t(-SIMDSIZE) ):( N ) );
    BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
