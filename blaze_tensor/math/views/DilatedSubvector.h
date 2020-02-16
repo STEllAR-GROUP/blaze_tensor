@@ -1680,7 +1680,7 @@ inline void clear( DilatedSubvector<VT,TF,DF,CSAs...>&& sv )
    if( isDefault<relaxed>( dilatedsubvector( v, 10UL, 20UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename VT       // Type of the dense vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time dilatedsubvector arguments
@@ -1723,7 +1723,7 @@ inline bool isDefault( const DilatedSubvector<VT,TF,true,CSAs...>& sv )
    if( isDefault<relaxed>( dilatedsubvector( v, 10UL, 20UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename VT       // Type of the sparse vector
         , bool TF           // Transpose flag
         , size_t... CSAs >  // Compile time dilatedsubvector arguments

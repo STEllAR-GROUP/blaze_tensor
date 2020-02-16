@@ -4314,7 +4314,7 @@ inline void clear( Subtensor<TT,AF,CSAs...>&& sm )
    if( isDefault<relaxed>( subtensor( A, 22UL, 12UL, 13UL, 33UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename TT       // Type of the dense tensor
         , AlignmentFlag AF  // Alignment flag
         , size_t... CSAs >  // Compile time subtensor arguments

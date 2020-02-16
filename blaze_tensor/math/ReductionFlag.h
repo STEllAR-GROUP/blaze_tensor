@@ -68,7 +68,7 @@ namespace blaze {
    auto m = sum<pagewise>( A );  // Results in { { 8, 2, 4 }, { -4, 0, 6 } }
    \endcode
 */
-constexpr size_t pagewise = 2UL;
+constexpr ReductionFlag pagewise = 2UL;
 //*************************************************************************************************
 
 //*************************************************************************************************
@@ -84,7 +84,7 @@ constexpr size_t pagewise = 2UL;
    \endcode
 */
 template< size_t N >
-constexpr size_t reduction = N;
+constexpr ReductionFlag reduction = static_cast< ReductionFlag >( N );
 //*************************************************************************************************
 
 } // namespace blaze

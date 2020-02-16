@@ -2967,7 +2967,7 @@ inline auto dtensreduce( const DenseTensor<MT>& dm, Add /*op*/ )
    BLAZE_INTERNAL_ASSERT( tmp.columns() == N, "Invalid number of columns" );
    BLAZE_INTERNAL_ASSERT( tmp.pages()   == O, "Invalid number of pages" );
 
-   constexpr bool remainder( !usePadding || !IsPadded_v< RemoveReference_t<CT> > );
+   constexpr bool remainder( !IsPadded_v< RemoveReference_t<CT> > );
    constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
    ET redux{};

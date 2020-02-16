@@ -3495,7 +3495,7 @@ template< size_t N       // Dimensionality of the array
         , typename RT >  // Result type
 inline void clear( CustomArray<N,Type,AF,PF,RT>& m );
 
-template< bool RF        // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
         , AlignmentFlag AF        // Alignment flag
@@ -3613,7 +3613,7 @@ inline void clear( CustomArray<N,Type,AF,PF,RT>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , size_t N       // Dimensionality of the array
         , typename Type  // Data type of the array
         , AlignmentFlag AF        // Alignment flag

@@ -64,7 +64,7 @@ namespace blaze {
 // class as valid array reduction expression template.
 */
 template< typename VT  // Tensor base type of the expression
-        , size_t RF >  // Reduction flag
+        , ReductionFlag RF >  // Reduction flag
 struct ArrReduceExpr
    : public ReduceExpr<VT>
 {};

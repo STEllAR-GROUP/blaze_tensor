@@ -257,7 +257,7 @@ void ClassTest::testAlignment( const std::string& type )
       const RowMajorTensorType mat;
 
       const size_t pages( mat.pages() );
-      const size_t rows( blaze::usePadding ? mat.rows() : 1UL );
+      const size_t rows( mat.rows() );
 
       for( size_t k=0UL; k<pages; ++k )
       {
@@ -283,7 +283,7 @@ void ClassTest::testAlignment( const std::string& type )
 //    {
 //       const ColumnMajorTensorType mat;
 //
-//       const size_t columns( blaze::usePadding ? mat.columns() : 1UL );
+//       const size_t columns( mat.columns() );
 //
 //       for( size_t j=0UL; j<columns; ++j )
 //       {
@@ -315,7 +315,7 @@ void ClassTest::testAlignment( const std::string& type )
       for( size_t i=0UL; i<mats.size(); ++i )
       {
          const size_t pages( mats[i].pages() );
-         const size_t rows( blaze::usePadding ? mats[i].rows() : 1UL );
+         const size_t rows( mats[i].rows() );
 
          for( size_t k=0UL; k<pages; ++k )
          {
@@ -345,7 +345,7 @@ void ClassTest::testAlignment( const std::string& type )
 //
 //       for( size_t i=0UL; i<mats.size(); ++i )
 //       {
-//          const size_t columns( blaze::usePadding ? mats[i].columns() : 1UL );
+//          const size_t columns( mats[i].columns() );
 //
 //          for( size_t j=0UL; j<columns; ++j )
 //          {
@@ -378,7 +378,7 @@ void ClassTest::testAlignment( const std::string& type )
       for( size_t i=0UL; i<mats.size(); ++i )
       {
          const size_t pages( mats[i].pages() );
-         const size_t rows( blaze::usePadding ? mats[i].rows() : 1UL );
+         const size_t rows( mats[i].rows() );
 
          for( size_t k=0UL; k<pages; ++k )
          {
@@ -408,7 +408,7 @@ void ClassTest::testAlignment( const std::string& type )
 //
 //       for( size_t i=0UL; i<mats.size(); ++i )
 //       {
-//          const size_t columns( blaze::usePadding ? mats[i].columns() : 1UL );
+//          const size_t columns( mats[i].columns() );
 //
 //          for( size_t j=0UL; j<columns; ++j )
 //          {

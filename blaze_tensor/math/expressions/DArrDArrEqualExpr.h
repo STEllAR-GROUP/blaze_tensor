@@ -104,7 +104,7 @@ struct DArrDArrEqualExprHelper
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point arrays with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT1    // Type of the left-hand side dense array
         , typename MT2 >  // Type of the right-hand side dense array
 inline bool //EnableIf_t< !DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
@@ -148,7 +148,7 @@ inline bool //EnableIf_t< !DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point arrays with a certain accuracy margin.
 */
-// template< bool RF         // Relaxation flag
+// template< RelaxationFlag RF // Relaxation flag
 //         , typename MT1    // Type of the left-hand side dense array
 //         , typename MT2 >  // Type of the right-hand side dense array
 // inline EnableIf_t< DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
@@ -171,7 +171,7 @@ inline bool //EnableIf_t< !DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
 //    CT2 B( ~rhs );
 //
 //    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
-//    constexpr bool remainder( !usePadding || !IsPadded_v<XT1> || !IsPadded_v<XT2> );
+//    constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );
 //
 //    const size_t M( A.rows()    );
 //    const size_t N( A.columns() );

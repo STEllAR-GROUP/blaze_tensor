@@ -3781,7 +3781,7 @@ inline void clear( DilatedSubmatrix<MT,SO,DF,CSAs...>&& sm )
    if( isDefault<relaxed>( DilatedSubmatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT       // Type of the dense matrix
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time DilatedSubmatrix arguments
@@ -3834,7 +3834,7 @@ inline bool isDefault( const DilatedSubmatrix<MT,SO,true,CSAs...>& sm )
    if( isDefault<relaxed>( DilatedSubmatrix( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT       // Type of the sparse matrix
         , bool SO           // Storage order
         , size_t... CSAs >  // Compile time DilatedSubmatrix arguments

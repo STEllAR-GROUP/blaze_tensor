@@ -95,7 +95,7 @@ namespace blaze {
 */
 template< typename MT  // Type of the dense array
         , typename OP  // Type of the reduction operation
-        , size_t RF >  // Reduction flag
+        , ReductionFlag RF >  // Reduction flag
 class ReducedArray;
 //*************************************************************************************************
 
@@ -117,7 +117,7 @@ class ReducedArray;
 */
 template< typename MT    // Type of the dense array
         , typename OP    // Type of the reduction operation
-        , size_t R >     // DImension along which to perform reduction
+        , ReductionFlag R >     // Dimension along which to perform reduction
 class ReducedArray
    : public ArrReduceExpr< DenseArray< ReducedArray<MT,OP,R> >, R >
    , private Computation

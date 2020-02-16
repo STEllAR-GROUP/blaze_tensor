@@ -353,37 +353,37 @@ inline auto operator/=( DenseTensor<TT>&& tens, ST scalar )
 template< typename TT >
 bool isnan( const DenseTensor<TT>& dm );
 
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isSymmetric( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isHermitian( const DenseTensor<MT>& dm );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isUniform( const DenseTensor<MT>& dm );
 
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isLower( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isUniLower( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isStrictlyLower( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isUpper( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isUniUpper( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isStrictlyUpper( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isDiagonal( const DenseTensor<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isIdentity( const DenseTensor<MT>& dm );
 
 template< typename MT >
@@ -460,7 +460,7 @@ auto softmax( const DenseTensor<MT>& dm )
 // \param dm The dense tensor to be checked.
 // \return \a true if the tensor is a uniform tensor, \a false if not.
 */
-template< bool RF        // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT >  // Type of the dense tensor
 bool isUniform_backend( const DenseTensor<MT>& dm )
 {
@@ -520,7 +520,7 @@ bool isUniform_backend( const DenseTensor<MT>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary tensor.
 */
-template< bool RF      // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT > // Type of the dense tensor
 bool isUniform( const DenseTensor<MT>& dm )
 {

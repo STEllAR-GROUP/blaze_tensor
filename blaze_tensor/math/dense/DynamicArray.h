@@ -139,12 +139,6 @@ template< size_t N, typename Type >                   // Data type of the array
 class DynamicArray
    : public DenseArray< DynamicArray<N, Type> >
 {
- private:
-   //**********************************************************************************************
-   //! Compilation switch for the choice of alignment.
-   static constexpr AlignmentFlag align = ( usePadding ? aligned : unaligned );
-   //**********************************************************************************************
-
  public:
    //**Type definitions****************************************************************************
    using This          = DynamicArray<N, Type>;     //!< Type of this DynamicArray instance.
@@ -162,8 +156,8 @@ class DynamicArray
    using Pointer        = Type*;        //!< Pointer to a non-constant array value.
    using ConstPointer   = const Type*;  //!< Pointer to a constant array value.
 
-   using Iterator      = DenseIterator<Type,align>;        //!< Iterator over non-constant elements.
-   using ConstIterator = DenseIterator<const Type,align>;  //!< Iterator over constant elements.
+   using Iterator      = DenseIterator<Type,aligned>;        //!< Iterator over non-constant elements.
+   using ConstIterator = DenseIterator<const Type,aligned>;  //!< Iterator over constant elements.
    //**********************************************************************************************
 
    //**Rebind struct definition********************************************************************
@@ -2409,7 +2403,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline size_t DynamicArray<N, Type>::addPadding( size_t value ) noexcept
 {
-   if( usePadding && IsVectorizable_v<Type> )
+   if( IsVectorizable_v<Type> )
       return nextMultiple<size_t>( value, SIMDSIZE );
    return value;
 }
@@ -2909,7 +2903,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline bool DynamicArray<N, Type>::isAligned() const noexcept
 {
-   return ( usePadding || dims_[0] % SIMDSIZE == 0UL );
+   return true;
 }
 //*************************************************************************************************
 
@@ -2954,10 +2948,7 @@ template< typename... Dims >
 BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
    DynamicArray<N, Type>::load( Dims... dims ) const noexcept
 {
-   if( usePadding )
-      return loada( dims... );
-   else
-      return loadu( dims... );
+   return loada( dims... );
 }
 //*************************************************************************************************
 
@@ -2995,7 +2986,6 @@ BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
    MAYBE_UNUSED( indices );
 #endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims ) ), "Invalid alignment detected" );
 
    return loada( v_ + index( dims... ) );
@@ -3064,10 +3054,7 @@ template< typename... Dims >
 BLAZE_ALWAYS_INLINE void
    DynamicArray<N, Type>::store( const SIMDType& value, Dims... dims ) noexcept
 {
-   if( usePadding )
-      storea( value, dims... );
-   else
-      storeu( value, dims... );
+   storea( value, dims... );
 }
 //*************************************************************************************************
 
@@ -3105,7 +3092,6 @@ BLAZE_ALWAYS_INLINE void
    } );
 #endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims... ) ), "Invalid alignment detected" );
 
    storea( v_ + index( dims... ), value );
@@ -3186,7 +3172,6 @@ BLAZE_ALWAYS_INLINE void
    } );
 #endif
    BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( !usePadding || j % SIMDSIZE == 0UL, "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims... ) ), "Invalid alignment detected" );
 
    stream( v_ + index( dims... ), value );
@@ -3245,12 +3230,12 @@ inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
 //
 //   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 //
-//   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+//   constexpr bool remainder( !IsPadded_v<MT> );
 //
 //   const size_t jpos( ( remainder )?( dims_[0] & size_t(-SIMDSIZE) ):( dims_[0] ) );
 //   BLAZE_INTERNAL_ASSERT( !remainder || ( dims_[0] - ( dims_[0] % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
-//    if( usePadding && useStreaming &&
+//    if( useStreaming &&
 //        ( o_*m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
 //    {
 //       for (size_t k=0UL; k<o_; ++k) {
@@ -3346,7 +3331,7 @@ inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
 //
 //   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 //
-//   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+//   constexpr bool remainder( !IsPadded_v<MT> );
 //
 //   for (size_t k=0UL; k<o_; ++k) {
 //      for (size_t i=0UL; i<m_; ++i) {
@@ -3430,7 +3415,7 @@ inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
 //
 //   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 //
-//   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+//   constexpr bool remainder( !IsPadded_v<MT> );
 //
 //   for (size_t k=0UL; k<o_; ++k) {
 //      for (size_t i=0UL; i<m_; ++i)
@@ -3515,7 +3500,7 @@ inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
 //
 //   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
 //
-//   constexpr bool remainder( !usePadding || !IsPadded_v<MT> );
+//   constexpr bool remainder( !IsPadded_v<MT> );
 //
 //   for (size_t k=0UL; k<o_; ++k) {
 //      for (size_t i=0UL; i<m_; ++i)
@@ -3571,7 +3556,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline void clear( DynamicArray<N, Type>& m );
 
-template< bool RF
+template< RelaxationFlag RF
         , size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline bool isDefault( const DynamicArray<N, Type>& m );
@@ -3668,7 +3653,7 @@ inline void clear( DynamicArray<N, Type>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline bool isDefault( const DynamicArray<N, Type>& m )
@@ -3774,7 +3759,7 @@ struct HasMutableDataAccess< DynamicArray<N, Type> >
 template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 struct IsAligned< DynamicArray<N, Type> >
-   : public BoolConstant<usePadding>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************
@@ -3812,7 +3797,7 @@ struct IsContiguous< DynamicArray<N, Type> >
 template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 struct IsPadded< DynamicArray<N, Type> >
-   : public BoolConstant<usePadding>
+   : public TrueType
 {};
 /*! \endcond */
 //*************************************************************************************************

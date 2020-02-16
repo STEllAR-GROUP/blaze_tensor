@@ -362,37 +362,37 @@ inline auto operator/=( DenseArray<TT>&& arr, ST scalar )
 template< typename TT >
 bool isnan( const DenseArray<TT>& dm );
 
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isSymmetric( const DenseArray<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isHermitian( const DenseArray<MT>& dm );
 
-template< bool RF, typename MT >
+template< RelaxationFlag RF, typename MT >
 bool isUniform( const DenseArray<MT>& dm );
 
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isLower( const DenseArray<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isUniLower( const DenseArray<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isStrictlyLower( const DenseArray<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isUpper( const DenseArray<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isUniUpper( const DenseArray<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isStrictlyUpper( const DenseArray<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isDiagonal( const DenseArray<MT>& dm );
 //
-// template< bool RF, typename MT >
+// template< RelaxationFlag RF, typename MT >
 // bool isIdentity( const DenseArray<MT>& dm );
 
 template< typename MT >
@@ -468,7 +468,7 @@ auto softmax( const DenseArray<MT>& dm )
 // \param dm The dense array to be checked.
 // \return \a true if the array is a uniform array, \a false if not.
 */
-template< bool RF        // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT >  // Type of the dense array
 bool isUniform_backend( const DenseArray<MT>& dm )
 {
@@ -528,7 +528,7 @@ bool isUniform_backend( const DenseArray<MT>& dm )
 // However, note that this might require the complete evaluation of the expression, including
 // the generation of a temporary array.
 */
-template< bool RF      // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT > // Type of the dense array
 bool isUniform( const DenseArray<MT>& dm )
 {

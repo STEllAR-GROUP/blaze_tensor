@@ -870,7 +870,7 @@ inline void clear( PageSlice<MT,CRAs...>&& pageslice )
    if( isDefault<relaxed>( pageslice( A, 0UL ) ) ) { ... }
    \page()
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT       // Type of the tensor
         , size_t... CRAs >  // Compile time pageslice arguments
 inline bool isDefault( const PageSlice<MT,CRAs...>& pageslice )
