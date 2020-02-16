@@ -237,7 +237,7 @@ void ClassTest::testAlignment( const std::string& type )
    {
       const RowMajorTensorType mat(2UL, 7UL, 5UL);
 
-      const size_t rows(blaze::usePadding ? mat.rows() : 1UL);
+      const size_t rows( mat.rows() );
 
       for (size_t k=0UL; k<mat.pages(); ++k)
       {
@@ -272,7 +272,7 @@ void ClassTest::testAlignment( const std::string& type )
       {
          for (size_t k=0UL; k<mats[i].pages(); ++k)
          {
-            const size_t rows(blaze::usePadding ? mats[i].rows() : 1UL);
+            const size_t rows(mats[i].rows());
 
             for (size_t j=0UL; j<rows; ++j)
             {
@@ -305,7 +305,7 @@ void ClassTest::testAlignment( const std::string& type )
       {
          for (size_t k=0UL; k<mats[i].pages(); ++k)
          {
-            const size_t rows(blaze::usePadding ? mats[i].rows() : 1UL);
+            const size_t rows(mats[i].rows());
 
             for (size_t j=0UL; j<rows; ++j)
             {

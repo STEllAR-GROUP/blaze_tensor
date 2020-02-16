@@ -1482,7 +1482,7 @@ constexpr void reset( UniformTensor<Type>& m );
 template< typename Type, bool SO >
 constexpr void clear( UniformTensor<Type>& m );
 
-template< bool RF, typename Type, bool SO >
+template< RelaxationFlag RF, typename Type, bool SO >
 constexpr bool isDefault( const UniformTensor<Type>& m );
 
 template< typename Type, bool SO >
@@ -1549,7 +1549,7 @@ inline constexpr void clear( UniformTensor<Type>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename Type > // Data type of the tensor
 inline constexpr bool isDefault( const UniformTensor<Type>& m )
 {

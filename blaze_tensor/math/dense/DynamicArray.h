@@ -3556,7 +3556,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline void clear( DynamicArray<N, Type>& m );
 
-template< bool RF
+template< RelaxationFlag RF
         , size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline bool isDefault( const DynamicArray<N, Type>& m );
@@ -3653,7 +3653,7 @@ inline void clear( DynamicArray<N, Type>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline bool isDefault( const DynamicArray<N, Type>& m )

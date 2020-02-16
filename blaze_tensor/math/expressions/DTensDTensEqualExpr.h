@@ -103,7 +103,7 @@ struct DTensDTensEqualExprHelper
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT1    // Type of the left-hand side dense tensor
         , typename MT2 >  // Type of the right-hand side dense tensor
 inline EnableIf_t< !DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
@@ -149,7 +149,7 @@ inline EnableIf_t< !DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point matrices with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT1    // Type of the left-hand side dense tensor
         , typename MT2 >  // Type of the right-hand side dense tensor
 inline EnableIf_t< DTensDTensEqualExprHelper<MT1,MT2>::value, bool >

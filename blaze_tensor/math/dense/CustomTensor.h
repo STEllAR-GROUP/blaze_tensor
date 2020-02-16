@@ -2845,7 +2845,7 @@ inline void reset( CustomTensor<Type,AF,PF,RT>& m, size_t i, size_t k );
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, typename RT >
 inline void clear( CustomTensor<Type,AF,PF,RT>& m );
 
-template< bool RF, typename Type, AlignmentFlag AF, PaddingFlag PF, typename RT >
+template< RelaxationFlag RF, typename Type, AlignmentFlag AF, PaddingFlag PF, typename RT >
 inline bool isDefault( const CustomTensor<Type,AF,PF,RT>& m );
 
 template< typename Type, AlignmentFlag AF, PaddingFlag PF, typename RT >
@@ -2946,7 +2946,7 @@ inline void clear( CustomTensor<Type,AF,PF,RT>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename Type  // Data type of the tensor
         , AlignmentFlag AF        // Alignment flag
         , PaddingFlag PF        // Padding flag

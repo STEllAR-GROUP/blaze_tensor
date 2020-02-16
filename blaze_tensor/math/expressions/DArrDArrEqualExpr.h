@@ -104,7 +104,7 @@ struct DArrDArrEqualExprHelper
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point arrays with a certain accuracy margin.
 */
-template< bool RF         // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT1    // Type of the left-hand side dense array
         , typename MT2 >  // Type of the right-hand side dense array
 inline bool //EnableIf_t< !DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
@@ -148,7 +148,7 @@ inline bool //EnableIf_t< !DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
 // a direct comparison of two floating point numbers should be avoided. This function offers the
 // possibility to compare two floating-point arrays with a certain accuracy margin.
 */
-// template< bool RF         // Relaxation flag
+// template< RelaxationFlag RF // Relaxation flag
 //         , typename MT1    // Type of the left-hand side dense array
 //         , typename MT2 >  // Type of the right-hand side dense array
 // inline EnableIf_t< DArrDArrEqualExprHelper<MT1,MT2>::value, bool >

@@ -2988,7 +2988,7 @@ inline void clear( DilatedSubtensor<TT,DF,CSAs...>&& st )
    if( isDefault<relaxed>( DilatedSubtensor( A, 12UL, 13UL, 22UL, 33UL ) ) ) { ... }
    \endcode
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename TT       // Type of the dense tensor
         , size_t... CSAs >  // Compile time DilatedSubtensor arguments
 inline bool isDefault( const DilatedSubtensor<TT,true,CSAs...>& st )

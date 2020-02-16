@@ -236,7 +236,7 @@ class StaticTensor
    static constexpr size_t SIMDSIZE = SIMDTrait<Type>::size;
 
    //! Alignment adjustment.
-   static constexpr size_t NN = N;
+   static constexpr size_t NN = nextMultiple( N, SIMDSIZE );
 
  public:
    //**Type definitions****************************************************************************

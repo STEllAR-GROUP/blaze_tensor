@@ -899,7 +899,7 @@ inline void clear( QuatSlice<AT,CRAs...>&& quatslice )
    if( isDefault<relaxed>( quatslice( A, 0UL ) ) ) { ... }
    \quat()
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename AT       // Type of the quaternion
         , size_t... CRAs >  // Compile time quatslice arguments
 inline bool isDefault( const QuatSlice<AT,CRAs...>& quatslice )

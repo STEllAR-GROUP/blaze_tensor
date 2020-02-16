@@ -838,7 +838,7 @@ inline void clear( ColumnSlice<MT,CRAs...>&& columnslice )
    if( isDefault<relaxed>( columnslice( A, 0UL ) ) ) { ... }
    \page()
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT       // Type of the tensor
         , size_t... CRAs >  // Compile time columnslice arguments
 inline bool isDefault( const ColumnSlice<MT,CRAs...>& columnslice )

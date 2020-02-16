@@ -2724,7 +2724,7 @@ inline void reset( DynamicTensor<Type>& m, size_t i, size_t k );
 template< typename Type >
 inline void clear( DynamicTensor<Type>& m );
 
-template< bool RF, typename Type >
+template< RelaxationFlag RF, typename Type >
 inline bool isDefault( const DynamicTensor<Type>& m );
 
 template< typename Type >
@@ -2813,7 +2813,7 @@ inline void clear( DynamicTensor<Type>& m )
    if( isDefault<relaxed>( A ) ) { ... }
    \endcode
 */
-template< bool RF        // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename Type > // Data type of the tensor
 inline bool isDefault( const DynamicTensor<Type>& m )
 {

@@ -870,7 +870,7 @@ inline void clear( RowSlice<MT,CRAs...>&& rowslice )
    if( isDefault<relaxed>( rowslice( A, 0UL ) ) ) { ... }
    \page()
 */
-template< bool RF           // Relaxation flag
+template< RelaxationFlag RF // Relaxation flag
         , typename MT       // Type of the tensor
         , size_t... CRAs >  // Compile time rowslice arguments
 inline bool isDefault( const RowSlice<MT,CRAs...>& rowslice )
