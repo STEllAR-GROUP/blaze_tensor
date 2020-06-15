@@ -916,6 +916,9 @@ struct DTensTransExprData<>
    explicit inline DTensTransExprData( RTAs... args );
 
    template< typename T, typename... RTAs >
+   explicit inline DTensTransExprData( T* indices, size_t n, RTAs... args );
+
+   template< typename T, typename... RTAs >
    explicit inline DTensTransExprData( const T* indices, size_t n, RTAs... args );
 
    DTensTransExprData( const DTensTransExprData& ) = default;
@@ -977,6 +980,32 @@ inline DTensTransExprData<>::DTensTransExprData( RTAs... args )
    , reverse_indices_( {2, 1, 0} )
 {
    MAYBE_UNUSED( args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for DTensTransExprData.
+//
+// \param indices Pointer to the first index of the selected elements.
+// \param n The total number of indices.
+// \param args The optional element arguments.
+*/
+template< typename T          // Type of the element indices
+        , typename... RTAs >  // Optional element arguments
+inline DTensTransExprData<>::DTensTransExprData( T* indices, size_t n, RTAs... args )
+   : indices_( indices, indices+n )  // The indices of the elements in the tensor
+   , reverse_indices_(n)
+{
+   BLAZE_USER_ASSERT( n == 3, "Invalid number of transpose mapping indices (should be three)" );
+   MAYBE_UNUSED( args... );
+
+   for( size_t i = 0; i != 3; ++i )
+   {
+      reverse_indices_[indices_[i]] = i;
+   }
 }
 /*! \endcond */
 //*************************************************************************************************

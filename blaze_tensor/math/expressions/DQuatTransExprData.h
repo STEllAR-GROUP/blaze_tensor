@@ -3990,6 +3990,9 @@ struct DQuatTransExprData<>
    explicit inline DQuatTransExprData( RTAs... args );
 
    template< typename T, typename... RTAs >
+   explicit inline DQuatTransExprData( T* indices, size_t n, RTAs... args );
+
+   template< typename T, typename... RTAs >
    explicit inline DQuatTransExprData( const T* indices, size_t n, RTAs... args );
 
    DQuatTransExprData( const DQuatTransExprData& ) = default;
@@ -4053,6 +4056,32 @@ inline DQuatTransExprData<>::DQuatTransExprData( RTAs... args )
    , reverse_indices_( {3, 2, 1, 0} )
 {
    MAYBE_UNUSED( args... );
+}
+/*! \endcond */
+//*************************************************************************************************
+
+
+//*************************************************************************************************
+/*! \cond BLAZE_INTERNAL */
+/*!\brief The constructor for DQuatTransExprData.
+//
+// \param indices Pointer to the first index of the selected elements.
+// \param n The total number of indices.
+// \param args The optional element arguments.
+*/
+template< typename T          // Type of the element indices
+        , typename... RTAs >  // Optional element arguments
+inline DQuatTransExprData<>::DQuatTransExprData( T* indices, size_t n, RTAs... args )
+   : indices_( indices, indices+n )  // The indices of the elements in the quaternion
+   , reverse_indices_(n)
+{
+   BLAZE_USER_ASSERT( n == 4, "Invalid number of transpose mapping indices (should be four)" );
+   MAYBE_UNUSED( args... );
+
+   for( size_t i = 0; i != 4; ++i )
+   {
+      reverse_indices_[indices_[i]] = i;
+   }
 }
 /*! \endcond */
 //*************************************************************************************************
