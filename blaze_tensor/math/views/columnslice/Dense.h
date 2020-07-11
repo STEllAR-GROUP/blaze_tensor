@@ -42,6 +42,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/views/row/Dense.h>
+#include <blaze/math/traits/SchurTrait.h>
 
 #include <blaze_tensor/math/InitializerList.h>
 #include <blaze_tensor/math/constraints/DenseTensor.h>

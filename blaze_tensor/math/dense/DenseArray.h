@@ -487,8 +487,8 @@ bool isUniform_backend( const DenseArray<MT>& dm )
    const auto& cmp( (~dm)( dims ) );
 
    return ArrayForEachGroupedAllOf( ( ~dm ).dimensions(),
-      [&]( std::array< size_t, N > const& dims ) {
-         return equal< RF >( ( ~dm )( dims ), cmp );
+      [&]( std::array< size_t, N > const& ds ) {
+         return equal< RF >( ( ~dm )( ds ), cmp );
       } );
 }
 /*! \endcond */

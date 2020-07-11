@@ -42,6 +42,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/DMatDMatAddExpr.h>
+#include <blaze/math/typetraits/IsHermitian.h>
 
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/constraints/TensTensAddExpr.h>

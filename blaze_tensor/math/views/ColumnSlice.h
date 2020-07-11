@@ -931,7 +931,7 @@ template< typename MT     // Type of the tensor
 inline bool trySet( const ColumnSlice<MT,CRAs...>& columnslice, size_t i, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < columnslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
 
    return trySet( columnslice.operand(), i, columnslice.column(), k, value );
 }
@@ -961,7 +961,7 @@ template< typename MT     // Type of the tensor
 inline bool tryAdd( const ColumnSlice<MT,CRAs...>& columnslice, size_t i, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < columnslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
 
    return tryAdd( columnslice.operand(), i, columnslice.column(), k, value );
 }
@@ -991,7 +991,7 @@ template< typename MT     // Type of the tensor
 inline bool trySub( const ColumnSlice<MT,CRAs...>& columnslice, size_t i, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < columnslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
 
    return trySub( columnslice.operand(), i, columnslice.column(), k, value );
 }
@@ -1021,7 +1021,7 @@ template< typename MT     // Type of the tensor
 inline bool tryMult( const ColumnSlice<MT,CRAs...>& columnslice, size_t i, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < columnslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
 
    return tryMult( columnslice.operand(), i, columnslice.column(), k, value );
 }
@@ -1083,7 +1083,7 @@ template< typename MT     // Type of the tensor
 inline bool tryDiv( const ColumnSlice<MT,CRAs...>& columnslice, size_t i, size_t k, const ET& value )
 {
    BLAZE_INTERNAL_ASSERT( i < columnslice.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( j < columnslice.columns(), "Invalid column access index" );
 
    return tryDiv( columnslice.operand(), i, columnslice.column(), k, value );
 }

@@ -42,6 +42,7 @@
 //*************************************************************************************************
 
 #include <blaze/math/expressions/DMatScalarDivExpr.h>
+#include <blaze/math/typetraits/IsMultExpr.h>
 
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/expressions/Forward.h>

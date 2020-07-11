@@ -3566,7 +3566,7 @@ void ClassTest::testTranspose()
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n"
                         "(( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n"
-                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n";
+                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n"
                         " ( 2 2 2 2 2 )\n( 2 2 2 2 2 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3651,9 +3651,9 @@ void ClassTest::testTranspose()
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n"
                         "(( 2 2 2 )\n( 2 2 2 )\n"
-                        " ( 2 2 2 )\n( 2 2 2 )\n";
-                        " ( 2 2 2 )\n( 2 2 2 )\n";
-                        " ( 2 2 2 )\n( 2 2 2 )\n";
+                        " ( 2 2 2 )\n( 2 2 2 )\n"
+                        " ( 2 2 2 )\n( 2 2 2 )\n"
+                        " ( 2 2 2 )\n( 2 2 2 )\n"
                         " ( 2 2 2 )\n( 2 2 2 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3698,9 +3698,9 @@ void ClassTest::testTranspose()
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n"
                         "(( 2 2 )\n( 2 2 )\n( 2 2 )\n"
-                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
-                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
-                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n"
                         " ( 2 2 )\n( 2 2 )\n( 2 2 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3815,7 +3815,7 @@ void ClassTest::testTranspose()
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n"
                         "(( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n"
-                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n";
+                        " ( 2 2 2 2 2 )\n( 2 2 2 2 2 )\n"
                         " ( 2 2 2 2 2 )\n( 2 2 2 2 2 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3900,9 +3900,9 @@ void ClassTest::testTranspose()
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n"
                         "(( 2 2 2 )\n( 2 2 2 )\n"
-                        " ( 2 2 2 )\n( 2 2 2 )\n";
-                        " ( 2 2 2 )\n( 2 2 2 )\n";
-                        " ( 2 2 2 )\n( 2 2 2 )\n";
+                        " ( 2 2 2 )\n( 2 2 2 )\n"
+                        " ( 2 2 2 )\n( 2 2 2 )\n"
+                        " ( 2 2 2 )\n( 2 2 2 )\n"
                         " ( 2 2 2 )\n( 2 2 2 ))\n";
             throw std::runtime_error( oss.str() );
          }
@@ -3947,9 +3947,9 @@ void ClassTest::testTranspose()
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n"
                         "(( 2 2 )\n( 2 2 )\n( 2 2 )\n"
-                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
-                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
-                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n";
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n"
+                        " ( 2 2 )\n( 2 2 )\n( 2 2 )\n"
                         " ( 2 2 )\n( 2 2 )\n( 2 2 ))\n";
             throw std::runtime_error( oss.str() );
          }

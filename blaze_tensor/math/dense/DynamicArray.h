@@ -2055,8 +2055,8 @@ inline size_t DynamicArray<N, Type>::capacity( size_t i, Dims... dims ) const no
 
 #if defined(BLAZE_USER_ASSERTION)
    size_t indices[] = { size_t(dims)..., i, 0 };
-   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
-      BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
+   ArrayDimForEach( dims_, [&]( size_t j, size_t dim ) {
+      BLAZE_USER_ASSERT( indices[N - j - 1] < dim, "Invalid array access index" );
    } );
    MAYBE_UNUSED( indices );
 #endif
@@ -2109,8 +2109,8 @@ inline size_t DynamicArray<N, Type>::nonZeros( size_t i, Dims... dims ) const
 
 #if defined(BLAZE_USER_ASSERTION)
    size_t indices[] = { size_t(dims)..., i, 0 };
-   ArrayDimForEach( dims_, [&]( size_t i, size_t dim ) {
-      BLAZE_USER_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
+   ArrayDimForEach( dims_, [&]( size_t j, size_t dim ) {
+      BLAZE_USER_ASSERT( indices[N - j - 1] < dim, "Invalid array access index" );
    } );
    MAYBE_UNUSED( indices );
 #endif
@@ -2303,7 +2303,7 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 inline void DynamicArray<N, Type>::extend( std::array< size_t, N > const& dims, bool preserve )
 {
-   BLAZE_USER_ASSERT( N == n, "invalid dimensionality specified" );
+   //BLAZE_USER_ASSERT( N == n, "invalid dimensionality specified" );
 
    std::array< size_t, N > newdims;
    ArrayDimForEach(
@@ -2475,9 +2475,9 @@ inline size_t DynamicArray<N, Type>::row_index( size_t i, Dims... dims ) const n
    const size_t indices[] = { static_cast<size_t>(dims)..., i, 0UL };
 
    size_t idx = 0UL;
-   for( size_t i = N - 1; i > 1; --i ) {
-      BLAZE_USER_ASSERT(indices[N - i - 1] < dims_[i], "Invalid access index" );
-      idx = (idx + indices[N - i - 1]) * dims_[i - 1];
+   for( size_t j = N - 1; j > 1; --j ) {
+      BLAZE_USER_ASSERT(indices[N - j - 1] < dims_[j], "Invalid access index" );
+      idx = (idx + indices[N - j - 1]) * dims_[j - 1];
    }
 
    BLAZE_USER_ASSERT(indices[N - 2] < dims_[1], "Invalid access index" );
@@ -2985,8 +2985,8 @@ BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
    } );
    MAYBE_UNUSED( indices );
 #endif
-   BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims ) ), "Invalid alignment detected" );
+   //BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims ) ), "Invalid alignment detected" );
 
    return loada( v_ + index( dims... ) );
 }
@@ -3025,7 +3025,7 @@ BLAZE_ALWAYS_INLINE typename DynamicArray<N, Type>::SIMDType
    } );
    MAYBE_UNUSED( indices );
 #endif
-   BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
 
    return loadu( v_ + index( dims... ) );
 }
@@ -3091,8 +3091,8 @@ BLAZE_ALWAYS_INLINE void
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
 #endif
-   BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims... ) ), "Invalid alignment detected" );
+   //BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims... ) ), "Invalid alignment detected" );
 
    storea( v_ + index( dims... ), value );
 }
@@ -3131,7 +3131,7 @@ BLAZE_ALWAYS_INLINE void
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
 #endif
-   BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
 
    storeu( v_ + index( dims... ), value );
 }
@@ -3171,8 +3171,8 @@ BLAZE_ALWAYS_INLINE void
       BLAZE_INTERNAL_ASSERT( indices[N - i - 1] < dim, "Invalid array access index" );
    } );
 #endif
-   BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims... ) ), "Invalid alignment detected" );
+   //BLAZE_INTERNAL_ASSERT( j + SIMDSIZE <= nn_, "Invalid column access index" );
+   //BLAZE_INTERNAL_ASSERT( checkAlignment( v_ + index( dims... ) ), "Invalid alignment detected" );
 
    stream( v_ + index( dims... ), value );
 }

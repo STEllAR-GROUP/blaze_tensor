@@ -47,6 +47,7 @@
 #include <blaze/math/expressions/Forward.h>
 #include <blaze/math/expressions/DMatMapExpr.h>
 #include <blaze/math/typetraits/IsSIMDEnabled.h>
+#include <blaze/math/typetraits/UnderlyingNumeric.h>
 
 #include <blaze_tensor/math/constraints/DenseTensor.h>
 #include <blaze_tensor/math/expressions/DenseTensor.h>
@@ -454,7 +455,7 @@ class DTensMapExpr
    // \param j Access index for the column. The index has to be in the range \f$[0..N-1]\f$.
    // \return Reference to the accessed values.
    */
-   BLAZE_ALWAYS_INLINE auto load( size_t i, size_t j ) const noexcept {
+   BLAZE_ALWAYS_INLINE auto load( size_t k, size_t i, size_t j ) const noexcept {
       BLAZE_INTERNAL_ASSERT( i < dm_.rows()   , "Invalid row access index"    );
       BLAZE_INTERNAL_ASSERT( j < dm_.columns(), "Invalid column access index" );
       BLAZE_INTERNAL_ASSERT( k < dm_.pages()  , "Invalid page access index" );
