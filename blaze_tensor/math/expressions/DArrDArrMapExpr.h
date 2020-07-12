@@ -631,7 +631,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs_).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense array operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense array operand
@@ -664,7 +664,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs_).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense array operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense array operand
@@ -697,7 +697,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs_).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense array operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense array operand
@@ -730,7 +730,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs_).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense array operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense array operand
@@ -763,7 +763,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs_).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense array operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense array operand
@@ -797,7 +797,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs_).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense array operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense array operand
@@ -831,7 +831,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs_).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense array operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense array operand
@@ -865,7 +865,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs_).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense array operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense array operand

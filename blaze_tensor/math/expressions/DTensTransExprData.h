@@ -130,6 +130,7 @@ struct DTensTransExprData<0UL, 1UL, 2UL>
    */
    static inline constexpr size_t page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
 
@@ -143,6 +144,7 @@ struct DTensTransExprData<0UL, 1UL, 2UL>
    */
    static inline constexpr size_t row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
 
@@ -156,6 +158,7 @@ struct DTensTransExprData<0UL, 1UL, 2UL>
    */
    static inline constexpr size_t column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
    //@}
@@ -171,6 +174,7 @@ struct DTensTransExprData<0UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
 
@@ -184,6 +188,7 @@ struct DTensTransExprData<0UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
 
@@ -197,6 +202,7 @@ struct DTensTransExprData<0UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
    //@}
@@ -266,6 +272,7 @@ struct DTensTransExprData<0UL, 2UL, 1UL>
    */
    static inline constexpr size_t page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
 
@@ -279,6 +286,7 @@ struct DTensTransExprData<0UL, 2UL, 1UL>
    */
    static inline constexpr size_t row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
 
@@ -292,6 +300,7 @@ struct DTensTransExprData<0UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
    //@}
@@ -307,6 +316,7 @@ struct DTensTransExprData<0UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
 
@@ -320,6 +330,7 @@ struct DTensTransExprData<0UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
 
@@ -333,6 +344,7 @@ struct DTensTransExprData<0UL, 2UL, 1UL>
    */
    static inline constexpr size_t column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
    //@}
@@ -402,6 +414,7 @@ struct DTensTransExprData<1UL, 0UL, 2UL>
    */
    static inline constexpr size_t page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
 
@@ -415,6 +428,7 @@ struct DTensTransExprData<1UL, 0UL, 2UL>
    */
    static inline constexpr size_t row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
 
@@ -428,6 +442,7 @@ struct DTensTransExprData<1UL, 0UL, 2UL>
    */
    static inline constexpr size_t column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
    //@}
@@ -443,6 +458,7 @@ struct DTensTransExprData<1UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
 
@@ -456,6 +472,7 @@ struct DTensTransExprData<1UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
 
@@ -469,6 +486,7 @@ struct DTensTransExprData<1UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
    //@}
@@ -538,6 +556,7 @@ struct DTensTransExprData<1UL, 2UL, 0UL>
    */
    static inline constexpr size_t page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
 
@@ -551,6 +570,7 @@ struct DTensTransExprData<1UL, 2UL, 0UL>
    */
    static inline constexpr size_t row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
 
@@ -564,6 +584,7 @@ struct DTensTransExprData<1UL, 2UL, 0UL>
    */
    static inline constexpr size_t column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
    //@}
@@ -579,6 +600,7 @@ struct DTensTransExprData<1UL, 2UL, 0UL>
    */
    static inline constexpr size_t reverse_page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
 
@@ -592,6 +614,7 @@ struct DTensTransExprData<1UL, 2UL, 0UL>
    */
    static inline constexpr size_t reverse_row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
 
@@ -605,6 +628,7 @@ struct DTensTransExprData<1UL, 2UL, 0UL>
    */
    static inline constexpr size_t reverse_column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
    //@}
@@ -674,6 +698,7 @@ struct DTensTransExprData<2UL, 0UL, 1UL>
    */
    static inline constexpr size_t page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
 
@@ -687,6 +712,7 @@ struct DTensTransExprData<2UL, 0UL, 1UL>
    */
    static inline constexpr size_t row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
 
@@ -700,6 +726,7 @@ struct DTensTransExprData<2UL, 0UL, 1UL>
    */
    static inline constexpr size_t column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
    //@}
@@ -715,6 +742,7 @@ struct DTensTransExprData<2UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
 
@@ -728,6 +756,7 @@ struct DTensTransExprData<2UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
 
@@ -741,6 +770,7 @@ struct DTensTransExprData<2UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
    //@}
@@ -810,6 +840,7 @@ struct DTensTransExprData<2UL, 1UL, 0UL>
    */
    static inline constexpr size_t page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
 
@@ -823,6 +854,7 @@ struct DTensTransExprData<2UL, 1UL, 0UL>
    */
    static inline constexpr size_t row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
 
@@ -836,6 +868,7 @@ struct DTensTransExprData<2UL, 1UL, 0UL>
    */
    static inline constexpr size_t column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
    //@}
@@ -851,6 +884,7 @@ struct DTensTransExprData<2UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_page  ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i );
       return j;
    }
 
@@ -864,6 +898,7 @@ struct DTensTransExprData<2UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_row   ( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, j );
       return i;
    }
 
@@ -877,6 +912,7 @@ struct DTensTransExprData<2UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_column( size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( i, j );
       return k;
    }
    //@}

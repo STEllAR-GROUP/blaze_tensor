@@ -330,7 +330,7 @@ BLAZE_ALWAYS_INLINE bool
 /*!\brief Predict invariant violations by scaling a single element of a tensor.
 // \ingroup tensor
 //
-// \param mat The target tensor.
+// \param tens The target tensor.
 // \param i The row index of the element to be modified.
 // \param j The column index of the element to be modified.
 // \param k The page index of the element to be modified.
@@ -344,13 +344,13 @@ BLAZE_ALWAYS_INLINE bool
 */
 template< typename MT    // Type of the tensor
         , typename ET >  // Type of the element
-BLAZE_ALWAYS_INLINE bool tryDiv( const Tensor<MT>& mat, size_t k, size_t i, size_t j, const ET& value )
+BLAZE_ALWAYS_INLINE bool tryDiv( const Tensor<MT>& tens, size_t k, size_t i, size_t j, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( i < (~mat).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( j < (~mat).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( i < (~tens).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( j < (~tens).columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( k < (~tens).pages(), "Invalid page access index" );
 
-   MAYBE_UNUSED( mat, k, i, j, value );
+   MAYBE_UNUSED( tens, k, i, j, value );
 
    return true;
 }

@@ -132,6 +132,7 @@ struct DQuatTransExprData<0UL, 1UL, 2UL, 3UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -146,6 +147,7 @@ struct DQuatTransExprData<0UL, 1UL, 2UL, 3UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -160,6 +162,7 @@ struct DQuatTransExprData<0UL, 1UL, 2UL, 3UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -174,6 +177,7 @@ struct DQuatTransExprData<0UL, 1UL, 2UL, 3UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -190,6 +194,7 @@ struct DQuatTransExprData<0UL, 1UL, 2UL, 3UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -204,6 +209,7 @@ struct DQuatTransExprData<0UL, 1UL, 2UL, 3UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -218,6 +224,7 @@ struct DQuatTransExprData<0UL, 1UL, 2UL, 3UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -232,6 +239,7 @@ struct DQuatTransExprData<0UL, 1UL, 2UL, 3UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -302,6 +310,7 @@ struct DQuatTransExprData<0UL, 1UL, 3UL, 2UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -316,6 +325,7 @@ struct DQuatTransExprData<0UL, 1UL, 3UL, 2UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -330,6 +340,7 @@ struct DQuatTransExprData<0UL, 1UL, 3UL, 2UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -344,6 +355,7 @@ struct DQuatTransExprData<0UL, 1UL, 3UL, 2UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -360,6 +372,7 @@ struct DQuatTransExprData<0UL, 1UL, 3UL, 2UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -374,6 +387,7 @@ struct DQuatTransExprData<0UL, 1UL, 3UL, 2UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -388,6 +402,7 @@ struct DQuatTransExprData<0UL, 1UL, 3UL, 2UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -402,6 +417,7 @@ struct DQuatTransExprData<0UL, 1UL, 3UL, 2UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -471,6 +487,7 @@ struct DQuatTransExprData<0UL, 2UL, 1UL, 3UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -485,6 +502,7 @@ struct DQuatTransExprData<0UL, 2UL, 1UL, 3UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -499,6 +517,7 @@ struct DQuatTransExprData<0UL, 2UL, 1UL, 3UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -513,6 +532,7 @@ struct DQuatTransExprData<0UL, 2UL, 1UL, 3UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -529,6 +549,7 @@ struct DQuatTransExprData<0UL, 2UL, 1UL, 3UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -543,6 +564,7 @@ struct DQuatTransExprData<0UL, 2UL, 1UL, 3UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -557,6 +579,7 @@ struct DQuatTransExprData<0UL, 2UL, 1UL, 3UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -571,6 +594,7 @@ struct DQuatTransExprData<0UL, 2UL, 1UL, 3UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -639,6 +663,7 @@ struct DQuatTransExprData<0UL, 2UL, 3UL, 1UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -653,6 +678,7 @@ struct DQuatTransExprData<0UL, 2UL, 3UL, 1UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -667,6 +693,7 @@ struct DQuatTransExprData<0UL, 2UL, 3UL, 1UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -681,6 +708,7 @@ struct DQuatTransExprData<0UL, 2UL, 3UL, 1UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -697,6 +725,7 @@ struct DQuatTransExprData<0UL, 2UL, 3UL, 1UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -711,6 +740,7 @@ struct DQuatTransExprData<0UL, 2UL, 3UL, 1UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -725,6 +755,7 @@ struct DQuatTransExprData<0UL, 2UL, 3UL, 1UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -739,6 +770,7 @@ struct DQuatTransExprData<0UL, 2UL, 3UL, 1UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -808,6 +840,7 @@ struct DQuatTransExprData<0UL, 3UL, 1UL, 2UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -822,6 +855,7 @@ struct DQuatTransExprData<0UL, 3UL, 1UL, 2UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -836,6 +870,7 @@ struct DQuatTransExprData<0UL, 3UL, 1UL, 2UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -850,6 +885,7 @@ struct DQuatTransExprData<0UL, 3UL, 1UL, 2UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -866,6 +902,7 @@ struct DQuatTransExprData<0UL, 3UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -880,6 +917,7 @@ struct DQuatTransExprData<0UL, 3UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -894,6 +932,7 @@ struct DQuatTransExprData<0UL, 3UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -908,6 +947,7 @@ struct DQuatTransExprData<0UL, 3UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -976,6 +1016,7 @@ struct DQuatTransExprData<0UL, 3UL, 2UL, 1UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -990,6 +1031,7 @@ struct DQuatTransExprData<0UL, 3UL, 2UL, 1UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -1004,6 +1046,7 @@ struct DQuatTransExprData<0UL, 3UL, 2UL, 1UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -1018,6 +1061,7 @@ struct DQuatTransExprData<0UL, 3UL, 2UL, 1UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -1034,6 +1078,7 @@ struct DQuatTransExprData<0UL, 3UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1048,6 +1093,7 @@ struct DQuatTransExprData<0UL, 3UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -1062,6 +1108,7 @@ struct DQuatTransExprData<0UL, 3UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -1076,6 +1123,7 @@ struct DQuatTransExprData<0UL, 3UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -1145,6 +1193,7 @@ struct DQuatTransExprData<1UL, 0UL, 2UL, 3UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -1159,6 +1208,7 @@ struct DQuatTransExprData<1UL, 0UL, 2UL, 3UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1173,6 +1223,7 @@ struct DQuatTransExprData<1UL, 0UL, 2UL, 3UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -1187,6 +1238,7 @@ struct DQuatTransExprData<1UL, 0UL, 2UL, 3UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -1203,6 +1255,7 @@ struct DQuatTransExprData<1UL, 0UL, 2UL, 3UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -1217,6 +1270,7 @@ struct DQuatTransExprData<1UL, 0UL, 2UL, 3UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1231,6 +1285,7 @@ struct DQuatTransExprData<1UL, 0UL, 2UL, 3UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -1245,6 +1300,7 @@ struct DQuatTransExprData<1UL, 0UL, 2UL, 3UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -1315,6 +1371,7 @@ struct DQuatTransExprData<1UL, 0UL, 3UL, 2UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -1329,6 +1386,7 @@ struct DQuatTransExprData<1UL, 0UL, 3UL, 2UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1343,6 +1401,7 @@ struct DQuatTransExprData<1UL, 0UL, 3UL, 2UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -1357,6 +1416,7 @@ struct DQuatTransExprData<1UL, 0UL, 3UL, 2UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -1373,6 +1433,7 @@ struct DQuatTransExprData<1UL, 0UL, 3UL, 2UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -1387,6 +1448,7 @@ struct DQuatTransExprData<1UL, 0UL, 3UL, 2UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1401,6 +1463,7 @@ struct DQuatTransExprData<1UL, 0UL, 3UL, 2UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -1415,6 +1478,7 @@ struct DQuatTransExprData<1UL, 0UL, 3UL, 2UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -1484,6 +1548,7 @@ struct DQuatTransExprData<1UL, 2UL, 0UL, 3UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -1498,6 +1563,7 @@ struct DQuatTransExprData<1UL, 2UL, 0UL, 3UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -1512,6 +1578,7 @@ struct DQuatTransExprData<1UL, 2UL, 0UL, 3UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1526,6 +1593,7 @@ struct DQuatTransExprData<1UL, 2UL, 0UL, 3UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -1542,6 +1610,7 @@ struct DQuatTransExprData<1UL, 2UL, 0UL, 3UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -1556,6 +1625,7 @@ struct DQuatTransExprData<1UL, 2UL, 0UL, 3UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1570,6 +1640,7 @@ struct DQuatTransExprData<1UL, 2UL, 0UL, 3UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -1584,6 +1655,7 @@ struct DQuatTransExprData<1UL, 2UL, 0UL, 3UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -1653,6 +1725,7 @@ struct DQuatTransExprData<1UL, 2UL, 3UL, 0UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -1667,6 +1740,7 @@ struct DQuatTransExprData<1UL, 2UL, 3UL, 0UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -1681,6 +1755,7 @@ struct DQuatTransExprData<1UL, 2UL, 3UL, 0UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -1695,6 +1770,7 @@ struct DQuatTransExprData<1UL, 2UL, 3UL, 0UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}
@@ -1711,6 +1787,7 @@ struct DQuatTransExprData<1UL, 2UL, 3UL, 0UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -1725,6 +1802,7 @@ struct DQuatTransExprData<1UL, 2UL, 3UL, 0UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1739,6 +1817,7 @@ struct DQuatTransExprData<1UL, 2UL, 3UL, 0UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -1753,6 +1832,7 @@ struct DQuatTransExprData<1UL, 2UL, 3UL, 0UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -1823,6 +1903,7 @@ struct DQuatTransExprData<1UL, 3UL, 0UL, 2UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -1837,6 +1918,7 @@ struct DQuatTransExprData<1UL, 3UL, 0UL, 2UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -1851,6 +1933,7 @@ struct DQuatTransExprData<1UL, 3UL, 0UL, 2UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1865,6 +1948,7 @@ struct DQuatTransExprData<1UL, 3UL, 0UL, 2UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -1881,6 +1965,7 @@ struct DQuatTransExprData<1UL, 3UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -1895,6 +1980,7 @@ struct DQuatTransExprData<1UL, 3UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -1909,6 +1995,7 @@ struct DQuatTransExprData<1UL, 3UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -1923,6 +2010,7 @@ struct DQuatTransExprData<1UL, 3UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -1992,6 +2080,7 @@ struct DQuatTransExprData<2UL, 0UL, 1UL, 3UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2006,6 +2095,7 @@ struct DQuatTransExprData<2UL, 0UL, 1UL, 3UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2020,6 +2110,7 @@ struct DQuatTransExprData<2UL, 0UL, 1UL, 3UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -2034,6 +2125,7 @@ struct DQuatTransExprData<2UL, 0UL, 1UL, 3UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -2050,6 +2142,7 @@ struct DQuatTransExprData<2UL, 0UL, 1UL, 3UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -2064,6 +2157,7 @@ struct DQuatTransExprData<2UL, 0UL, 1UL, 3UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2078,6 +2172,7 @@ struct DQuatTransExprData<2UL, 0UL, 1UL, 3UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2092,6 +2187,7 @@ struct DQuatTransExprData<2UL, 0UL, 1UL, 3UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -2160,6 +2256,7 @@ struct DQuatTransExprData<2UL, 0UL, 3UL, 1UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2174,6 +2271,7 @@ struct DQuatTransExprData<2UL, 0UL, 3UL, 1UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2188,6 +2286,7 @@ struct DQuatTransExprData<2UL, 0UL, 3UL, 1UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -2202,6 +2301,7 @@ struct DQuatTransExprData<2UL, 0UL, 3UL, 1UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -2218,6 +2318,7 @@ struct DQuatTransExprData<2UL, 0UL, 3UL, 1UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -2232,6 +2333,7 @@ struct DQuatTransExprData<2UL, 0UL, 3UL, 1UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -2246,6 +2348,7 @@ struct DQuatTransExprData<2UL, 0UL, 3UL, 1UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2260,6 +2363,7 @@ struct DQuatTransExprData<2UL, 0UL, 3UL, 1UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -2329,6 +2433,7 @@ struct DQuatTransExprData<2UL, 1UL, 0UL, 3UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2343,6 +2448,7 @@ struct DQuatTransExprData<2UL, 1UL, 0UL, 3UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -2357,6 +2463,7 @@ struct DQuatTransExprData<2UL, 1UL, 0UL, 3UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2371,6 +2478,7 @@ struct DQuatTransExprData<2UL, 1UL, 0UL, 3UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -2387,6 +2495,7 @@ struct DQuatTransExprData<2UL, 1UL, 0UL, 3UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2401,6 +2510,7 @@ struct DQuatTransExprData<2UL, 1UL, 0UL, 3UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -2415,6 +2525,7 @@ struct DQuatTransExprData<2UL, 1UL, 0UL, 3UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2429,6 +2540,7 @@ struct DQuatTransExprData<2UL, 1UL, 0UL, 3UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
    //@}
@@ -2498,6 +2610,7 @@ struct DQuatTransExprData<2UL, 1UL, 3UL, 0UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2512,6 +2625,7 @@ struct DQuatTransExprData<2UL, 1UL, 3UL, 0UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -2526,6 +2640,7 @@ struct DQuatTransExprData<2UL, 1UL, 3UL, 0UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -2540,6 +2655,7 @@ struct DQuatTransExprData<2UL, 1UL, 3UL, 0UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}
@@ -2556,6 +2672,7 @@ struct DQuatTransExprData<2UL, 1UL, 3UL, 0UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -2570,6 +2687,7 @@ struct DQuatTransExprData<2UL, 1UL, 3UL, 0UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -2584,6 +2702,7 @@ struct DQuatTransExprData<2UL, 1UL, 3UL, 0UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2598,6 +2717,7 @@ struct DQuatTransExprData<2UL, 1UL, 3UL, 0UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -2667,6 +2787,7 @@ struct DQuatTransExprData<2UL, 3UL, 0UL, 1UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2681,6 +2802,7 @@ struct DQuatTransExprData<2UL, 3UL, 0UL, 1UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -2695,6 +2817,7 @@ struct DQuatTransExprData<2UL, 3UL, 0UL, 1UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2709,6 +2832,7 @@ struct DQuatTransExprData<2UL, 3UL, 0UL, 1UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -2725,6 +2849,7 @@ struct DQuatTransExprData<2UL, 3UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2739,6 +2864,7 @@ struct DQuatTransExprData<2UL, 3UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -2753,6 +2879,7 @@ struct DQuatTransExprData<2UL, 3UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2767,6 +2894,7 @@ struct DQuatTransExprData<2UL, 3UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -2836,6 +2964,7 @@ struct DQuatTransExprData<2UL, 3UL, 1UL, 0UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2850,6 +2979,7 @@ struct DQuatTransExprData<2UL, 3UL, 1UL, 0UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -2864,6 +2994,7 @@ struct DQuatTransExprData<2UL, 3UL, 1UL, 0UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -2878,6 +3009,7 @@ struct DQuatTransExprData<2UL, 3UL, 1UL, 0UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}
@@ -2894,6 +3026,7 @@ struct DQuatTransExprData<2UL, 3UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -2908,6 +3041,7 @@ struct DQuatTransExprData<2UL, 3UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -2922,6 +3056,7 @@ struct DQuatTransExprData<2UL, 3UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -2936,6 +3071,7 @@ struct DQuatTransExprData<2UL, 3UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -3005,6 +3141,7 @@ struct DQuatTransExprData<3UL, 0UL, 1UL, 2UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3019,6 +3156,7 @@ struct DQuatTransExprData<3UL, 0UL, 1UL, 2UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -3033,6 +3171,7 @@ struct DQuatTransExprData<3UL, 0UL, 1UL, 2UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -3047,6 +3186,7 @@ struct DQuatTransExprData<3UL, 0UL, 1UL, 2UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -3063,6 +3203,7 @@ struct DQuatTransExprData<3UL, 0UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -3077,6 +3218,7 @@ struct DQuatTransExprData<3UL, 0UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3091,6 +3233,7 @@ struct DQuatTransExprData<3UL, 0UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3105,6 +3248,7 @@ struct DQuatTransExprData<3UL, 0UL, 1UL, 2UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}
@@ -3174,6 +3318,7 @@ struct DQuatTransExprData<3UL, 0UL, 2UL, 1UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3188,6 +3333,7 @@ struct DQuatTransExprData<3UL, 0UL, 2UL, 1UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -3202,6 +3348,7 @@ struct DQuatTransExprData<3UL, 0UL, 2UL, 1UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3216,6 +3363,7 @@ struct DQuatTransExprData<3UL, 0UL, 2UL, 1UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -3232,6 +3380,7 @@ struct DQuatTransExprData<3UL, 0UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -3246,6 +3395,7 @@ struct DQuatTransExprData<3UL, 0UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3260,6 +3410,7 @@ struct DQuatTransExprData<3UL, 0UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3274,6 +3425,7 @@ struct DQuatTransExprData<3UL, 0UL, 2UL, 1UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}
@@ -3343,6 +3495,7 @@ struct DQuatTransExprData<3UL, 1UL, 0UL, 2UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3357,6 +3510,7 @@ struct DQuatTransExprData<3UL, 1UL, 0UL, 2UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -3371,6 +3525,7 @@ struct DQuatTransExprData<3UL, 1UL, 0UL, 2UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -3385,6 +3540,7 @@ struct DQuatTransExprData<3UL, 1UL, 0UL, 2UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
    //@}
@@ -3401,6 +3557,7 @@ struct DQuatTransExprData<3UL, 1UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3415,6 +3572,7 @@ struct DQuatTransExprData<3UL, 1UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -3429,6 +3587,7 @@ struct DQuatTransExprData<3UL, 1UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3443,6 +3602,7 @@ struct DQuatTransExprData<3UL, 1UL, 0UL, 2UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}
@@ -3512,6 +3672,7 @@ struct DQuatTransExprData<3UL, 1UL, 2UL, 0UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3526,6 +3687,7 @@ struct DQuatTransExprData<3UL, 1UL, 2UL, 0UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -3540,6 +3702,7 @@ struct DQuatTransExprData<3UL, 1UL, 2UL, 0UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3554,6 +3717,7 @@ struct DQuatTransExprData<3UL, 1UL, 2UL, 0UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}
@@ -3570,6 +3734,7 @@ struct DQuatTransExprData<3UL, 1UL, 2UL, 0UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3584,6 +3749,7 @@ struct DQuatTransExprData<3UL, 1UL, 2UL, 0UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -3598,6 +3764,7 @@ struct DQuatTransExprData<3UL, 1UL, 2UL, 0UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3612,6 +3779,7 @@ struct DQuatTransExprData<3UL, 1UL, 2UL, 0UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}
@@ -3681,6 +3849,7 @@ struct DQuatTransExprData<3UL, 2UL, 0UL, 1UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3695,6 +3864,7 @@ struct DQuatTransExprData<3UL, 2UL, 0UL, 1UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3709,6 +3879,7 @@ struct DQuatTransExprData<3UL, 2UL, 0UL, 1UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -3723,6 +3894,7 @@ struct DQuatTransExprData<3UL, 2UL, 0UL, 1UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -3739,6 +3911,7 @@ struct DQuatTransExprData<3UL, 2UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3753,6 +3926,7 @@ struct DQuatTransExprData<3UL, 2UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3767,6 +3941,7 @@ struct DQuatTransExprData<3UL, 2UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
 
@@ -3781,6 +3956,7 @@ struct DQuatTransExprData<3UL, 2UL, 0UL, 1UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
    //@}
@@ -3851,6 +4027,7 @@ struct DQuatTransExprData<3UL, 2UL, 1UL, 0UL>
    */
    static inline constexpr size_t quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3865,6 +4042,7 @@ struct DQuatTransExprData<3UL, 2UL, 1UL, 0UL>
    */
    static inline constexpr size_t page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3879,6 +4057,7 @@ struct DQuatTransExprData<3UL, 2UL, 1UL, 0UL>
    */
    static inline constexpr size_t row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -3893,6 +4072,7 @@ struct DQuatTransExprData<3UL, 2UL, 1UL, 0UL>
    */
    static inline constexpr size_t column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}
@@ -3909,6 +4089,7 @@ struct DQuatTransExprData<3UL, 2UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_quat  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, i );
       return j;
    }
 
@@ -3923,6 +4104,7 @@ struct DQuatTransExprData<3UL, 2UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_page  ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, k, j );
       return i;
    }
 
@@ -3937,6 +4119,7 @@ struct DQuatTransExprData<3UL, 2UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_row   ( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( l, i, j );
       return k;
    }
 
@@ -3951,6 +4134,7 @@ struct DQuatTransExprData<3UL, 2UL, 1UL, 0UL>
    */
    static inline constexpr size_t reverse_column( size_t l, size_t k, size_t i, size_t j ) noexcept
    {
+      MAYBE_UNUSED( k, i, j );
       return l;
    }
    //@}

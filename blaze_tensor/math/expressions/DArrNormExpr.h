@@ -181,8 +181,8 @@ decltype(auto) norm_backend( const DenseArray<MT>& dm, Abs abs, Power power, Roo
    ET norm( power( abs( tmp( dims ) ) ) );
 
    ArrayForEachGrouped( ( ~dm ).dimensions(),
-      [&]( std::array< size_t, N > const& dims ) {
-         norm += power( abs( tmp( dims ) ) );
+      [&]( std::array< size_t, N > const& ds ) {
+         norm += power( abs( tmp( ds ) ) );
       } );
 
    return evaluate( root( norm ) );
