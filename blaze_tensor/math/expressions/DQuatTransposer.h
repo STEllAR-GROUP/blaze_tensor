@@ -595,7 +595,7 @@ class DQuatTransposer
             , typename... RTAs >  // Runtime arguments
    inline void assign( const Array<MT2>& rhs, RTAs... args )
    {
-      dm_.assign( trans( ~rhs, args... ) );
+      dm_.assign( trans( *rhs, args... ) );
    }
    //**********************************************************************************************
 
@@ -614,7 +614,7 @@ class DQuatTransposer
             , typename... RTAs >  // Runtime arguments
    inline void addAssign( const Array<MT2>& rhs, RTAs... args )
    {
-      dm_.addAssign( trans( ~rhs, args... ) );
+      dm_.addAssign( trans( *rhs, args... ) );
    }
    //**********************************************************************************************
 
@@ -633,7 +633,7 @@ class DQuatTransposer
             , typename... RTAs >  // Runtime arguments
    inline void subAssign( const Array<MT2>& rhs, RTAs... args )
    {
-      dm_.subAssign( trans( ~rhs, args... ) );
+      dm_.subAssign( trans( *rhs, args... ) );
    }
    //**********************************************************************************************
 
@@ -652,7 +652,7 @@ class DQuatTransposer
             , typename... RTAs >  // Runtime arguments
    inline void schurAssign( const Array<MT2>& rhs, RTAs... args )
    {
-      dm_.schurAssign( trans( ~rhs, args... ) );
+      dm_.schurAssign( trans( *rhs, args... ) );
    }
    //**********************************************************************************************
 

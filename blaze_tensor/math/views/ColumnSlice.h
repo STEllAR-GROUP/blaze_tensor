@@ -114,7 +114,7 @@ inline decltype(auto) columnslice( Tensor<MT>& tensor, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = ColumnSlice_<MT,I>;
-   return ReturnType( ~tensor, args... );
+   return ReturnType( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -161,7 +161,7 @@ inline decltype(auto) columnslice( const Tensor<MT>& tensor, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const ColumnSlice_<const MT,I>;
-   return ReturnType( ~tensor, args... );
+   return ReturnType( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -188,7 +188,7 @@ inline decltype(auto) columnslice( Tensor<MT>&& tensor, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = ColumnSlice_<MT,I>;
-   return ReturnType( ~tensor, args... );
+   return ReturnType( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -234,7 +234,7 @@ inline decltype(auto) columnslice( Tensor<MT>& tensor, size_t index, RRAs... arg
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = ColumnSlice_<MT>;
-   return ReturnType( ~tensor, index, args... );
+   return ReturnType( *tensor, index, args... );
 }
 //*************************************************************************************************
 
@@ -280,7 +280,7 @@ inline decltype(auto) columnslice( const Tensor<MT>& tensor, size_t index, RRAs.
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const ColumnSlice_<const MT>;
-   return ReturnType( ~tensor, index, args... );
+   return ReturnType( *tensor, index, args... );
 }
 //*************************************************************************************************
 
@@ -307,7 +307,7 @@ inline decltype(auto) columnslice( Tensor<MT>&& tensor, size_t index, RRAs... ar
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = ColumnSlice_<MT>;
-   return ReturnType( ~tensor, index, args... );
+   return ReturnType( *tensor, index, args... );
 }
 //*************************************************************************************************
 
@@ -339,8 +339,8 @@ inline decltype(auto) columnslice( const TensTensAddExpr<MT>& tensor, RRAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) +
-          columnslice<CRAs...>( (~tensor).rightOperand(), args... );
+   return columnslice<CRAs...>( (*tensor).leftOperand(), args... ) +
+          columnslice<CRAs...>( (*tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -365,8 +365,8 @@ inline decltype(auto) columnslice( const TensTensSubExpr<MT>& tensor, RRAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) -
-          columnslice<CRAs...>( (~tensor).rightOperand(), args... );
+   return columnslice<CRAs...>( (*tensor).leftOperand(), args... ) -
+          columnslice<CRAs...>( (*tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -390,8 +390,8 @@ inline decltype(auto) columnslice( const SchurExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) %
-          columnslice<CRAs...>( (~tensor).rightOperand(), args... );
+   return columnslice<CRAs...>( (*tensor).leftOperand(), args... ) %
+          columnslice<CRAs...>( (*tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -415,8 +415,8 @@ inline decltype(auto) columnslice( const SchurExpr<MT>& tensor, RRAs... args )
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) %
-//          column<CRAs...>     ( (~tensor).rightOperand(), args... );
+//   return columnslice<CRAs...>( (*tensor).leftOperand(), args... ) %
+//          column<CRAs...>     ( (*tensor).rightOperand(), args... );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -441,7 +441,7 @@ inline decltype(auto) columnslice( const TensTensMultExpr<MT>& tensor, RRAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
+   return columnslice<CRAs...>( (*tensor).leftOperand(), args... ) * (*tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -469,12 +469,12 @@ inline decltype(auto) columnslice( const TensTensMultExpr<MT>& tensor, RRAs... a
 //    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-//       if( (~tensor).columnslices() <= I ) {
+//       if( (*tensor).columnslices() <= I ) {
 //          BLAZE_THCOLUMNSLICE_INVALID_ARGUMENT( "Invalid columnslice access index" );
 //       }
 //    }
 //
-//    return (~tensor).leftOperand()[I] * (~tensor).rightOperand();
+//    return (*tensor).leftOperand()[I] * (*tensor).rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -502,12 +502,12 @@ inline decltype(auto) columnslice( const TensTensMultExpr<MT>& tensor, RRAs... a
 //    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-//       if( (~tensor).columnslices() <= index ) {
+//       if( (*tensor).columnslices() <= index ) {
 //          BLAZE_THCOLUMNSLICE_INVALID_ARGUMENT( "Invalid columnslice access index" );
 //       }
 //    }
 //
-//    return (~tensor).leftOperand()[index] * (~tensor).rightOperand();
+//    return (*tensor).leftOperand()[index] * (*tensor).rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -532,7 +532,7 @@ inline decltype(auto) columnslice( const TensScalarMultExpr<MT>& tensor, RRAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
+   return columnslice<CRAs...>( (*tensor).leftOperand(), args... ) * (*tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -557,7 +557,7 @@ inline decltype(auto) columnslice( const TensScalarDivExpr<MT>& tensor, RRAs... 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columnslice<CRAs...>( (~tensor).leftOperand(), args... ) / (~tensor).rightOperand();
+   return columnslice<CRAs...>( (*tensor).leftOperand(), args... ) / (*tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -582,7 +582,7 @@ inline decltype(auto) columnslice( const TensMapExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( columnslice<CRAs...>( (~tensor).operand(), args... ), (~tensor).operation() );
+   return map( columnslice<CRAs...>( (*tensor).operand(), args... ), (*tensor).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -607,9 +607,9 @@ inline decltype(auto) columnslice( const TensTensMapExpr<MT>& tensor, RRAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( columnslice<CRAs...>( (~tensor).leftOperand(), args... ),
-               columnslice<CRAs...>( (~tensor).rightOperand(), args... ),
-               (~tensor).operation() );
+   return map( columnslice<CRAs...>( (*tensor).leftOperand(), args... ),
+               columnslice<CRAs...>( (*tensor).rightOperand(), args... ),
+               (*tensor).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -634,7 +634,7 @@ inline decltype(auto) columnslice( const TensEvalExpr<MT>& tensor, RRAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( columnslice<CRAs...>( (~tensor).operand(), args... ) );
+   return eval( columnslice<CRAs...>( (*tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -659,7 +659,7 @@ inline decltype(auto) columnslice( const TensSerialExpr<MT>& tensor, RRAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( columnslice<CRAs...>( (~tensor).operand(), args... ) );
+   return serial( columnslice<CRAs...>( (*tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -684,7 +684,7 @@ inline decltype(auto) columnslice( const DeclExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return columnslice<CRAs...>( (~tensor).operand(), args... );
+   return columnslice<CRAs...>( (*tensor).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -714,7 +714,7 @@ inline decltype(auto) columnslice( const MatExpandExpr<TT,CEAs...>& tensor, CSAs
 
    MAYBE_UNUSED( args... );
 
-   return expand( trans( column( (~tensor).operand(), 0UL ) ), (~tensor).expansion() );
+   return expand( trans( column( (*tensor).operand(), 0UL ) ), (*tensor).expansion() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1051,10 +1051,10 @@ template< typename MT     // Type of the tensor
 BLAZE_ALWAYS_INLINE bool
    tryMult( const ColumnSlice<MT,CRAs...>& columnslice, size_t row, size_t col, size_t rows, size_t cols, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~columnslice).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( row + rows <= (~columnslice).rows(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( col <= (~columnslice).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( col + cols <= (~columnslice).columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( row <= (*columnslice).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( row + rows <= (*columnslice).rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( col <= (*columnslice).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( col + cols <= (*columnslice).columns(), "Invalid columns range size" );
 
    return tryMult( columnslice.operand(), row, columnslice.column(), col, rows, 1UL, cols, value );
 }
@@ -1113,10 +1113,10 @@ template< typename MT     // Type of the tensor
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const ColumnSlice<MT,CRAs...>& columnslice, size_t row, size_t col, size_t rows, size_t cols, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~columnslice).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( row + rows <= (~columnslice).rows(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( col <= (~columnslice).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( col + cols <= (~columnslice).columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( row <= (*columnslice).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( row + rows <= (*columnslice).rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( col <= (*columnslice).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( col + cols <= (*columnslice).columns(), "Invalid columns range size" );
 
    return tryDiv( columnslice.operand(), row, columnslice.column(), col, rows, 1UL, cols, value );
 }
@@ -1146,11 +1146,11 @@ inline bool tryAssign( const ColumnSlice<MT,CRAs...>& lhs,
                        const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
+   return tryAssign(lhs.operand(), *rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1178,11 +1178,11 @@ inline bool tryAddAssign( const ColumnSlice<MT,CRAs...>& lhs,
                           const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAddAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
+   return tryAddAssign(lhs.operand(), *rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1210,11 +1210,11 @@ inline bool trySubAssign( const ColumnSlice<MT,CRAs...>& lhs,
                           const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return trySubAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
+   return trySubAssign(lhs.operand(), *rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1242,11 +1242,11 @@ inline bool tryMultAssign( const ColumnSlice<MT,CRAs...>& lhs,
                            const Vector<VT,true>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryMultAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
+   return tryMultAssign(lhs.operand(), *rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1274,11 +1274,11 @@ inline bool tryDivAssign( const ColumnSlice<MT,CRAs...>& lhs,
                           const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryDivAssign(lhs.operand(), ~rhs, j, lhs.column(), i);
+   return tryDivAssign(lhs.operand(), *rhs, j, lhs.column(), i);
 }
 /*! \endcond */
 //*************************************************************************************************

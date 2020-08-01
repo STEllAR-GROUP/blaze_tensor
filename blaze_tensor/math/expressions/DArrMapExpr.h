@@ -600,10 +600,10 @@ class DArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
-      assign( ~lhs, rhs.dm_ );
-      assign( ~lhs, rhs.op_( ~lhs ) );
+      assign( *lhs, rhs.dm_ );
+      assign( *lhs, rhs.op_( *lhs ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -633,10 +633,10 @@ class DArrMapExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( serial( rhs.dm_ ) );
-      assign( ~lhs, map( tmp, rhs.op_ ) );
+      assign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -664,10 +664,10 @@ class DArrMapExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( serial( rhs.dm_ ) );
-      addAssign( ~lhs, map( tmp, rhs.op_ ) );
+      addAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -695,10 +695,10 @@ class DArrMapExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( serial( rhs.dm_ ) );
-      subAssign( ~lhs, map( tmp, rhs.op_ ) );
+      subAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -726,10 +726,10 @@ class DArrMapExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( serial( rhs.dm_ ) );
-      schurAssign( ~lhs, map( tmp, rhs.op_ ) );
+      schurAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -756,10 +756,10 @@ class DArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
-      smpAssign( ~lhs, rhs.dm_ );
-      smpAssign( ~lhs, rhs.op_( ~lhs ) );
+      smpAssign( *lhs, rhs.dm_ );
+      smpAssign( *lhs, rhs.op_( *lhs ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -789,10 +789,10 @@ class DArrMapExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( rhs.dm_ );
-      smpAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -820,10 +820,10 @@ class DArrMapExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( rhs.dm_ );
-      smpAddAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpAddAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -851,10 +851,10 @@ class DArrMapExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( rhs.dm_ );
-      smpSubAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpSubAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -882,10 +882,10 @@ class DArrMapExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( RT );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( RT );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( rhs.dm_ );
-      smpSchurAssign( ~lhs, map( tmp, rhs.op_ ) );
+      smpSchurAssign( *lhs, map( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -932,7 +932,7 @@ inline decltype(auto) map( const DenseArray<MT>& dm, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,OP>;
-   return ReturnType( ~dm, op );
+   return ReturnType( *dm, op );
 }
 //*************************************************************************************************
 
@@ -962,7 +962,7 @@ inline decltype(auto) forEach( const DenseArray<MT>& dm, OP op )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,OP>;
-   return ReturnType( ~dm, op );
+   return ReturnType( *dm, op );
 }
 //*************************************************************************************************
 
@@ -990,7 +990,7 @@ inline decltype(auto) abs( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Abs>;
-   return ReturnType( ~dm, Abs() );
+   return ReturnType( *dm, Abs() );
 }
 //*************************************************************************************************
 
@@ -1018,7 +1018,7 @@ inline decltype(auto) sign( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Sign>;
-   return ReturnType( ~dm, Sign() );
+   return ReturnType( *dm, Sign() );
 }
 //*************************************************************************************************
 
@@ -1046,7 +1046,7 @@ inline decltype(auto) floor( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Floor>;
-   return ReturnType( ~dm, Floor() );
+   return ReturnType( *dm, Floor() );
 }
 //*************************************************************************************************
 
@@ -1074,7 +1074,7 @@ inline decltype(auto) ceil( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Ceil>;
-   return ReturnType( ~dm, Ceil() );
+   return ReturnType( *dm, Ceil() );
 }
 //*************************************************************************************************
 
@@ -1102,7 +1102,7 @@ inline decltype(auto) trunc( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Trunc>;
-   return ReturnType( ~dm, Trunc() );
+   return ReturnType( *dm, Trunc() );
 }
 //*************************************************************************************************
 
@@ -1130,7 +1130,7 @@ inline decltype(auto) round( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Round>;
-   return ReturnType( ~dm, Round() );
+   return ReturnType( *dm, Round() );
 }
 //*************************************************************************************************
 
@@ -1158,7 +1158,7 @@ inline decltype(auto) conj( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Conj>;
-   return ReturnType( ~dm, Conj() );
+   return ReturnType( *dm, Conj() );
 }
 //*************************************************************************************************
 
@@ -1195,7 +1195,7 @@ inline decltype(auto) ctrans( const DenseArray<MT>& dm, RTAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( conj( ~dm ), args... );
+   return trans( conj( *dm ), args... );
 }
 //*************************************************************************************************
 
@@ -1223,7 +1223,7 @@ inline decltype(auto) real( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Real>;
-   return ReturnType( ~dm, Real() );
+   return ReturnType( *dm, Real() );
 }
 //*************************************************************************************************
 
@@ -1251,7 +1251,7 @@ inline decltype(auto) imag( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Imag>;
-   return ReturnType( ~dm, Imag() );
+   return ReturnType( *dm, Imag() );
 }
 //*************************************************************************************************
 
@@ -1282,7 +1282,7 @@ inline decltype(auto) sqrt( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Sqrt>;
-   return ReturnType( ~dm, Sqrt() );
+   return ReturnType( *dm, Sqrt() );
 }
 //*************************************************************************************************
 
@@ -1313,7 +1313,7 @@ inline decltype(auto) invsqrt( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,InvSqrt>;
-   return ReturnType( ~dm, InvSqrt() );
+   return ReturnType( *dm, InvSqrt() );
 }
 //*************************************************************************************************
 
@@ -1344,7 +1344,7 @@ inline decltype(auto) cbrt( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Cbrt>;
-   return ReturnType( ~dm, Cbrt() );
+   return ReturnType( *dm, Cbrt() );
 }
 //*************************************************************************************************
 
@@ -1375,7 +1375,7 @@ inline decltype(auto) invcbrt( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,InvCbrt>;
-   return ReturnType( ~dm, InvCbrt() );
+   return ReturnType( *dm, InvCbrt() );
 }
 //*************************************************************************************************
 
@@ -1405,7 +1405,7 @@ inline decltype(auto) clamp( const DenseArray<MT>& dm, const DT& min, const DT& 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~dm, bind2nd( bind3rd( Clamp(), max ), min ) );
+   return map( *dm, bind2nd( bind3rd( Clamp(), max ), min ) );
 }
 //*************************************************************************************************
 
@@ -1436,7 +1436,7 @@ inline decltype(auto) pow( const DenseArray<MT>& dm, ST exp )
    BLAZE_FUNCTION_TRACE;
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
-   return map( ~dm, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
+   return map( *dm, blaze::bind2nd( Pow(), ScalarType( exp ) ) );
 }
 //*************************************************************************************************
 
@@ -1464,7 +1464,7 @@ inline decltype(auto) exp( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Exp>;
-   return ReturnType( ~dm, Exp() );
+   return ReturnType( *dm, Exp() );
 }
 //*************************************************************************************************
 
@@ -1492,7 +1492,7 @@ inline decltype(auto) exp2( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Exp2>;
-   return ReturnType( ~dm, Exp2() );
+   return ReturnType( *dm, Exp2() );
 }
 //*************************************************************************************************
 
@@ -1520,7 +1520,7 @@ inline decltype(auto) exp10( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Exp10>;
-   return ReturnType( ~dm, Exp10() );
+   return ReturnType( *dm, Exp10() );
 }
 //*************************************************************************************************
 
@@ -1551,7 +1551,7 @@ inline decltype(auto) log( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Log>;
-   return ReturnType( ~dm, Log() );
+   return ReturnType( *dm, Log() );
 }
 //*************************************************************************************************
 
@@ -1582,7 +1582,7 @@ inline decltype(auto) log2( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Log2>;
-   return ReturnType( ~dm, Log2() );
+   return ReturnType( *dm, Log2() );
 }
 //*************************************************************************************************
 
@@ -1613,7 +1613,7 @@ inline decltype(auto) log10( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Log10>;
-   return ReturnType( ~dm, Log10() );
+   return ReturnType( *dm, Log10() );
 }
 //*************************************************************************************************
 
@@ -1641,7 +1641,7 @@ inline decltype(auto) sin( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Sin>;
-   return ReturnType( ~dm, Sin() );
+   return ReturnType( *dm, Sin() );
 }
 //*************************************************************************************************
 
@@ -1672,7 +1672,7 @@ inline decltype(auto) asin( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Asin>;
-   return ReturnType( ~dm, Asin() );
+   return ReturnType( *dm, Asin() );
 }
 //*************************************************************************************************
 
@@ -1700,7 +1700,7 @@ inline decltype(auto) sinh( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Sinh>;
-   return ReturnType( ~dm, Sinh() );
+   return ReturnType( *dm, Sinh() );
 }
 //*************************************************************************************************
 
@@ -1728,7 +1728,7 @@ inline decltype(auto) asinh( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Asinh>;
-   return ReturnType( ~dm, Asinh() );
+   return ReturnType( *dm, Asinh() );
 }
 //*************************************************************************************************
 
@@ -1756,7 +1756,7 @@ inline decltype(auto) cos( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Cos>;
-   return ReturnType( ~dm, Cos() );
+   return ReturnType( *dm, Cos() );
 }
 //*************************************************************************************************
 
@@ -1787,7 +1787,7 @@ inline decltype(auto) acos( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Acos>;
-   return ReturnType( ~dm, Acos() );
+   return ReturnType( *dm, Acos() );
 }
 //*************************************************************************************************
 
@@ -1815,7 +1815,7 @@ inline decltype(auto) cosh( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Cosh>;
-   return ReturnType( ~dm, Cosh() );
+   return ReturnType( *dm, Cosh() );
 }
 //*************************************************************************************************
 
@@ -1846,7 +1846,7 @@ inline decltype(auto) acosh( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Acosh>;
-   return ReturnType( ~dm, Acosh() );
+   return ReturnType( *dm, Acosh() );
 }
 //*************************************************************************************************
 
@@ -1874,7 +1874,7 @@ inline decltype(auto) tan( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Tan>;
-   return ReturnType( ~dm, Tan() );
+   return ReturnType( *dm, Tan() );
 }
 //*************************************************************************************************
 
@@ -1902,7 +1902,7 @@ inline decltype(auto) atan( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Atan>;
-   return ReturnType( ~dm, Atan() );
+   return ReturnType( *dm, Atan() );
 }
 //*************************************************************************************************
 
@@ -1933,7 +1933,7 @@ inline decltype(auto) tanh( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Tanh>;
-   return ReturnType( ~dm, Tanh() );
+   return ReturnType( *dm, Tanh() );
 }
 //*************************************************************************************************
 
@@ -1964,7 +1964,7 @@ inline decltype(auto) atanh( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Atanh>;
-   return ReturnType( ~dm, Atanh() );
+   return ReturnType( *dm, Atanh() );
 }
 //*************************************************************************************************
 
@@ -1992,7 +1992,7 @@ inline decltype(auto) erf( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Erf>;
-   return ReturnType( ~dm, Erf() );
+   return ReturnType( *dm, Erf() );
 }
 //*************************************************************************************************
 
@@ -2020,7 +2020,7 @@ inline decltype(auto) erfc( const DenseArray<MT>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DArrMapExpr<MT,Erfc>;
-   return ReturnType( ~dm, Erfc() );
+   return ReturnType( *dm, Erfc() );
 }
 //*************************************************************************************************
 
@@ -2220,7 +2220,7 @@ inline decltype(auto) conj( const DQuatTransExpr<DArrMapExpr<MT,Conj>, CTAs... >
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DQuatTransExpr<MT,CTAs...>;
-   return ReturnType( dm.operand().operand(), (~dm).idces() );
+   return ReturnType( dm.operand().operand(), (*dm).idces() );
 }
 /*! \endcond */
 //*************************************************************************************************

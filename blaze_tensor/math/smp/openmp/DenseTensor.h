@@ -106,19 +106,19 @@ void openmpAssign( DenseTensor<MT1>& lhs, const DenseTensor<MT2>& rhs, OP op )
    constexpr bool simdEnabled( MT1::simdEnabled && MT2::simdEnabled && IsSIMDCombinable_v<ET1,ET2> );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_t<MT1> >::size );
 
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
+   const bool lhsAligned( (*lhs).isAligned() );
+   const bool rhsAligned( (*rhs).isAligned() );
 
    const int threads( omp_get_num_threads() );
-   const ThreadMapping threadmap( createThreadMapping( threads, ~rhs ) );
+   const ThreadMapping threadmap( createThreadMapping( threads, *rhs ) );
 
-   const size_t addon1     ( ( ( (~rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare1( (~rhs).rows() / threadmap.first + addon1 );
+   const size_t addon1     ( ( ( (*rhs).rows() % threadmap.first ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare1( (*rhs).rows() / threadmap.first + addon1 );
    const size_t rest1      ( equalShare1 & ( SIMDSIZE - 1UL ) );
    const size_t rowsPerThread( ( simdEnabled && rest1 )?( equalShare1 - rest1 + SIMDSIZE ):( equalShare1 ) );
 
-   const size_t addon2     ( ( ( (~rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
-   const size_t equalShare2( (~rhs).columns() / threadmap.second + addon2 );
+   const size_t addon2     ( ( ( (*rhs).columns() % threadmap.second ) != 0UL )? 1UL : 0UL );
+   const size_t equalShare2( (*rhs).columns() / threadmap.second + addon2 );
    const size_t rest2      ( equalShare2 & ( SIMDSIZE - 1UL ) );
    const size_t colsPerThread( ( simdEnabled && rest2 )?( equalShare2 - rest2 + SIMDSIZE ):( equalShare2 ) );
 
@@ -128,35 +128,35 @@ void openmpAssign( DenseTensor<MT1>& lhs, const DenseTensor<MT2>& rhs, OP op )
       const size_t row   ( ( i / threadmap.second ) * rowsPerThread );
       const size_t column( ( i % threadmap.second ) * colsPerThread );
 
-      if( row >= (~rhs).rows() || column >= (~rhs).columns() )
+      if( row >= (*rhs).rows() || column >= (*rhs).columns() )
          continue;
 
-      for (size_t k = 0; k != (~rhs).pages(); ++k)
+      for (size_t k = 0; k != (*rhs).pages(); ++k)
       {
-         const size_t m( min( rowsPerThread, (~rhs).rows()    - row    ) );
-         const size_t n( min( colsPerThread, (~rhs).columns() - column ) );
+         const size_t m( min( rowsPerThread, (*rhs).rows()    - row    ) );
+         const size_t n( min( colsPerThread, (*rhs).columns() - column ) );
 
-         auto lhs_slice = pageslice( ~lhs, k );
-         auto rhs_slice = pageslice( ~rhs, k );
+         auto lhs_slice = pageslice( *lhs, k );
+         auto rhs_slice = pageslice( *rhs, k );
 
          if( simdEnabled && lhsAligned && rhsAligned ) {
-            auto       target( submatrix<aligned>  ( ~lhs_slice, row, column, m, n ) );
-            const auto source( submatrix<aligned>  ( ~rhs_slice, row, column, m, n ) );
+            auto       target( submatrix<aligned>  ( *lhs_slice, row, column, m, n ) );
+            const auto source( submatrix<aligned>  ( *rhs_slice, row, column, m, n ) );
             op( target, source );
          }
          else if( simdEnabled && lhsAligned ) {
-            auto       target( submatrix<aligned>  ( ~lhs_slice, row, column, m, n ) );
-            const auto source( submatrix<unaligned>( ~rhs_slice, row, column, m, n ) );
+            auto       target( submatrix<aligned>  ( *lhs_slice, row, column, m, n ) );
+            const auto source( submatrix<unaligned>( *rhs_slice, row, column, m, n ) );
             op( target, source );
          }
          else if( simdEnabled && rhsAligned ) {
-            auto       target( submatrix<unaligned>( ~lhs_slice, row, column, m, n ) );
-            const auto source( submatrix<aligned>  ( ~rhs_slice, row, column, m, n ) );
+            auto       target( submatrix<unaligned>( *lhs_slice, row, column, m, n ) );
+            const auto source( submatrix<aligned>  ( *rhs_slice, row, column, m, n ) );
             op( target, source );
          }
          else {
-            auto       target( submatrix<unaligned>( ~lhs_slice, row, column, m, n ) );
-            const auto source( submatrix<unaligned>( ~rhs_slice, row, column, m, n ) );
+            auto       target( submatrix<unaligned>( *lhs_slice, row, column, m, n ) );
+            const auto source( submatrix<unaligned>( *rhs_slice, row, column, m, n ) );
             op( target, source );
          }
       }
@@ -197,11 +197,11 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   assign( ~lhs, ~rhs );
+   assign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -235,18 +235,18 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
    BLAZE_PARALLEL_SECTION
    {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         assign( ~lhs, ~rhs );
+      if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+         assign( *lhs, *rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
+         openmpAssign( *lhs, *rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
       }
    }
 }
@@ -287,11 +287,11 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   addAssign( ~lhs, ~rhs );
+   addAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -325,18 +325,18 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
    BLAZE_PARALLEL_SECTION
    {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         addAssign( ~lhs, ~rhs );
+      if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+         addAssign( *lhs, *rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
+         openmpAssign( *lhs, *rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
       }
    }
 }
@@ -377,11 +377,11 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   subAssign( ~lhs, ~rhs );
+   subAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -415,18 +415,18 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
    BLAZE_PARALLEL_SECTION
    {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         subAssign( ~lhs, ~rhs );
+      if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+         subAssign( *lhs, *rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
+         openmpAssign( *lhs, *rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
       }
    }
 }
@@ -467,11 +467,11 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && ( !IsSMPAssignable_v<MT1> || !IsSMPAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   schurAssign( ~lhs, ~rhs );
+   schurAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -505,18 +505,18 @@ inline EnableIf_t< IsDenseTensor_v<MT1> && IsSMPAssignable_v<MT1> && IsSMPAssign
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<MT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
    BLAZE_PARALLEL_SECTION
    {
-      if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-         schurAssign( ~lhs, ~rhs );
+      if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+         schurAssign( *lhs, *rhs );
       }
       else {
 #pragma omp parallel shared( lhs, rhs )
-         openmpAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
+         openmpAssign( *lhs, *rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
       }
    }
 }
@@ -555,11 +555,11 @@ inline EnableIf_t< IsDenseTensor_v<MT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   multAssign( ~lhs, ~rhs );
+   multAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************

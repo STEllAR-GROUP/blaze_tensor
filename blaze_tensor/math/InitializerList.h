@@ -318,8 +318,8 @@ struct nested_initializer_list< 1, Type > : initializer_list< Type >
    void transfer_data( C& rhs )
    {
       std::fill(
-         std::copy( this->type::begin(), this->type::end(), ( ~rhs ).begin() ),
-         ( ~rhs ).end(),
+         std::copy( this->type::begin(), this->type::end(), ( *rhs ).begin() ),
+         ( *rhs ).end(),
          Type() );
    }
 };
@@ -348,8 +348,8 @@ struct nested_initializer_list< 2, Type >
       size_t i( 0UL );
       for( const auto& rowList : *this ) {
          std::fill(
-            std::copy( rowList.begin(), rowList.end(), ( ~rhs ).begin( i ) ),
-            ( ~rhs ).end( i ),
+            std::copy( rowList.begin(), rowList.end(), ( *rhs ).begin( i ) ),
+            ( *rhs ).end( i ),
             Type() );
          ++i;
       }
@@ -384,8 +384,8 @@ struct nested_initializer_list< 3, Type >
          for (const auto& rowList : page) {
             std::fill(
                std::copy(
-                  rowList.begin(), rowList.end(), ( ~rhs ).begin( i, k ) ),
-               ( ~rhs ).end( i, k ),
+                  rowList.begin(), rowList.end(), ( *rhs ).begin( i, k ) ),
+               ( *rhs ).end( i, k ),
                Type() );
             ++i;
          }
@@ -426,8 +426,8 @@ struct nested_initializer_list< 4, Type >
             for( const auto& row_list : page_list ) {
                std::fill( std::copy( row_list.begin(),
                              row_list.end(),
-                             ( ~rhs ).begin( i, l, k ) ),
-                  ( ~rhs ).end( i, l, k ),
+                             ( *rhs ).begin( i, l, k ) ),
+                  ( *rhs ).end( i, l, k ),
                   Type() );
                ++i;
             }

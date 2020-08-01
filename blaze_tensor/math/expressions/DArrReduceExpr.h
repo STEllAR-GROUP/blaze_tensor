@@ -603,10 +603,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense array operand
-      assign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      assign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -631,10 +631,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense array operand
-      addAssign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      addAssign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -660,10 +660,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense array operand
-      subAssign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      subAssign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -689,10 +689,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense array operand
-      multAssign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      multAssign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -717,10 +717,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( serial( rhs.dm_ ) );  // Evaluation of the dense array operand
-      divAssign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      divAssign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -745,10 +745,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense array operand
-      smpAssign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      smpAssign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -774,10 +774,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense array operand
-      smpAddAssign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      smpAddAssign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -803,10 +803,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense array operand
-      smpSubAssign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      smpSubAssign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -832,10 +832,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense array operand
-      smpMultAssign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      smpMultAssign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -861,10 +861,10 @@ class ReducedArray
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const RT tmp( rhs.dm_ );  // Evaluation of the dense array operand
-      smpDivAssign( ~lhs, reduce<R>( tmp, rhs.op_ ) );
+      smpDivAssign( *lhs, reduce<R>( tmp, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -943,26 +943,26 @@ inline ElementType_t<MT> darrayreduce( const DenseArray<MT>& dm, OP op )
    using ET = ElementType_t<MT>;
 
    constexpr size_t N =
-      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions;
+      RemoveCV_t< RemoveReference_t< decltype( *dm ) > >::num_dimensions;
 
    std::array< size_t, N > dims{};
 
-   if( ArrayDimAnyOf( ( ~dm ).dimensions(),
+   if( ArrayDimAnyOf( ( *dm ).dimensions(),
           []( size_t, size_t dim ) { return dim == 0; } ) )
       return ET{};
 
-   if( ArrayDimAllOf( ( ~dm ).dimensions(),
+   if( ArrayDimAllOf( ( *dm ).dimensions(),
           []( size_t, size_t dim ) { return dim == 1; } ) )
-      return ( ~dm )( dims );
+      return ( *dm )( dims );
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
-   BLAZE_INTERNAL_ASSERT( tmp.dimensions() == (~dm).dimensions(), "Invalid number of elements" );
+   BLAZE_INTERNAL_ASSERT( tmp.dimensions() == (*dm).dimensions(), "Invalid number of elements" );
 
-   ET redux = ( ~dm )( dims );   // start with first element
+   ET redux = ( *dm )( dims );   // start with first element
 
    std::array< size_t, N > starts_with{1};
-   ArrayForEachGroupedStartsWith( ( ~dm ).dimensions(),
+   ArrayForEachGroupedStartsWith( ( *dm ).dimensions(),
       [&]( std::array< size_t, N > const& ds ) {
          redux = op( redux, tmp( ds ) );
       },
@@ -1009,7 +1009,7 @@ inline decltype(auto) reduce( const DenseArray<MT>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return darrayreduce( ~dm, op );
+   return darrayreduce( *dm, op );
 }
 //*************************************************************************************************
 
@@ -1028,7 +1028,7 @@ template< size_t RF      // Reduction flag
         , typename OP >  // Type of the reduction operation
 inline const ReducedArray<MT,OP,RF> reduce_backend( const DenseArray<MT>& dm, OP op )
 {
-   return ReducedArray<MT,OP,RF>( ~dm, op );
+   return ReducedArray<MT,OP,RF>( *dm, op );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1087,7 +1087,7 @@ inline decltype(auto) reduce( const DenseArray<MT>& dm, OP op )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce_backend<RF>( ~dm, op );
+   return reduce_backend<RF>( *dm, op );
 }
 //*************************************************************************************************
 
@@ -1114,7 +1114,7 @@ inline decltype(auto) sum( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dm, Add() );
+   return reduce( *dm, Add() );
 }
 //*************************************************************************************************
 
@@ -1158,7 +1158,7 @@ inline decltype(auto) sum( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<RF>( ~dm, Add() );
+   return reduce<RF>( *dm, Add() );
 }
 //*************************************************************************************************
 
@@ -1185,7 +1185,7 @@ inline decltype(auto) prod( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dm, Mult() );
+   return reduce( *dm, Mult() );
 }
 //*************************************************************************************************
 
@@ -1229,7 +1229,7 @@ inline decltype(auto) prod( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<RF>( ~dm, Mult() );
+   return reduce<RF>( *dm, Mult() );
 }
 //*************************************************************************************************
 
@@ -1257,7 +1257,7 @@ inline decltype(auto) min( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dm, Min() );
+   return reduce( *dm, Min() );
 }
 //*************************************************************************************************
 
@@ -1298,7 +1298,7 @@ inline decltype(auto) min( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<RF>( ~dm, Min() );
+   return reduce<RF>( *dm, Min() );
 }
 //*************************************************************************************************
 
@@ -1326,7 +1326,7 @@ inline decltype(auto) max( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce( ~dm, Max() );
+   return reduce( *dm, Max() );
 }
 //*************************************************************************************************
 
@@ -1367,7 +1367,7 @@ inline decltype(auto) max( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return reduce<RF>( ~dm, Max() );
+   return reduce<RF>( *dm, Max() );
 }
 //*************************************************************************************************
 

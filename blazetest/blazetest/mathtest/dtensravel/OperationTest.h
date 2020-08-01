@@ -3788,7 +3788,7 @@ void OperationTest<TT>::convertException( const std::exception& ex )
 template< typename TT >  // Type of the dense tensor
 void runTest( const Creator<TT>& creator )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
+   for( size_t rep=0UL; rep<BLAZETEST_REPETITIONS; ++rep ) {
       OperationTest<TT>{ creator };
    }
 }

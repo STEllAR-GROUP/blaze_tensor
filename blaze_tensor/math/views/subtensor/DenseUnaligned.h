@@ -1399,12 +1399,12 @@ inline Subtensor<MT,unaligned,CSAs...>&
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( tensor_, right, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -1457,22 +1457,22 @@ inline auto Subtensor<MT,unaligned,CSAs...>::operator+=( const Tensor<MT2>& rhs 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !tryAddAssign( tensor_, ~rhs, row(), column(), page() ) ) {
+   if( !tryAddAssign( tensor_, *rhs, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &tensor_ ) ) {
-      const AddType tmp( *this + (~rhs) );
+   if( (*rhs).canAlias( &tensor_ ) ) {
+      const AddType tmp( *this + (*rhs) );
       smpAssign( left, tmp );
    }
    else {
-      smpAddAssign( left, ~rhs );
+      smpAddAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( tensor_ ), "Invariant violation detected" );
@@ -1512,11 +1512,11 @@ inline auto Subtensor<MT,unaligned,CSAs...>::operator+=( const Tensor<MT2>& rhs 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( AddType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( AddType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   const AddType tmp( *this + (~rhs) );
+   const AddType tmp( *this + (*rhs) );
 
    if( !tryAssign( tensor_, tmp, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -1563,22 +1563,22 @@ inline auto Subtensor<MT,unaligned,CSAs...>::operator-=( const Tensor<MT2>& rhs 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !trySubAssign( tensor_, ~rhs, row(), column(), page() ) ) {
+   if( !trySubAssign( tensor_, *rhs, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &tensor_ ) ) {
-      const SubType tmp( *this - (~rhs ) );
+   if( (*rhs).canAlias( &tensor_ ) ) {
+      const SubType tmp( *this - (*rhs ) );
       smpAssign( left, tmp );
    }
    else {
-      smpSubAssign( left, ~rhs );
+      smpSubAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( tensor_ ), "Invariant violation detected" );
@@ -1618,11 +1618,11 @@ inline auto Subtensor<MT,unaligned,CSAs...>::operator-=( const Tensor<MT2>& rhs 
    BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE  ( SubType );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SubType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   const SubType tmp( *this - (~rhs) );
+   const SubType tmp( *this - (*rhs) );
 
    if( !tryAssign( tensor_, tmp, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -1668,22 +1668,22 @@ inline auto Subtensor<MT,unaligned,CSAs...>::operator%=( const Tensor<MT2>& rhs 
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !trySchurAssign( tensor_, ~rhs, row(), column(), page() ) ) {
+   if( !trySchurAssign( tensor_, *rhs, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( (~rhs).canAlias( &tensor_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( (*rhs).canAlias( &tensor_ ) ) {
+      const SchurType tmp( *this % (*rhs) );
       smpAssign( left, tmp );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( tensor_ ), "Invariant violation detected" );
@@ -1722,11 +1722,11 @@ inline auto Subtensor<MT,unaligned,CSAs...>::operator%=( const Tensor<MT2>& rhs 
 
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( SchurType );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   const SchurType tmp( *this % (~rhs) );
+   const SchurType tmp( *this % (*rhs) );
 
    if( !tryAssign( tensor_, tmp, row(), column(), page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -2594,9 +2594,9 @@ template< typename MT2 >    // Type of the right-hand side dense tensor
 inline auto Subtensor<MT,unaligned,CSAs...>::assign( const DenseTensor<MT2>& rhs )
    -> EnableIf_t< !VectorizedAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
 
    const size_t jpos( columns() & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2604,11 +2604,11 @@ inline auto Subtensor<MT,unaligned,CSAs...>::assign( const DenseTensor<MT2>& rhs
    for( size_t k=0UL; k<pages(); ++k ) {
       for( size_t i=0UL; i<rows(); ++i ) {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            tensor_(page()+k,row()+i,column()+j) = (~rhs)(k,i,j);
-            tensor_(page()+k,row()+i,column()+j+1UL) = (~rhs)(k,i,j+1UL);
+            tensor_(page()+k,row()+i,column()+j) = (*rhs)(k,i,j);
+            tensor_(page()+k,row()+i,column()+j+1UL) = (*rhs)(k,i,j+1UL);
          }
          if( jpos < columns() ) {
-            tensor_(page()+k,row()+i,column()+jpos) = (~rhs)(k,i,jpos);
+            tensor_(page()+k,row()+i,column()+jpos) = (*rhs)(k,i,jpos);
          }
       }
    }
@@ -2637,16 +2637,16 @@ inline auto Subtensor<MT,unaligned,CSAs...>::assign( const DenseTensor<MT2>& rhs
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
 
    const size_t jpos( columns() & size_t(-SIMDSIZE) );
    BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    if( useStreaming && isAligned_ &&
        rows()*columns() > ( cacheSize / ( sizeof(ElementType) * 3UL ) ) &&
-       !(~rhs).isAliased( &tensor_ ) )
+       !(*rhs).isAliased( &tensor_ ) )
    {
       for( size_t k=0UL; k<pages(); ++k )
       {
@@ -2654,7 +2654,7 @@ inline auto Subtensor<MT,unaligned,CSAs...>::assign( const DenseTensor<MT2>& rhs
          {
             size_t j( 0UL );
             Iterator left( begin(i, k) );
-            ConstIterator_t<MT2> right( (~rhs).begin(i, k) );
+            ConstIterator_t<MT2> right( (*rhs).begin(i, k) );
 
             for( ; j<jpos; j+=SIMDSIZE ) {
                left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2673,7 +2673,7 @@ inline auto Subtensor<MT,unaligned,CSAs...>::assign( const DenseTensor<MT2>& rhs
          {
             size_t j( 0UL );
             Iterator left( begin(i, k) );
-            ConstIterator_t<MT2> right( (~rhs).begin(i, k) );
+            ConstIterator_t<MT2> right( (*rhs).begin(i, k) );
 
             for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
                left.store( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2713,9 +2713,9 @@ template< typename MT2 >    // Type of the right-hand side dense tensor
 inline auto Subtensor<MT,unaligned,CSAs...>::addAssign( const DenseTensor<MT2>& rhs )
    -> EnableIf_t< !VectorizedAddAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
 
    const size_t jpos( columns() & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2725,11 +2725,11 @@ inline auto Subtensor<MT,unaligned,CSAs...>::addAssign( const DenseTensor<MT2>& 
       for( size_t i=0UL; i<rows(); ++i )
       {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            tensor_(page()+k,row()+i,column()+j) += (~rhs)(k,i,j);
-            tensor_(page()+k,row()+i,column()+j+1UL) += (~rhs)(k,i,j+1UL);
+            tensor_(page()+k,row()+i,column()+j) += (*rhs)(k,i,j);
+            tensor_(page()+k,row()+i,column()+j+1UL) += (*rhs)(k,i,j+1UL);
          }
          if( jpos < columns() ) {
-            tensor_(page()+k,row()+i,column()+jpos) += (~rhs)(k,i,jpos);
+            tensor_(page()+k,row()+i,column()+jpos) += (*rhs)(k,i,jpos);
          }
       }
    }
@@ -2758,9 +2758,9 @@ inline auto Subtensor<MT,unaligned,CSAs...>::addAssign( const DenseTensor<MT2>& 
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
 
    for( size_t k=0UL; k<pages(); ++k )
    {
@@ -2775,7 +2775,7 @@ inline auto Subtensor<MT,unaligned,CSAs...>::addAssign( const DenseTensor<MT2>& 
 
          size_t j( jbegin );
          Iterator left( begin(i, k) + jbegin );
-         ConstIterator_t<MT2> right( (~rhs).begin(i, k) + jbegin );
+         ConstIterator_t<MT2> right( (*rhs).begin(i, k) + jbegin );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
             left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2814,9 +2814,9 @@ template< typename MT2 >    // Type of the right-hand side dense tensor
 inline auto Subtensor<MT,unaligned,CSAs...>::subAssign( const DenseTensor<MT2>& rhs )
    -> EnableIf_t< !VectorizedSubAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
 
    const size_t jpos( columns() & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2826,11 +2826,11 @@ inline auto Subtensor<MT,unaligned,CSAs...>::subAssign( const DenseTensor<MT2>& 
       for( size_t i=0UL; i<rows(); ++i )
       {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            tensor_(page()+k,row()+i,column()+j) -= (~rhs)(k,i,j);
-            tensor_(page()+k,row()+i,column()+j+1UL) -= (~rhs)(k,i,j+1UL);
+            tensor_(page()+k,row()+i,column()+j) -= (*rhs)(k,i,j);
+            tensor_(page()+k,row()+i,column()+j+1UL) -= (*rhs)(k,i,j+1UL);
          }
          if( jpos < columns() ) {
-            tensor_(page()+k,row()+i,column()+jpos) -= (~rhs)(k,i,jpos);
+            tensor_(page()+k,row()+i,column()+jpos) -= (*rhs)(k,i,jpos);
          }
       }
    }
@@ -2859,9 +2859,9 @@ inline auto Subtensor<MT,unaligned,CSAs...>::subAssign( const DenseTensor<MT2>& 
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
 
    for( size_t k=0UL; k<pages(); ++k )
    {
@@ -2876,7 +2876,7 @@ inline auto Subtensor<MT,unaligned,CSAs...>::subAssign( const DenseTensor<MT2>& 
 
          size_t j( jbegin );
          Iterator left( begin(i, k) + jbegin );
-         ConstIterator_t<MT2> right( (~rhs).begin(i, k) + jbegin );
+         ConstIterator_t<MT2> right( (*rhs).begin(i, k) + jbegin );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
             left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2915,9 +2915,9 @@ template< typename MT2 >    // Type of the right-hand side dense tensor
 inline auto Subtensor<MT,unaligned,CSAs...>::schurAssign( const DenseTensor<MT2>& rhs )
    -> EnableIf_t< !VectorizedSchurAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
 
    const size_t jpos( columns() & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2927,11 +2927,11 @@ inline auto Subtensor<MT,unaligned,CSAs...>::schurAssign( const DenseTensor<MT2>
       for( size_t i=0UL; i<rows(); ++i )
       {
          for( size_t j=0UL; j<jpos; j+=2UL ) {
-            tensor_(page()+k,row()+i,column()+j) *= (~rhs)(k,i,j);
-            tensor_(page()+k,row()+i,column()+j+1UL) *= (~rhs)(k,i,j+1UL);
+            tensor_(page()+k,row()+i,column()+j) *= (*rhs)(k,i,j);
+            tensor_(page()+k,row()+i,column()+j+1UL) *= (*rhs)(k,i,j+1UL);
          }
          if( jpos < columns() ) {
-            tensor_(page()+k,row()+i,column()+jpos) *= (~rhs)(k,i,jpos);
+            tensor_(page()+k,row()+i,column()+jpos) *= (*rhs)(k,i,jpos);
          }
       }
    }
@@ -2960,9 +2960,9 @@ inline auto Subtensor<MT,unaligned,CSAs...>::schurAssign( const DenseTensor<MT2>
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
 
    for( size_t k=0UL; k<pages(); ++k )
    {
@@ -2973,7 +2973,7 @@ inline auto Subtensor<MT,unaligned,CSAs...>::schurAssign( const DenseTensor<MT2>
 
          size_t j( 0UL );
          Iterator left( begin(i, k) );
-         ConstIterator_t<MT2> right( (~rhs).begin(i, k) );
+         ConstIterator_t<MT2> right( (*rhs).begin(i, k) );
 
          for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
             left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;

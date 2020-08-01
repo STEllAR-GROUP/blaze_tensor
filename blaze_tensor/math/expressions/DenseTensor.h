@@ -139,7 +139,7 @@ template< typename TT > // Type of the tensor
 BLAZE_ALWAYS_INLINE EnableIf_t< HasMutableDataAccess_v<TT>, typename TT::ElementType* >
    data_backend( DenseTensor<TT>& dm ) noexcept
 {
-   return (~dm).data();
+   return (*dm).data();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -161,7 +161,7 @@ BLAZE_ALWAYS_INLINE EnableIf_t< HasMutableDataAccess_v<TT>, typename TT::Element
 template< typename TT > // Type of the tensor
 BLAZE_ALWAYS_INLINE typename TT::ElementType* data( DenseTensor<TT>& dm ) noexcept
 {
-   return data_backend( ~dm );
+   return data_backend( *dm );
 }
 //*************************************************************************************************
 
@@ -203,7 +203,7 @@ template< typename TT > // Type of the tensor
 BLAZE_ALWAYS_INLINE EnableIf_t< HasConstDataAccess_v<TT>, typename TT::ElementType* >
    data_backend( const DenseTensor<TT>& dm ) noexcept
 {
-   return (~dm).data();
+   return (*dm).data();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -225,7 +225,7 @@ BLAZE_ALWAYS_INLINE EnableIf_t< HasConstDataAccess_v<TT>, typename TT::ElementTy
 template< typename TT > // Type of the tensor
 BLAZE_ALWAYS_INLINE typename TT::ElementType* data( const DenseTensor<TT>& dm ) noexcept
 {
-   return data_backend( ~dm );
+   return data_backend( *dm );
 }
 //*************************************************************************************************
 
@@ -240,7 +240,7 @@ BLAZE_ALWAYS_INLINE typename TT::ElementType* data( const DenseTensor<TT>& dm ) 
 template< typename TT > // Type of the tensor
 BLAZE_ALWAYS_INLINE size_t spacing( const DenseTensor<TT>& dm ) noexcept
 {
-   return (~dm).spacing();
+   return (*dm).spacing();
 }
 //*************************************************************************************************
 

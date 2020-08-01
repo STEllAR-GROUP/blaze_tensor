@@ -453,17 +453,17 @@ template< typename Type > // Data type of the tensor
 template< typename MT    // Type of the foreign tensor
          >     // Storage order of the foreign tensor
 inline UniformTensor<Type>::UniformTensor( const Tensor<MT>& m )
-   : o_    ( (~m).pages()   )  // The current number of pages of the tensor
-   , m_    ( (~m).rows()    )  // The current number of rows of the tensor
-   , n_    ( (~m).columns() )  // The current number of columns of the tensor
+   : o_    ( (*m).pages()   )  // The current number of pages of the tensor
+   , m_    ( (*m).rows()    )  // The current number of rows of the tensor
+   , n_    ( (*m).columns() )  // The current number of columns of the tensor
    , value_()                  // The value of all elements of the uniform vector
 {
-   if( !IsUniform_v<MT> && !isUniform( ~m ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *m ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of uniform tensor" );
    }
 
    if( o_ > 0UL && m_ > 0UL && n_ > 0UL ) {
-      value_ = (~m)(0UL,0UL,0UL);
+      value_ = (*m)(0UL,0UL,0UL);
    }
 }
 //*************************************************************************************************
@@ -714,21 +714,21 @@ template< typename Type > // Data type of the tensor
 template< typename MT >   // Type of the right-hand side tensor
 inline UniformTensor<Type>& UniformTensor<Type>::operator=( const Tensor<MT>& rhs )
 {
-   if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment of uniform tensor" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      UniformTensor tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      UniformTensor tmp( *rhs );
       swap( tmp );
    }
    else {
-      o_ = (~rhs).pages();
-      m_ = (~rhs).rows();
-      n_ = (~rhs).columns();
+      o_ = (*rhs).pages();
+      m_ = (*rhs).rows();
+      n_ = (*rhs).columns();
 
       if( o_ > 0UL && m_ > 0UL && n_ > 0UL ) {
-         value_ = (~rhs)(0UL,0UL,0UL);
+         value_ = (*rhs)(0UL,0UL,0UL);
       }
    }
 
@@ -751,16 +751,16 @@ template< typename Type > // Data type of the tensor
 template< typename MT >   // Type of the right-hand side tensor
 inline UniformTensor<Type>& UniformTensor<Type>::operator+=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).pages() != o_ || (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).pages() != o_ || (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid addition assignment to uniform tensor" );
    }
 
    if( o_ > 0UL && m_ > 0UL && n_ > 0UL ) {
-      value_ += (~rhs)(0UL,0UL,0UL);
+      value_ += (*rhs)(0UL,0UL,0UL);
    }
 
    return *this;
@@ -782,16 +782,16 @@ template< typename Type > // Data type of the tensor
 template< typename MT >   // Type of the right-hand side tensor
 inline UniformTensor<Type>& UniformTensor<Type>::operator-=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).pages() != o_ || (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).pages() != o_ || (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid subtraction assignment to uniform tensor" );
    }
 
    if( o_ > 0UL && m_ > 0UL && n_ > 0UL ) {
-      value_ -= (~rhs)(0UL,0UL,0UL);
+      value_ -= (*rhs)(0UL,0UL,0UL);
    }
 
    return *this;
@@ -813,16 +813,16 @@ template< typename Type > // Data type of the tensor
 template< typename MT >   // Type of the right-hand side tensor
 inline UniformTensor<Type>& UniformTensor<Type>::operator%=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).pages() != o_ || (~rhs).rows() != m_ || (~rhs).columns() != n_ ) {
+   if( (*rhs).pages() != o_ || (*rhs).rows() != m_ || (*rhs).columns() != n_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+   if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid Schur product assignment to uniform tensor" );
    }
 
    if( o_ > 0UL && m_ > 0UL && n_ > 0UL ) {
-      value_ *= (~rhs)(0UL,0UL,0UL);
+      value_ *= (*rhs)(0UL,0UL,0UL);
    }
 
    return *this;
@@ -844,18 +844,18 @@ inline UniformTensor<Type>& UniformTensor<Type>::operator%=( const Tensor<MT>& r
 // template< typename MT >   // Type of the right-hand side tensor
 // inline UniformTensor<Type>& UniformTensor<Type>::operator*=( const Tensor<MT>& rhs )
 // {
-//    if( (~rhs).rows() != n_ ) {
+//    if( (*rhs).rows() != n_ ) {
 //       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
 //    }
 //
-//    if( !IsUniform_v<MT> && !isUniform( ~rhs ) ) {
+//    if( !IsUniform_v<MT> && !isUniform( *rhs ) ) {
 //       BLAZE_THROW_INVALID_ARGUMENT( "Invalid multiplication assignment to uniform tensor" );
 //    }
 //
-//    n_ = (~rhs).columns();
+//    n_ = (*rhs).columns();
 //
 //    if( m_ > 0UL && n_ > 0UL ) {
-//       value_ = ( value_ * (~rhs)(0UL,0UL) ) * Type( (~rhs).rows() );
+//       value_ = ( value_ * (*rhs)(0UL,0UL) ) * Type( (*rhs).rows() );
 //    }
 //
 //    return *this;

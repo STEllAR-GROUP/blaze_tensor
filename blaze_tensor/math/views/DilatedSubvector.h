@@ -152,7 +152,7 @@ inline decltype(auto) dilatedsubvector( Vector<VT,TF>& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<I,N,Dilation>( ~vector, args... );
+   return dilatedsubvector<I,N,Dilation>( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -209,7 +209,7 @@ inline decltype(auto) dilatedsubvector( const Vector<VT,TF>& vector, RSAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<I,N,Dilation>( ~vector, args... );
+   return dilatedsubvector<I,N,Dilation>( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -238,7 +238,7 @@ inline decltype(auto) dilatedsubvector( Vector<VT,TF>&& vector, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<I,N,Dilation>( ~vector, args... );
+   return dilatedsubvector<I,N,Dilation>( *vector, args... );
 }
 //*************************************************************************************************
 
@@ -307,7 +307,7 @@ inline decltype(auto) dilatedsubvector( Vector<VT,TF>& vector, size_t index, siz
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DilatedSubvector_<VT>;
-   return ReturnType( ~vector, index, size, dilation, args... );
+   return ReturnType( *vector, index, size, dilation, args... );
 }
 //*************************************************************************************************
 
@@ -376,7 +376,7 @@ inline decltype(auto) dilatedsubvector( const Vector<VT,TF>& vector, size_t inde
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DilatedSubvector_<const VT>;
-   return ReturnType( ~vector, index, size, dilation, args... );
+   return ReturnType( *vector, index, size, dilation, args... );
 }
 //*************************************************************************************************
 
@@ -405,7 +405,7 @@ inline decltype(auto) dilatedsubvector( Vector<VT,TF>&& vector, size_t index, si
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DilatedSubvector_<VT>;
-   return ReturnType( ~vector, index, size, dilation, args... );
+   return ReturnType( *vector, index, size, dilation, args... );
 }
 //*************************************************************************************************
 
@@ -435,8 +435,8 @@ inline decltype(auto) dilatedsubvector( const VecVecAddExpr<VT>& vector, RSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<CSAs...>( (~vector).leftOperand(), args... ) +
-          dilatedsubvector<CSAs...>( (~vector).rightOperand(), args... );
+   return dilatedsubvector<CSAs...>( (*vector).leftOperand(), args... ) +
+          dilatedsubvector<CSAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -461,8 +461,8 @@ inline decltype(auto) dilatedsubvector( const VecVecSubExpr<VT>& vector, RSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<CSAs...>( (~vector).leftOperand(), args... ) -
-          dilatedsubvector<CSAs...>( (~vector).rightOperand(), args... );
+   return dilatedsubvector<CSAs...>( (*vector).leftOperand(), args... ) -
+          dilatedsubvector<CSAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -487,8 +487,8 @@ inline decltype(auto) dilatedsubvector( const VecVecMultExpr<VT>& vector, RSAs..
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<CSAs...>( (~vector).leftOperand(), args... ) *
-          dilatedsubvector<CSAs...>( (~vector).rightOperand(), args... );
+   return dilatedsubvector<CSAs...>( (*vector).leftOperand(), args... ) *
+          dilatedsubvector<CSAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -513,8 +513,8 @@ inline decltype(auto) dilatedsubvector( const VecVecDivExpr<VT>& vector, RSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<CSAs...>( (~vector).leftOperand(), args... ) /
-          dilatedsubvector<CSAs...>( (~vector).rightOperand(), args... );
+   return dilatedsubvector<CSAs...>( (*vector).leftOperand(), args... ) /
+          dilatedsubvector<CSAs...>( (*vector).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -540,7 +540,7 @@ inline decltype(auto) dilatedsubvector( const CrossExpr<VT>& vector, RSAs... arg
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DilatedSubvector_< VectorType_t<VT>, CSAs... >;
-   return ReturnType( ~vector, args... );
+   return ReturnType( *vector, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -565,7 +565,7 @@ inline decltype(auto) dilatedsubvector( const VecScalarMultExpr<VT>& vector, RSA
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<CSAs...>( (~vector).leftOperand(), args... ) * (~vector).rightOperand();
+   return dilatedsubvector<CSAs...>( (*vector).leftOperand(), args... ) * (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -590,7 +590,7 @@ inline decltype(auto) dilatedsubvector( const VecScalarDivExpr<VT>& vector, RSAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<CSAs...>( (~vector).leftOperand(), args... ) / (~vector).rightOperand();
+   return dilatedsubvector<CSAs...>( (*vector).leftOperand(), args... ) / (*vector).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -615,7 +615,7 @@ inline decltype(auto) dilatedsubvector( const VecMapExpr<VT>& vector, RSAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( dilatedsubvector<CSAs...>( (~vector).operand(), args... ), (~vector).operation() );
+   return map( dilatedsubvector<CSAs...>( (*vector).operand(), args... ), (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -640,9 +640,9 @@ inline decltype(auto) dilatedsubvector( const VecVecMapExpr<VT>& vector, RSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( dilatedsubvector<CSAs...>( (~vector).leftOperand(), args... ),
-               dilatedsubvector<CSAs...>( (~vector).rightOperand(), args... ),
-               (~vector).operation() );
+   return map( dilatedsubvector<CSAs...>( (*vector).leftOperand(), args... ),
+               dilatedsubvector<CSAs...>( (*vector).rightOperand(), args... ),
+               (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -667,7 +667,7 @@ inline decltype(auto) dilatedsubvector( const VecEvalExpr<VT>& vector, RSAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( dilatedsubvector<CSAs...>( (~vector).operand(), args... ) );
+   return eval( dilatedsubvector<CSAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -692,7 +692,7 @@ inline decltype(auto) dilatedsubvector( const VecSerialExpr<VT>& vector, RSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( dilatedsubvector<CSAs...>( (~vector).operand(), args... ) );
+   return serial( dilatedsubvector<CSAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -717,7 +717,7 @@ inline decltype(auto) dilatedsubvector( const VecTransExpr<VT>& vector, RSAs... 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( dilatedsubvector<CSAs...>( (~vector).operand(), args... ) );
+   return trans( dilatedsubvector<CSAs...>( (*vector).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1731,7 +1731,7 @@ inline bool isDefault( const DilatedSubvector<VT,TF,false,CSAs...>& sv )
 {
    using blaze::isDefault;
 
-   for( const auto& element : ~sv )
+   for( const auto& element : *sv )
       if( !isDefault<RF>( element.value() ) ) return false;
    return true;
 }
@@ -1789,7 +1789,7 @@ template< typename VT       // Type of the vector
         , size_t... CSAs >  // Compile time dilatedsubvector arguments
 inline bool isSame( const DilatedSubvector<VT,TF,DF,CSAs...>& a, const Vector<VT,TF>& b ) noexcept
 {
-   return ( isSame( a.operand(), ~b ) && ( a.size() == (~b).size() ) && a.dilation() == 1 );
+   return ( isSame( a.operand(), *b ) && ( a.size() == (*b).size() ) && a.dilation() == 1 );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1997,8 +1997,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryMult( const DilatedSubvector<VT,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return tryMult( sv.operand(), sv.offset()+index*sv.dilation(), size*sv.dilation(), value );
 }
@@ -2060,8 +2060,8 @@ template< typename VT       // Type of the vector
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const DilatedSubvector<VT,TF,DF,CSAs...>& sv, size_t index, size_t size, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( index <= (~sv).size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + size <= (~sv).size(), "Invalid range size" );
+   BLAZE_INTERNAL_ASSERT( index <= (*sv).size(), "Invalid vector access index" );
+   BLAZE_INTERNAL_ASSERT( index + size <= (*sv).size(), "Invalid range size" );
 
    return tryDiv( sv.operand(), sv.offset()+index*sv.dilation(), size*sv.dilation(), value );
 }
@@ -2093,9 +2093,9 @@ inline bool tryAssign( const DilatedSubvector<VT1,TF,DF,CSAs...>& lhs,
                        const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.offset() + index * lhs.dilation() );
+   return tryAssign( lhs.operand(), *rhs, lhs.offset() + index * lhs.dilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2125,9 +2125,9 @@ inline bool tryAddAssign( const DilatedSubvector<VT1,TF,DF,CSAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.offset() + index * lhs.dilation() );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.offset() + index * lhs.dilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2157,9 +2157,9 @@ inline bool trySubAssign( const DilatedSubvector<VT1,TF,DF,CSAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.offset() + index * lhs.dilation() );
+   return trySubAssign( lhs.operand(), *rhs, lhs.offset() + index * lhs.dilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2189,9 +2189,9 @@ inline bool tryMultAssign( const DilatedSubvector<VT1,TF,DF,CSAs...>& lhs,
                            const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryMultAssign(lhs.operand(), ~rhs, lhs.offset() + index * lhs.dilation() );
+   return tryMultAssign(lhs.operand(), *rhs, lhs.offset() + index * lhs.dilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -2221,9 +2221,9 @@ inline bool tryDivAssign( const DilatedSubvector<VT1,TF,DF,CSAs...>& lhs,
                           const Vector<VT2,TF>& rhs, size_t index )
 {
    BLAZE_INTERNAL_ASSERT( index <= lhs.size(), "Invalid vector access index" );
-   BLAZE_INTERNAL_ASSERT( index + (~rhs).size() <= lhs.size(), "Invalid vector size" );
+   BLAZE_INTERNAL_ASSERT( index + (*rhs).size() <= lhs.size(), "Invalid vector size" );
 
-   return tryDivAssign(lhs.operand(), ~rhs, lhs.offset() + index * lhs.dilation() );
+   return tryDivAssign(lhs.operand(), *rhs, lhs.offset() + index * lhs.dilation() );
 }
 /*! \endcond */
 //*************************************************************************************************

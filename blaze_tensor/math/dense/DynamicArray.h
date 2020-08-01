@@ -717,14 +717,14 @@ template< size_t N         // The dimensionality of the array
         , typename Type >  // Data type of the array
 template< typename MT >    // Type of the foreign array
 inline DynamicArray<N, Type>::DynamicArray( const Array<MT>& rhs )
-   : DynamicArray( (~rhs).dimensions() )
+   : DynamicArray( (*rhs).dimensions() )
 {
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAssign( *this, tmp );
    }
    else {
-      smpAssign( *this, ~rhs );
+      smpAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -745,12 +745,12 @@ inline DynamicArray<N, Type>::DynamicArray( const Vector<MT, TF>& rhs )
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<1, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
 
@@ -771,13 +771,13 @@ inline DynamicArray<N, Type>::DynamicArray( const Matrix<MT,SO>& rhs )
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<2, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
@@ -799,14 +799,14 @@ inline DynamicArray<N, Type>::DynamicArray( const Tensor<MT>& rhs )
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<2, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
@@ -1426,7 +1426,7 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const DynamicArr
 
    resize( rhs.dimensions(), false );
 
-   smpAssign( *this, ~rhs );
+   smpAssign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1475,13 +1475,13 @@ template< size_t N         // The dimensionality of the array
 template< typename MT >  // Type of the right-hand side array
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Array<MT>& rhs )
 {
-   if( (~rhs).canAlias( this ) ) {
-      DynamicArray tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      DynamicArray tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).dimensions(), false );
-      smpAssign( *this, ~rhs );
+      resize( (*rhs).dimensions(), false );
+      smpAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1506,16 +1506,16 @@ template< size_t N         // The dimensionality of the array
 template< typename MT >   // Type of the right-hand side array
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Array<MT>& rhs )
 {
-   if( (~rhs).dimensions() != dims_ ) {
+   if( (*rhs).dimensions() != dims_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAddAssign( *this, tmp );
    }
    else {
-      smpAddAssign( *this, ~rhs );
+      smpAddAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1540,16 +1540,16 @@ template< size_t N         // The dimensionality of the array
 template< typename MT >   // Type of the right-hand side array
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Array<MT>& rhs )
 {
-   if( (~rhs).dimensions() != dims_ ) {
+   if( (*rhs).dimensions() != dims_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSubAssign( *this, tmp );
    }
    else {
-      smpSubAssign( *this, ~rhs );
+      smpSubAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1574,16 +1574,16 @@ template< size_t N         // The dimensionality of the array
 template< typename MT >  // Type of the right-hand side array
 inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Array<MT>& rhs )
 {
-   if( (~rhs).dimensions() != dims_ ) {
+   if( (*rhs).dimensions() != dims_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSchurAssign( *this, tmp );
    }
    else {
-      smpSchurAssign( *this, ~rhs );
+      smpSchurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1607,12 +1607,12 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Vector<MT,
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<1, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
 
@@ -1637,12 +1637,12 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Vector<MT
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<1, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAddAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpAddAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
 
@@ -1667,12 +1667,12 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Vector<MT
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<1, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSubAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpSubAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
 
@@ -1697,12 +1697,12 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Vector<MT
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<1, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSchurAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpSchurAssign( *this, custom_array( tmp.data(), tmp.size(), tmp.spacing() ) );
    }
 
@@ -1727,13 +1727,13 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Matrix<MT,
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<2, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
@@ -1759,13 +1759,13 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Matrix<MT
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<2, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAddAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpAddAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
@@ -1791,13 +1791,13 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Matrix<MT
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<2, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSubAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpSubAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
@@ -1823,13 +1823,13 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Matrix<MT
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<2, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSchurAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpSchurAssign( *this,
          custom_array( tmp.data(), tmp.rows(), tmp.columns(), tmp.spacing() ) );
    }
@@ -1855,14 +1855,14 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator=( const Tensor<MT>
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<3, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
@@ -1889,14 +1889,14 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator+=( const Tensor<MT
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<3, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAddAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpAddAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
@@ -1923,14 +1923,14 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator-=( const Tensor<MT
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<3, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSubAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpSubAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
@@ -1957,14 +1957,14 @@ inline DynamicArray<N, Type>& DynamicArray<N, Type>::operator%=( const Tensor<MT
    using ET = ElementType_t<MT>;
    using custom_array = CustomArray<3, ET, unaligned, padded>;
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSchurAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
    }
    else {
-      auto const& tmp = ~rhs;
+      auto const& tmp = *rhs;
       smpSchurAssign( *this,
          custom_array( tmp.data(), tmp.pages(), tmp.rows(), tmp.columns(),
             tmp.spacing() ) );
@@ -3196,14 +3196,14 @@ template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
    //-> EnableIf_t< !VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (*rhs).dimensions()   , "Invalid array access index"    );
 
    const size_t jpos( dims_[0] & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( dims_[0] - ( dims_[0] % 2UL ) ) == jpos, "Invalid end calculation" );
 
    ArrayForEachGrouped(
       dims_, nn_, [&]( size_t i, std::array< size_t, N > const& dims ) {
-         v_[i] = ( ~rhs )( dims );
+         v_[i] = ( *rhs )( dims );
       } );
 }
 //*************************************************************************************************
@@ -3228,7 +3228,7 @@ inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
 //{
 //   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 //
-//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//   BLAZE_INTERNAL_ASSERT( dims_ == (*rhs).dimensions()   , "Invalid array access index"    );
 //
 //   constexpr bool remainder( !IsPadded_v<MT> );
 //
@@ -3236,13 +3236,13 @@ inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
 //   BLAZE_INTERNAL_ASSERT( !remainder || ( dims_[0] - ( dims_[0] % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
 //    if( useStreaming &&
-//        ( o_*m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
+//        ( o_*m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(*rhs).isAliased( this ) )
 //    {
 //       for (size_t k=0UL; k<o_; ++k) {
 //          for (size_t i=0UL; i<m_; ++i) {
 //             size_t j(0UL);
 //             Iterator left(begin(i, k));
-//             ConstIterator_t<MT> right((~rhs).begin(i, k));
+//             ConstIterator_t<MT> right((*rhs).begin(i, k));
 //
 //             for (; j<jpos; j+=SIMDSIZE, left+=SIMDSIZE, right+=SIMDSIZE) {
 //                left.stream(right.load());
@@ -3259,7 +3259,7 @@ inline auto DynamicArray<N, Type>::assign( const DenseArray<MT>& rhs )
 //          for (size_t i=0UL; i<m_; ++i) {
 //             size_t j(0UL);
 //             Iterator left(begin(i, k));
-//             ConstIterator_t<MT> right((~rhs).begin(i, k));
+//             ConstIterator_t<MT> right((*rhs).begin(i, k));
 //
 //             for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
 //                left.store(right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -3297,14 +3297,14 @@ template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
    //-> EnableIf_t< !VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (*rhs).dimensions()   , "Invalid array access index"    );
 
    const size_t jpos( dims_[0] & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( dims_[0] - ( dims_[0] % 2UL ) ) == jpos, "Invalid end calculation" );
 
    ArrayForEachGrouped(
       dims_, nn_, [&]( size_t i, std::array< size_t, N > const& dims ) {
-         v_[i] += ( ~rhs )( dims );
+         v_[i] += ( *rhs )( dims );
       } );
 }
 //*************************************************************************************************
@@ -3329,7 +3329,7 @@ inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
 //{
 //   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 //
-//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//   BLAZE_INTERNAL_ASSERT( dims_ == (*rhs).dimensions()   , "Invalid array access index"    );
 //
 //   constexpr bool remainder( !IsPadded_v<MT> );
 //
@@ -3344,7 +3344,7 @@ inline auto DynamicArray<N, Type>::addAssign( const DenseArray<MT>& rhs )
 //
 //         size_t j(jbegin);
 //         Iterator left(begin(i, k) + jbegin);
-//         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
+//         ConstIterator_t<MT> right((*rhs).begin(i, k) + jbegin);
 //
 //         for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
 //            left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -3381,14 +3381,14 @@ template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
    //-> EnableIf_t< !VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (*rhs).dimensions()   , "Invalid array access index"    );
 
    const size_t jpos( dims_[0] & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( dims_[0] - ( dims_[0] % 2UL ) ) == jpos, "Invalid end calculation" );
 
    ArrayForEachGrouped(
       dims_, nn_, [&]( size_t i, std::array< size_t, N > const& dims ) {
-         v_[i] -= ( ~rhs )( dims );
+         v_[i] -= ( *rhs )( dims );
       } );
 }
 //*************************************************************************************************
@@ -3413,7 +3413,7 @@ inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
 //{
 //   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 //
-//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//   BLAZE_INTERNAL_ASSERT( dims_ == (*rhs).dimensions()   , "Invalid array access index"    );
 //
 //   constexpr bool remainder( !IsPadded_v<MT> );
 //
@@ -3429,7 +3429,7 @@ inline auto DynamicArray<N, Type>::subAssign( const DenseArray<MT>& rhs )
 //
 //         size_t j(jbegin);
 //         Iterator left(begin(i, k) + jbegin);
-//         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
+//         ConstIterator_t<MT> right((*rhs).begin(i, k) + jbegin);
 //
 //         for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
 //            left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -3466,14 +3466,14 @@ template< typename MT >  // Type of the right-hand side dense array
 inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
    //-> EnableIf_t< !VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+   BLAZE_INTERNAL_ASSERT( dims_ == (*rhs).dimensions()   , "Invalid array access index"    );
 
    const size_t jpos( dims_[0] & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( dims_[0] - ( dims_[0] % 2UL ) ) == jpos, "Invalid end calculation" );
 
    ArrayForEachGrouped(
       dims_, nn_, [&]( size_t i, std::array< size_t, N > const& dims ) {
-         v_[i] *= ( ~rhs )( dims );
+         v_[i] *= ( *rhs )( dims );
       } );
 }
 //*************************************************************************************************
@@ -3498,7 +3498,7 @@ inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
 //{
 //   BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 //
-//   BLAZE_INTERNAL_ASSERT( dims_ == (~rhs).dimensions()   , "Invalid array access index"    );
+//   BLAZE_INTERNAL_ASSERT( dims_ == (*rhs).dimensions()   , "Invalid array access index"    );
 //
 //   constexpr bool remainder( !IsPadded_v<MT> );
 //
@@ -3510,7 +3510,7 @@ inline auto DynamicArray<N, Type>::schurAssign( const DenseArray<MT>& rhs )
 //
 //         size_t j(0UL);
 //         Iterator left(begin(i, k));
-//         ConstIterator_t<MT> right((~rhs).begin(i, k));
+//         ConstIterator_t<MT> right((*rhs).begin(i, k));
 //
 //         for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
 //            left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;

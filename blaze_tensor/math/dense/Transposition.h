@@ -161,7 +161,7 @@ inline void transposeGeneral021( DenseTensor<TT>& dt )
 
    constexpr size_t block( BLOCK_SIZE );
 
-   TT& t( ~dt );
+   TT& t( *dt );
 
    for( size_t kk = 0UL; kk < t.pages(); kk += block )
    {
@@ -206,7 +206,7 @@ inline void transposeGeneral102( DenseTensor<TT>& dt )
 
    constexpr size_t block( BLOCK_SIZE );
 
-   TT& t( ~dt );
+   TT& t( *dt );
 
    for( size_t jj = 0UL; jj < t.columns(); jj += block )
    {
@@ -251,7 +251,7 @@ inline void transposeGeneral120( DenseTensor<TT>& dt )
 
    constexpr size_t block( BLOCK_SIZE );
 
-   TT& t( ~dt );
+   TT& t( *dt );
 
    for( size_t kk = 0UL; kk < t.pages(); kk += block )
    {
@@ -315,7 +315,7 @@ inline void transposeGeneral201( DenseTensor<TT>& dt )
 
    constexpr size_t block( BLOCK_SIZE );
 
-   TT& t( ~dt );
+   TT& t( *dt );
 
    for( size_t ii = 0UL; ii < t.rows(); ii += block )
    {
@@ -379,7 +379,7 @@ inline void transposeGeneral210( DenseTensor<TT>& dt )
 
    constexpr size_t block( BLOCK_SIZE );
 
-   TT& t( ~dt );
+   TT& t( *dt );
 
    for( size_t ii = 0UL; ii < t.rows(); ii += block )
    {

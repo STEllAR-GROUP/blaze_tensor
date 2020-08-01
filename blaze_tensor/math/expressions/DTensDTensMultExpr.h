@@ -396,15 +396,15 @@ class DTensDTensMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || (~lhs).pages() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || (*lhs).pages() == 0UL ) {
          return;
       }
-      else if( rhs.lhs_.columns() == 0UL || (~rhs).pages() == 0UL ) {
-         reset( ~lhs );
+      else if( rhs.lhs_.columns() == 0UL || (*rhs).pages() == 0UL ) {
+         reset( *lhs );
          return;
       }
 
@@ -417,11 +417,11 @@ class DTensDTensMultExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.pages() == rhs.rhs_.pages(),     "Invalid number of pages" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.pages() == (~lhs).pages()  ,     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.pages() == (*lhs).pages()  ,     "Invalid number of pages" );
 
-      DTensDTensMultExpr::selectAssignKernel( ~lhs, A, B );
+      DTensDTensMultExpr::selectAssignKernel( *lhs, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -758,7 +758,7 @@ class DTensDTensMultExpr
       BLAZE_INTERNAL_ASSERT( !remainder || ( N - ( N % SIMDSIZE ) ) == jpos, "Invalid end calculation" );
 
       if( N > SIMDSIZE*3UL ) {
-         reset( ~C );
+         reset( *C );
       }
 
       {
@@ -786,14 +786,14 @@ class DTensDTensMultExpr
                      xmm8 += a1 * B.load(k,j+SIMDSIZE*7UL);
                   }
 
-                  (~C).store( i, j             , xmm1 );
-                  (~C).store( i, j+SIMDSIZE    , xmm2 );
-                  (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
-                  (~C).store( i, j+SIMDSIZE*3UL, xmm4 );
-                  (~C).store( i, j+SIMDSIZE*4UL, xmm5 );
-                  (~C).store( i, j+SIMDSIZE*5UL, xmm6 );
-                  (~C).store( i, j+SIMDSIZE*6UL, xmm7 );
-                  (~C).store( i, j+SIMDSIZE*7UL, xmm8 );
+                  (*C).store( i, j             , xmm1 );
+                  (*C).store( i, j+SIMDSIZE    , xmm2 );
+                  (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
+                  (*C).store( i, j+SIMDSIZE*3UL, xmm4 );
+                  (*C).store( i, j+SIMDSIZE*4UL, xmm5 );
+                  (*C).store( i, j+SIMDSIZE*5UL, xmm6 );
+                  (*C).store( i, j+SIMDSIZE*6UL, xmm7 );
+                  (*C).store( i, j+SIMDSIZE*7UL, xmm8 );
                }
             }
          }
@@ -829,16 +829,16 @@ class DTensDTensMultExpr
                   xmm10 += a2 * b5;
                }
 
-               (~C).store( i    , j             , xmm1  );
-               (~C).store( i    , j+SIMDSIZE    , xmm2  );
-               (~C).store( i    , j+SIMDSIZE*2UL, xmm3  );
-               (~C).store( i    , j+SIMDSIZE*3UL, xmm4  );
-               (~C).store( i    , j+SIMDSIZE*4UL, xmm5  );
-               (~C).store( i+1UL, j             , xmm6  );
-               (~C).store( i+1UL, j+SIMDSIZE    , xmm7  );
-               (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm8  );
-               (~C).store( i+1UL, j+SIMDSIZE*3UL, xmm9  );
-               (~C).store( i+1UL, j+SIMDSIZE*4UL, xmm10 );
+               (*C).store( i    , j             , xmm1  );
+               (*C).store( i    , j+SIMDSIZE    , xmm2  );
+               (*C).store( i    , j+SIMDSIZE*2UL, xmm3  );
+               (*C).store( i    , j+SIMDSIZE*3UL, xmm4  );
+               (*C).store( i    , j+SIMDSIZE*4UL, xmm5  );
+               (*C).store( i+1UL, j             , xmm6  );
+               (*C).store( i+1UL, j+SIMDSIZE    , xmm7  );
+               (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm8  );
+               (*C).store( i+1UL, j+SIMDSIZE*3UL, xmm9  );
+               (*C).store( i+1UL, j+SIMDSIZE*4UL, xmm10 );
             }
 
             if( i < M )
@@ -857,11 +857,11 @@ class DTensDTensMultExpr
                   xmm5 += a1 * B.load(k,j+SIMDSIZE*4UL);
                }
 
-               (~C).store( i, j             , xmm1 );
-               (~C).store( i, j+SIMDSIZE    , xmm2 );
-               (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
-               (~C).store( i, j+SIMDSIZE*3UL, xmm4 );
-               (~C).store( i, j+SIMDSIZE*4UL, xmm5 );
+               (*C).store( i, j             , xmm1 );
+               (*C).store( i, j+SIMDSIZE    , xmm2 );
+               (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
+               (*C).store( i, j+SIMDSIZE*3UL, xmm4 );
+               (*C).store( i, j+SIMDSIZE*4UL, xmm5 );
             }
          }
 
@@ -894,14 +894,14 @@ class DTensDTensMultExpr
                   xmm8 += a2 * b4;
                }
 
-               (~C).store( i    , j             , xmm1 );
-               (~C).store( i    , j+SIMDSIZE    , xmm2 );
-               (~C).store( i    , j+SIMDSIZE*2UL, xmm3 );
-               (~C).store( i    , j+SIMDSIZE*3UL, xmm4 );
-               (~C).store( i+1UL, j             , xmm5 );
-               (~C).store( i+1UL, j+SIMDSIZE    , xmm6 );
-               (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm7 );
-               (~C).store( i+1UL, j+SIMDSIZE*3UL, xmm8 );
+               (*C).store( i    , j             , xmm1 );
+               (*C).store( i    , j+SIMDSIZE    , xmm2 );
+               (*C).store( i    , j+SIMDSIZE*2UL, xmm3 );
+               (*C).store( i    , j+SIMDSIZE*3UL, xmm4 );
+               (*C).store( i+1UL, j             , xmm5 );
+               (*C).store( i+1UL, j+SIMDSIZE    , xmm6 );
+               (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm7 );
+               (*C).store( i+1UL, j+SIMDSIZE*3UL, xmm8 );
             }
 
             if( i < iend )
@@ -919,10 +919,10 @@ class DTensDTensMultExpr
                   xmm4 += a1 * B.load(k,j+SIMDSIZE*3UL);
                }
 
-               (~C).store( i, j             , xmm1 );
-               (~C).store( i, j+SIMDSIZE    , xmm2 );
-               (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
-               (~C).store( i, j+SIMDSIZE*3UL, xmm4 );
+               (*C).store( i, j             , xmm1 );
+               (*C).store( i, j+SIMDSIZE    , xmm2 );
+               (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
+               (*C).store( i, j+SIMDSIZE*3UL, xmm4 );
             }
          }
 
@@ -952,12 +952,12 @@ class DTensDTensMultExpr
                   xmm6 += a2 * b3;
                }
 
-               (~C).store( i    , j             , xmm1 );
-               (~C).store( i    , j+SIMDSIZE    , xmm2 );
-               (~C).store( i    , j+SIMDSIZE*2UL, xmm3 );
-               (~C).store( i+1UL, j             , xmm4 );
-               (~C).store( i+1UL, j+SIMDSIZE    , xmm5 );
-               (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm6 );
+               (*C).store( i    , j             , xmm1 );
+               (*C).store( i    , j+SIMDSIZE    , xmm2 );
+               (*C).store( i    , j+SIMDSIZE*2UL, xmm3 );
+               (*C).store( i+1UL, j             , xmm4 );
+               (*C).store( i+1UL, j+SIMDSIZE    , xmm5 );
+               (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm6 );
             }
 
             if( i < iend )
@@ -974,9 +974,9 @@ class DTensDTensMultExpr
                   xmm3 += a1 * B.load(k,j+SIMDSIZE*2UL);
                }
 
-               (~C).store( i, j             , xmm1 );
-               (~C).store( i, j+SIMDSIZE    , xmm2 );
-               (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
+               (*C).store( i, j             , xmm1 );
+               (*C).store( i, j+SIMDSIZE    , xmm2 );
+               (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
             }
          }
 
@@ -1009,14 +1009,14 @@ class DTensDTensMultExpr
                   xmm8 += a4 * b2;
                }
 
-               (~C).store( i    , j         , xmm1 );
-               (~C).store( i    , j+SIMDSIZE, xmm2 );
-               (~C).store( i+1UL, j         , xmm3 );
-               (~C).store( i+1UL, j+SIMDSIZE, xmm4 );
-               (~C).store( i+2UL, j         , xmm5 );
-               (~C).store( i+2UL, j+SIMDSIZE, xmm6 );
-               (~C).store( i+3UL, j         , xmm7 );
-               (~C).store( i+3UL, j+SIMDSIZE, xmm8 );
+               (*C).store( i    , j         , xmm1 );
+               (*C).store( i    , j+SIMDSIZE, xmm2 );
+               (*C).store( i+1UL, j         , xmm3 );
+               (*C).store( i+1UL, j+SIMDSIZE, xmm4 );
+               (*C).store( i+2UL, j         , xmm5 );
+               (*C).store( i+2UL, j+SIMDSIZE, xmm6 );
+               (*C).store( i+3UL, j         , xmm7 );
+               (*C).store( i+3UL, j+SIMDSIZE, xmm8 );
             }
 
             for( ; (i+3UL) <= iend; i+=3UL )
@@ -1040,12 +1040,12 @@ class DTensDTensMultExpr
                   xmm6 += a3 * b2;
                }
 
-               (~C).store( i    , j         , xmm1 );
-               (~C).store( i    , j+SIMDSIZE, xmm2 );
-               (~C).store( i+1UL, j         , xmm3 );
-               (~C).store( i+1UL, j+SIMDSIZE, xmm4 );
-               (~C).store( i+2UL, j         , xmm5 );
-               (~C).store( i+2UL, j+SIMDSIZE, xmm6 );
+               (*C).store( i    , j         , xmm1 );
+               (*C).store( i    , j+SIMDSIZE, xmm2 );
+               (*C).store( i+1UL, j         , xmm3 );
+               (*C).store( i+1UL, j+SIMDSIZE, xmm4 );
+               (*C).store( i+2UL, j         , xmm5 );
+               (*C).store( i+2UL, j+SIMDSIZE, xmm6 );
             }
 
             for( ; (i+2UL) <= iend; i+=2UL )
@@ -1086,10 +1086,10 @@ class DTensDTensMultExpr
                   xmm4 += a2 * b2;
                }
 
-               (~C).store( i    , j         , xmm1+xmm5 );
-               (~C).store( i    , j+SIMDSIZE, xmm2+xmm6 );
-               (~C).store( i+1UL, j         , xmm3+xmm7 );
-               (~C).store( i+1UL, j+SIMDSIZE, xmm4+xmm8 );
+               (*C).store( i    , j         , xmm1+xmm5 );
+               (*C).store( i    , j+SIMDSIZE, xmm2+xmm6 );
+               (*C).store( i+1UL, j         , xmm3+xmm7 );
+               (*C).store( i+1UL, j+SIMDSIZE, xmm4+xmm8 );
             }
 
             if( i < iend )
@@ -1115,8 +1115,8 @@ class DTensDTensMultExpr
                   xmm2 += a1 * B.load(k,j+SIMDSIZE);
                }
 
-               (~C).store( i, j         , xmm1+xmm3 );
-               (~C).store( i, j+SIMDSIZE, xmm2+xmm4 );
+               (*C).store( i, j         , xmm1+xmm3 );
+               (*C).store( i, j+SIMDSIZE, xmm2+xmm4 );
             }
          }
 
@@ -1154,10 +1154,10 @@ class DTensDTensMultExpr
                   xmm4 += set( A(i+3UL,k) ) * b1;
                }
 
-               (~C).store( i    , j, xmm1+xmm5 );
-               (~C).store( i+1UL, j, xmm2+xmm6 );
-               (~C).store( i+2UL, j, xmm3+xmm7 );
-               (~C).store( i+3UL, j, xmm4+xmm8 );
+               (*C).store( i    , j, xmm1+xmm5 );
+               (*C).store( i+1UL, j, xmm2+xmm6 );
+               (*C).store( i+2UL, j, xmm3+xmm7 );
+               (*C).store( i+3UL, j, xmm4+xmm8 );
             }
 
             for( ; (i+3UL) <= iend; i+=3UL )
@@ -1186,9 +1186,9 @@ class DTensDTensMultExpr
                   xmm3 += set( A(i+2UL,k) ) * b1;
                }
 
-               (~C).store( i    , j, xmm1+xmm4 );
-               (~C).store( i+1UL, j, xmm2+xmm5 );
-               (~C).store( i+2UL, j, xmm3+xmm6 );
+               (*C).store( i    , j, xmm1+xmm4 );
+               (*C).store( i+1UL, j, xmm2+xmm5 );
+               (*C).store( i+2UL, j, xmm3+xmm6 );
             }
 
             for( ; (i+2UL) <= iend; i+=2UL )
@@ -1214,8 +1214,8 @@ class DTensDTensMultExpr
                   xmm2 += set( A(i+1UL,k) ) * b1;
                }
 
-               (~C).store( i    , j, xmm1+xmm3 );
-               (~C).store( i+1UL, j, xmm2+xmm4 );
+               (*C).store( i    , j, xmm1+xmm3 );
+               (*C).store( i+1UL, j, xmm2+xmm4 );
             }
 
             if( i < iend )
@@ -1234,7 +1234,7 @@ class DTensDTensMultExpr
                   xmm1 += set( A(i,k) ) * B.load(k,j);
                }
 
-               (~C).store( i, j, xmm1+xmm2 );
+               (*C).store( i, j, xmm1+xmm2 );
             }
          }
 
@@ -1255,8 +1255,8 @@ class DTensDTensMultExpr
                   value2 += A(i+1UL,k) * B(k,j);
                }
 
-               (~C)(i    ,j) = value1;
-               (~C)(i+1UL,j) = value2;
+               (*C)(i    ,j) = value1;
+               (*C)(i+1UL,j) = value2;
             }
 
             if( i < M )
@@ -1269,7 +1269,7 @@ class DTensDTensMultExpr
                   value += A(i,k) * B(k,j);
                }
 
-               (~C)(i,j) = value;
+               (*C)(i,j) = value;
             }
          }
       }
@@ -1406,10 +1406,10 @@ class DTensDTensMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || rhs.lhs_.columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || rhs.lhs_.columns() == 0UL ) {
          return;
       }
 
@@ -1420,10 +1420,10 @@ class DTensDTensMultExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      DTensDTensMultExpr::selectAddAssignKernel( ~lhs, A, B );
+      DTensDTensMultExpr::selectAddAssignKernel( *lhs, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1726,14 +1726,14 @@ class DTensDTensMultExpr
                                      :( IsStrictlyLower_v<MT4> ? i : i+1UL ) )
                                   :( IsUpper_v<MT5> ? min( j+SIMDSIZE*8UL, K ) : K ) );
 
-               SIMDType xmm1( (~C).load(i,j             ) );
-               SIMDType xmm2( (~C).load(i,j+SIMDSIZE    ) );
-               SIMDType xmm3( (~C).load(i,j+SIMDSIZE*2UL) );
-               SIMDType xmm4( (~C).load(i,j+SIMDSIZE*3UL) );
-               SIMDType xmm5( (~C).load(i,j+SIMDSIZE*4UL) );
-               SIMDType xmm6( (~C).load(i,j+SIMDSIZE*5UL) );
-               SIMDType xmm7( (~C).load(i,j+SIMDSIZE*6UL) );
-               SIMDType xmm8( (~C).load(i,j+SIMDSIZE*7UL) );
+               SIMDType xmm1( (*C).load(i,j             ) );
+               SIMDType xmm2( (*C).load(i,j+SIMDSIZE    ) );
+               SIMDType xmm3( (*C).load(i,j+SIMDSIZE*2UL) );
+               SIMDType xmm4( (*C).load(i,j+SIMDSIZE*3UL) );
+               SIMDType xmm5( (*C).load(i,j+SIMDSIZE*4UL) );
+               SIMDType xmm6( (*C).load(i,j+SIMDSIZE*5UL) );
+               SIMDType xmm7( (*C).load(i,j+SIMDSIZE*6UL) );
+               SIMDType xmm8( (*C).load(i,j+SIMDSIZE*7UL) );
 
                for( size_t k=kbegin; k<kend; ++k ) {
                   const SIMDType a1( set( A(i,k) ) );
@@ -1747,14 +1747,14 @@ class DTensDTensMultExpr
                   xmm8 += a1 * B.load(k,j+SIMDSIZE*7UL);
                }
 
-               (~C).store( i, j             , xmm1 );
-               (~C).store( i, j+SIMDSIZE    , xmm2 );
-               (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
-               (~C).store( i, j+SIMDSIZE*3UL, xmm4 );
-               (~C).store( i, j+SIMDSIZE*4UL, xmm5 );
-               (~C).store( i, j+SIMDSIZE*5UL, xmm6 );
-               (~C).store( i, j+SIMDSIZE*6UL, xmm7 );
-               (~C).store( i, j+SIMDSIZE*7UL, xmm8 );
+               (*C).store( i, j             , xmm1 );
+               (*C).store( i, j+SIMDSIZE    , xmm2 );
+               (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
+               (*C).store( i, j+SIMDSIZE*3UL, xmm4 );
+               (*C).store( i, j+SIMDSIZE*4UL, xmm5 );
+               (*C).store( i, j+SIMDSIZE*5UL, xmm6 );
+               (*C).store( i, j+SIMDSIZE*6UL, xmm7 );
+               (*C).store( i, j+SIMDSIZE*7UL, xmm8 );
             }
          }
       }
@@ -1776,16 +1776,16 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*5UL, K ) : K ) );
 
-            SIMDType xmm1 ( (~C).load(i    ,j             ) );
-            SIMDType xmm2 ( (~C).load(i    ,j+SIMDSIZE    ) );
-            SIMDType xmm3 ( (~C).load(i    ,j+SIMDSIZE*2UL) );
-            SIMDType xmm4 ( (~C).load(i    ,j+SIMDSIZE*3UL) );
-            SIMDType xmm5 ( (~C).load(i    ,j+SIMDSIZE*4UL) );
-            SIMDType xmm6 ( (~C).load(i+1UL,j             ) );
-            SIMDType xmm7 ( (~C).load(i+1UL,j+SIMDSIZE    ) );
-            SIMDType xmm8 ( (~C).load(i+1UL,j+SIMDSIZE*2UL) );
-            SIMDType xmm9 ( (~C).load(i+1UL,j+SIMDSIZE*3UL) );
-            SIMDType xmm10( (~C).load(i+1UL,j+SIMDSIZE*4UL) );
+            SIMDType xmm1 ( (*C).load(i    ,j             ) );
+            SIMDType xmm2 ( (*C).load(i    ,j+SIMDSIZE    ) );
+            SIMDType xmm3 ( (*C).load(i    ,j+SIMDSIZE*2UL) );
+            SIMDType xmm4 ( (*C).load(i    ,j+SIMDSIZE*3UL) );
+            SIMDType xmm5 ( (*C).load(i    ,j+SIMDSIZE*4UL) );
+            SIMDType xmm6 ( (*C).load(i+1UL,j             ) );
+            SIMDType xmm7 ( (*C).load(i+1UL,j+SIMDSIZE    ) );
+            SIMDType xmm8 ( (*C).load(i+1UL,j+SIMDSIZE*2UL) );
+            SIMDType xmm9 ( (*C).load(i+1UL,j+SIMDSIZE*3UL) );
+            SIMDType xmm10( (*C).load(i+1UL,j+SIMDSIZE*4UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -1807,16 +1807,16 @@ class DTensDTensMultExpr
                xmm10 += a2 * b5;
             }
 
-            (~C).store( i    , j             , xmm1  );
-            (~C).store( i    , j+SIMDSIZE    , xmm2  );
-            (~C).store( i    , j+SIMDSIZE*2UL, xmm3  );
-            (~C).store( i    , j+SIMDSIZE*3UL, xmm4  );
-            (~C).store( i    , j+SIMDSIZE*4UL, xmm5  );
-            (~C).store( i+1UL, j             , xmm6  );
-            (~C).store( i+1UL, j+SIMDSIZE    , xmm7  );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm8  );
-            (~C).store( i+1UL, j+SIMDSIZE*3UL, xmm9  );
-            (~C).store( i+1UL, j+SIMDSIZE*4UL, xmm10 );
+            (*C).store( i    , j             , xmm1  );
+            (*C).store( i    , j+SIMDSIZE    , xmm2  );
+            (*C).store( i    , j+SIMDSIZE*2UL, xmm3  );
+            (*C).store( i    , j+SIMDSIZE*3UL, xmm4  );
+            (*C).store( i    , j+SIMDSIZE*4UL, xmm5  );
+            (*C).store( i+1UL, j             , xmm6  );
+            (*C).store( i+1UL, j+SIMDSIZE    , xmm7  );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm8  );
+            (*C).store( i+1UL, j+SIMDSIZE*3UL, xmm9  );
+            (*C).store( i+1UL, j+SIMDSIZE*4UL, xmm10 );
          }
 
          if( i < M )
@@ -1828,11 +1828,11 @@ class DTensDTensMultExpr
                                  :( IsLower_v<MT5> ? j : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( min( j+SIMDSIZE*5UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i,j             ) );
-            SIMDType xmm2( (~C).load(i,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i,j+SIMDSIZE*2UL) );
-            SIMDType xmm4( (~C).load(i,j+SIMDSIZE*3UL) );
-            SIMDType xmm5( (~C).load(i,j+SIMDSIZE*4UL) );
+            SIMDType xmm1( (*C).load(i,j             ) );
+            SIMDType xmm2( (*C).load(i,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i,j+SIMDSIZE*2UL) );
+            SIMDType xmm4( (*C).load(i,j+SIMDSIZE*3UL) );
+            SIMDType xmm5( (*C).load(i,j+SIMDSIZE*4UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i,k) ) );
@@ -1843,11 +1843,11 @@ class DTensDTensMultExpr
                xmm5 += a1 * B.load(k,j+SIMDSIZE*4UL);
             }
 
-            (~C).store( i, j             , xmm1 );
-            (~C).store( i, j+SIMDSIZE    , xmm2 );
-            (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
-            (~C).store( i, j+SIMDSIZE*3UL, xmm4 );
-            (~C).store( i, j+SIMDSIZE*4UL, xmm5 );
+            (*C).store( i, j             , xmm1 );
+            (*C).store( i, j+SIMDSIZE    , xmm2 );
+            (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i, j+SIMDSIZE*3UL, xmm4 );
+            (*C).store( i, j+SIMDSIZE*4UL, xmm5 );
          }
       }
 
@@ -1868,14 +1868,14 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*4UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j             ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i    ,j+SIMDSIZE*2UL) );
-            SIMDType xmm4( (~C).load(i    ,j+SIMDSIZE*3UL) );
-            SIMDType xmm5( (~C).load(i+1UL,j             ) );
-            SIMDType xmm6( (~C).load(i+1UL,j+SIMDSIZE    ) );
-            SIMDType xmm7( (~C).load(i+1UL,j+SIMDSIZE*2UL) );
-            SIMDType xmm8( (~C).load(i+1UL,j+SIMDSIZE*3UL) );
+            SIMDType xmm1( (*C).load(i    ,j             ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i    ,j+SIMDSIZE*2UL) );
+            SIMDType xmm4( (*C).load(i    ,j+SIMDSIZE*3UL) );
+            SIMDType xmm5( (*C).load(i+1UL,j             ) );
+            SIMDType xmm6( (*C).load(i+1UL,j+SIMDSIZE    ) );
+            SIMDType xmm7( (*C).load(i+1UL,j+SIMDSIZE*2UL) );
+            SIMDType xmm8( (*C).load(i+1UL,j+SIMDSIZE*3UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -1894,14 +1894,14 @@ class DTensDTensMultExpr
                xmm8 += a2 * b4;
             }
 
-            (~C).store( i    , j             , xmm1 );
-            (~C).store( i    , j+SIMDSIZE    , xmm2 );
-            (~C).store( i    , j+SIMDSIZE*2UL, xmm3 );
-            (~C).store( i    , j+SIMDSIZE*3UL, xmm4 );
-            (~C).store( i+1UL, j             , xmm5 );
-            (~C).store( i+1UL, j+SIMDSIZE    , xmm6 );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm7 );
-            (~C).store( i+1UL, j+SIMDSIZE*3UL, xmm8 );
+            (*C).store( i    , j             , xmm1 );
+            (*C).store( i    , j+SIMDSIZE    , xmm2 );
+            (*C).store( i    , j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i    , j+SIMDSIZE*3UL, xmm4 );
+            (*C).store( i+1UL, j             , xmm5 );
+            (*C).store( i+1UL, j+SIMDSIZE    , xmm6 );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm7 );
+            (*C).store( i+1UL, j+SIMDSIZE*3UL, xmm8 );
          }
 
          if( i < M )
@@ -1913,10 +1913,10 @@ class DTensDTensMultExpr
                                  :( IsLower_v<MT5> ? j : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( min( j+SIMDSIZE*4UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i,j             ) );
-            SIMDType xmm2( (~C).load(i,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i,j+SIMDSIZE*2UL) );
-            SIMDType xmm4( (~C).load(i,j+SIMDSIZE*3UL) );
+            SIMDType xmm1( (*C).load(i,j             ) );
+            SIMDType xmm2( (*C).load(i,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i,j+SIMDSIZE*2UL) );
+            SIMDType xmm4( (*C).load(i,j+SIMDSIZE*3UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i,k) ) );
@@ -1926,10 +1926,10 @@ class DTensDTensMultExpr
                xmm4 += a1 * B.load(k,j+SIMDSIZE*3UL);
             }
 
-            (~C).store( i, j             , xmm1 );
-            (~C).store( i, j+SIMDSIZE    , xmm2 );
-            (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
-            (~C).store( i, j+SIMDSIZE*3UL, xmm4 );
+            (*C).store( i, j             , xmm1 );
+            (*C).store( i, j+SIMDSIZE    , xmm2 );
+            (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i, j+SIMDSIZE*3UL, xmm4 );
          }
       }
 
@@ -1950,12 +1950,12 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*3UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j             ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i    ,j+SIMDSIZE*2UL) );
-            SIMDType xmm4( (~C).load(i+1UL,j             ) );
-            SIMDType xmm5( (~C).load(i+1UL,j+SIMDSIZE    ) );
-            SIMDType xmm6( (~C).load(i+1UL,j+SIMDSIZE*2UL) );
+            SIMDType xmm1( (*C).load(i    ,j             ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i    ,j+SIMDSIZE*2UL) );
+            SIMDType xmm4( (*C).load(i+1UL,j             ) );
+            SIMDType xmm5( (*C).load(i+1UL,j+SIMDSIZE    ) );
+            SIMDType xmm6( (*C).load(i+1UL,j+SIMDSIZE*2UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -1971,12 +1971,12 @@ class DTensDTensMultExpr
                xmm6 += a2 * b3;
             }
 
-            (~C).store( i    , j             , xmm1 );
-            (~C).store( i    , j+SIMDSIZE    , xmm2 );
-            (~C).store( i    , j+SIMDSIZE*2UL, xmm3 );
-            (~C).store( i+1UL, j             , xmm4 );
-            (~C).store( i+1UL, j+SIMDSIZE    , xmm5 );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm6 );
+            (*C).store( i    , j             , xmm1 );
+            (*C).store( i    , j+SIMDSIZE    , xmm2 );
+            (*C).store( i    , j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i+1UL, j             , xmm4 );
+            (*C).store( i+1UL, j+SIMDSIZE    , xmm5 );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm6 );
          }
 
          if( i < M )
@@ -1988,9 +1988,9 @@ class DTensDTensMultExpr
                                  :( IsLower_v<MT5> ? j : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( min( j+SIMDSIZE*3UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i,j             ) );
-            SIMDType xmm2( (~C).load(i,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i,j+SIMDSIZE*2UL) );
+            SIMDType xmm1( (*C).load(i,j             ) );
+            SIMDType xmm2( (*C).load(i,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i,j+SIMDSIZE*2UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i,k) ) );
@@ -1999,9 +1999,9 @@ class DTensDTensMultExpr
                xmm3 += a1 * B.load(k,j+SIMDSIZE*2UL);
             }
 
-            (~C).store( i, j             , xmm1 );
-            (~C).store( i, j+SIMDSIZE    , xmm2 );
-            (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i, j             , xmm1 );
+            (*C).store( i, j+SIMDSIZE    , xmm2 );
+            (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
          }
       }
 
@@ -2023,14 +2023,14 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+3UL : i+4UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j         ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE) );
-            SIMDType xmm3( (~C).load(i+1UL,j         ) );
-            SIMDType xmm4( (~C).load(i+1UL,j+SIMDSIZE) );
-            SIMDType xmm5( (~C).load(i+2UL,j         ) );
-            SIMDType xmm6( (~C).load(i+2UL,j+SIMDSIZE) );
-            SIMDType xmm7( (~C).load(i+3UL,j         ) );
-            SIMDType xmm8( (~C).load(i+3UL,j+SIMDSIZE) );
+            SIMDType xmm1( (*C).load(i    ,j         ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE) );
+            SIMDType xmm3( (*C).load(i+1UL,j         ) );
+            SIMDType xmm4( (*C).load(i+1UL,j+SIMDSIZE) );
+            SIMDType xmm5( (*C).load(i+2UL,j         ) );
+            SIMDType xmm6( (*C).load(i+2UL,j+SIMDSIZE) );
+            SIMDType xmm7( (*C).load(i+3UL,j         ) );
+            SIMDType xmm8( (*C).load(i+3UL,j+SIMDSIZE) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -2049,14 +2049,14 @@ class DTensDTensMultExpr
                xmm8 += a4 * b2;
             }
 
-            (~C).store( i    , j         , xmm1 );
-            (~C).store( i    , j+SIMDSIZE, xmm2 );
-            (~C).store( i+1UL, j         , xmm3 );
-            (~C).store( i+1UL, j+SIMDSIZE, xmm4 );
-            (~C).store( i+2UL, j         , xmm5 );
-            (~C).store( i+2UL, j+SIMDSIZE, xmm6 );
-            (~C).store( i+3UL, j         , xmm7 );
-            (~C).store( i+3UL, j+SIMDSIZE, xmm8 );
+            (*C).store( i    , j         , xmm1 );
+            (*C).store( i    , j+SIMDSIZE, xmm2 );
+            (*C).store( i+1UL, j         , xmm3 );
+            (*C).store( i+1UL, j+SIMDSIZE, xmm4 );
+            (*C).store( i+2UL, j         , xmm5 );
+            (*C).store( i+2UL, j+SIMDSIZE, xmm6 );
+            (*C).store( i+3UL, j         , xmm7 );
+            (*C).store( i+3UL, j+SIMDSIZE, xmm8 );
          }
 
          for( ; (i+3UL) <= iend; i+=3UL )
@@ -2072,12 +2072,12 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+2UL : i+3UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j         ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE) );
-            SIMDType xmm3( (~C).load(i+1UL,j         ) );
-            SIMDType xmm4( (~C).load(i+1UL,j+SIMDSIZE) );
-            SIMDType xmm5( (~C).load(i+2UL,j         ) );
-            SIMDType xmm6( (~C).load(i+2UL,j+SIMDSIZE) );
+            SIMDType xmm1( (*C).load(i    ,j         ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE) );
+            SIMDType xmm3( (*C).load(i+1UL,j         ) );
+            SIMDType xmm4( (*C).load(i+1UL,j+SIMDSIZE) );
+            SIMDType xmm5( (*C).load(i+2UL,j         ) );
+            SIMDType xmm6( (*C).load(i+2UL,j+SIMDSIZE) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -2093,12 +2093,12 @@ class DTensDTensMultExpr
                xmm6 += a3 * b2;
             }
 
-            (~C).store( i    , j         , xmm1 );
-            (~C).store( i    , j+SIMDSIZE, xmm2 );
-            (~C).store( i+1UL, j         , xmm3 );
-            (~C).store( i+1UL, j+SIMDSIZE, xmm4 );
-            (~C).store( i+2UL, j         , xmm5 );
-            (~C).store( i+2UL, j+SIMDSIZE, xmm6 );
+            (*C).store( i    , j         , xmm1 );
+            (*C).store( i    , j+SIMDSIZE, xmm2 );
+            (*C).store( i+1UL, j         , xmm3 );
+            (*C).store( i+1UL, j+SIMDSIZE, xmm4 );
+            (*C).store( i+2UL, j         , xmm5 );
+            (*C).store( i+2UL, j+SIMDSIZE, xmm6 );
          }
 
          for( ; (i+2UL) <= iend; i+=2UL )
@@ -2114,10 +2114,10 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j         ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE) );
-            SIMDType xmm3( (~C).load(i+1UL,j         ) );
-            SIMDType xmm4( (~C).load(i+1UL,j+SIMDSIZE) );
+            SIMDType xmm1( (*C).load(i    ,j         ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE) );
+            SIMDType xmm3( (*C).load(i+1UL,j         ) );
+            SIMDType xmm4( (*C).load(i+1UL,j+SIMDSIZE) );
             SIMDType xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
@@ -2151,10 +2151,10 @@ class DTensDTensMultExpr
                xmm4 += a2 * b2;
             }
 
-            (~C).store( i    , j         , xmm1+xmm5 );
-            (~C).store( i    , j+SIMDSIZE, xmm2+xmm6 );
-            (~C).store( i+1UL, j         , xmm3+xmm7 );
-            (~C).store( i+1UL, j+SIMDSIZE, xmm4+xmm8 );
+            (*C).store( i    , j         , xmm1+xmm5 );
+            (*C).store( i    , j+SIMDSIZE, xmm2+xmm6 );
+            (*C).store( i+1UL, j         , xmm3+xmm7 );
+            (*C).store( i+1UL, j+SIMDSIZE, xmm4+xmm8 );
          }
 
          if( i < iend )
@@ -2166,8 +2166,8 @@ class DTensDTensMultExpr
                                  :( IsLower_v<MT5> ? j : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( min( j+SIMDSIZE*2UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i,j         ) );
-            SIMDType xmm2( (~C).load(i,j+SIMDSIZE) );
+            SIMDType xmm1( (*C).load(i,j         ) );
+            SIMDType xmm2( (*C).load(i,j+SIMDSIZE) );
             SIMDType xmm3, xmm4;
             size_t k( kbegin );
 
@@ -2186,8 +2186,8 @@ class DTensDTensMultExpr
                xmm2 += a1 * B.load(k,j+SIMDSIZE);
             }
 
-            (~C).store( i, j         , xmm1+xmm3 );
-            (~C).store( i, j+SIMDSIZE, xmm2+xmm4 );
+            (*C).store( i, j         , xmm1+xmm3 );
+            (*C).store( i, j+SIMDSIZE, xmm2+xmm4 );
          }
       }
 
@@ -2207,10 +2207,10 @@ class DTensDTensMultExpr
                                ?( IsStrictlyLower_v<MT4> ? i+3UL : i+4UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j) );
-            SIMDType xmm2( (~C).load(i+1UL,j) );
-            SIMDType xmm3( (~C).load(i+2UL,j) );
-            SIMDType xmm4( (~C).load(i+3UL,j) );
+            SIMDType xmm1( (*C).load(i    ,j) );
+            SIMDType xmm2( (*C).load(i+1UL,j) );
+            SIMDType xmm3( (*C).load(i+2UL,j) );
+            SIMDType xmm4( (*C).load(i+3UL,j) );
             SIMDType xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
@@ -2235,10 +2235,10 @@ class DTensDTensMultExpr
                xmm4 += set( A(i+3UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, xmm1+xmm5 );
-            (~C).store( i+1UL, j, xmm2+xmm6 );
-            (~C).store( i+2UL, j, xmm3+xmm7 );
-            (~C).store( i+3UL, j, xmm4+xmm8 );
+            (*C).store( i    , j, xmm1+xmm5 );
+            (*C).store( i+1UL, j, xmm2+xmm6 );
+            (*C).store( i+2UL, j, xmm3+xmm7 );
+            (*C).store( i+3UL, j, xmm4+xmm8 );
          }
 
          for( ; (i+3UL) <= iend; i+=3UL )
@@ -2252,9 +2252,9 @@ class DTensDTensMultExpr
                                ?( IsStrictlyLower_v<MT4> ? i+2UL : i+3UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j) );
-            SIMDType xmm2( (~C).load(i+1UL,j) );
-            SIMDType xmm3( (~C).load(i+2UL,j) );
+            SIMDType xmm1( (*C).load(i    ,j) );
+            SIMDType xmm2( (*C).load(i+1UL,j) );
+            SIMDType xmm3( (*C).load(i+2UL,j) );
             SIMDType xmm4, xmm5, xmm6;
             size_t k( kbegin );
 
@@ -2276,9 +2276,9 @@ class DTensDTensMultExpr
                xmm3 += set( A(i+2UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, xmm1+xmm4 );
-            (~C).store( i+1UL, j, xmm2+xmm5 );
-            (~C).store( i+2UL, j, xmm3+xmm6 );
+            (*C).store( i    , j, xmm1+xmm4 );
+            (*C).store( i+1UL, j, xmm2+xmm5 );
+            (*C).store( i+2UL, j, xmm3+xmm6 );
          }
 
          for( ; (i+2UL) <= iend; i+=2UL )
@@ -2292,8 +2292,8 @@ class DTensDTensMultExpr
                                ?( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j) );
-            SIMDType xmm2( (~C).load(i+1UL,j) );
+            SIMDType xmm1( (*C).load(i    ,j) );
+            SIMDType xmm2( (*C).load(i+1UL,j) );
             SIMDType xmm3, xmm4;
             size_t k( kbegin );
 
@@ -2312,8 +2312,8 @@ class DTensDTensMultExpr
                xmm2 += set( A(i+1UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, xmm1+xmm3 );
-            (~C).store( i+1UL, j, xmm2+xmm4 );
+            (*C).store( i    , j, xmm1+xmm3 );
+            (*C).store( i+1UL, j, xmm2+xmm4 );
          }
 
          if( i < iend )
@@ -2324,7 +2324,7 @@ class DTensDTensMultExpr
                                     :( IsStrictlyUpper_v<MT4> ? i+1UL : i ) )
                                  :( IsLower_v<MT5> ? j : 0UL ) );
 
-            SIMDType xmm1( (~C).load(i,j) );
+            SIMDType xmm1( (*C).load(i,j) );
             SIMDType xmm2;
             size_t k( kbegin );
 
@@ -2337,7 +2337,7 @@ class DTensDTensMultExpr
                xmm1 += set( A(i,k) ) * B.load(k,j);
             }
 
-            (~C).store( i, j, xmm1+xmm2 );
+            (*C).store( i, j, xmm1+xmm2 );
          }
       }
 
@@ -2357,16 +2357,16 @@ class DTensDTensMultExpr
                                ?( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL )
                                :( K ) );
 
-            ElementType value1( (~C)(i    ,j) );
-            ElementType value2( (~C)(i+1UL,j) );;
+            ElementType value1( (*C)(i    ,j) );
+            ElementType value2( (*C)(i+1UL,j) );;
 
             for( size_t k=kbegin; k<kend; ++k ) {
                value1 += A(i    ,k) * B(k,j);
                value2 += A(i+1UL,k) * B(k,j);
             }
 
-            (~C)(i    ,j) = value1;
-            (~C)(i+1UL,j) = value2;
+            (*C)(i    ,j) = value1;
+            (*C)(i+1UL,j) = value2;
          }
 
          if( i < iend )
@@ -2377,13 +2377,13 @@ class DTensDTensMultExpr
                                     :( IsStrictlyUpper_v<MT4> ? i+1UL : i ) )
                                  :( IsLower_v<MT5> ? j : 0UL ) );
 
-            ElementType value( (~C)(i,j) );
+            ElementType value( (*C)(i,j) );
 
             for( size_t k=kbegin; k<K; ++k ) {
                value += A(i,k) * B(k,j);
             }
 
-            (~C)(i,j) = value;
+            (*C)(i,j) = value;
          }
       }
    }
@@ -2532,10 +2532,10 @@ class DTensDTensMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || rhs.lhs_.columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || rhs.lhs_.columns() == 0UL ) {
          return;
       }
 
@@ -2546,10 +2546,10 @@ class DTensDTensMultExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      DTensDTensMultExpr::selectSubAssignKernel( ~lhs, A, B );
+      DTensDTensMultExpr::selectSubAssignKernel( *lhs, A, B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2852,14 +2852,14 @@ class DTensDTensMultExpr
                                      :( IsStrictlyLower_v<MT4> ? i : i+1UL ) )
                                   :( IsUpper_v<MT5> ? min( j+SIMDSIZE*8UL, K ) : K ) );
 
-               SIMDType xmm1( (~C).load(i,j             ) );
-               SIMDType xmm2( (~C).load(i,j+SIMDSIZE    ) );
-               SIMDType xmm3( (~C).load(i,j+SIMDSIZE*2UL) );
-               SIMDType xmm4( (~C).load(i,j+SIMDSIZE*3UL) );
-               SIMDType xmm5( (~C).load(i,j+SIMDSIZE*4UL) );
-               SIMDType xmm6( (~C).load(i,j+SIMDSIZE*5UL) );
-               SIMDType xmm7( (~C).load(i,j+SIMDSIZE*6UL) );
-               SIMDType xmm8( (~C).load(i,j+SIMDSIZE*7UL) );
+               SIMDType xmm1( (*C).load(i,j             ) );
+               SIMDType xmm2( (*C).load(i,j+SIMDSIZE    ) );
+               SIMDType xmm3( (*C).load(i,j+SIMDSIZE*2UL) );
+               SIMDType xmm4( (*C).load(i,j+SIMDSIZE*3UL) );
+               SIMDType xmm5( (*C).load(i,j+SIMDSIZE*4UL) );
+               SIMDType xmm6( (*C).load(i,j+SIMDSIZE*5UL) );
+               SIMDType xmm7( (*C).load(i,j+SIMDSIZE*6UL) );
+               SIMDType xmm8( (*C).load(i,j+SIMDSIZE*7UL) );
 
                for( size_t k=kbegin; k<kend; ++k ) {
                   const SIMDType a1( set( A(i,k) ) );
@@ -2873,14 +2873,14 @@ class DTensDTensMultExpr
                   xmm8 -= a1 * B.load(k,j+SIMDSIZE*7UL);
                }
 
-               (~C).store( i, j             , xmm1 );
-               (~C).store( i, j+SIMDSIZE    , xmm2 );
-               (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
-               (~C).store( i, j+SIMDSIZE*3UL, xmm4 );
-               (~C).store( i, j+SIMDSIZE*4UL, xmm5 );
-               (~C).store( i, j+SIMDSIZE*5UL, xmm6 );
-               (~C).store( i, j+SIMDSIZE*6UL, xmm7 );
-               (~C).store( i, j+SIMDSIZE*7UL, xmm8 );
+               (*C).store( i, j             , xmm1 );
+               (*C).store( i, j+SIMDSIZE    , xmm2 );
+               (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
+               (*C).store( i, j+SIMDSIZE*3UL, xmm4 );
+               (*C).store( i, j+SIMDSIZE*4UL, xmm5 );
+               (*C).store( i, j+SIMDSIZE*5UL, xmm6 );
+               (*C).store( i, j+SIMDSIZE*6UL, xmm7 );
+               (*C).store( i, j+SIMDSIZE*7UL, xmm8 );
             }
          }
       }
@@ -2902,16 +2902,16 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*5UL, K ) : K ) );
 
-            SIMDType xmm1 ( (~C).load(i    ,j             ) );
-            SIMDType xmm2 ( (~C).load(i    ,j+SIMDSIZE    ) );
-            SIMDType xmm3 ( (~C).load(i    ,j+SIMDSIZE*2UL) );
-            SIMDType xmm4 ( (~C).load(i    ,j+SIMDSIZE*3UL) );
-            SIMDType xmm5 ( (~C).load(i    ,j+SIMDSIZE*4UL) );
-            SIMDType xmm6 ( (~C).load(i+1UL,j             ) );
-            SIMDType xmm7 ( (~C).load(i+1UL,j+SIMDSIZE    ) );
-            SIMDType xmm8 ( (~C).load(i+1UL,j+SIMDSIZE*2UL) );
-            SIMDType xmm9 ( (~C).load(i+1UL,j+SIMDSIZE*3UL) );
-            SIMDType xmm10( (~C).load(i+1UL,j+SIMDSIZE*4UL) );
+            SIMDType xmm1 ( (*C).load(i    ,j             ) );
+            SIMDType xmm2 ( (*C).load(i    ,j+SIMDSIZE    ) );
+            SIMDType xmm3 ( (*C).load(i    ,j+SIMDSIZE*2UL) );
+            SIMDType xmm4 ( (*C).load(i    ,j+SIMDSIZE*3UL) );
+            SIMDType xmm5 ( (*C).load(i    ,j+SIMDSIZE*4UL) );
+            SIMDType xmm6 ( (*C).load(i+1UL,j             ) );
+            SIMDType xmm7 ( (*C).load(i+1UL,j+SIMDSIZE    ) );
+            SIMDType xmm8 ( (*C).load(i+1UL,j+SIMDSIZE*2UL) );
+            SIMDType xmm9 ( (*C).load(i+1UL,j+SIMDSIZE*3UL) );
+            SIMDType xmm10( (*C).load(i+1UL,j+SIMDSIZE*4UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -2933,16 +2933,16 @@ class DTensDTensMultExpr
                xmm10 -= a2 * b5;
             }
 
-            (~C).store( i    , j             , xmm1  );
-            (~C).store( i    , j+SIMDSIZE    , xmm2  );
-            (~C).store( i    , j+SIMDSIZE*2UL, xmm3  );
-            (~C).store( i    , j+SIMDSIZE*3UL, xmm4  );
-            (~C).store( i    , j+SIMDSIZE*4UL, xmm5  );
-            (~C).store( i+1UL, j             , xmm6  );
-            (~C).store( i+1UL, j+SIMDSIZE    , xmm7  );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm8  );
-            (~C).store( i+1UL, j+SIMDSIZE*3UL, xmm9  );
-            (~C).store( i+1UL, j+SIMDSIZE*4UL, xmm10 );
+            (*C).store( i    , j             , xmm1  );
+            (*C).store( i    , j+SIMDSIZE    , xmm2  );
+            (*C).store( i    , j+SIMDSIZE*2UL, xmm3  );
+            (*C).store( i    , j+SIMDSIZE*3UL, xmm4  );
+            (*C).store( i    , j+SIMDSIZE*4UL, xmm5  );
+            (*C).store( i+1UL, j             , xmm6  );
+            (*C).store( i+1UL, j+SIMDSIZE    , xmm7  );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm8  );
+            (*C).store( i+1UL, j+SIMDSIZE*3UL, xmm9  );
+            (*C).store( i+1UL, j+SIMDSIZE*4UL, xmm10 );
          }
 
          if( i < M )
@@ -2954,11 +2954,11 @@ class DTensDTensMultExpr
                                  :( IsLower_v<MT5> ? j : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( min( j+SIMDSIZE*5UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i,j             ) );
-            SIMDType xmm2( (~C).load(i,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i,j+SIMDSIZE*2UL) );
-            SIMDType xmm4( (~C).load(i,j+SIMDSIZE*3UL) );
-            SIMDType xmm5( (~C).load(i,j+SIMDSIZE*4UL) );
+            SIMDType xmm1( (*C).load(i,j             ) );
+            SIMDType xmm2( (*C).load(i,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i,j+SIMDSIZE*2UL) );
+            SIMDType xmm4( (*C).load(i,j+SIMDSIZE*3UL) );
+            SIMDType xmm5( (*C).load(i,j+SIMDSIZE*4UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i,k) ) );
@@ -2969,11 +2969,11 @@ class DTensDTensMultExpr
                xmm5 -= a1 * B.load(k,j+SIMDSIZE*4UL);
             }
 
-            (~C).store( i, j             , xmm1 );
-            (~C).store( i, j+SIMDSIZE    , xmm2 );
-            (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
-            (~C).store( i, j+SIMDSIZE*3UL, xmm4 );
-            (~C).store( i, j+SIMDSIZE*4UL, xmm5 );
+            (*C).store( i, j             , xmm1 );
+            (*C).store( i, j+SIMDSIZE    , xmm2 );
+            (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i, j+SIMDSIZE*3UL, xmm4 );
+            (*C).store( i, j+SIMDSIZE*4UL, xmm5 );
          }
       }
 
@@ -2994,14 +2994,14 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*4UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j             ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i    ,j+SIMDSIZE*2UL) );
-            SIMDType xmm4( (~C).load(i    ,j+SIMDSIZE*3UL) );
-            SIMDType xmm5( (~C).load(i+1UL,j             ) );
-            SIMDType xmm6( (~C).load(i+1UL,j+SIMDSIZE    ) );
-            SIMDType xmm7( (~C).load(i+1UL,j+SIMDSIZE*2UL) );
-            SIMDType xmm8( (~C).load(i+1UL,j+SIMDSIZE*3UL) );
+            SIMDType xmm1( (*C).load(i    ,j             ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i    ,j+SIMDSIZE*2UL) );
+            SIMDType xmm4( (*C).load(i    ,j+SIMDSIZE*3UL) );
+            SIMDType xmm5( (*C).load(i+1UL,j             ) );
+            SIMDType xmm6( (*C).load(i+1UL,j+SIMDSIZE    ) );
+            SIMDType xmm7( (*C).load(i+1UL,j+SIMDSIZE*2UL) );
+            SIMDType xmm8( (*C).load(i+1UL,j+SIMDSIZE*3UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -3020,14 +3020,14 @@ class DTensDTensMultExpr
                xmm8 -= a2 * b4;
             }
 
-            (~C).store( i    , j             , xmm1 );
-            (~C).store( i    , j+SIMDSIZE    , xmm2 );
-            (~C).store( i    , j+SIMDSIZE*2UL, xmm3 );
-            (~C).store( i    , j+SIMDSIZE*3UL, xmm4 );
-            (~C).store( i+1UL, j             , xmm5 );
-            (~C).store( i+1UL, j+SIMDSIZE    , xmm6 );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm7 );
-            (~C).store( i+1UL, j+SIMDSIZE*3UL, xmm8 );
+            (*C).store( i    , j             , xmm1 );
+            (*C).store( i    , j+SIMDSIZE    , xmm2 );
+            (*C).store( i    , j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i    , j+SIMDSIZE*3UL, xmm4 );
+            (*C).store( i+1UL, j             , xmm5 );
+            (*C).store( i+1UL, j+SIMDSIZE    , xmm6 );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm7 );
+            (*C).store( i+1UL, j+SIMDSIZE*3UL, xmm8 );
          }
 
          if( i < M )
@@ -3039,10 +3039,10 @@ class DTensDTensMultExpr
                                  :( IsLower_v<MT5> ? j : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( min( j+SIMDSIZE*4UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i,j             ) );
-            SIMDType xmm2( (~C).load(i,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i,j+SIMDSIZE*2UL) );
-            SIMDType xmm4( (~C).load(i,j+SIMDSIZE*3UL) );
+            SIMDType xmm1( (*C).load(i,j             ) );
+            SIMDType xmm2( (*C).load(i,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i,j+SIMDSIZE*2UL) );
+            SIMDType xmm4( (*C).load(i,j+SIMDSIZE*3UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i,k) ) );
@@ -3052,10 +3052,10 @@ class DTensDTensMultExpr
                xmm4 -= a1 * B.load(k,j+SIMDSIZE*3UL);
             }
 
-            (~C).store( i, j             , xmm1 );
-            (~C).store( i, j+SIMDSIZE    , xmm2 );
-            (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
-            (~C).store( i, j+SIMDSIZE*3UL, xmm4 );
+            (*C).store( i, j             , xmm1 );
+            (*C).store( i, j+SIMDSIZE    , xmm2 );
+            (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i, j+SIMDSIZE*3UL, xmm4 );
          }
       }
 
@@ -3076,12 +3076,12 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*3UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j             ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i    ,j+SIMDSIZE*2UL) );
-            SIMDType xmm4( (~C).load(i+1UL,j             ) );
-            SIMDType xmm5( (~C).load(i+1UL,j+SIMDSIZE    ) );
-            SIMDType xmm6( (~C).load(i+1UL,j+SIMDSIZE*2UL) );
+            SIMDType xmm1( (*C).load(i    ,j             ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i    ,j+SIMDSIZE*2UL) );
+            SIMDType xmm4( (*C).load(i+1UL,j             ) );
+            SIMDType xmm5( (*C).load(i+1UL,j+SIMDSIZE    ) );
+            SIMDType xmm6( (*C).load(i+1UL,j+SIMDSIZE*2UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -3097,12 +3097,12 @@ class DTensDTensMultExpr
                xmm6 -= a2 * b3;
             }
 
-            (~C).store( i    , j             , xmm1 );
-            (~C).store( i    , j+SIMDSIZE    , xmm2 );
-            (~C).store( i    , j+SIMDSIZE*2UL, xmm3 );
-            (~C).store( i+1UL, j             , xmm4 );
-            (~C).store( i+1UL, j+SIMDSIZE    , xmm5 );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm6 );
+            (*C).store( i    , j             , xmm1 );
+            (*C).store( i    , j+SIMDSIZE    , xmm2 );
+            (*C).store( i    , j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i+1UL, j             , xmm4 );
+            (*C).store( i+1UL, j+SIMDSIZE    , xmm5 );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm6 );
          }
 
          if( i < M )
@@ -3114,9 +3114,9 @@ class DTensDTensMultExpr
                                  :( IsLower_v<MT5> ? j : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( min( j+SIMDSIZE*3UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i,j             ) );
-            SIMDType xmm2( (~C).load(i,j+SIMDSIZE    ) );
-            SIMDType xmm3( (~C).load(i,j+SIMDSIZE*2UL) );
+            SIMDType xmm1( (*C).load(i,j             ) );
+            SIMDType xmm2( (*C).load(i,j+SIMDSIZE    ) );
+            SIMDType xmm3( (*C).load(i,j+SIMDSIZE*2UL) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i,k) ) );
@@ -3125,9 +3125,9 @@ class DTensDTensMultExpr
                xmm3 -= a1 * B.load(k,j+SIMDSIZE*2UL);
             }
 
-            (~C).store( i, j             , xmm1 );
-            (~C).store( i, j+SIMDSIZE    , xmm2 );
-            (~C).store( i, j+SIMDSIZE*2UL, xmm3 );
+            (*C).store( i, j             , xmm1 );
+            (*C).store( i, j+SIMDSIZE    , xmm2 );
+            (*C).store( i, j+SIMDSIZE*2UL, xmm3 );
          }
       }
 
@@ -3149,14 +3149,14 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+3UL : i+4UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j         ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE) );
-            SIMDType xmm3( (~C).load(i+1UL,j         ) );
-            SIMDType xmm4( (~C).load(i+1UL,j+SIMDSIZE) );
-            SIMDType xmm5( (~C).load(i+2UL,j         ) );
-            SIMDType xmm6( (~C).load(i+2UL,j+SIMDSIZE) );
-            SIMDType xmm7( (~C).load(i+3UL,j         ) );
-            SIMDType xmm8( (~C).load(i+3UL,j+SIMDSIZE) );
+            SIMDType xmm1( (*C).load(i    ,j         ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE) );
+            SIMDType xmm3( (*C).load(i+1UL,j         ) );
+            SIMDType xmm4( (*C).load(i+1UL,j+SIMDSIZE) );
+            SIMDType xmm5( (*C).load(i+2UL,j         ) );
+            SIMDType xmm6( (*C).load(i+2UL,j+SIMDSIZE) );
+            SIMDType xmm7( (*C).load(i+3UL,j         ) );
+            SIMDType xmm8( (*C).load(i+3UL,j+SIMDSIZE) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -3175,14 +3175,14 @@ class DTensDTensMultExpr
                xmm8 -= a4 * b2;
             }
 
-            (~C).store( i    , j         , xmm1 );
-            (~C).store( i    , j+SIMDSIZE, xmm2 );
-            (~C).store( i+1UL, j         , xmm3 );
-            (~C).store( i+1UL, j+SIMDSIZE, xmm4 );
-            (~C).store( i+2UL, j         , xmm5 );
-            (~C).store( i+2UL, j+SIMDSIZE, xmm6 );
-            (~C).store( i+3UL, j         , xmm7 );
-            (~C).store( i+3UL, j+SIMDSIZE, xmm8 );
+            (*C).store( i    , j         , xmm1 );
+            (*C).store( i    , j+SIMDSIZE, xmm2 );
+            (*C).store( i+1UL, j         , xmm3 );
+            (*C).store( i+1UL, j+SIMDSIZE, xmm4 );
+            (*C).store( i+2UL, j         , xmm5 );
+            (*C).store( i+2UL, j+SIMDSIZE, xmm6 );
+            (*C).store( i+3UL, j         , xmm7 );
+            (*C).store( i+3UL, j+SIMDSIZE, xmm8 );
          }
 
          for( ; (i+3UL) <= iend; i+=3UL )
@@ -3198,12 +3198,12 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+2UL : i+3UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j         ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE) );
-            SIMDType xmm3( (~C).load(i+1UL,j         ) );
-            SIMDType xmm4( (~C).load(i+1UL,j+SIMDSIZE) );
-            SIMDType xmm5( (~C).load(i+2UL,j         ) );
-            SIMDType xmm6( (~C).load(i+2UL,j+SIMDSIZE) );
+            SIMDType xmm1( (*C).load(i    ,j         ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE) );
+            SIMDType xmm3( (*C).load(i+1UL,j         ) );
+            SIMDType xmm4( (*C).load(i+1UL,j+SIMDSIZE) );
+            SIMDType xmm5( (*C).load(i+2UL,j         ) );
+            SIMDType xmm6( (*C).load(i+2UL,j+SIMDSIZE) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                const SIMDType a1( set( A(i    ,k) ) );
@@ -3219,12 +3219,12 @@ class DTensDTensMultExpr
                xmm6 -= a3 * b2;
             }
 
-            (~C).store( i    , j         , xmm1 );
-            (~C).store( i    , j+SIMDSIZE, xmm2 );
-            (~C).store( i+1UL, j         , xmm3 );
-            (~C).store( i+1UL, j+SIMDSIZE, xmm4 );
-            (~C).store( i+2UL, j         , xmm5 );
-            (~C).store( i+2UL, j+SIMDSIZE, xmm6 );
+            (*C).store( i    , j         , xmm1 );
+            (*C).store( i    , j+SIMDSIZE, xmm2 );
+            (*C).store( i+1UL, j         , xmm3 );
+            (*C).store( i+1UL, j+SIMDSIZE, xmm4 );
+            (*C).store( i+2UL, j         , xmm5 );
+            (*C).store( i+2UL, j+SIMDSIZE, xmm6 );
          }
 
          for( ; (i+2UL) <= iend; i+=2UL )
@@ -3240,10 +3240,10 @@ class DTensDTensMultExpr
                                   :( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL ) )
                                :( IsUpper_v<MT5> ? min( j+SIMDSIZE*2UL, K ) : K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j         ) );
-            SIMDType xmm2( (~C).load(i    ,j+SIMDSIZE) );
-            SIMDType xmm3( (~C).load(i+1UL,j         ) );
-            SIMDType xmm4( (~C).load(i+1UL,j+SIMDSIZE) );
+            SIMDType xmm1( (*C).load(i    ,j         ) );
+            SIMDType xmm2( (*C).load(i    ,j+SIMDSIZE) );
+            SIMDType xmm3( (*C).load(i+1UL,j         ) );
+            SIMDType xmm4( (*C).load(i+1UL,j+SIMDSIZE) );
             SIMDType xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
@@ -3277,10 +3277,10 @@ class DTensDTensMultExpr
                xmm4 -= a2 * b2;
             }
 
-            (~C).store( i    , j         , xmm1+xmm5 );
-            (~C).store( i    , j+SIMDSIZE, xmm2+xmm6 );
-            (~C).store( i+1UL, j         , xmm3+xmm7 );
-            (~C).store( i+1UL, j+SIMDSIZE, xmm4+xmm8 );
+            (*C).store( i    , j         , xmm1+xmm5 );
+            (*C).store( i    , j+SIMDSIZE, xmm2+xmm6 );
+            (*C).store( i+1UL, j         , xmm3+xmm7 );
+            (*C).store( i+1UL, j+SIMDSIZE, xmm4+xmm8 );
          }
 
          if( i < iend )
@@ -3292,8 +3292,8 @@ class DTensDTensMultExpr
                                  :( IsLower_v<MT5> ? j : 0UL ) );
             const size_t kend( ( IsUpper_v<MT5> )?( min( j+SIMDSIZE*2UL, K ) ):( K ) );
 
-            SIMDType xmm1( (~C).load(i,j         ) );
-            SIMDType xmm2( (~C).load(i,j+SIMDSIZE) );
+            SIMDType xmm1( (*C).load(i,j         ) );
+            SIMDType xmm2( (*C).load(i,j+SIMDSIZE) );
             SIMDType xmm3, xmm4;
             size_t k( kbegin );
 
@@ -3312,8 +3312,8 @@ class DTensDTensMultExpr
                xmm2 -= a1 * B.load(k,j+SIMDSIZE);
             }
 
-            (~C).store( i, j         , xmm1+xmm3 );
-            (~C).store( i, j+SIMDSIZE, xmm2+xmm4 );
+            (*C).store( i, j         , xmm1+xmm3 );
+            (*C).store( i, j+SIMDSIZE, xmm2+xmm4 );
          }
       }
 
@@ -3333,10 +3333,10 @@ class DTensDTensMultExpr
                                ?( IsStrictlyLower_v<MT4> ? i+3UL : i+4UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j) );
-            SIMDType xmm2( (~C).load(i+1UL,j) );
-            SIMDType xmm3( (~C).load(i+2UL,j) );
-            SIMDType xmm4( (~C).load(i+3UL,j) );
+            SIMDType xmm1( (*C).load(i    ,j) );
+            SIMDType xmm2( (*C).load(i+1UL,j) );
+            SIMDType xmm3( (*C).load(i+2UL,j) );
+            SIMDType xmm4( (*C).load(i+3UL,j) );
             SIMDType xmm5, xmm6, xmm7, xmm8;
             size_t k( kbegin );
 
@@ -3361,10 +3361,10 @@ class DTensDTensMultExpr
                xmm4 -= set( A(i+3UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, xmm1+xmm5 );
-            (~C).store( i+1UL, j, xmm2+xmm6 );
-            (~C).store( i+2UL, j, xmm3+xmm7 );
-            (~C).store( i+3UL, j, xmm4+xmm8 );
+            (*C).store( i    , j, xmm1+xmm5 );
+            (*C).store( i+1UL, j, xmm2+xmm6 );
+            (*C).store( i+2UL, j, xmm3+xmm7 );
+            (*C).store( i+3UL, j, xmm4+xmm8 );
          }
 
          for( ; (i+3UL) <= iend; i+=3UL )
@@ -3378,9 +3378,9 @@ class DTensDTensMultExpr
                                ?( IsStrictlyLower_v<MT4> ? i+2UL : i+3UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j) );
-            SIMDType xmm2( (~C).load(i+1UL,j) );
-            SIMDType xmm3( (~C).load(i+2UL,j) );
+            SIMDType xmm1( (*C).load(i    ,j) );
+            SIMDType xmm2( (*C).load(i+1UL,j) );
+            SIMDType xmm3( (*C).load(i+2UL,j) );
             SIMDType xmm4, xmm5, xmm6;
             size_t k( kbegin );
 
@@ -3402,9 +3402,9 @@ class DTensDTensMultExpr
                xmm3 -= set( A(i+2UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, xmm1+xmm4 );
-            (~C).store( i+1UL, j, xmm2+xmm5 );
-            (~C).store( i+2UL, j, xmm3+xmm6 );
+            (*C).store( i    , j, xmm1+xmm4 );
+            (*C).store( i+1UL, j, xmm2+xmm5 );
+            (*C).store( i+2UL, j, xmm3+xmm6 );
          }
 
          for( ; (i+2UL) <= iend; i+=2UL )
@@ -3418,8 +3418,8 @@ class DTensDTensMultExpr
                                ?( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL )
                                :( K ) );
 
-            SIMDType xmm1( (~C).load(i    ,j) );
-            SIMDType xmm2( (~C).load(i+1UL,j) );
+            SIMDType xmm1( (*C).load(i    ,j) );
+            SIMDType xmm2( (*C).load(i+1UL,j) );
             SIMDType xmm3, xmm4;
             size_t k( kbegin );
 
@@ -3438,8 +3438,8 @@ class DTensDTensMultExpr
                xmm2 -= set( A(i+1UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, xmm1+xmm3 );
-            (~C).store( i+1UL, j, xmm2+xmm4 );
+            (*C).store( i    , j, xmm1+xmm3 );
+            (*C).store( i+1UL, j, xmm2+xmm4 );
          }
 
          if( i < iend )
@@ -3450,7 +3450,7 @@ class DTensDTensMultExpr
                                     :( IsStrictlyUpper_v<MT4> ? i+1UL : i ) )
                                  :( IsLower_v<MT5> ? j : 0UL ) );
 
-            SIMDType xmm1( (~C).load(i,j) );
+            SIMDType xmm1( (*C).load(i,j) );
             SIMDType xmm2;
             size_t k( kbegin );
 
@@ -3463,7 +3463,7 @@ class DTensDTensMultExpr
                xmm1 -= set( A(i,k) ) * B.load(k,j);
             }
 
-            (~C).store( i, j, xmm1+xmm2 );
+            (*C).store( i, j, xmm1+xmm2 );
          }
       }
 
@@ -3483,16 +3483,16 @@ class DTensDTensMultExpr
                                ?( IsStrictlyLower_v<MT4> ? i+1UL : i+2UL )
                                :( K ) );
 
-            ElementType value1( (~C)(i    ,j) );
-            ElementType value2( (~C)(i+1UL,j) );
+            ElementType value1( (*C)(i    ,j) );
+            ElementType value2( (*C)(i+1UL,j) );
 
             for( size_t k=kbegin; k<kend; ++k ) {
                value1 -= A(i    ,k) * B(k,j);
                value2 -= A(i+1UL,k) * B(k,j);
             }
 
-            (~C)(i    ,j) = value1;
-            (~C)(i+1UL,j) = value2;
+            (*C)(i    ,j) = value1;
+            (*C)(i+1UL,j) = value2;
          }
 
          if( i < iend )
@@ -3503,13 +3503,13 @@ class DTensDTensMultExpr
                                     :( IsStrictlyUpper_v<MT4> ? i+1UL : i ) )
                                  :( IsLower_v<MT5> ? j : 0UL ) );
 
-            ElementType value( (~C)(i,j) );
+            ElementType value( (*C)(i,j) );
 
             for( size_t k=kbegin; k<K; ++k ) {
                value -= A(i,k) * B(k,j);
             }
 
-            (~C)(i,j) = value;
+            (*C)(i,j) = value;
          }
       }
    }
@@ -3661,11 +3661,11 @@ class DTensDTensMultExpr
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3692,14 +3692,14 @@ class DTensDTensMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL ) {
          return;
       }
       else if( rhs.lhs_.columns() == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
          return;
       }
 
@@ -3710,10 +3710,10 @@ class DTensDTensMultExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpAssign( ~lhs, A * B );
+      smpAssign( *lhs, A * B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3741,10 +3741,10 @@ class DTensDTensMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || rhs.lhs_.columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || rhs.lhs_.columns() == 0UL ) {
          return;
       }
 
@@ -3755,10 +3755,10 @@ class DTensDTensMultExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpAddAssign( ~lhs, A * B );
+      smpAddAssign( *lhs, A * B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3786,10 +3786,10 @@ class DTensDTensMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || rhs.lhs_.columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || rhs.lhs_.columns() == 0UL ) {
          return;
       }
 
@@ -3800,10 +3800,10 @@ class DTensDTensMultExpr
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.lhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
 
-      smpSubAssign( ~lhs, A * B );
+      smpSubAssign( *lhs, A * B );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -3831,11 +3831,11 @@ class DTensDTensMultExpr
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -4174,18 +4174,18 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
       LeftOperand_t<MMM>  left ( rhs.tensor_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.tensor_.rightOperand() );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || (~lhs).pages() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || (*lhs).pages() == 0UL ) {
          return;
       }
       else if( left.columns() == 0UL || left.pages() == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
          return;
       }
 
@@ -4196,10 +4196,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()  , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == right.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == right.columns() , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns(), "Invalid number of columns" );
 
-      DTensScalarMultExpr::selectAssignKernel( ~lhs, A, B, rhs.scalar_ );
+      DTensScalarMultExpr::selectAssignKernel( *lhs, A, B, rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -4555,7 +4555,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       const SIMDType factor( set( scalar ) );
 
       if( LOW && UPP && N > SIMDSIZE*3UL ) {
-         reset( ~C );
+         reset( *C );
       }
 
       {
@@ -4591,14 +4591,14 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                      xmm8 += a1 * B.load(k,j+SIMDSIZE*7UL);
                   }
 
-                  (~C).store( i, j             , xmm1 * factor );
-                  (~C).store( i, j+SIMDSIZE    , xmm2 * factor );
-                  (~C).store( i, j+SIMDSIZE*2UL, xmm3 * factor );
-                  (~C).store( i, j+SIMDSIZE*3UL, xmm4 * factor );
-                  (~C).store( i, j+SIMDSIZE*4UL, xmm5 * factor );
-                  (~C).store( i, j+SIMDSIZE*5UL, xmm6 * factor );
-                  (~C).store( i, j+SIMDSIZE*6UL, xmm7 * factor );
-                  (~C).store( i, j+SIMDSIZE*7UL, xmm8 * factor );
+                  (*C).store( i, j             , xmm1 * factor );
+                  (*C).store( i, j+SIMDSIZE    , xmm2 * factor );
+                  (*C).store( i, j+SIMDSIZE*2UL, xmm3 * factor );
+                  (*C).store( i, j+SIMDSIZE*3UL, xmm4 * factor );
+                  (*C).store( i, j+SIMDSIZE*4UL, xmm5 * factor );
+                  (*C).store( i, j+SIMDSIZE*5UL, xmm6 * factor );
+                  (*C).store( i, j+SIMDSIZE*6UL, xmm7 * factor );
+                  (*C).store( i, j+SIMDSIZE*7UL, xmm8 * factor );
                }
             }
          }
@@ -4642,16 +4642,16 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm10 += a2 * b5;
                }
 
-               (~C).store( i    , j             , xmm1  * factor );
-               (~C).store( i    , j+SIMDSIZE    , xmm2  * factor );
-               (~C).store( i    , j+SIMDSIZE*2UL, xmm3  * factor );
-               (~C).store( i    , j+SIMDSIZE*3UL, xmm4  * factor );
-               (~C).store( i    , j+SIMDSIZE*4UL, xmm5  * factor );
-               (~C).store( i+1UL, j             , xmm6  * factor );
-               (~C).store( i+1UL, j+SIMDSIZE    , xmm7  * factor );
-               (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm8  * factor );
-               (~C).store( i+1UL, j+SIMDSIZE*3UL, xmm9  * factor );
-               (~C).store( i+1UL, j+SIMDSIZE*4UL, xmm10 * factor );
+               (*C).store( i    , j             , xmm1  * factor );
+               (*C).store( i    , j+SIMDSIZE    , xmm2  * factor );
+               (*C).store( i    , j+SIMDSIZE*2UL, xmm3  * factor );
+               (*C).store( i    , j+SIMDSIZE*3UL, xmm4  * factor );
+               (*C).store( i    , j+SIMDSIZE*4UL, xmm5  * factor );
+               (*C).store( i+1UL, j             , xmm6  * factor );
+               (*C).store( i+1UL, j+SIMDSIZE    , xmm7  * factor );
+               (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm8  * factor );
+               (*C).store( i+1UL, j+SIMDSIZE*3UL, xmm9  * factor );
+               (*C).store( i+1UL, j+SIMDSIZE*4UL, xmm10 * factor );
             }
 
             if( i < M )
@@ -4674,11 +4674,11 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm5 += a1 * B.load(k,j+SIMDSIZE*4UL);
                }
 
-               (~C).store( i, j             , xmm1 * factor );
-               (~C).store( i, j+SIMDSIZE    , xmm2 * factor );
-               (~C).store( i, j+SIMDSIZE*2UL, xmm3 * factor );
-               (~C).store( i, j+SIMDSIZE*3UL, xmm4 * factor );
-               (~C).store( i, j+SIMDSIZE*4UL, xmm5 * factor );
+               (*C).store( i, j             , xmm1 * factor );
+               (*C).store( i, j+SIMDSIZE    , xmm2 * factor );
+               (*C).store( i, j+SIMDSIZE*2UL, xmm3 * factor );
+               (*C).store( i, j+SIMDSIZE*3UL, xmm4 * factor );
+               (*C).store( i, j+SIMDSIZE*4UL, xmm5 * factor );
             }
          }
 
@@ -4719,14 +4719,14 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm8 += a2 * b4;
                }
 
-               (~C).store( i    , j             , xmm1 * factor );
-               (~C).store( i    , j+SIMDSIZE    , xmm2 * factor );
-               (~C).store( i    , j+SIMDSIZE*2UL, xmm3 * factor );
-               (~C).store( i    , j+SIMDSIZE*3UL, xmm4 * factor );
-               (~C).store( i+1UL, j             , xmm5 * factor );
-               (~C).store( i+1UL, j+SIMDSIZE    , xmm6 * factor );
-               (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm7 * factor );
-               (~C).store( i+1UL, j+SIMDSIZE*3UL, xmm8 * factor );
+               (*C).store( i    , j             , xmm1 * factor );
+               (*C).store( i    , j+SIMDSIZE    , xmm2 * factor );
+               (*C).store( i    , j+SIMDSIZE*2UL, xmm3 * factor );
+               (*C).store( i    , j+SIMDSIZE*3UL, xmm4 * factor );
+               (*C).store( i+1UL, j             , xmm5 * factor );
+               (*C).store( i+1UL, j+SIMDSIZE    , xmm6 * factor );
+               (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm7 * factor );
+               (*C).store( i+1UL, j+SIMDSIZE*3UL, xmm8 * factor );
             }
 
             if( i < iend )
@@ -4748,10 +4748,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm4 += a1 * B.load(k,j+SIMDSIZE*3UL);
                }
 
-               (~C).store( i, j             , xmm1 * factor );
-               (~C).store( i, j+SIMDSIZE    , xmm2 * factor );
-               (~C).store( i, j+SIMDSIZE*2UL, xmm3 * factor );
-               (~C).store( i, j+SIMDSIZE*3UL, xmm4 * factor );
+               (*C).store( i, j             , xmm1 * factor );
+               (*C).store( i, j+SIMDSIZE    , xmm2 * factor );
+               (*C).store( i, j+SIMDSIZE*2UL, xmm3 * factor );
+               (*C).store( i, j+SIMDSIZE*3UL, xmm4 * factor );
             }
          }
 
@@ -4789,12 +4789,12 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm6 += a2 * b3;
                }
 
-               (~C).store( i    , j             , xmm1 * factor );
-               (~C).store( i    , j+SIMDSIZE    , xmm2 * factor );
-               (~C).store( i    , j+SIMDSIZE*2UL, xmm3 * factor );
-               (~C).store( i+1UL, j             , xmm4 * factor );
-               (~C).store( i+1UL, j+SIMDSIZE    , xmm5 * factor );
-               (~C).store( i+1UL, j+SIMDSIZE*2UL, xmm6 * factor );
+               (*C).store( i    , j             , xmm1 * factor );
+               (*C).store( i    , j+SIMDSIZE    , xmm2 * factor );
+               (*C).store( i    , j+SIMDSIZE*2UL, xmm3 * factor );
+               (*C).store( i+1UL, j             , xmm4 * factor );
+               (*C).store( i+1UL, j+SIMDSIZE    , xmm5 * factor );
+               (*C).store( i+1UL, j+SIMDSIZE*2UL, xmm6 * factor );
             }
 
             if( i < iend )
@@ -4815,9 +4815,9 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm3 += a1 * B.load(k,j+SIMDSIZE*2UL);
                }
 
-               (~C).store( i, j             , xmm1 * factor );
-               (~C).store( i, j+SIMDSIZE    , xmm2 * factor );
-               (~C).store( i, j+SIMDSIZE*2UL, xmm3 * factor );
+               (*C).store( i, j             , xmm1 * factor );
+               (*C).store( i, j+SIMDSIZE    , xmm2 * factor );
+               (*C).store( i, j+SIMDSIZE*2UL, xmm3 * factor );
             }
          }
 
@@ -4858,14 +4858,14 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm8 += a4 * b2;
                }
 
-               (~C).store( i    , j         , xmm1 * factor );
-               (~C).store( i    , j+SIMDSIZE, xmm2 * factor );
-               (~C).store( i+1UL, j         , xmm3 * factor );
-               (~C).store( i+1UL, j+SIMDSIZE, xmm4 * factor );
-               (~C).store( i+2UL, j         , xmm5 * factor );
-               (~C).store( i+2UL, j+SIMDSIZE, xmm6 * factor );
-               (~C).store( i+3UL, j         , xmm7 * factor );
-               (~C).store( i+3UL, j+SIMDSIZE, xmm8 * factor );
+               (*C).store( i    , j         , xmm1 * factor );
+               (*C).store( i    , j+SIMDSIZE, xmm2 * factor );
+               (*C).store( i+1UL, j         , xmm3 * factor );
+               (*C).store( i+1UL, j+SIMDSIZE, xmm4 * factor );
+               (*C).store( i+2UL, j         , xmm5 * factor );
+               (*C).store( i+2UL, j+SIMDSIZE, xmm6 * factor );
+               (*C).store( i+3UL, j         , xmm7 * factor );
+               (*C).store( i+3UL, j+SIMDSIZE, xmm8 * factor );
             }
 
             for( ; (i+3UL) <= iend; i+=3UL )
@@ -4897,12 +4897,12 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm6 += a3 * b2;
                }
 
-               (~C).store( i    , j         , xmm1 * factor );
-               (~C).store( i    , j+SIMDSIZE, xmm2 * factor );
-               (~C).store( i+1UL, j         , xmm3 * factor );
-               (~C).store( i+1UL, j+SIMDSIZE, xmm4 * factor );
-               (~C).store( i+2UL, j         , xmm5 * factor );
-               (~C).store( i+2UL, j+SIMDSIZE, xmm6 * factor );
+               (*C).store( i    , j         , xmm1 * factor );
+               (*C).store( i    , j+SIMDSIZE, xmm2 * factor );
+               (*C).store( i+1UL, j         , xmm3 * factor );
+               (*C).store( i+1UL, j+SIMDSIZE, xmm4 * factor );
+               (*C).store( i+2UL, j         , xmm5 * factor );
+               (*C).store( i+2UL, j+SIMDSIZE, xmm6 * factor );
             }
 
             for( ; (i+2UL) <= iend; i+=2UL )
@@ -4951,10 +4951,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm4 += a2 * b2;
                }
 
-               (~C).store( i    , j         , (xmm1+xmm5) * factor );
-               (~C).store( i    , j+SIMDSIZE, (xmm2+xmm6) * factor );
-               (~C).store( i+1UL, j         , (xmm3+xmm7) * factor );
-               (~C).store( i+1UL, j+SIMDSIZE, (xmm4+xmm8) * factor );
+               (*C).store( i    , j         , (xmm1+xmm5) * factor );
+               (*C).store( i    , j+SIMDSIZE, (xmm2+xmm6) * factor );
+               (*C).store( i+1UL, j         , (xmm3+xmm7) * factor );
+               (*C).store( i+1UL, j+SIMDSIZE, (xmm4+xmm8) * factor );
             }
 
             if( i < iend )
@@ -4984,8 +4984,8 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm2 += a1 * B.load(k,j+SIMDSIZE);
                }
 
-               (~C).store( i, j         , (xmm1+xmm3) * factor );
-               (~C).store( i, j+SIMDSIZE, (xmm2+xmm4) * factor );
+               (*C).store( i, j         , (xmm1+xmm3) * factor );
+               (*C).store( i, j+SIMDSIZE, (xmm2+xmm4) * factor );
             }
          }
 
@@ -5029,10 +5029,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm4 += set( A(i+3UL,k) ) * b1;
                }
 
-               (~C).store( i    , j, (xmm1+xmm5) * factor );
-               (~C).store( i+1UL, j, (xmm2+xmm6) * factor );
-               (~C).store( i+2UL, j, (xmm3+xmm7) * factor );
-               (~C).store( i+3UL, j, (xmm4+xmm8) * factor );
+               (*C).store( i    , j, (xmm1+xmm5) * factor );
+               (*C).store( i+1UL, j, (xmm2+xmm6) * factor );
+               (*C).store( i+2UL, j, (xmm3+xmm7) * factor );
+               (*C).store( i+3UL, j, (xmm4+xmm8) * factor );
             }
 
             for( ; (i+3UL) <= iend; i+=3UL )
@@ -5067,9 +5067,9 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm3 += set( A(i+2UL,k) ) * b1;
                }
 
-               (~C).store( i    , j, (xmm1+xmm4) * factor );
-               (~C).store( i+1UL, j, (xmm2+xmm5) * factor );
-               (~C).store( i+2UL, j, (xmm3+xmm6) * factor );
+               (*C).store( i    , j, (xmm1+xmm4) * factor );
+               (*C).store( i+1UL, j, (xmm2+xmm5) * factor );
+               (*C).store( i+2UL, j, (xmm3+xmm6) * factor );
             }
 
             for( ; (i+2UL) <= iend; i+=2UL )
@@ -5101,8 +5101,8 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm2 += set( A(i+1UL,k) ) * b1;
                }
 
-               (~C).store( i    , j, (xmm1+xmm3) * factor );
-               (~C).store( i+1UL, j, (xmm2+xmm4) * factor );
+               (*C).store( i    , j, (xmm1+xmm3) * factor );
+               (*C).store( i+1UL, j, (xmm2+xmm4) * factor );
             }
 
             if( i < iend )
@@ -5125,7 +5125,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm1 += set( A(i,k) ) * B.load(k,j);
                }
 
-               (~C).store( i, j, (xmm1+xmm2) * factor );
+               (*C).store( i, j, (xmm1+xmm2) * factor );
             }
          }
 
@@ -5152,8 +5152,8 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   value2 += A(i+1UL,k) * B(k,j);
                }
 
-               (~C)(i    ,j) = value1 * scalar;
-               (~C)(i+1UL,j) = value2 * scalar;
+               (*C)(i    ,j) = value1 * scalar;
+               (*C)(i+1UL,j) = value2 * scalar;
             }
 
             if( i < M )
@@ -5170,7 +5170,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   value += A(i,k) * B(k,j);
                }
 
-               (~C)(i,j) = value * scalar;
+               (*C)(i,j) = value * scalar;
             }
          }
       }
@@ -5179,7 +5179,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
          for( size_t i=SIMDSIZE*4UL; i<M; ++i ) {
             const size_t jend( ( SIMDSIZE*4UL ) * ( i / (SIMDSIZE*4UL) ) );
             for( size_t j=0UL; j<jend; ++j ) {
-               (~C)(i,j) = HERM ? conj( (~C)(j,i) ) : (~C)(j,i);
+               (*C)(i,j) = HERM ? conj( (*C)(j,i) ) : (*C)(j,i);
             }
          }
       }
@@ -5187,7 +5187,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
          for( size_t j=SIMDSIZE*4UL; j<N; ++j ) {
             const size_t iend( ( SIMDSIZE*4UL ) * ( j / (SIMDSIZE*4UL) ) );
             for( size_t i=0UL; i<iend; ++i ) {
-               reset( (~C)(i,j) );
+               reset( (*C)(i,j) );
             }
          }
       }
@@ -5195,7 +5195,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
          for( size_t i=SIMDSIZE*4UL; i<M; ++i ) {
             const size_t jend( ( SIMDSIZE*4UL ) * ( i / (SIMDSIZE*4UL) ) );
             for( size_t j=0UL; j<jend; ++j ) {
-               reset( (~C)(i,j) );
+               reset( (*C)(i,j) );
             }
          }
       }
@@ -5345,13 +5345,13 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LeftOperand_t<MMM>  left ( rhs.tensor_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.tensor_.rightOperand() );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || left.columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || left.columns() == 0UL ) {
          return;
       }
 
@@ -5362,10 +5362,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()  , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == right.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == right.columns() , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns(), "Invalid number of columns" );
 
-      DTensScalarMultExpr::selectAddAssignKernel( ~lhs, A, B, rhs.scalar_ );
+      DTensScalarMultExpr::selectAddAssignKernel( *lhs, A, B, rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -5642,14 +5642,14 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm8 += a1 * B.load(k,j+SIMDSIZE*7UL);
                }
 
-               (~C).store( i, j             , (~C).load(i,j             ) + xmm1 * factor );
-               (~C).store( i, j+SIMDSIZE    , (~C).load(i,j+SIMDSIZE    ) + xmm2 * factor );
-               (~C).store( i, j+SIMDSIZE*2UL, (~C).load(i,j+SIMDSIZE*2UL) + xmm3 * factor );
-               (~C).store( i, j+SIMDSIZE*3UL, (~C).load(i,j+SIMDSIZE*3UL) + xmm4 * factor );
-               (~C).store( i, j+SIMDSIZE*4UL, (~C).load(i,j+SIMDSIZE*4UL) + xmm5 * factor );
-               (~C).store( i, j+SIMDSIZE*5UL, (~C).load(i,j+SIMDSIZE*5UL) + xmm6 * factor );
-               (~C).store( i, j+SIMDSIZE*6UL, (~C).load(i,j+SIMDSIZE*6UL) + xmm7 * factor );
-               (~C).store( i, j+SIMDSIZE*7UL, (~C).load(i,j+SIMDSIZE*7UL) + xmm8 * factor );
+               (*C).store( i, j             , (*C).load(i,j             ) + xmm1 * factor );
+               (*C).store( i, j+SIMDSIZE    , (*C).load(i,j+SIMDSIZE    ) + xmm2 * factor );
+               (*C).store( i, j+SIMDSIZE*2UL, (*C).load(i,j+SIMDSIZE*2UL) + xmm3 * factor );
+               (*C).store( i, j+SIMDSIZE*3UL, (*C).load(i,j+SIMDSIZE*3UL) + xmm4 * factor );
+               (*C).store( i, j+SIMDSIZE*4UL, (*C).load(i,j+SIMDSIZE*4UL) + xmm5 * factor );
+               (*C).store( i, j+SIMDSIZE*5UL, (*C).load(i,j+SIMDSIZE*5UL) + xmm6 * factor );
+               (*C).store( i, j+SIMDSIZE*6UL, (*C).load(i,j+SIMDSIZE*6UL) + xmm7 * factor );
+               (*C).store( i, j+SIMDSIZE*7UL, (*C).load(i,j+SIMDSIZE*7UL) + xmm8 * factor );
             }
          }
       }
@@ -5693,16 +5693,16 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm10 += a2 * b5;
             }
 
-            (~C).store( i    , j             , (~C).load(i    ,j             ) + xmm1  * factor );
-            (~C).store( i    , j+SIMDSIZE    , (~C).load(i    ,j+SIMDSIZE    ) + xmm2  * factor );
-            (~C).store( i    , j+SIMDSIZE*2UL, (~C).load(i    ,j+SIMDSIZE*2UL) + xmm3  * factor );
-            (~C).store( i    , j+SIMDSIZE*3UL, (~C).load(i    ,j+SIMDSIZE*3UL) + xmm4  * factor );
-            (~C).store( i    , j+SIMDSIZE*4UL, (~C).load(i    ,j+SIMDSIZE*4UL) + xmm5  * factor );
-            (~C).store( i+1UL, j             , (~C).load(i+1UL,j             ) + xmm6  * factor );
-            (~C).store( i+1UL, j+SIMDSIZE    , (~C).load(i+1UL,j+SIMDSIZE    ) + xmm7  * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, (~C).load(i+1UL,j+SIMDSIZE*2UL) + xmm8  * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*3UL, (~C).load(i+1UL,j+SIMDSIZE*3UL) + xmm9  * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*4UL, (~C).load(i+1UL,j+SIMDSIZE*4UL) + xmm10 * factor );
+            (*C).store( i    , j             , (*C).load(i    ,j             ) + xmm1  * factor );
+            (*C).store( i    , j+SIMDSIZE    , (*C).load(i    ,j+SIMDSIZE    ) + xmm2  * factor );
+            (*C).store( i    , j+SIMDSIZE*2UL, (*C).load(i    ,j+SIMDSIZE*2UL) + xmm3  * factor );
+            (*C).store( i    , j+SIMDSIZE*3UL, (*C).load(i    ,j+SIMDSIZE*3UL) + xmm4  * factor );
+            (*C).store( i    , j+SIMDSIZE*4UL, (*C).load(i    ,j+SIMDSIZE*4UL) + xmm5  * factor );
+            (*C).store( i+1UL, j             , (*C).load(i+1UL,j             ) + xmm6  * factor );
+            (*C).store( i+1UL, j+SIMDSIZE    , (*C).load(i+1UL,j+SIMDSIZE    ) + xmm7  * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, (*C).load(i+1UL,j+SIMDSIZE*2UL) + xmm8  * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*3UL, (*C).load(i+1UL,j+SIMDSIZE*3UL) + xmm9  * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*4UL, (*C).load(i+1UL,j+SIMDSIZE*4UL) + xmm10 * factor );
          }
 
          if( i < M )
@@ -5725,11 +5725,11 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm5 += a1 * B.load(k,j+SIMDSIZE*4UL);
             }
 
-            (~C).store( i, j             , (~C).load(i,j             ) + xmm1 * factor );
-            (~C).store( i, j+SIMDSIZE    , (~C).load(i,j+SIMDSIZE    ) + xmm2 * factor );
-            (~C).store( i, j+SIMDSIZE*2UL, (~C).load(i,j+SIMDSIZE*2UL) + xmm3 * factor );
-            (~C).store( i, j+SIMDSIZE*3UL, (~C).load(i,j+SIMDSIZE*3UL) + xmm4 * factor );
-            (~C).store( i, j+SIMDSIZE*4UL, (~C).load(i,j+SIMDSIZE*4UL) + xmm5 * factor );
+            (*C).store( i, j             , (*C).load(i,j             ) + xmm1 * factor );
+            (*C).store( i, j+SIMDSIZE    , (*C).load(i,j+SIMDSIZE    ) + xmm2 * factor );
+            (*C).store( i, j+SIMDSIZE*2UL, (*C).load(i,j+SIMDSIZE*2UL) + xmm3 * factor );
+            (*C).store( i, j+SIMDSIZE*3UL, (*C).load(i,j+SIMDSIZE*3UL) + xmm4 * factor );
+            (*C).store( i, j+SIMDSIZE*4UL, (*C).load(i,j+SIMDSIZE*4UL) + xmm5 * factor );
          }
       }
 
@@ -5769,14 +5769,14 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm8 += a2 * b4;
             }
 
-            (~C).store( i    , j             , (~C).load(i    ,j             ) + xmm1 * factor );
-            (~C).store( i    , j+SIMDSIZE    , (~C).load(i    ,j+SIMDSIZE    ) + xmm2 * factor );
-            (~C).store( i    , j+SIMDSIZE*2UL, (~C).load(i    ,j+SIMDSIZE*2UL) + xmm3 * factor );
-            (~C).store( i    , j+SIMDSIZE*3UL, (~C).load(i    ,j+SIMDSIZE*3UL) + xmm4 * factor );
-            (~C).store( i+1UL, j             , (~C).load(i+1UL,j             ) + xmm5 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE    , (~C).load(i+1UL,j+SIMDSIZE    ) + xmm6 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, (~C).load(i+1UL,j+SIMDSIZE*2UL) + xmm7 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*3UL, (~C).load(i+1UL,j+SIMDSIZE*3UL) + xmm8 * factor );
+            (*C).store( i    , j             , (*C).load(i    ,j             ) + xmm1 * factor );
+            (*C).store( i    , j+SIMDSIZE    , (*C).load(i    ,j+SIMDSIZE    ) + xmm2 * factor );
+            (*C).store( i    , j+SIMDSIZE*2UL, (*C).load(i    ,j+SIMDSIZE*2UL) + xmm3 * factor );
+            (*C).store( i    , j+SIMDSIZE*3UL, (*C).load(i    ,j+SIMDSIZE*3UL) + xmm4 * factor );
+            (*C).store( i+1UL, j             , (*C).load(i+1UL,j             ) + xmm5 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE    , (*C).load(i+1UL,j+SIMDSIZE    ) + xmm6 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, (*C).load(i+1UL,j+SIMDSIZE*2UL) + xmm7 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*3UL, (*C).load(i+1UL,j+SIMDSIZE*3UL) + xmm8 * factor );
          }
 
          if( i < M )
@@ -5798,10 +5798,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm4 += a1 * B.load(k,j+SIMDSIZE*3UL);
             }
 
-            (~C).store( i, j             , (~C).load(i,j             ) + xmm1 * factor );
-            (~C).store( i, j+SIMDSIZE    , (~C).load(i,j+SIMDSIZE    ) + xmm2 * factor );
-            (~C).store( i, j+SIMDSIZE*2UL, (~C).load(i,j+SIMDSIZE*2UL) + xmm3 * factor );
-            (~C).store( i, j+SIMDSIZE*3UL, (~C).load(i,j+SIMDSIZE*3UL) + xmm4 * factor );
+            (*C).store( i, j             , (*C).load(i,j             ) + xmm1 * factor );
+            (*C).store( i, j+SIMDSIZE    , (*C).load(i,j+SIMDSIZE    ) + xmm2 * factor );
+            (*C).store( i, j+SIMDSIZE*2UL, (*C).load(i,j+SIMDSIZE*2UL) + xmm3 * factor );
+            (*C).store( i, j+SIMDSIZE*3UL, (*C).load(i,j+SIMDSIZE*3UL) + xmm4 * factor );
          }
       }
 
@@ -5838,12 +5838,12 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm6 += a2 * b3;
             }
 
-            (~C).store( i    , j             , (~C).load(i    ,j             ) + xmm1 * factor );
-            (~C).store( i    , j+SIMDSIZE    , (~C).load(i    ,j+SIMDSIZE    ) + xmm2 * factor );
-            (~C).store( i    , j+SIMDSIZE*2UL, (~C).load(i    ,j+SIMDSIZE*2UL) + xmm3 * factor );
-            (~C).store( i+1UL, j             , (~C).load(i+1UL,j             ) + xmm4 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE    , (~C).load(i+1UL,j+SIMDSIZE    ) + xmm5 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, (~C).load(i+1UL,j+SIMDSIZE*2UL) + xmm6 * factor );
+            (*C).store( i    , j             , (*C).load(i    ,j             ) + xmm1 * factor );
+            (*C).store( i    , j+SIMDSIZE    , (*C).load(i    ,j+SIMDSIZE    ) + xmm2 * factor );
+            (*C).store( i    , j+SIMDSIZE*2UL, (*C).load(i    ,j+SIMDSIZE*2UL) + xmm3 * factor );
+            (*C).store( i+1UL, j             , (*C).load(i+1UL,j             ) + xmm4 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE    , (*C).load(i+1UL,j+SIMDSIZE    ) + xmm5 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, (*C).load(i+1UL,j+SIMDSIZE*2UL) + xmm6 * factor );
          }
 
          if( i < M )
@@ -5864,9 +5864,9 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm3 += a1 * B.load(k,j+SIMDSIZE*2UL);
             }
 
-            (~C).store( i, j             , (~C).load(i,j             ) + xmm1 * factor );
-            (~C).store( i, j+SIMDSIZE    , (~C).load(i,j+SIMDSIZE    ) + xmm2 * factor );
-            (~C).store( i, j+SIMDSIZE*2UL, (~C).load(i,j+SIMDSIZE*2UL) + xmm3 * factor );
+            (*C).store( i, j             , (*C).load(i,j             ) + xmm1 * factor );
+            (*C).store( i, j+SIMDSIZE    , (*C).load(i,j+SIMDSIZE    ) + xmm2 * factor );
+            (*C).store( i, j+SIMDSIZE*2UL, (*C).load(i,j+SIMDSIZE*2UL) + xmm3 * factor );
          }
       }
 
@@ -5907,14 +5907,14 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm8 += a4 * b2;
             }
 
-            (~C).store( i    , j         , (~C).load(i    ,j         ) + xmm1 * factor );
-            (~C).store( i    , j+SIMDSIZE, (~C).load(i    ,j+SIMDSIZE) + xmm2 * factor );
-            (~C).store( i+1UL, j         , (~C).load(i+1UL,j         ) + xmm3 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE, (~C).load(i+1UL,j+SIMDSIZE) + xmm4 * factor );
-            (~C).store( i+2UL, j         , (~C).load(i+2UL,j         ) + xmm5 * factor );
-            (~C).store( i+2UL, j+SIMDSIZE, (~C).load(i+2UL,j+SIMDSIZE) + xmm6 * factor );
-            (~C).store( i+3UL, j         , (~C).load(i+3UL,j         ) + xmm7 * factor );
-            (~C).store( i+3UL, j+SIMDSIZE, (~C).load(i+3UL,j+SIMDSIZE) + xmm8 * factor );
+            (*C).store( i    , j         , (*C).load(i    ,j         ) + xmm1 * factor );
+            (*C).store( i    , j+SIMDSIZE, (*C).load(i    ,j+SIMDSIZE) + xmm2 * factor );
+            (*C).store( i+1UL, j         , (*C).load(i+1UL,j         ) + xmm3 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE, (*C).load(i+1UL,j+SIMDSIZE) + xmm4 * factor );
+            (*C).store( i+2UL, j         , (*C).load(i+2UL,j         ) + xmm5 * factor );
+            (*C).store( i+2UL, j+SIMDSIZE, (*C).load(i+2UL,j+SIMDSIZE) + xmm6 * factor );
+            (*C).store( i+3UL, j         , (*C).load(i+3UL,j         ) + xmm7 * factor );
+            (*C).store( i+3UL, j+SIMDSIZE, (*C).load(i+3UL,j+SIMDSIZE) + xmm8 * factor );
          }
 
          for( ; (i+3UL) <= iend; i+=3UL )
@@ -5946,12 +5946,12 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm6 += a3 * b2;
             }
 
-            (~C).store( i    , j         , (~C).load(i    ,j         ) + xmm1 * factor );
-            (~C).store( i    , j+SIMDSIZE, (~C).load(i    ,j+SIMDSIZE) + xmm2 * factor );
-            (~C).store( i+1UL, j         , (~C).load(i+1UL,j         ) + xmm3 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE, (~C).load(i+1UL,j+SIMDSIZE) + xmm4 * factor );
-            (~C).store( i+2UL, j         , (~C).load(i+2UL,j         ) + xmm5 * factor );
-            (~C).store( i+2UL, j+SIMDSIZE, (~C).load(i+2UL,j+SIMDSIZE) + xmm6 * factor );
+            (*C).store( i    , j         , (*C).load(i    ,j         ) + xmm1 * factor );
+            (*C).store( i    , j+SIMDSIZE, (*C).load(i    ,j+SIMDSIZE) + xmm2 * factor );
+            (*C).store( i+1UL, j         , (*C).load(i+1UL,j         ) + xmm3 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE, (*C).load(i+1UL,j+SIMDSIZE) + xmm4 * factor );
+            (*C).store( i+2UL, j         , (*C).load(i+2UL,j         ) + xmm5 * factor );
+            (*C).store( i+2UL, j+SIMDSIZE, (*C).load(i+2UL,j+SIMDSIZE) + xmm6 * factor );
          }
 
          for( ; (i+2UL) <= iend; i+=2UL )
@@ -6000,10 +6000,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm4 += a2 * b2;
             }
 
-            (~C).store( i    , j         , (~C).load(i    ,j         ) + (xmm1+xmm5) * factor );
-            (~C).store( i    , j+SIMDSIZE, (~C).load(i    ,j+SIMDSIZE) + (xmm2+xmm6) * factor );
-            (~C).store( i+1UL, j         , (~C).load(i+1UL,j         ) + (xmm3+xmm7) * factor );
-            (~C).store( i+1UL, j+SIMDSIZE, (~C).load(i+1UL,j+SIMDSIZE) + (xmm4+xmm8) * factor );
+            (*C).store( i    , j         , (*C).load(i    ,j         ) + (xmm1+xmm5) * factor );
+            (*C).store( i    , j+SIMDSIZE, (*C).load(i    ,j+SIMDSIZE) + (xmm2+xmm6) * factor );
+            (*C).store( i+1UL, j         , (*C).load(i+1UL,j         ) + (xmm3+xmm7) * factor );
+            (*C).store( i+1UL, j+SIMDSIZE, (*C).load(i+1UL,j+SIMDSIZE) + (xmm4+xmm8) * factor );
          }
 
          if( i < iend )
@@ -6033,8 +6033,8 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm2 += a1 * B.load(k,j+SIMDSIZE);
             }
 
-            (~C).store( i, j         , (~C).load(i,j         ) + (xmm1+xmm3) * factor );
-            (~C).store( i, j+SIMDSIZE, (~C).load(i,j+SIMDSIZE) + (xmm2+xmm4) * factor );
+            (*C).store( i, j         , (*C).load(i,j         ) + (xmm1+xmm3) * factor );
+            (*C).store( i, j+SIMDSIZE, (*C).load(i,j+SIMDSIZE) + (xmm2+xmm4) * factor );
          }
       }
 
@@ -6078,10 +6078,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm4 += set( A(i+3UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, (~C).load(i    ,j) + (xmm1+xmm5) * factor );
-            (~C).store( i+1UL, j, (~C).load(i+1UL,j) + (xmm2+xmm6) * factor );
-            (~C).store( i+2UL, j, (~C).load(i+2UL,j) + (xmm3+xmm7) * factor );
-            (~C).store( i+3UL, j, (~C).load(i+3UL,j) + (xmm4+xmm8) * factor );
+            (*C).store( i    , j, (*C).load(i    ,j) + (xmm1+xmm5) * factor );
+            (*C).store( i+1UL, j, (*C).load(i+1UL,j) + (xmm2+xmm6) * factor );
+            (*C).store( i+2UL, j, (*C).load(i+2UL,j) + (xmm3+xmm7) * factor );
+            (*C).store( i+3UL, j, (*C).load(i+3UL,j) + (xmm4+xmm8) * factor );
          }
 
          for( ; (i+3UL) <= iend; i+=3UL )
@@ -6116,9 +6116,9 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm3 += set( A(i+2UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, (~C).load(i    ,j) + (xmm1+xmm4) * factor );
-            (~C).store( i+1UL, j, (~C).load(i+1UL,j) + (xmm2+xmm5) * factor );
-            (~C).store( i+2UL, j, (~C).load(i+2UL,j) + (xmm3+xmm6) * factor );
+            (*C).store( i    , j, (*C).load(i    ,j) + (xmm1+xmm4) * factor );
+            (*C).store( i+1UL, j, (*C).load(i+1UL,j) + (xmm2+xmm5) * factor );
+            (*C).store( i+2UL, j, (*C).load(i+2UL,j) + (xmm3+xmm6) * factor );
          }
 
          for( ; (i+2UL) <= iend; i+=2UL )
@@ -6150,8 +6150,8 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm2 += set( A(i+1UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, (~C).load(i    ,j) + (xmm1+xmm3) * factor );
-            (~C).store( i+1UL, j, (~C).load(i+1UL,j) + (xmm2+xmm4) * factor );
+            (*C).store( i    , j, (*C).load(i    ,j) + (xmm1+xmm3) * factor );
+            (*C).store( i+1UL, j, (*C).load(i+1UL,j) + (xmm2+xmm4) * factor );
          }
 
          if( i < iend )
@@ -6174,7 +6174,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm1 += set( A(i,k) ) * B.load(k,j);
             }
 
-            (~C).store( i, j, (~C).load(i,j) + (xmm1+xmm2) * factor );
+            (*C).store( i, j, (*C).load(i,j) + (xmm1+xmm2) * factor );
          }
       }
 
@@ -6202,8 +6202,8 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                value2 += A(i+1UL,k) * B(k,j);
             }
 
-            (~C)(i    ,j) += value1 * scalar;
-            (~C)(i+1UL,j) += value2 * scalar;
+            (*C)(i    ,j) += value1 * scalar;
+            (*C)(i+1UL,j) += value2 * scalar;
          }
 
          if( i < iend )
@@ -6220,7 +6220,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                value += A(i,k) * B(k,j);
             }
 
-            (~C)(i,j) += value * scalar;
+            (*C)(i,j) += value * scalar;
          }
       }
    }
@@ -6367,13 +6367,13 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LeftOperand_t<MMM>  left ( rhs.tensor_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.tensor_.rightOperand() );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || left.columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || left.columns() == 0UL ) {
          return;
       }
 
@@ -6384,10 +6384,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()  , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == right.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == right.columns() , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns(), "Invalid number of columns" );
 
-      DTensScalarMultExpr::selectSubAssignKernel( ~lhs, A, B, rhs.scalar_ );
+      DTensScalarMultExpr::selectSubAssignKernel( *lhs, A, B, rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -6664,14 +6664,14 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                   xmm8 += a1 * B.load(k,j+SIMDSIZE*7UL);
                }
 
-               (~C).store( i, j             , (~C).load(i,j             ) - xmm1 * factor );
-               (~C).store( i, j+SIMDSIZE    , (~C).load(i,j+SIMDSIZE    ) - xmm2 * factor );
-               (~C).store( i, j+SIMDSIZE*2UL, (~C).load(i,j+SIMDSIZE*2UL) - xmm3 * factor );
-               (~C).store( i, j+SIMDSIZE*3UL, (~C).load(i,j+SIMDSIZE*3UL) - xmm4 * factor );
-               (~C).store( i, j+SIMDSIZE*4UL, (~C).load(i,j+SIMDSIZE*4UL) - xmm5 * factor );
-               (~C).store( i, j+SIMDSIZE*5UL, (~C).load(i,j+SIMDSIZE*5UL) - xmm6 * factor );
-               (~C).store( i, j+SIMDSIZE*6UL, (~C).load(i,j+SIMDSIZE*6UL) - xmm7 * factor );
-               (~C).store( i, j+SIMDSIZE*7UL, (~C).load(i,j+SIMDSIZE*7UL) - xmm8 * factor );
+               (*C).store( i, j             , (*C).load(i,j             ) - xmm1 * factor );
+               (*C).store( i, j+SIMDSIZE    , (*C).load(i,j+SIMDSIZE    ) - xmm2 * factor );
+               (*C).store( i, j+SIMDSIZE*2UL, (*C).load(i,j+SIMDSIZE*2UL) - xmm3 * factor );
+               (*C).store( i, j+SIMDSIZE*3UL, (*C).load(i,j+SIMDSIZE*3UL) - xmm4 * factor );
+               (*C).store( i, j+SIMDSIZE*4UL, (*C).load(i,j+SIMDSIZE*4UL) - xmm5 * factor );
+               (*C).store( i, j+SIMDSIZE*5UL, (*C).load(i,j+SIMDSIZE*5UL) - xmm6 * factor );
+               (*C).store( i, j+SIMDSIZE*6UL, (*C).load(i,j+SIMDSIZE*6UL) - xmm7 * factor );
+               (*C).store( i, j+SIMDSIZE*7UL, (*C).load(i,j+SIMDSIZE*7UL) - xmm8 * factor );
             }
          }
       }
@@ -6715,16 +6715,16 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm10 += a2 * b5;
             }
 
-            (~C).store( i    , j             , (~C).load(i    ,j             ) - xmm1  * factor );
-            (~C).store( i    , j+SIMDSIZE    , (~C).load(i    ,j+SIMDSIZE    ) - xmm2  * factor );
-            (~C).store( i    , j+SIMDSIZE*2UL, (~C).load(i    ,j+SIMDSIZE*2UL) - xmm3  * factor );
-            (~C).store( i    , j+SIMDSIZE*3UL, (~C).load(i    ,j+SIMDSIZE*3UL) - xmm4  * factor );
-            (~C).store( i    , j+SIMDSIZE*4UL, (~C).load(i    ,j+SIMDSIZE*4UL) - xmm5  * factor );
-            (~C).store( i+1UL, j             , (~C).load(i+1UL,j             ) - xmm6  * factor );
-            (~C).store( i+1UL, j+SIMDSIZE    , (~C).load(i+1UL,j+SIMDSIZE    ) - xmm7  * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, (~C).load(i+1UL,j+SIMDSIZE*2UL) - xmm8  * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*3UL, (~C).load(i+1UL,j+SIMDSIZE*3UL) - xmm9  * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*4UL, (~C).load(i+1UL,j+SIMDSIZE*4UL) - xmm10 * factor );
+            (*C).store( i    , j             , (*C).load(i    ,j             ) - xmm1  * factor );
+            (*C).store( i    , j+SIMDSIZE    , (*C).load(i    ,j+SIMDSIZE    ) - xmm2  * factor );
+            (*C).store( i    , j+SIMDSIZE*2UL, (*C).load(i    ,j+SIMDSIZE*2UL) - xmm3  * factor );
+            (*C).store( i    , j+SIMDSIZE*3UL, (*C).load(i    ,j+SIMDSIZE*3UL) - xmm4  * factor );
+            (*C).store( i    , j+SIMDSIZE*4UL, (*C).load(i    ,j+SIMDSIZE*4UL) - xmm5  * factor );
+            (*C).store( i+1UL, j             , (*C).load(i+1UL,j             ) - xmm6  * factor );
+            (*C).store( i+1UL, j+SIMDSIZE    , (*C).load(i+1UL,j+SIMDSIZE    ) - xmm7  * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, (*C).load(i+1UL,j+SIMDSIZE*2UL) - xmm8  * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*3UL, (*C).load(i+1UL,j+SIMDSIZE*3UL) - xmm9  * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*4UL, (*C).load(i+1UL,j+SIMDSIZE*4UL) - xmm10 * factor );
          }
 
          if( i < M )
@@ -6747,11 +6747,11 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm5 += a1 * B.load(k,j+SIMDSIZE*4UL);
             }
 
-            (~C).store( i, j             , (~C).load(i,j             ) - xmm1 * factor );
-            (~C).store( i, j+SIMDSIZE    , (~C).load(i,j+SIMDSIZE    ) - xmm2 * factor );
-            (~C).store( i, j+SIMDSIZE*2UL, (~C).load(i,j+SIMDSIZE*2UL) - xmm3 * factor );
-            (~C).store( i, j+SIMDSIZE*3UL, (~C).load(i,j+SIMDSIZE*3UL) - xmm4 * factor );
-            (~C).store( i, j+SIMDSIZE*4UL, (~C).load(i,j+SIMDSIZE*4UL) - xmm5 * factor );
+            (*C).store( i, j             , (*C).load(i,j             ) - xmm1 * factor );
+            (*C).store( i, j+SIMDSIZE    , (*C).load(i,j+SIMDSIZE    ) - xmm2 * factor );
+            (*C).store( i, j+SIMDSIZE*2UL, (*C).load(i,j+SIMDSIZE*2UL) - xmm3 * factor );
+            (*C).store( i, j+SIMDSIZE*3UL, (*C).load(i,j+SIMDSIZE*3UL) - xmm4 * factor );
+            (*C).store( i, j+SIMDSIZE*4UL, (*C).load(i,j+SIMDSIZE*4UL) - xmm5 * factor );
          }
       }
 
@@ -6791,14 +6791,14 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm8 += a2 * b4;
             }
 
-            (~C).store( i    , j             , (~C).load(i    ,j             ) - xmm1 * factor );
-            (~C).store( i    , j+SIMDSIZE    , (~C).load(i    ,j+SIMDSIZE    ) - xmm2 * factor );
-            (~C).store( i    , j+SIMDSIZE*2UL, (~C).load(i    ,j+SIMDSIZE*2UL) - xmm3 * factor );
-            (~C).store( i    , j+SIMDSIZE*3UL, (~C).load(i    ,j+SIMDSIZE*3UL) - xmm4 * factor );
-            (~C).store( i+1UL, j             , (~C).load(i+1UL,j             ) - xmm5 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE    , (~C).load(i+1UL,j+SIMDSIZE    ) - xmm6 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, (~C).load(i+1UL,j+SIMDSIZE*2UL) - xmm7 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*3UL, (~C).load(i+1UL,j+SIMDSIZE*3UL) - xmm8 * factor );
+            (*C).store( i    , j             , (*C).load(i    ,j             ) - xmm1 * factor );
+            (*C).store( i    , j+SIMDSIZE    , (*C).load(i    ,j+SIMDSIZE    ) - xmm2 * factor );
+            (*C).store( i    , j+SIMDSIZE*2UL, (*C).load(i    ,j+SIMDSIZE*2UL) - xmm3 * factor );
+            (*C).store( i    , j+SIMDSIZE*3UL, (*C).load(i    ,j+SIMDSIZE*3UL) - xmm4 * factor );
+            (*C).store( i+1UL, j             , (*C).load(i+1UL,j             ) - xmm5 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE    , (*C).load(i+1UL,j+SIMDSIZE    ) - xmm6 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, (*C).load(i+1UL,j+SIMDSIZE*2UL) - xmm7 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*3UL, (*C).load(i+1UL,j+SIMDSIZE*3UL) - xmm8 * factor );
          }
 
          if( i < M )
@@ -6820,10 +6820,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm4 += a1 * B.load(k,j+SIMDSIZE*3UL);
             }
 
-            (~C).store( i, j             , (~C).load(i,j             ) - xmm1 * factor );
-            (~C).store( i, j+SIMDSIZE    , (~C).load(i,j+SIMDSIZE    ) - xmm2 * factor );
-            (~C).store( i, j+SIMDSIZE*2UL, (~C).load(i,j+SIMDSIZE*2UL) - xmm3 * factor );
-            (~C).store( i, j+SIMDSIZE*3UL, (~C).load(i,j+SIMDSIZE*3UL) - xmm4 * factor );
+            (*C).store( i, j             , (*C).load(i,j             ) - xmm1 * factor );
+            (*C).store( i, j+SIMDSIZE    , (*C).load(i,j+SIMDSIZE    ) - xmm2 * factor );
+            (*C).store( i, j+SIMDSIZE*2UL, (*C).load(i,j+SIMDSIZE*2UL) - xmm3 * factor );
+            (*C).store( i, j+SIMDSIZE*3UL, (*C).load(i,j+SIMDSIZE*3UL) - xmm4 * factor );
          }
       }
 
@@ -6860,12 +6860,12 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm6 += a2 * b3;
             }
 
-            (~C).store( i    , j             , (~C).load(i    ,j             ) - xmm1 * factor );
-            (~C).store( i    , j+SIMDSIZE    , (~C).load(i    ,j+SIMDSIZE    ) - xmm2 * factor );
-            (~C).store( i    , j+SIMDSIZE*2UL, (~C).load(i    ,j+SIMDSIZE*2UL) - xmm3 * factor );
-            (~C).store( i+1UL, j             , (~C).load(i+1UL,j             ) - xmm4 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE    , (~C).load(i+1UL,j+SIMDSIZE    ) - xmm5 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE*2UL, (~C).load(i+1UL,j+SIMDSIZE*2UL) - xmm6 * factor );
+            (*C).store( i    , j             , (*C).load(i    ,j             ) - xmm1 * factor );
+            (*C).store( i    , j+SIMDSIZE    , (*C).load(i    ,j+SIMDSIZE    ) - xmm2 * factor );
+            (*C).store( i    , j+SIMDSIZE*2UL, (*C).load(i    ,j+SIMDSIZE*2UL) - xmm3 * factor );
+            (*C).store( i+1UL, j             , (*C).load(i+1UL,j             ) - xmm4 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE    , (*C).load(i+1UL,j+SIMDSIZE    ) - xmm5 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE*2UL, (*C).load(i+1UL,j+SIMDSIZE*2UL) - xmm6 * factor );
          }
 
          if( i < M )
@@ -6886,9 +6886,9 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm3 += a1 * B.load(k,j+SIMDSIZE*2UL);
             }
 
-            (~C).store( i, j             , (~C).load(i,j             ) - xmm1 * factor );
-            (~C).store( i, j+SIMDSIZE    , (~C).load(i,j+SIMDSIZE    ) - xmm2 * factor );
-            (~C).store( i, j+SIMDSIZE*2UL, (~C).load(i,j+SIMDSIZE*2UL) - xmm3 * factor );
+            (*C).store( i, j             , (*C).load(i,j             ) - xmm1 * factor );
+            (*C).store( i, j+SIMDSIZE    , (*C).load(i,j+SIMDSIZE    ) - xmm2 * factor );
+            (*C).store( i, j+SIMDSIZE*2UL, (*C).load(i,j+SIMDSIZE*2UL) - xmm3 * factor );
          }
       }
 
@@ -6929,14 +6929,14 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm8 += a4 * b2;
             }
 
-            (~C).store( i    , j         , (~C).load(i    ,j         ) - xmm1 * factor );
-            (~C).store( i    , j+SIMDSIZE, (~C).load(i    ,j+SIMDSIZE) - xmm2 * factor );
-            (~C).store( i+1UL, j         , (~C).load(i+1UL,j         ) - xmm3 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE, (~C).load(i+1UL,j+SIMDSIZE) - xmm4 * factor );
-            (~C).store( i+2UL, j         , (~C).load(i+2UL,j         ) - xmm5 * factor );
-            (~C).store( i+2UL, j+SIMDSIZE, (~C).load(i+2UL,j+SIMDSIZE) - xmm6 * factor );
-            (~C).store( i+3UL, j         , (~C).load(i+3UL,j         ) - xmm7 * factor );
-            (~C).store( i+3UL, j+SIMDSIZE, (~C).load(i+3UL,j+SIMDSIZE) - xmm8 * factor );
+            (*C).store( i    , j         , (*C).load(i    ,j         ) - xmm1 * factor );
+            (*C).store( i    , j+SIMDSIZE, (*C).load(i    ,j+SIMDSIZE) - xmm2 * factor );
+            (*C).store( i+1UL, j         , (*C).load(i+1UL,j         ) - xmm3 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE, (*C).load(i+1UL,j+SIMDSIZE) - xmm4 * factor );
+            (*C).store( i+2UL, j         , (*C).load(i+2UL,j         ) - xmm5 * factor );
+            (*C).store( i+2UL, j+SIMDSIZE, (*C).load(i+2UL,j+SIMDSIZE) - xmm6 * factor );
+            (*C).store( i+3UL, j         , (*C).load(i+3UL,j         ) - xmm7 * factor );
+            (*C).store( i+3UL, j+SIMDSIZE, (*C).load(i+3UL,j+SIMDSIZE) - xmm8 * factor );
          }
 
          for( ; (i+3UL) <= iend; i+=3UL )
@@ -6968,12 +6968,12 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm6 += a3 * b2;
             }
 
-            (~C).store( i    , j         , (~C).load(i    ,j         ) - xmm1 * factor );
-            (~C).store( i    , j+SIMDSIZE, (~C).load(i    ,j+SIMDSIZE) - xmm2 * factor );
-            (~C).store( i+1UL, j         , (~C).load(i+1UL,j         ) - xmm3 * factor );
-            (~C).store( i+1UL, j+SIMDSIZE, (~C).load(i+1UL,j+SIMDSIZE) - xmm4 * factor );
-            (~C).store( i+2UL, j         , (~C).load(i+2UL,j         ) - xmm5 * factor );
-            (~C).store( i+2UL, j+SIMDSIZE, (~C).load(i+2UL,j+SIMDSIZE) - xmm6 * factor );
+            (*C).store( i    , j         , (*C).load(i    ,j         ) - xmm1 * factor );
+            (*C).store( i    , j+SIMDSIZE, (*C).load(i    ,j+SIMDSIZE) - xmm2 * factor );
+            (*C).store( i+1UL, j         , (*C).load(i+1UL,j         ) - xmm3 * factor );
+            (*C).store( i+1UL, j+SIMDSIZE, (*C).load(i+1UL,j+SIMDSIZE) - xmm4 * factor );
+            (*C).store( i+2UL, j         , (*C).load(i+2UL,j         ) - xmm5 * factor );
+            (*C).store( i+2UL, j+SIMDSIZE, (*C).load(i+2UL,j+SIMDSIZE) - xmm6 * factor );
          }
 
          for( ; (i+2UL) <= iend; i+=2UL )
@@ -7022,10 +7022,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm4 += a2 * b2;
             }
 
-            (~C).store( i    , j         , (~C).load(i    ,j         ) - (xmm1+xmm5) * factor );
-            (~C).store( i    , j+SIMDSIZE, (~C).load(i    ,j+SIMDSIZE) - (xmm2+xmm6) * factor );
-            (~C).store( i+1UL, j         , (~C).load(i+1UL,j         ) - (xmm3+xmm7) * factor );
-            (~C).store( i+1UL, j+SIMDSIZE, (~C).load(i+1UL,j+SIMDSIZE) - (xmm4+xmm8) * factor );
+            (*C).store( i    , j         , (*C).load(i    ,j         ) - (xmm1+xmm5) * factor );
+            (*C).store( i    , j+SIMDSIZE, (*C).load(i    ,j+SIMDSIZE) - (xmm2+xmm6) * factor );
+            (*C).store( i+1UL, j         , (*C).load(i+1UL,j         ) - (xmm3+xmm7) * factor );
+            (*C).store( i+1UL, j+SIMDSIZE, (*C).load(i+1UL,j+SIMDSIZE) - (xmm4+xmm8) * factor );
          }
 
          if( i < iend )
@@ -7055,8 +7055,8 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm2 += a1 * B.load(k,j+SIMDSIZE);
             }
 
-            (~C).store( i, j         , (~C).load(i,j         ) - (xmm1+xmm3) * factor );
-            (~C).store( i, j+SIMDSIZE, (~C).load(i,j+SIMDSIZE) - (xmm2+xmm4) * factor );
+            (*C).store( i, j         , (*C).load(i,j         ) - (xmm1+xmm3) * factor );
+            (*C).store( i, j+SIMDSIZE, (*C).load(i,j+SIMDSIZE) - (xmm2+xmm4) * factor );
          }
       }
 
@@ -7100,10 +7100,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm4 += set( A(i+3UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, (~C).load(i    ,j) - (xmm1+xmm5) * factor );
-            (~C).store( i+1UL, j, (~C).load(i+1UL,j) - (xmm2+xmm6) * factor );
-            (~C).store( i+2UL, j, (~C).load(i+2UL,j) - (xmm3+xmm7) * factor );
-            (~C).store( i+3UL, j, (~C).load(i+3UL,j) - (xmm4+xmm8) * factor );
+            (*C).store( i    , j, (*C).load(i    ,j) - (xmm1+xmm5) * factor );
+            (*C).store( i+1UL, j, (*C).load(i+1UL,j) - (xmm2+xmm6) * factor );
+            (*C).store( i+2UL, j, (*C).load(i+2UL,j) - (xmm3+xmm7) * factor );
+            (*C).store( i+3UL, j, (*C).load(i+3UL,j) - (xmm4+xmm8) * factor );
          }
 
          for( ; (i+3UL) <= iend; i+=3UL )
@@ -7138,9 +7138,9 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm3 += set( A(i+2UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, (~C).load(i    ,j) - (xmm1+xmm4) * factor );
-            (~C).store( i+1UL, j, (~C).load(i+1UL,j) - (xmm2+xmm5) * factor );
-            (~C).store( i+2UL, j, (~C).load(i+2UL,j) - (xmm3+xmm6) * factor );
+            (*C).store( i    , j, (*C).load(i    ,j) - (xmm1+xmm4) * factor );
+            (*C).store( i+1UL, j, (*C).load(i+1UL,j) - (xmm2+xmm5) * factor );
+            (*C).store( i+2UL, j, (*C).load(i+2UL,j) - (xmm3+xmm6) * factor );
          }
 
          for( ; (i+2UL) <= iend; i+=2UL )
@@ -7172,8 +7172,8 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm2 += set( A(i+1UL,k) ) * b1;
             }
 
-            (~C).store( i    , j, (~C).load(i    ,j) - (xmm1+xmm3) * factor );
-            (~C).store( i+1UL, j, (~C).load(i+1UL,j) - (xmm2+xmm4) * factor );
+            (*C).store( i    , j, (*C).load(i    ,j) - (xmm1+xmm3) * factor );
+            (*C).store( i+1UL, j, (*C).load(i+1UL,j) - (xmm2+xmm4) * factor );
          }
 
          if( i < iend )
@@ -7196,7 +7196,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                xmm1 += set( A(i,k) ) * B.load(k,j);
             }
 
-            (~C).store( i, j, (~C).load(i,j) - (xmm1+xmm2) * factor );
+            (*C).store( i, j, (*C).load(i,j) - (xmm1+xmm2) * factor );
          }
       }
 
@@ -7224,8 +7224,8 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                value2 += A(i+1UL,k) * B(k,j);
             }
 
-            (~C)(i    ,j) -= value1 * scalar;
-            (~C)(i+1UL,j) -= value2 * scalar;
+            (*C)(i    ,j) -= value1 * scalar;
+            (*C)(i+1UL,j) -= value2 * scalar;
          }
 
          if( i < iend )
@@ -7242,7 +7242,7 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
                value += A(i,k) * B(k,j);
             }
 
-            (~C)(i,j) -= value * scalar;
+            (*C)(i,j) -= value * scalar;
          }
       }
    }
@@ -7392,11 +7392,11 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    //**********************************************************************************************
 
@@ -7434,17 +7434,17 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LeftOperand_t<MMM>  left ( rhs.tensor_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.tensor_.rightOperand() );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL ) {
          return;
       }
       else if( left.columns() == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
          return;
       }
 
@@ -7455,10 +7455,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()  , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == right.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == right.columns() , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns(), "Invalid number of columns" );
 
-      smpAssign( ~lhs, A * B * rhs.scalar_ );
+      smpAssign( *lhs, A * B * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -7484,13 +7484,13 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LeftOperand_t<MMM>  left ( rhs.tensor_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.tensor_.rightOperand() );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || left.columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || left.columns() == 0UL ) {
          return;
       }
 
@@ -7501,10 +7501,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()  , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == right.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == right.columns() , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns(), "Invalid number of columns" );
 
-      smpAddAssign( ~lhs, A * B * rhs.scalar_ );
+      smpAddAssign( *lhs, A * B * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -7534,13 +7534,13 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       LeftOperand_t<MMM>  left ( rhs.tensor_.leftOperand()  );
       RightOperand_t<MMM> right( rhs.tensor_.rightOperand() );
 
-      if( (~lhs).rows() == 0UL || (~lhs).columns() == 0UL || left.columns() == 0UL ) {
+      if( (*lhs).rows() == 0UL || (*lhs).columns() == 0UL || left.columns() == 0UL ) {
          return;
       }
 
@@ -7551,10 +7551,10 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()  , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.rows()    == right.rows()    , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == right.columns() , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns(), "Invalid number of columns" );
 
-      smpSubAssign( ~lhs, A * B * rhs.scalar_ );
+      smpSubAssign( *lhs, A * B * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -7584,11 +7584,11 @@ class DTensScalarMultExpr< DTensDTensMultExpr<MT1,MT2>, ST >
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    //**********************************************************************************************
 
@@ -7661,12 +7661,12 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).columns() != (~rhs).rows() ) {
+   if( (*lhs).columns() != (*rhs).rows() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using ReturnType = const DTensDTensMultExpr<MT1,MT2>;
-   return ReturnType( ~lhs, ~rhs );
+   return ReturnType( *lhs, *rhs );
 }
 //*************************************************************************************************
 

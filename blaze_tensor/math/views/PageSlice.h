@@ -114,7 +114,7 @@ inline decltype(auto) pageslice( Tensor<MT>& tensor, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = PageSlice_<MT,I>;
-   return ReturnType( ~tensor, args... );
+   return ReturnType( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -161,7 +161,7 @@ inline decltype(auto) pageslice( const Tensor<MT>& tensor, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const PageSlice_<const MT,I>;
-   return ReturnType( ~tensor, args... );
+   return ReturnType( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -188,7 +188,7 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = PageSlice_<MT,I>;
-   return ReturnType( ~tensor, args... );
+   return ReturnType( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -234,7 +234,7 @@ inline decltype(auto) pageslice( Tensor<MT>& tensor, size_t index, RRAs... args 
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = PageSlice_<MT>;
-   return ReturnType( ~tensor, index, args... );
+   return ReturnType( *tensor, index, args... );
 }
 //*************************************************************************************************
 
@@ -280,7 +280,7 @@ inline decltype(auto) pageslice( const Tensor<MT>& tensor, size_t index, RRAs...
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const PageSlice_<const MT>;
-   return ReturnType( ~tensor, index, args... );
+   return ReturnType( *tensor, index, args... );
 }
 //*************************************************************************************************
 
@@ -307,7 +307,7 @@ inline decltype(auto) pageslice( Tensor<MT>&& tensor, size_t index, RRAs... args
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = PageSlice_<MT>;
-   return ReturnType( ~tensor, index, args... );
+   return ReturnType( *tensor, index, args... );
 }
 //*************************************************************************************************
 
@@ -339,8 +339,8 @@ inline decltype(auto) pageslice( const TensTensAddExpr<MT>& tensor, RRAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) +
-          pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+   return pageslice<CRAs...>( (*tensor).leftOperand(), args... ) +
+          pageslice<CRAs...>( (*tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -365,8 +365,8 @@ inline decltype(auto) pageslice( const TensTensSubExpr<MT>& tensor, RRAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) -
-          pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+   return pageslice<CRAs...>( (*tensor).leftOperand(), args... ) -
+          pageslice<CRAs...>( (*tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -390,8 +390,8 @@ inline decltype(auto) pageslice( const SchurExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) %
-          pageslice<CRAs...>( (~tensor).rightOperand(), args... );
+   return pageslice<CRAs...>( (*tensor).leftOperand(), args... ) %
+          pageslice<CRAs...>( (*tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -415,8 +415,8 @@ inline decltype(auto) pageslice( const TensMatSchurExpr<TT>& tensor, RRAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) %
-                              (~tensor).rightOperand();
+   return pageslice<CRAs...>( (*tensor).leftOperand(), args... ) %
+                              (*tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -441,7 +441,7 @@ inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
+   return pageslice<CRAs...>( (*tensor).leftOperand(), args... ) * (*tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -469,12 +469,12 @@ inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... arg
 //    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-//       if( (~tensor).pageslices() <= I ) {
+//       if( (*tensor).pageslices() <= I ) {
 //          BLAZE_THPAGESLICE_INVALID_ARGUMENT( "Invalid pageslice access index" );
 //       }
 //    }
 //
-//    return (~tensor).leftOperand()[I] * (~tensor).rightOperand();
+//    return (*tensor).leftOperand()[I] * (*tensor).rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -502,12 +502,12 @@ inline decltype(auto) pageslice( const TensTensMultExpr<MT>& tensor, RRAs... arg
 //    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-//       if( (~tensor).pageslices() <= index ) {
+//       if( (*tensor).pageslices() <= index ) {
 //          BLAZE_THPAGESLICE_INVALID_ARGUMENT( "Invalid pageslice access index" );
 //       }
 //    }
 //
-//    return (~tensor).leftOperand()[index] * (~tensor).rightOperand();
+//    return (*tensor).leftOperand()[index] * (*tensor).rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -532,7 +532,7 @@ inline decltype(auto) pageslice( const TensScalarMultExpr<MT>& tensor, RRAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
+   return pageslice<CRAs...>( (*tensor).leftOperand(), args... ) * (*tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -557,7 +557,7 @@ inline decltype(auto) pageslice( const TensScalarDivExpr<MT>& tensor, RRAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).leftOperand(), args... ) / (~tensor).rightOperand();
+   return pageslice<CRAs...>( (*tensor).leftOperand(), args... ) / (*tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -582,7 +582,7 @@ inline decltype(auto) pageslice( const TensMapExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( pageslice<CRAs...>( (~tensor).operand(), args... ), (~tensor).operation() );
+   return map( pageslice<CRAs...>( (*tensor).operand(), args... ), (*tensor).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -607,9 +607,9 @@ inline decltype(auto) pageslice( const TensTensMapExpr<MT>& tensor, RRAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( pageslice<CRAs...>( (~tensor).leftOperand(), args... ),
-               pageslice<CRAs...>( (~tensor).rightOperand(), args... ),
-               (~tensor).operation() );
+   return map( pageslice<CRAs...>( (*tensor).leftOperand(), args... ),
+               pageslice<CRAs...>( (*tensor).rightOperand(), args... ),
+               (*tensor).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -634,7 +634,7 @@ inline decltype(auto) pageslice( const TensEvalExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( pageslice<CRAs...>( (~tensor).operand(), args... ) );
+   return eval( pageslice<CRAs...>( (*tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -659,7 +659,7 @@ inline decltype(auto) pageslice( const TensSerialExpr<MT>& tensor, RRAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( pageslice<CRAs...>( (~tensor).operand(), args... ) );
+   return serial( pageslice<CRAs...>( (*tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -684,7 +684,7 @@ inline decltype(auto) pageslice( const DeclExpr<MT>& tensor, RRAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return pageslice<CRAs...>( (~tensor).operand(), args... );
+   return pageslice<CRAs...>( (*tensor).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -713,7 +713,7 @@ inline decltype(auto) pageslice( const MatExpandExpr<MT,CEAs...>& tensor, RSAs..
 
    MAYBE_UNUSED( args... );
 
-   return submatrix( (~tensor).operand(), 0UL, 0UL, (~tensor).rows(), (~tensor).columns() );
+   return submatrix( (*tensor).operand(), 0UL, 0UL, (*tensor).rows(), (*tensor).columns() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -746,7 +746,7 @@ inline decltype(auto) row( const TensVecMultExpr<MT>& matrix, REAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans(pageslice<CEAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand());
+   return trans(pageslice<CEAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand());
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1083,10 +1083,10 @@ template< typename MT     // Type of the tensor
 BLAZE_ALWAYS_INLINE bool
    tryMult( const PageSlice<MT,CRAs...>& pageslice, size_t row, size_t col, size_t rows, size_t cols, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~pageslice).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( row + rows <= (~pageslice).rows(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( col <= (~pageslice).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( col + cols <= (~pageslice).columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( row <= (*pageslice).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( row + rows <= (*pageslice).rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( col <= (*pageslice).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( col + cols <= (*pageslice).columns(), "Invalid columns range size" );
 
    return tryMult( pageslice.operand(), row, col, pageslice.page(), rows, cols, 1UL, value );
 }
@@ -1145,10 +1145,10 @@ template< typename MT     // Type of the tensor
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const PageSlice<MT,CRAs...>& pageslice, size_t row, size_t col, size_t rows, size_t cols, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( row <= (~pageslice).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( row + rows <= (~pageslice).rows(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( col <= (~pageslice).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( col + cols <= (~pageslice).columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( row <= (*pageslice).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( row + rows <= (*pageslice).rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( col <= (*pageslice).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( col + cols <= (*pageslice).columns(), "Invalid columns range size" );
 
    return tryDiv( pageslice.operand(), row, col, pageslice.page(), rows, cols, 1UL, value );
 }
@@ -1178,11 +1178,11 @@ inline bool tryAssign( const PageSlice<MT,CRAs...>& lhs,
                        const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryAssign( lhs.operand(), *rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1210,11 +1210,11 @@ inline bool tryAddAssign( const PageSlice<MT,CRAs...>& lhs,
                           const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryAddAssign( lhs.operand(), *rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1242,11 +1242,11 @@ inline bool trySubAssign( const PageSlice<MT,CRAs...>& lhs,
                           const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return trySubAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return trySubAssign( lhs.operand(), *rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1274,11 +1274,11 @@ inline bool tryMultAssign( const PageSlice<MT,CRAs...>& lhs,
                            const Vector<VT,true>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryMultAssign( lhs.operand(), *rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1306,11 +1306,11 @@ inline bool tryDivAssign( const PageSlice<MT,CRAs...>& lhs,
                           const Matrix<VT,false>& rhs, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, i, j, lhs.page() );
+   return tryDivAssign( lhs.operand(), *rhs, i, j, lhs.page() );
 }
 /*! \endcond */
 //*************************************************************************************************

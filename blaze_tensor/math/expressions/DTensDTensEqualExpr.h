@@ -113,12 +113,12 @@ inline EnableIf_t< !DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
    using CT2 = CompositeType_t<MT2>;
 
    // Early exit in case the tensor sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() || (~lhs).pages() != (~rhs).pages() )
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() || (*lhs).pages() != (*rhs).pages() )
       return false;
 
    // Evaluation of the two dense tensor operands
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
+   CT1 A( *lhs );
+   CT2 B( *rhs );
 
    // In order to compare the two matrices, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
@@ -161,12 +161,12 @@ inline EnableIf_t< DTensDTensEqualExprHelper<MT1,MT2>::value, bool >
    using XT2 = RemoveReference_t<CT2>;
 
    // Early exit in case the tensor sizes don't match
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() || (~lhs).pages() != (~rhs).pages() )
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() || (*lhs).pages() != (*rhs).pages() )
       return false;
 
    // Evaluation of the two dense tensor operands
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
+   CT1 A( *lhs );
+   CT2 B( *rhs );
 
    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
    constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );

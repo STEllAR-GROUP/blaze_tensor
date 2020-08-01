@@ -177,7 +177,7 @@ inline decltype(auto) subtensor( Tensor<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned,K,I,J,O,M,N>( ~tensor, args... );
+   return subtensor<unaligned,K,I,J,O,M,N>( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -247,7 +247,7 @@ inline decltype(auto) subtensor( const Tensor<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned,K,I,J,O,M,N>( ~tensor, args... );
+   return subtensor<unaligned,K,I,J,O,M,N>( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -279,7 +279,7 @@ inline decltype(auto) subtensor( Tensor<TT>&& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned,K,I,J,O,M,N>( ~tensor, args... );
+   return subtensor<unaligned,K,I,J,O,M,N>( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -364,7 +364,7 @@ inline decltype(auto) subtensor( Tensor<TT>& tensor, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subtensor_<TT,AF,K,I,J,O,M,N>;
-   return ReturnType( ~tensor, args... );
+   return ReturnType( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -447,7 +447,7 @@ inline decltype(auto) subtensor( const Tensor<TT>& tensor, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Subtensor_<const TT,AF,K,I,J,O,M,N>;
-   return ReturnType( ~tensor, args... );
+   return ReturnType( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -482,7 +482,7 @@ inline decltype(auto) subtensor( Tensor<TT>&& tensor, RSAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subtensor_<TT,AF,K,I,J,O,M,N>;
-   return ReturnType( ~tensor, args... );
+   return ReturnType( *tensor, args... );
 }
 //*************************************************************************************************
 
@@ -552,7 +552,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned>( ~tensor, page, row, column, o, m, n, args... );
+   return subtensor<unaligned>( *tensor, page, row, column, o, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -621,7 +621,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned>( ~tensor, page, row, column, o, m, n, args... );
+   return subtensor<unaligned>( *tensor, page, row, column, o, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -652,7 +652,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<unaligned>( ~tensor, page, row, column, o, m, n, args... );
+   return subtensor<unaligned>( *tensor, page, row, column, o, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -736,7 +736,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subtensor_<TT,AF>;
-   return ReturnType( ~tensor, page, row, column, o, m, n, args... );
+   return ReturnType( *tensor, page, row, column, o, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -818,7 +818,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const Subtensor_<const TT,AF>;
-   return ReturnType( ~tensor, page, row, column, o, m, n, args... );
+   return ReturnType( *tensor, page, row, column, o, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -852,7 +852,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = Subtensor_<TT,AF>;
-   return ReturnType( ~tensor, page, row, column, o, m, n, args... );
+   return ReturnType( *tensor, page, row, column, o, m, n, args... );
 }
 //*************************************************************************************************
 
@@ -885,8 +885,8 @@ inline decltype(auto) subtensor( const TensTensAddExpr<TT>& tensor, RSAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<AF,CSAs...>( (~tensor).leftOperand(), args... ) +
-          subtensor<AF,CSAs...>( (~tensor).rightOperand(), args... );
+   return subtensor<AF,CSAs...>( (*tensor).leftOperand(), args... ) +
+          subtensor<AF,CSAs...>( (*tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -912,8 +912,8 @@ inline decltype(auto) subtensor( const TensTensSubExpr<TT>& tensor, RSAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<AF,CSAs...>( (~tensor).leftOperand(), args... ) -
-          subtensor<AF,CSAs...>( (~tensor).rightOperand(), args... );
+   return subtensor<AF,CSAs...>( (*tensor).leftOperand(), args... ) -
+          subtensor<AF,CSAs...>( (*tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -939,8 +939,8 @@ inline decltype(auto) subtensor( const SchurExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<AF,CSAs...>( (~tensor).leftOperand(), args... ) %
-          subtensor<AF,CSAs...>( (~tensor).rightOperand(), args... );
+   return subtensor<AF,CSAs...>( (*tensor).leftOperand(), args... ) %
+          subtensor<AF,CSAs...>( (*tensor).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -968,8 +968,8 @@ inline decltype(auto) subtensor( const TensMatSchurExpr<TT>& tensor, RSAs... arg
 
    const SubtensorData<CSAs...> st( args... );
 
-   decltype(auto) left( (~tensor).leftOperand()  );
-   decltype(auto) right((~tensor).rightOperand() );
+   decltype(auto) left( (*tensor).leftOperand()  );
+   decltype(auto) right((*tensor).rightOperand() );
 
    return subtensor<AF>( left, st.page(), st.row(), st.column(), st.pages(), st.rows(), st.columns()) %
           submatrix<AF>( right, st.row(), st.column(), st.rows(), st.columns() );
@@ -1003,8 +1003,8 @@ inline decltype(auto) subtensor( const TensMatSchurExpr<TT>& tensor, RSAs... arg
 //
 //    const SubtensorData<CSAs...> sd( args... );
 //
-//    BLAZE_DECLTYPE_AUTO( left , (~tensor).leftOperand()  );
-//    BLAZE_DECLTYPE_AUTO( right, (~tensor).rightOperand() );
+//    BLAZE_DECLTYPE_AUTO( left , (*tensor).leftOperand()  );
+//    BLAZE_DECLTYPE_AUTO( right, (*tensor).rightOperand() );
 //
 //    const size_t begin( 0UL );
 //    const size_t end( left.columns() );
@@ -1040,8 +1040,8 @@ inline decltype(auto) subtensor( const TensMatSchurExpr<TT>& tensor, RSAs... arg
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    return subvector<AF,I,M>( (~tensor).leftOperand(), args... ) *
-//           subvector<AF,J,N>( (~tensor).rightOperand(), args... );
+//    return subvector<AF,I,M>( (*tensor).leftOperand(), args... ) *
+//           subvector<AF,J,N>( (*tensor).rightOperand(), args... );
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1070,8 +1070,8 @@ inline decltype(auto) subtensor( const TensMatSchurExpr<TT>& tensor, RSAs... arg
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    return subvector<AF>( (~tensor).leftOperand(), row, m, args... ) *
-//           subvector<AF>( (~tensor).rightOperand(), column, n, args... );
+//    return subvector<AF>( (*tensor).leftOperand(), row, m, args... ) *
+//           subvector<AF>( (*tensor).rightOperand(), column, n, args... );
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1097,7 +1097,7 @@ inline decltype(auto) subtensor( const TensScalarMultExpr<TT>& tensor, RSAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<AF,CSAs...>( (~tensor).leftOperand(), args... ) * (~tensor).rightOperand();
+   return subtensor<AF,CSAs...>( (*tensor).leftOperand(), args... ) * (*tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1123,7 +1123,7 @@ inline decltype(auto) subtensor( const TensScalarDivExpr<TT>& tensor, RSAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<AF,CSAs...>( (~tensor).leftOperand(), args... ) / (~tensor).rightOperand();
+   return subtensor<AF,CSAs...>( (*tensor).leftOperand(), args... ) / (*tensor).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1149,7 +1149,7 @@ inline decltype(auto) subtensor( const TensMapExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( subtensor<AF,CSAs...>( (~tensor).operand(), args... ), (~tensor).operation() );
+   return map( subtensor<AF,CSAs...>( (*tensor).operand(), args... ), (*tensor).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1175,9 +1175,9 @@ inline decltype(auto) subtensor( const TensTensMapExpr<TT>& tensor, RSAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( subtensor<AF,CSAs...>( (~tensor).leftOperand(), args... ),
-               subtensor<AF,CSAs...>( (~tensor).rightOperand(), args... ),
-               (~tensor).operation() );
+   return map( subtensor<AF,CSAs...>( (*tensor).leftOperand(), args... ),
+               subtensor<AF,CSAs...>( (*tensor).rightOperand(), args... ),
+               (*tensor).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1203,7 +1203,7 @@ inline decltype(auto) subtensor( const TensEvalExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( subtensor<AF,CSAs...>( (~tensor).operand(), args... ) );
+   return eval( subtensor<AF,CSAs...>( (*tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1229,7 +1229,7 @@ inline decltype(auto) subtensor( const MatSerialExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( subtensor<AF,CSAs...>( (~tensor).operand(), args... ) );
+   return serial( subtensor<AF,CSAs...>( (*tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1255,7 +1255,7 @@ inline decltype(auto) subtensor( const DeclExpr<TT>& tensor, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subtensor<AF,CSAs...>( (~tensor).operand(), args... );
+   return subtensor<AF,CSAs...>( (*tensor).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1286,7 +1286,7 @@ inline decltype(auto) subtensor( const DeclExpr<TT>& tensor, RSAs... args )
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    return trans( subtensor<AF,K,I,J,O,M,N>( (~tensor).operand(), args... ), (~tensor).idces() );
+//    return trans( subtensor<AF,K,I,J,O,M,N>( (*tensor).operand(), args... ), (*tensor).idces() );
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1316,7 +1316,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( subtensor<AF>( (~tensor).operand(), page, column, row, n, m, o, args... ), (~tensor).idces() );
+   return trans( subtensor<AF>( (*tensor).operand(), page, column, row, n, m, o, args... ), (*tensor).idces() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1754,8 +1754,8 @@ inline decltype(auto) submatrix( const TensVecMultExpr<MT>& matrix, RSAs... args
 
    const SubmatrixData<CSAs...> sm( args... );
 
-   decltype(auto) left( (~matrix).leftOperand() );
-   decltype(auto) right( (~matrix).rightOperand() );
+   decltype(auto) left( (*matrix).leftOperand() );
+   decltype(auto) right( (*matrix).rightOperand() );
 
    const size_t column( 0UL );
    const size_t n( left.columns() );
@@ -1790,8 +1790,8 @@ inline decltype(auto) submatrix( const TensVecMultExpr<MT>& matrix, RSAs... args
 //
 //    const SubvectorData<CSAs...> sd( args... );
 //
-//    BLAZE_DECLTYPE_AUTO( left , (~vector).leftOperand()  );
-//    BLAZE_DECLTYPE_AUTO( right, (~vector).rightOperand() );
+//    BLAZE_DECLTYPE_AUTO( left , (*vector).leftOperand()  );
+//    BLAZE_DECLTYPE_AUTO( right, (*vector).rightOperand() );
 //
 //    const size_t row( ( IsLower_v<TT> )
 //                      ?( ( !AF && IsStrictlyLower_v<TT> )?( sd.offset() + 1UL ):( sd.offset() ) )
@@ -1831,10 +1831,10 @@ inline decltype(auto) submatrix( const TensReduceExpr<MT,columnwise>& matrix, RS
    BLAZE_FUNCTION_TRACE;
 
    const SubmatrixData<CSAs...> sm( args... );
-   const size_t O( (~matrix).operand().rows() );
+   const size_t O( (*matrix).operand().rows() );
 
-   decltype(auto) st( subtensor<AF>( (~matrix).operand(), 0UL, sm.row(), sm.column(), O, sm.rows(), sm.columns() ) );
-   return reduce<columnwise>( st, (~matrix).operation() );
+   decltype(auto) st( subtensor<AF>( (*matrix).operand(), 0UL, sm.row(), sm.column(), O, sm.rows(), sm.columns() ) );
+   return reduce<columnwise>( st, (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1861,10 +1861,10 @@ inline decltype(auto) submatrix( const TensReduceExpr<MT,rowwise>& matrix, RSAs.
    BLAZE_FUNCTION_TRACE;
 
    const SubmatrixData<CSAs...> sm( args... );
-   const size_t N( (~matrix).operand().rows() );
+   const size_t N( (*matrix).operand().rows() );
 
-   decltype(auto) st( subtensor<AF>( (~matrix).operand(), sm.row(), sm.column(), 0UL, sm.rows(), sm.columns(), N ) );
-   return reduce<rowwise>( st, (~matrix).operation() );
+   decltype(auto) st( subtensor<AF>( (*matrix).operand(), sm.row(), sm.column(), 0UL, sm.rows(), sm.columns(), N ) );
+   return reduce<rowwise>( st, (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1891,10 +1891,10 @@ inline decltype(auto) submatrix( const TensReduceExpr<MT,pagewise>& matrix, RSAs
    BLAZE_FUNCTION_TRACE;
 
    const SubmatrixData<CSAs...> sm( args... );
-   const size_t M( (~matrix).operand().rows() );
+   const size_t M( (*matrix).operand().rows() );
 
-   decltype(auto) st( subtensor<AF>( (~matrix).operand(), sm.row(), 0UL, sm.column(), sm.rows(), M, sm.columns() ) );
-   return reduce<pagewise>( st, (~matrix).operation() );
+   decltype(auto) st( subtensor<AF>( (*matrix).operand(), sm.row(), 0UL, sm.column(), sm.rows(), M, sm.columns() ) );
+   return reduce<pagewise>( st, (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4136,7 +4136,7 @@ inline decltype(auto) subtensor( const MatExpandExpr<TT,CEAs...>& tensor, RSAs..
 {
    BLAZE_FUNCTION_TRACE;
 
-   return expand<O>( submatrix<AF,I,J,M,N>( (~tensor).operand(), args... ) );
+   return expand<O>( submatrix<AF,I,J,M,N>( (*tensor).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4170,7 +4170,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return expand( submatrix( (~tensor).operand(), row, column, m, n, args... ), o );
+   return expand( submatrix( (*tensor).operand(), row, column, m, n, args... ), o );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4323,10 +4323,10 @@ inline bool isDefault( const Subtensor<TT,AF,CSAs...>& sm )
 {
    using blaze::isDefault;
 
-   for( size_t k=0UL; k<(~sm).pages(); ++k )
-      for( size_t i=0UL; i<(~sm).rows(); ++i )
-         for( size_t j=0UL; j<(~sm).columns(); ++j )
-            if( !isDefault<RF>( (~sm)(k,i,j) ) )
+   for( size_t k=0UL; k<(*sm).pages(); ++k )
+      for( size_t i=0UL; i<(*sm).rows(); ++i )
+         for( size_t j=0UL; j<(*sm).columns(); ++j )
+            if( !isDefault<RF>( (*sm)(k,i,j) ) )
                return false;
 
    return true;
@@ -4716,10 +4716,10 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline bool isSame( const Subtensor<TT,AF,CSAs...>& a, const Tensor<TT>& b ) noexcept
 {
-   return ( isSame( a.operand(), ~b ) &&
-            ( a.rows() == (~b).rows() ) &&
-            ( a.columns() == (~b).columns() ) &&
-            ( a.pages() == (~b).pages() ) );
+   return ( isSame( a.operand(), *b ) &&
+            ( a.rows() == (*b).rows() ) &&
+            ( a.columns() == (*b).columns() ) &&
+            ( a.pages() == (*b).pages() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4743,10 +4743,10 @@ template< typename TT       // Type of the tensor
         , size_t... CSAs >  // Compile time subtensor arguments
 inline bool isSame( const Tensor<TT>& a, const Subtensor<TT,AF,CSAs...>& b ) noexcept
 {
-   return ( isSame( ~a, b.operand() ) &&
-            ( (~a).rows() == b.rows() ) &&
-            ( (~a).columns() == b.columns() ) &&
-            ( (~a).pages() == b.pages() ) );
+   return ( isSame( *a, b.operand() ) &&
+            ( (*a).rows() == b.rows() ) &&
+            ( (*a).columns() == b.columns() ) &&
+            ( (*a).pages() == b.pages() ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4997,12 +4997,12 @@ BLAZE_ALWAYS_INLINE bool
 {
    MAYBE_UNUSED( column );
 
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( page <= (~sm).pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( page + o <= (~sm).pages(), "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (*sm).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + o <= (*sm).pages(), "Invalid number of pages" );
 
    return tryMult( sm.operand(), sm.row()+row, sm.column(), sm.page(), m, n, o, value );
 }
@@ -5069,12 +5069,12 @@ BLAZE_ALWAYS_INLINE bool
 {
    MAYBE_UNUSED( column );
 
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( page <= (~sm).pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( page + o <= (~sm).pages(), "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( page <= (*sm).pages(), "Invalid page access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + o <= (*sm).pages(), "Invalid number of pages" );
 
    return tryDiv( sm.operand(), sm.row()+row, sm.column(), sm.page(), m, n, o, value );
 }
@@ -5108,10 +5108,10 @@ inline bool tryAssign( const Subtensor<TT,AF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
+   return tryAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5144,10 +5144,10 @@ inline bool tryAssign( const Subtensor<TT,AF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                      lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
@@ -5180,11 +5180,11 @@ inline bool tryAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= lhs.pages(), "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + (*rhs).pages() <= lhs.pages(), "Invalid number of pages" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
+   return tryAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5216,10 +5216,10 @@ inline bool tryAddAssign( const Subtensor<TT,AF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5253,10 +5253,10 @@ inline bool tryAddAssign( const Subtensor<TT,AF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryAddAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                         lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
@@ -5289,11 +5289,11 @@ inline bool tryAddAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
    BLAZE_INTERNAL_ASSERT( page <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( page + (~rhs).pages() <= lhs.pages(), "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( page + (*rhs).pages() <= lhs.pages(), "Invalid number of pages" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5326,10 +5326,10 @@ inline bool trySubAssign( const Subtensor<TT,AF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return trySubAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5365,10 +5365,10 @@ inline bool trySubAssign( const Subtensor<TT,AF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return trySubAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                         lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -5401,10 +5401,10 @@ inline bool trySubAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return trySubAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5436,10 +5436,10 @@ inline bool tryMultAssign( const Subtensor<TT,AF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return tryMultAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5473,10 +5473,10 @@ inline bool tryMultAssign( const Subtensor<TT,AF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryMultAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                          lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
@@ -5508,10 +5508,10 @@ inline bool trySchurAssign( const Subtensor<TT1,AF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySchurAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column );
+   return trySchurAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5542,10 +5542,10 @@ inline bool tryDivAssign( const Subtensor<TT,AF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
+   return tryDivAssign( lhs.operand(), *rhs, lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5578,10 +5578,10 @@ inline bool tryDivAssign( const Subtensor<TT,AF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryDivAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                         lhs.row() + row, lhs.column() + column, lhs.page() + page );
 }
 /*! \endcond */

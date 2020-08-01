@@ -607,12 +607,12 @@ class DTensScalarMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
-      assign( ~lhs, rhs.tensor_ );
-      assign( ~lhs, (~lhs) * rhs.scalar_ );
+      assign( *lhs, rhs.tensor_ );
+      assign( *lhs, (*lhs) * rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -640,12 +640,12 @@ class DTensScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -673,12 +673,12 @@ class DTensScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -706,12 +706,12 @@ class DTensScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -736,12 +736,12 @@ class DTensScalarMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
-      smpAssign( ~lhs, rhs.tensor_ );
-      smpAssign( ~lhs, (~lhs) * rhs.scalar_ );
+      smpAssign( *lhs, rhs.tensor_ );
+      smpAssign( *lhs, (*lhs) * rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -769,12 +769,12 @@ class DTensScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      smpAddAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -802,12 +802,12 @@ class DTensScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      smpSubAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -835,12 +835,12 @@ class DTensScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages() == rhs.pages(),     "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages() == rhs.pages(),     "Invalid number of pages" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -888,7 +888,7 @@ inline decltype(auto) operator-( const DenseTensor<MT>& dm )
 
    using ScalarType = UnderlyingBuiltin_t<MT>;
    using ReturnType = const DTensScalarMultExpr<MT,ScalarType>;
-   return ReturnType( ~dm, ScalarType(-1) );
+   return ReturnType( *dm, ScalarType(-1) );
 }
 //*************************************************************************************************
 
@@ -931,7 +931,7 @@ inline decltype(auto) operator*( const DenseTensor<MT>& mat, ST scalar )
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const DTensScalarMultExpr<MT,ScalarType>;
-   return ReturnType( ~mat, scalar );
+   return ReturnType( *mat, scalar );
 }
 //*************************************************************************************************
 
@@ -966,7 +966,7 @@ inline decltype(auto) operator*( ST scalar, const DenseTensor<MT>& mat )
 
    using ScalarType = MultTrait_t< ST, UnderlyingBuiltin_t<MT> >;
    using ReturnType = const DTensScalarMultExpr<MT,ScalarType>;
-   return ReturnType( ~mat, scalar );
+   return ReturnType( *mat, scalar );
 }
 //*************************************************************************************************
 
@@ -1115,7 +1115,7 @@ inline decltype(auto) operator/( const DTensScalarMultExpr<MT,ST1>& mat, ST2 sca
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    return ( mat.leftOperand() * (~vec) ) * mat.rightOperand();
+//    return ( mat.leftOperand() * (*vec) ) * mat.rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1143,7 +1143,7 @@ inline decltype(auto) operator/( const DTensScalarMultExpr<MT,ST1>& mat, ST2 sca
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    return ( (~vec) * mat.leftOperand() ) * mat.rightOperand();
+//    return ( (*vec) * mat.leftOperand() ) * mat.rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1233,7 +1233,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
+   return ( lhs.leftOperand() * (*rhs) ) * lhs.rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1261,7 +1261,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
+   return ( (*lhs) * rhs.leftOperand() ) * rhs.rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -2477,7 +2477,7 @@ void ClassTest::testTranspose()
                 << "   Result:\n" << mat << "\n"
                 << "   Expected result:\n"
                         "(( 1 0 2 0 3 )\n( 1 0 2 0 3 )\n"
-                        " ( 0 4 0 5 0 )\n( 0 4 0 5 0 )\n";
+                        " ( 0 4 0 5 0 )\n( 0 4 0 5 0 )\n"
                         " ( 6 0 7 0 8 )\n( 6 0 7 0 8 ))\n";
             throw std::runtime_error( oss.str() );
          }

@@ -181,7 +181,7 @@ inline decltype(auto) dilatedsubmatrix( Matrix<MT,SO>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( ~matrix, args... );
+   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -252,7 +252,7 @@ inline decltype(auto) dilatedsubmatrix( const Matrix<MT,SO>& matrix, RSAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( ~matrix, args... );
+   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -285,7 +285,7 @@ inline decltype(auto) dilatedsubmatrix( Matrix<MT,SO>&& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( ~matrix, args... );
+   return dilatedsubmatrix<I,J,M,N,RowDilation,ColumnDilation>( *matrix, args... );
 }
 //*************************************************************************************************
 
@@ -400,7 +400,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DilatedSubmatrix_<MT>;
-   return ReturnType( ~matrix, row, column, m, n, rowdilation, columndilation, args... );
+   return ReturnType( *matrix, row, column, m, n, rowdilation, columndilation, args... );
 }
 //*************************************************************************************************
 
@@ -472,7 +472,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DilatedSubmatrix_<const MT>;
-   return ReturnType( ~matrix, row, column, m, n, rowdilation, columndilation, args... );
+   return ReturnType( *matrix, row, column, m, n, rowdilation, columndilation, args... );
 }
 //*************************************************************************************************
 
@@ -506,7 +506,7 @@ inline decltype(auto)
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DilatedSubmatrix_<MT>;
-   return ReturnType( ~matrix, row, column, m, n, rowdilation, columndilation, args... );
+   return ReturnType( *matrix, row, column, m, n, rowdilation, columndilation, args... );
 }
 
 //=================================================================================================
@@ -534,8 +534,8 @@ inline decltype(auto) dilatedsubmatrix( const MatMatAddExpr<MT>& matrix, RSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubmatrix<CSAs...>( (~matrix).leftOperand(), args... ) +
-          dilatedsubmatrix<CSAs...>( (~matrix).rightOperand(), args... );
+   return dilatedsubmatrix<CSAs...>( (*matrix).leftOperand(), args... ) +
+          dilatedsubmatrix<CSAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -560,8 +560,8 @@ inline decltype(auto) dilatedsubmatrix( const MatMatSubExpr<MT>& matrix, RSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubmatrix<CSAs...>( (~matrix).leftOperand(), args... ) -
-          dilatedsubmatrix<CSAs...>( (~matrix).rightOperand(), args... );
+   return dilatedsubmatrix<CSAs...>( (*matrix).leftOperand(), args... ) -
+          dilatedsubmatrix<CSAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -586,8 +586,8 @@ inline decltype(auto) dilatedsubmatrix( const SchurExpr<MT>& matrix, RSAs... arg
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubmatrix<CSAs...>( (~matrix).leftOperand(), args... ) %
-          dilatedsubmatrix<CSAs...>( (~matrix).rightOperand(), args... );
+   return dilatedsubmatrix<CSAs...>( (*matrix).leftOperand(), args... ) %
+          dilatedsubmatrix<CSAs...>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -617,8 +617,8 @@ inline decltype(auto) dilatedsubmatrix( const MatMatMultExpr<MT>& matrix, RSAs..
 
    const DilatedSubmatrixData<CSAs...> sd( args... );
 
-   decltype(auto) left( (~matrix).leftOperand()  );
-   decltype(auto) right( (~matrix).rightOperand() );
+   decltype(auto) left( (*matrix).leftOperand()  );
+   decltype(auto) right( (*matrix).rightOperand() );
 
    const size_t begin( max( ( IsUpper_v<MT1> )
                             ?( ( !IsStrictlyUpper_v<MT1> )
@@ -673,8 +673,8 @@ inline decltype(auto) dilatedsubmatrix( const VecTVecMultExpr<MT>& matrix, RSAs.
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubvector<I,M,RowDilation>( (~matrix).leftOperand(), args... ) *
-          dilatedsubvector<J,N,ColumnDilation>( (~matrix).rightOperand(), args... );
+   return dilatedsubvector<I,M,RowDilation>( (*matrix).leftOperand(), args... ) *
+          dilatedsubvector<J,N,ColumnDilation>( (*matrix).rightOperand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -703,8 +703,8 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return diltedsubvector( (~matrix).leftOperand(), row, m, rowdilation, args... ) *
-          diltedsubvector( (~matrix).rightOperand(), column, n, columndilation, args... );
+   return diltedsubvector( (*matrix).leftOperand(), row, m, rowdilation, args... ) *
+          diltedsubvector( (*matrix).rightOperand(), column, n, columndilation, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -729,7 +729,7 @@ inline decltype(auto) dilatedsubmatrix( const MatScalarMultExpr<MT>& matrix, RSA
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubmatrix<CSAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand();
+   return dilatedsubmatrix<CSAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -754,7 +754,7 @@ inline decltype(auto) dilatedsubmatrix( const MatScalarDivExpr<MT>& matrix, RSAs
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubmatrix<CSAs...>( (~matrix).leftOperand(), args... ) / (~matrix).rightOperand();
+   return dilatedsubmatrix<CSAs...>( (*matrix).leftOperand(), args... ) / (*matrix).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -779,7 +779,7 @@ inline decltype(auto) dilatedsubmatrix( const MatMapExpr<MT>& matrix, RSAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( dilatedsubmatrix<CSAs...>( (~matrix).operand(), args... ), (~matrix).operation() );
+   return map( dilatedsubmatrix<CSAs...>( (*matrix).operand(), args... ), (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -804,9 +804,9 @@ inline decltype(auto) dilatedsubmatrix( const MatMatMapExpr<MT>& matrix, RSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( dilatedsubmatrix<CSAs...>( (~matrix).leftOperand(), args... ),
-               dilatedsubmatrix<CSAs...>( (~matrix).rightOperand(), args... ),
-               (~matrix).operation() );
+   return map( dilatedsubmatrix<CSAs...>( (*matrix).leftOperand(), args... ),
+               dilatedsubmatrix<CSAs...>( (*matrix).rightOperand(), args... ),
+               (*matrix).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -831,7 +831,7 @@ inline decltype(auto) dilatedsubmatrix( const MatEvalExpr<MT>& matrix, RSAs... a
 {
    BLAZE_FUNCTION_TRACE;
 
-   return eval( dilatedsubmatrix<CSAs...>( (~matrix).operand(), args... ) );
+   return eval( dilatedsubmatrix<CSAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -856,7 +856,7 @@ inline decltype(auto) dilatedsubmatrix( const MatSerialExpr<MT>& matrix, RSAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return serial( dilatedsubmatrix<CSAs...>( (~matrix).operand(), args... ) );
+   return serial( dilatedsubmatrix<CSAs...>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -881,7 +881,7 @@ inline decltype(auto) dilatedsubmatrix( const DeclExpr<MT>& matrix, RSAs... args
 {
    BLAZE_FUNCTION_TRACE;
 
-   return dilatedsubmatrix<CSAs...>( (~matrix).operand(), args... );
+   return dilatedsubmatrix<CSAs...>( (*matrix).operand(), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -911,7 +911,7 @@ inline decltype(auto) dilatedsubmatrix( const MatTransExpr<MT>& matrix, RSAs... 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( dilatedsubmatrix<J,I,N,M,ColumnDilation,RowDilation>( (~matrix).operand(), args... ) );
+   return trans( dilatedsubmatrix<J,I,N,M,ColumnDilation,RowDilation>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -941,7 +941,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( dilatedsubmatrix( (~matrix).operand(), column, row, n, m, columndilation, rowdilation, args... ) );
+   return trans( dilatedsubmatrix( (*matrix).operand(), column, row, n, m, columndilation, rowdilation, args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -972,7 +972,7 @@ inline decltype(auto) dilatedsubmatrix( const VecExpandExpr<MT,CEAs...>& matrix,
 {
    BLAZE_FUNCTION_TRACE;
 
-   using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
+   using VT = VectorType_t< RemoveReference_t< decltype( (*matrix).operand() ) > >;
 
    constexpr bool TF( TransposeFlag_v<VT> );
 
@@ -981,7 +981,7 @@ inline decltype(auto) dilatedsubmatrix( const VecExpandExpr<MT,CEAs...>& matrix,
    constexpr size_t expansion( TF ? M : N );
    constexpr size_t dilation ( TF ? ColumnDilation : RowDilation );
 
-   return expand<expansion>( dilatedsubvector<index,size,dilation>( (~matrix).operand(), args... ) );
+   return expand<expansion>( dilatedsubvector<index,size,dilation>( (*matrix).operand(), args... ) );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1012,7 +1012,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   using VT = VectorType_t< RemoveReference_t< decltype( (~matrix).operand() ) > >;
+   using VT = VectorType_t< RemoveReference_t< decltype( (*matrix).operand() ) > >;
 
    constexpr bool TF( TransposeFlag_v<VT> );
 
@@ -1021,7 +1021,7 @@ inline decltype(auto)
    const size_t expansion( TF ? m : n );
    const size_t dilation ( TF ? columndilation : rowdilation );
 
-   return expand( dilatedsubvector( (~matrix).operand(), index, size, dilation, args... ), expansion );
+   return expand( dilatedsubvector( (*matrix).operand(), index, size, dilation, args... ), expansion );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1751,8 +1751,8 @@ inline decltype(auto) dilatedsubvector( const MatVecMultExpr<VT>& vector, RSAs..
 
    const DilatedSubvectorData<CSAs...> sd( args... );
 
-   decltype(auto) left( (~vector).leftOperand()  );
-   decltype(auto) right((~vector).rightOperand() );
+   decltype(auto) left( (*vector).leftOperand()  );
+   decltype(auto) right((*vector).rightOperand() );
 
    const size_t column( ( IsUpper_v<MT> )
                         ?( ( !IsStrictlyUpper_v<MT> )?( sd.offset() + 1UL ):( sd.offset() ) )
@@ -1795,8 +1795,8 @@ inline decltype(auto) dilatedsubvector( const TVecMatMultExpr<VT>& vector, RSAs.
 
    const DilatedSubvectorData<CSAs...> sd( args... );
 
-   decltype(auto) left( (~vector).leftOperand()  );
-   decltype(auto) right((~vector).rightOperand() );
+   decltype(auto) left( (*vector).leftOperand()  );
+   decltype(auto) right((*vector).rightOperand() );
 
    const size_t row( ( IsLower_v<MT> )
                      ?( ( !IsStrictlyLower_v<MT> )?( sd.offset() + 1UL ):( sd.offset() ) )
@@ -1835,10 +1835,10 @@ inline decltype(auto) dilatedsubvector( const MatReduceExpr<VT,columnwise>& vect
    BLAZE_FUNCTION_TRACE;
 
    const DilatedSubvectorData<CSAs...> sd( args... );
-   const size_t M( (~vector).operand().rows() );
+   const size_t M( (*vector).operand().rows() );
 
-   decltype(auto) sm( dilatedsubmatrix( (~vector).operand(), 0UL, sd.offset(), M, sd.size(), 1UL, sd.dilation() ) );
-   return reduce<columnwise>( sm, (~vector).operation() );
+   decltype(auto) sm( dilatedsubmatrix( (*vector).operand(), 0UL, sd.offset(), M, sd.size(), 1UL, sd.dilation() ) );
+   return reduce<columnwise>( sm, (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1864,10 +1864,10 @@ inline decltype(auto) dilatedsubvector( const MatReduceExpr<VT,rowwise>& vector,
    BLAZE_FUNCTION_TRACE;
 
    const DilatedSubvectorData<CSAs...> sd( args... );
-   const size_t N( (~vector).operand().columns() );
+   const size_t N( (*vector).operand().columns() );
 
-   decltype(auto) sm( dilatedsubmatrix( (~vector).operand(), sd.offset(), 0UL, sd.size(), N, sd.dilation(), 1UL ) );
-   return reduce<rowwise>( sm, (~vector).operation() );
+   decltype(auto) sm( dilatedsubmatrix( (*vector).operand(), sd.offset(), 0UL, sd.size(), N, sd.dilation(), 1UL ) );
+   return reduce<rowwise>( sm, (*vector).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -3790,15 +3790,15 @@ inline bool isDefault( const DilatedSubmatrix<MT,SO,true,CSAs...>& sm )
    using blaze::isDefault;
 
    if( SO == rowMajor ) {
-      for( size_t i=0UL; i<(~sm).rows(); ++i )
-         for( size_t j=0UL; j<(~sm).columns(); ++j )
-            if( !isDefault<RF>( (~sm)(i,j) ) )
+      for( size_t i=0UL; i<(*sm).rows(); ++i )
+         for( size_t j=0UL; j<(*sm).columns(); ++j )
+            if( !isDefault<RF>( (*sm)(i,j) ) )
                return false;
    }
    else {
-      for( size_t j=0UL; j<(~sm).columns(); ++j )
-         for( size_t i=0UL; i<(~sm).rows(); ++i )
-            if( !isDefault<RF>( (~sm)(i,j) ) )
+      for( size_t j=0UL; j<(*sm).columns(); ++j )
+         for( size_t i=0UL; i<(*sm).rows(); ++i )
+            if( !isDefault<RF>( (*sm)(i,j) ) )
                return false;
    }
 
@@ -4267,8 +4267,8 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time DilatedSubmatrix arguments
 inline bool isSame( const DilatedSubmatrix<MT,SO,DF,CSAs...>& a, const Matrix<MT,SO>& b ) noexcept
 {
-   return ( isSame( a.operand(), ~b ) && ( a.rows() == ( ~b ).rows() ) &&
-      ( a.columns() == ( ~b ).columns() ) && ( a.rowdilation() == 1UL ) &&
+   return ( isSame( a.operand(), *b ) && ( a.rows() == ( *b ).rows() ) &&
+      ( a.columns() == ( *b ).columns() ) && ( a.rowdilation() == 1UL ) &&
       ( a.columndilation() == 1UL ) );
 }
 /*! \endcond */
@@ -4294,8 +4294,8 @@ template< typename MT       // Type of the matrix
         , size_t... CSAs >  // Compile time DilatedSubmatrix arguments
 inline bool isSame( const Matrix<MT,SO>& a, const DilatedSubmatrix<MT,SO,DF,CSAs...>& b ) noexcept
 {
-   return ( isSame( ~a, b.operand() ) && ( ( ~a ).rows() == b.rows() ) &&
-      ( ( ~a ).columns() == b.columns() ) && ( b.rowdilation() == 1UL ) &&
+   return ( isSame( *a, b.operand() ) && ( ( *a ).rows() == b.rows() ) &&
+      ( ( *a ).columns() == b.columns() ) && ( b.rowdilation() == 1UL ) &&
       ( b.columndilation() == 1UL ) );
 }
 /*! \endcond */
@@ -4550,10 +4550,10 @@ BLAZE_ALWAYS_INLINE bool
 {
    MAYBE_UNUSED( column );
 
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return tryMult( sm.operand(), sm.row()+row*sm.rowdilation(), sm.column(), m*sm.rowdilation(), n, value );
 }
@@ -4621,10 +4621,10 @@ BLAZE_ALWAYS_INLINE bool
 {
    MAYBE_UNUSED( column );
 
-   BLAZE_INTERNAL_ASSERT( row <= (~sm).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( column <= (~sm).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + m <= (~sm).rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + n <= (~sm).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row <= (*sm).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( column <= (*sm).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( row + m <= (*sm).rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + n <= (*sm).columns(), "Invalid number of columns" );
 
    return tryDiv( sm.operand(), sm.row()+row*sm.rowdilation(), sm.column(), m*sm.rowdilation(), n, value );
 }
@@ -4659,10 +4659,10 @@ inline bool tryAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryAssign( lhs.operand(), *rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4696,10 +4696,10 @@ inline bool tryAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                      lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
@@ -4733,10 +4733,10 @@ inline bool tryAssign( const DilatedSubmatrix<MT1,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryAssign( lhs.operand(), *rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4769,10 +4769,10 @@ inline bool tryAddAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4807,10 +4807,10 @@ inline bool tryAddAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryAddAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                         lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
@@ -4844,10 +4844,10 @@ inline bool tryAddAssign( const DilatedSubmatrix<MT1,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryAddAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryAddAssign( lhs.operand(), *rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4880,10 +4880,10 @@ inline bool trySubAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return trySubAssign( lhs.operand(), *rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4918,10 +4918,10 @@ inline bool trySubAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return trySubAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                         lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
@@ -4955,10 +4955,10 @@ inline bool trySubAssign( const DilatedSubmatrix<MT1,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySubAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return trySubAssign( lhs.operand(), *rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -4991,10 +4991,10 @@ inline bool tryMultAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryMultAssign( lhs.operand(), *rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5029,10 +5029,10 @@ inline bool tryMultAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryMultAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryMultAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                          lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
@@ -5066,10 +5066,10 @@ inline bool trySchurAssign( const DilatedSubmatrix<MT1,SO1,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).rows() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).columns() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).rows() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).columns() <= lhs.columns(), "Invalid number of columns" );
 
-   return trySchurAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return trySchurAssign( lhs.operand(), *rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5102,10 +5102,10 @@ inline bool tryDivAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( TF || ( row + (~rhs).size() <= lhs.rows() ), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( !TF || ( column + (~rhs).size() <= lhs.columns() ), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( TF || ( row + (*rhs).size() <= lhs.rows() ), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( !TF || ( column + (*rhs).size() <= lhs.columns() ), "Invalid number of columns" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
+   return tryDivAssign( lhs.operand(), *rhs, lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -5140,10 +5140,10 @@ inline bool tryDivAssign( const DilatedSubmatrix<MT,SO,DF,CSAs...>& lhs,
 {
    BLAZE_INTERNAL_ASSERT( row <= lhs.rows(), "Invalid row access index" );
    BLAZE_INTERNAL_ASSERT( column <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( row + (~rhs).size() <= lhs.rows(), "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( column + (~rhs).size() <= lhs.columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( row + (*rhs).size() <= lhs.rows(), "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( column + (*rhs).size() <= lhs.columns(), "Invalid number of columns" );
 
-   return tryDivAssign( lhs.operand(), ~rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
+   return tryDivAssign( lhs.operand(), *rhs, band + ptrdiff_t( lhs.column() - lhs.row() ),
                         lhs.row() + row * lhs.rowdilation(), lhs.column() + column * lhs.columndilation() );
 }
 /*! \endcond */

@@ -613,11 +613,11 @@ class DMatRavelExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid number of elements");
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid number of elements");
 
-      CT tmp( serial( ~rhs.dm_ ) );
+      CT tmp( serial( *rhs.dm_ ) );
 
-      assign( ~lhs, ravel( tmp ) );
+      assign( *lhs, ravel( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -645,11 +645,11 @@ class DMatRavelExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid number of elements");
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid number of elements");
 
-      CT tmp( serial( ~rhs.dm_ ) );
+      CT tmp( serial( *rhs.dm_ ) );
 
-      subAssign( ~lhs, ravel( tmp ) );
+      subAssign( *lhs, ravel( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -677,11 +677,11 @@ class DMatRavelExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid number of elements");
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid number of elements");
 
-      CT tmp( serial( ~rhs.dm_ ) );
+      CT tmp( serial( *rhs.dm_ ) );
 
-      schurAssign( ~lhs, ravel( tmp ) );
+      schurAssign( *lhs, ravel( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -709,11 +709,11 @@ class DMatRavelExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid number of elements");
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid number of elements");
 
-      CT tmp( serial( ~rhs.dm_ ) );
+      CT tmp( serial( *rhs.dm_ ) );
 
-      multAssign( ~lhs, ravel( tmp ) );
+      multAssign( *lhs, ravel( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -741,11 +741,11 @@ class DMatRavelExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid number of elements");
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid number of elements");
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpAssign( ~lhs, ravel( tmp ) );
+      smpAssign( *lhs, ravel( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -773,11 +773,11 @@ class DMatRavelExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid number of elements");
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid number of elements");
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpAddAssign( ~lhs, ravel( tmp ) );
+      smpAddAssign( *lhs, ravel( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -805,11 +805,11 @@ class DMatRavelExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid number of elements");
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid number of elements");
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpSubAssign( ~lhs, ravel( tmp ) );
+      smpSubAssign( *lhs, ravel( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -837,11 +837,11 @@ class DMatRavelExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid number of elements");
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid number of elements");
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpSchurAssign( ~lhs, ravel( tmp ) );
+      smpSchurAssign( *lhs, ravel( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -869,11 +869,11 @@ class DMatRavelExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid number of elements");
+      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid number of elements");
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpMultAssign( ~lhs, ravel( tmp ) );
+      smpMultAssign( *lhs, ravel( tmp ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -935,7 +935,7 @@ inline decltype(auto) ravel( const DenseMatrix<MT, SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DMatRavelExpr<MT>;
-   return ReturnType( ~dm );
+   return ReturnType( *dm );
 }
 //*************************************************************************************************
 
@@ -960,7 +960,7 @@ inline decltype(auto) subvector( const DMatRavelExpr<MT>& matrix, RSAs... args )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return subvector<AF,CSAs...>( evaluate( ~matrix ), args... );
+   return subvector<AF,CSAs...>( evaluate( *matrix ), args... );
 }
 /*! \endcond */
 //*************************************************************************************************
