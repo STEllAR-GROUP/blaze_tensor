@@ -669,17 +669,17 @@ class DTensDMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns");
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns");
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
 
-      //if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
-      //   schurAssign( ~lhs, rhs.rhs_ );
+      //if( !IsOperation_v<TT> && isSame( *lhs, rhs.lhs_ ) ) {
+      //   schurAssign( *lhs, rhs.rhs_ );
       //}
       //else {
          CT1 A( serial( rhs.lhs_ ) );
          CT2 B( serial( rhs.rhs_ ) );
-         assign( ~lhs, A % B );
+         assign( *lhs, A % B );
       //}
    }
    /*! \endcond */
@@ -705,23 +705,23 @@ class DTensDMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
-      if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
-         schurAssign( ~lhs, rhs.rhs_ );
+      if( !IsOperation_v<TT> && isSame( *lhs, rhs.lhs_ ) ) {
+         schurAssign( *lhs, rhs.rhs_ );
       }
-      else if( !IsOperation_v<MT> && isSame( ~lhs, rhs.rhs_ ) ) {
-         schurAssign( ~lhs, rhs.lhs_ );
+      else if( !IsOperation_v<MT> && isSame( *lhs, rhs.rhs_ ) ) {
+         schurAssign( *lhs, rhs.lhs_ );
       }
       else if( !RequiresEvaluation_v<MT> ) {
-         assign     ( ~lhs, rhs.rhs_ );
-         schurAssign( ~lhs, rhs.lhs_ );
+         assign     ( *lhs, rhs.rhs_ );
+         schurAssign( *lhs, rhs.lhs_ );
       }
       else {
-         assign     ( ~lhs, rhs.lhs_ );
-         schurAssign( ~lhs, rhs.rhs_ );
+         assign     ( *lhs, rhs.lhs_ );
+         schurAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -750,12 +750,12 @@ class DTensDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns");
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns");
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -787,12 +787,12 @@ class DTensDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns");
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns");
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -821,12 +821,12 @@ class DTensDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns");
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns");
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"  );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -852,17 +852,17 @@ class DTensDMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
       if( !RequiresEvaluation_v<MT> ) {
-         schurAssign( ~lhs, rhs.rhs_ );
-         schurAssign( ~lhs, rhs.lhs_ );
+         schurAssign( *lhs, rhs.rhs_ );
+         schurAssign( *lhs, rhs.lhs_ );
       }
       else {
-         schurAssign( ~lhs, rhs.lhs_ );
-         schurAssign( ~lhs, rhs.rhs_ );
+         schurAssign( *lhs, rhs.lhs_ );
+         schurAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -889,17 +889,17 @@ class DTensDMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
-      //if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
-      //   smpSchurAssign( ~lhs, rhs.rhs_ );
+      //if( !IsOperation_v<TT> && isSame( *lhs, rhs.lhs_ ) ) {
+      //   smpSchurAssign( *lhs, rhs.rhs_ );
       //}
       //else {
          CT1 A( rhs.lhs_ );
          CT2 B( rhs.rhs_ );
-         smpAssign( ~lhs, A % B );
+         smpAssign( *lhs, A % B );
       //}
    }
    /*! \endcond */
@@ -926,23 +926,23 @@ class DTensDMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
-      if( !IsOperation_v<TT> && isSame( ~lhs, rhs.lhs_ ) ) {
-         smpSchurAssign( ~lhs, rhs.rhs_ );
+      if( !IsOperation_v<TT> && isSame( *lhs, rhs.lhs_ ) ) {
+         smpSchurAssign( *lhs, rhs.rhs_ );
       }
-      else if( !IsOperation_v<MT> && isSame( ~lhs, rhs.rhs_ ) ) {
-         smpSchurAssign( ~lhs, rhs.lhs_ );
+      else if( !IsOperation_v<MT> && isSame( *lhs, rhs.rhs_ ) ) {
+         smpSchurAssign( *lhs, rhs.lhs_ );
       }
       else if( !RequiresEvaluation_v<MT> ) {
-         smpAssign     ( ~lhs, rhs.rhs_ );
-         smpSchurAssign( ~lhs, rhs.lhs_ );
+         smpAssign     ( *lhs, rhs.rhs_ );
+         smpSchurAssign( *lhs, rhs.lhs_ );
       }
       else {
-         smpAssign     ( ~lhs, rhs.lhs_ );
-         smpSchurAssign( ~lhs, rhs.rhs_ );
+         smpAssign     ( *lhs, rhs.lhs_ );
+         smpSchurAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -971,12 +971,12 @@ class DTensDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      smpAddAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1005,12 +1005,12 @@ class DTensDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      smpSubAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1039,12 +1039,12 @@ class DTensDMatSchurExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_TENSOR_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1070,17 +1070,17 @@ class DTensDMatSchurExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
 
       if( !RequiresEvaluation_v<MT> ) {
-         smpSchurAssign( ~lhs, rhs.rhs_ );
-         smpSchurAssign( ~lhs, rhs.lhs_ );
+         smpSchurAssign( *lhs, rhs.rhs_ );
+         smpSchurAssign( *lhs, rhs.lhs_ );
       }
       else {
-         smpSchurAssign( ~lhs, rhs.lhs_ );
-         smpSchurAssign( ~lhs, rhs.rhs_ );
+         smpSchurAssign( *lhs, rhs.lhs_ );
+         smpSchurAssign( *lhs, rhs.rhs_ );
       }
    }
    /*! \endcond */
@@ -1128,10 +1128,10 @@ inline const DTensDMatSchurExpr<TT,MT,SO>
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   return DTensDMatSchurExpr<TT,MT,SO>( ~lhs, ~rhs );
+   return DTensDMatSchurExpr<TT,MT,SO>( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1161,11 +1161,11 @@ inline const DTensDMatSchurExpr<TT,MT,SO>
 //
 //    MAYBE_UNUSED( rhs );
 //
-//    BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-//    BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-//    BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages()  , "Invalid number of pages" );
+//    BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+//    BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+//    BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages()  , "Invalid number of pages" );
 //
-//    return IdentityTensor< MultTrait_t< ElementType_t<TT>, ElementType_t<MT> > >( (~lhs).rows() );
+//    return IdentityTensor< MultTrait_t< ElementType_t<TT>, ElementType_t<MT> > >( (*lhs).rows() );
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1204,11 +1204,11 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns() ) {
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor and matrix sizes do not match" );
    }
 
-   return dtensdmatschur( ~lhs, ~rhs );
+   return dtensdmatschur( *lhs, *rhs );
 }
 //*************************************************************************************************
 

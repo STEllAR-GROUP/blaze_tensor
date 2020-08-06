@@ -707,9 +707,9 @@ inline DynamicTensor<Type>::DynamicTensor( DynamicTensor&& m ) noexcept
 template< typename Type > // Data type of the tensor
 template< typename MT >   // Type of the foreign tensor
 inline DynamicTensor<Type>::DynamicTensor( const Tensor<MT>& m )
-   : DynamicTensor( (~m).pages(), (~m).rows(), (~m).columns() )
+   : DynamicTensor( (*m).pages(), (*m).rows(), (*m).columns() )
 {
-   smpAssign( *this, ~m );
+   smpAssign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1205,7 +1205,7 @@ inline DynamicTensor<Type>& DynamicTensor<Type>::operator=( const DynamicTensor&
    if( &rhs == this ) return *this;
 
    resize( rhs.o_, rhs.m_, rhs.n_, false );
-   smpAssign( *this, ~rhs );
+   smpAssign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1257,13 +1257,13 @@ template< typename Type > // Data type of the tensor
 template< typename MT >  // Type of the right-hand side tensor
 inline DynamicTensor<Type>& DynamicTensor<Type>::operator=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).canAlias( this ) ) {
-      DynamicTensor tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      DynamicTensor tmp( *rhs );
       swap( tmp );
    }
    else {
-      resize( (~rhs).pages(), (~rhs).rows(), (~rhs).columns(), false );
-      smpAssign( *this, ~rhs );
+      resize( (*rhs).pages(), (*rhs).rows(), (*rhs).columns(), false );
+      smpAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1287,16 +1287,16 @@ template< typename Type > // Data type of the tensor
 template< typename MT >   // Type of the right-hand side tensor
 inline DynamicTensor<Type>& DynamicTensor<Type>::operator+=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ || (~rhs).pages() != o_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ || (*rhs).pages() != o_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAddAssign( *this, tmp );
    }
    else {
-      smpAddAssign( *this, ~rhs );
+      smpAddAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1320,16 +1320,16 @@ template< typename Type > // Data type of the tensor
 template< typename MT >   // Type of the right-hand side tensor
 inline DynamicTensor<Type>& DynamicTensor<Type>::operator-=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ || (~rhs).pages() != o_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ || (*rhs).pages() != o_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSubAssign( *this, tmp );
    }
    else {
-      smpSubAssign( *this, ~rhs );
+      smpSubAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1353,16 +1353,16 @@ template< typename Type > // Data type of the tensor
 template< typename MT >  // Type of the right-hand side tensor
 inline DynamicTensor<Type>& DynamicTensor<Type>::operator%=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ || (~rhs).pages() != o_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ || (*rhs).pages() != o_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSchurAssign( *this, tmp );
    }
    else {
-      smpSchurAssign( *this, ~rhs );
+      smpSchurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -2321,9 +2321,9 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto DynamicTensor<Type>::assign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    const size_t jpos( n_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2332,11 +2332,11 @@ inline auto DynamicTensor<Type>::assign( const DenseTensor<MT>& rhs )
       for (size_t i=0UL; i<m_; ++i) {
          size_t row_elements = (k*m_+i)*nn_;
          for (size_t j=0UL; j<jpos; j+=2UL) {
-            v_[row_elements+j] = (~rhs)(k, i, j);
-            v_[row_elements+j+1UL] = (~rhs)(k, i, j+1UL);
+            v_[row_elements+j] = (*rhs)(k, i, j);
+            v_[row_elements+j+1UL] = (*rhs)(k, i, j+1UL);
          }
          if (jpos < n_) {
-            v_[row_elements+jpos] = (~rhs)(k, i, jpos);
+            v_[row_elements+jpos] = (*rhs)(k, i, jpos);
          }
       }
    }
@@ -2362,9 +2362,9 @@ inline auto DynamicTensor<Type>::assign( const DenseTensor<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    constexpr bool remainder( !IsPadded_v<MT> );
 
@@ -2372,13 +2372,13 @@ inline auto DynamicTensor<Type>::assign( const DenseTensor<MT>& rhs )
    BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    if( useStreaming &&
-       ( o_*m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
+       ( o_*m_*n_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(*rhs).isAliased( this ) )
    {
       for (size_t k=0UL; k<o_; ++k) {
          for (size_t i=0UL; i<m_; ++i) {
             size_t j(0UL);
             Iterator left(begin(i, k));
-            ConstIterator_t<MT> right((~rhs).begin(i, k));
+            ConstIterator_t<MT> right((*rhs).begin(i, k));
 
             for (; j<jpos; j+=SIMDSIZE, left+=SIMDSIZE, right+=SIMDSIZE) {
                left.stream(right.load());
@@ -2395,7 +2395,7 @@ inline auto DynamicTensor<Type>::assign( const DenseTensor<MT>& rhs )
          for (size_t i=0UL; i<m_; ++i) {
             size_t j(0UL);
             Iterator left(begin(i, k));
-            ConstIterator_t<MT> right((~rhs).begin(i, k));
+            ConstIterator_t<MT> right((*rhs).begin(i, k));
 
             for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
                left.store(right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -2432,9 +2432,9 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto DynamicTensor<Type>::addAssign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    for (size_t k=0UL; k<o_; ++k) {
       for (size_t i=0UL; i<m_; ++i) {
@@ -2446,11 +2446,11 @@ inline auto DynamicTensor<Type>::addAssign( const DenseTensor<MT>& rhs )
          size_t j(jbegin);
 
          for (; (j+2UL) <= jend; j+=2UL) {
-            v_[row_elements+j] += (~rhs)(k, i, j);
-            v_[row_elements+j+1UL] += (~rhs)(k, i, j+1UL);
+            v_[row_elements+j] += (*rhs)(k, i, j);
+            v_[row_elements+j+1UL] += (*rhs)(k, i, j+1UL);
          }
          if (j < jend) {
-            v_[row_elements+j] += (~rhs)(k, i, j);
+            v_[row_elements+j] += (*rhs)(k, i, j);
          }
       }
    }
@@ -2476,9 +2476,9 @@ inline auto DynamicTensor<Type>::addAssign( const DenseTensor<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    constexpr bool remainder( !IsPadded_v<MT> );
 
@@ -2493,7 +2493,7 @@ inline auto DynamicTensor<Type>::addAssign( const DenseTensor<MT>& rhs )
 
          size_t j(jbegin);
          Iterator left(begin(i, k) + jbegin);
-         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
+         ConstIterator_t<MT> right((*rhs).begin(i, k) + jbegin);
 
          for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
             left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -2529,9 +2529,9 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto DynamicTensor<Type>::subAssign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    for (size_t k=0UL; k<o_; ++k) {
       for (size_t i=0UL; i<m_; ++i) {
@@ -2543,11 +2543,11 @@ inline auto DynamicTensor<Type>::subAssign( const DenseTensor<MT>& rhs )
          size_t j(jbegin);
 
          for (; (j+2UL) <= jend; j+=2UL) {
-            v_[row_elements+j] -= (~rhs)(k, i, j);
-            v_[row_elements+j+1UL] -= (~rhs)(k, i, j+1UL);
+            v_[row_elements+j] -= (*rhs)(k, i, j);
+            v_[row_elements+j+1UL] -= (*rhs)(k, i, j+1UL);
          }
          if (j < jend) {
-            v_[row_elements+j] -= (~rhs)(k, i, j);
+            v_[row_elements+j] -= (*rhs)(k, i, j);
          }
       }
    }
@@ -2573,9 +2573,9 @@ inline auto DynamicTensor<Type>::subAssign( const DenseTensor<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    constexpr bool remainder( !IsPadded_v<MT> );
 
@@ -2591,7 +2591,7 @@ inline auto DynamicTensor<Type>::subAssign( const DenseTensor<MT>& rhs )
 
          size_t j(jbegin);
          Iterator left(begin(i, k) + jbegin);
-         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
+         ConstIterator_t<MT> right((*rhs).begin(i, k) + jbegin);
 
          for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
             left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -2627,9 +2627,9 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto DynamicTensor<Type>::schurAssign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    const size_t jpos( n_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2638,11 +2638,11 @@ inline auto DynamicTensor<Type>::schurAssign( const DenseTensor<MT>& rhs )
       for (size_t i=0UL; i<m_; ++i) {
          size_t row_elements = (k*m_+i)*nn_;
          for (size_t j=0UL; j<jpos; j+=2UL) {
-            v_[row_elements+j] *= (~rhs)(k, i, j);
-            v_[row_elements+j+1UL] *= (~rhs)(k, i, j+1UL);
+            v_[row_elements+j] *= (*rhs)(k, i, j);
+            v_[row_elements+j+1UL] *= (*rhs)(k, i, j+1UL);
          }
          if (jpos < n_) {
-            v_[row_elements+jpos] *= (~rhs)(k, i, jpos);
+            v_[row_elements+jpos] *= (*rhs)(k, i, jpos);
          }
       }
    }
@@ -2668,9 +2668,9 @@ inline auto DynamicTensor<Type>::schurAssign( const DenseTensor<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    constexpr bool remainder( !IsPadded_v<MT> );
 
@@ -2682,7 +2682,7 @@ inline auto DynamicTensor<Type>::schurAssign( const DenseTensor<MT>& rhs )
 
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<MT> right((~rhs).begin(i, k));
+         ConstIterator_t<MT> right((*rhs).begin(i, k));
 
          for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
             left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;

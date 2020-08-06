@@ -646,9 +646,9 @@ class DTensDTensMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense tensor operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense tensor operand
@@ -659,11 +659,11 @@ class DTensDTensMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.pages()   == rhs.rhs_.pages()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.pages()   == (~lhs).pages()    , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.pages()   == (*lhs).pages()    , "Invalid number of columns" );
 
-      assign( ~lhs, map( A, B, rhs.op_ ) );
+      assign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -688,9 +688,9 @@ class DTensDTensMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense tensor operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense tensor operand
@@ -701,11 +701,11 @@ class DTensDTensMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.pages()   == rhs.rhs_.pages()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.pages()   == (~lhs).pages()    , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.pages()   == (*lhs).pages()    , "Invalid number of columns" );
 
-      addAssign( ~lhs, map( A, B, rhs.op_ ) );
+      addAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -730,9 +730,9 @@ class DTensDTensMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense tensor operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense tensor operand
@@ -743,11 +743,11 @@ class DTensDTensMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.pages()   == rhs.rhs_.pages()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.pages()   == (~lhs).pages()    , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.pages()   == (*lhs).pages()    , "Invalid number of columns" );
 
-      subAssign( ~lhs, map( A, B, rhs.op_ ) );
+      subAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -772,9 +772,9 @@ class DTensDTensMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense tensor operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense tensor operand
@@ -785,11 +785,11 @@ class DTensDTensMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.pages()   == rhs.rhs_.pages()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.pages()   == (~lhs).pages()    , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.pages()   == (*lhs).pages()    , "Invalid number of columns" );
 
-      schurAssign( ~lhs, map( A, B, rhs.op_ ) );
+      schurAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -814,9 +814,9 @@ class DTensDTensMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense tensor operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense tensor operand
@@ -827,11 +827,11 @@ class DTensDTensMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.pages()   == rhs.rhs_.pages()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.pages()   == (~lhs).pages()    , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.pages()   == (*lhs).pages()    , "Invalid number of columns" );
 
-      smpAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -857,9 +857,9 @@ class DTensDTensMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense tensor operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense tensor operand
@@ -870,11 +870,11 @@ class DTensDTensMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.pages()   == rhs.rhs_.pages()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.pages()   == (~lhs).pages()    , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.pages()   == (*lhs).pages()    , "Invalid number of columns" );
 
-      smpAddAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpAddAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -900,9 +900,9 @@ class DTensDTensMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense tensor operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense tensor operand
@@ -913,11 +913,11 @@ class DTensDTensMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.pages()   == rhs.rhs_.pages()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.pages()   == (~lhs).pages()    , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.pages()   == (*lhs).pages()    , "Invalid number of columns" );
 
-      smpSubAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpSubAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -943,9 +943,9 @@ class DTensDTensMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages(),   "Invalid number of pages" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense tensor operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense tensor operand
@@ -956,11 +956,11 @@ class DTensDTensMapExpr
       BLAZE_INTERNAL_ASSERT( B.rows()    == rhs.rhs_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( B.columns() == rhs.rhs_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( B.pages()   == rhs.rhs_.pages()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).rows()     , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( B.columns() == (~lhs).columns()  , "Invalid number of columns" );
-      BLAZE_INTERNAL_ASSERT( B.pages()   == (~lhs).pages()    , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).rows()     , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( B.columns() == (*lhs).columns()  , "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( B.pages()   == (*lhs).pages()    , "Invalid number of columns" );
 
-      smpSchurAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpSchurAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1012,12 +1012,12 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).rows() != (~rhs).rows() || (~lhs).columns() != (~rhs).columns()  || (~lhs).pages() != (~rhs).pages()) {
+   if( (*lhs).rows() != (*rhs).rows() || (*lhs).columns() != (*rhs).columns()  || (*lhs).pages() != (*rhs).pages()) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
    using ReturnType = const DTensDTensMapExpr<MT1,MT2,OP>;
-   return ReturnType( ~lhs, ~rhs, op );
+   return ReturnType( *lhs, *rhs, op );
 }
 //*************************************************************************************************
 
@@ -1047,7 +1047,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Min() );
+   return map( *lhs, *rhs, Min() );
 }
 //*************************************************************************************************
 
@@ -1077,7 +1077,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Max() );
+   return map( *lhs, *rhs, Max() );
 }
 //*************************************************************************************************
 
@@ -1107,7 +1107,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Hypot() );
+   return map( *lhs, *rhs, Hypot() );
 }
 //*************************************************************************************************
 
@@ -1137,7 +1137,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Pow() );
+   return map( *lhs, *rhs, Pow() );
 }
 //*************************************************************************************************
 
@@ -1167,7 +1167,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Atan2() );
+   return map( *lhs, *rhs, Atan2() );
 }
 //*************************************************************************************************
 

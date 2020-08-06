@@ -155,9 +155,9 @@ inline decltype(auto) norm_backend( const DenseTensor<MT>& dm, Abs abs, Power po
    using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
-   if( (~dm).pages() == 0UL || (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (*dm).pages() == 0UL || (*dm).rows() == 0UL || (*dm).columns() == 0UL ) return RT();
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
    const size_t O( tmp.pages()   );
    const size_t M( tmp.rows()    );
@@ -249,9 +249,9 @@ inline decltype(auto) norm_backend( const DenseTensor<MT>& dm, Abs abs, Power po
 
    static constexpr size_t SIMDSIZE = SIMDTrait<ET>::size;
 
-   if( (~dm).pages() == 0UL || (~dm).rows() == 0UL || (~dm).columns() == 0UL ) return RT();
+   if( (*dm).pages() == 0UL || (*dm).rows() == 0UL || (*dm).columns() == 0UL ) return RT();
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
    const size_t O( tmp.pages()   );
    const size_t M( tmp.rows()    );
@@ -329,7 +329,7 @@ template< typename MT      // Type of the dense tensor
         , typename Root >  // Type of the root operation
 decltype(auto) norm_backend( const DenseTensor<MT>& dm, Abs abs, Power power, Root root )
 {
-   return norm_backend( ~dm, abs, power, root, Bool_t< DTensNormHelper<MT,Abs,Power>::value >() );
+   return norm_backend( *dm, abs, power, root, Bool_t< DTensNormHelper<MT,Abs,Power>::value >() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -355,7 +355,7 @@ decltype(auto) norm( const DenseTensor<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *dm, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -380,7 +380,7 @@ decltype(auto) sqrNorm( const DenseTensor<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, SqrAbs(), Noop(), Noop() );
+   return norm_backend( *dm, SqrAbs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -405,7 +405,7 @@ decltype(auto) l1Norm( const DenseTensor<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Abs(), Noop(), Noop() );
+   return norm_backend( *dm, Abs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -430,7 +430,7 @@ decltype(auto) l2Norm( const DenseTensor<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *dm, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -455,7 +455,7 @@ decltype(auto) l3Norm( const DenseTensor<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Abs(), Pow3(), Cbrt() );
+   return norm_backend( *dm, Abs(), Pow3(), Cbrt() );
 }
 //*************************************************************************************************
 
@@ -480,7 +480,7 @@ decltype(auto) l4Norm( const DenseTensor<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, SqrAbs(), Pow2(), Qdrt() );
+   return norm_backend( *dm, SqrAbs(), Pow2(), Qdrt() );
 }
 //*************************************************************************************************
 
@@ -515,7 +515,7 @@ decltype(auto) lpNorm( const DenseTensor<MT>& dm, ST p )
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, decltype( inv( p ) ) >;
    using UnaryPow = Bind2nd<Pow,ScalarType>;
-   return norm_backend( ~dm, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
+   return norm_backend( *dm, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
 }
 //*************************************************************************************************
 
@@ -548,7 +548,7 @@ inline decltype(auto) lpNorm( const DenseTensor<MT>& dm )
    using Norms = TypeList< L1Norm, L2Norm, L3Norm, L4Norm, LpNorm<P> >;
    using Norm  = typename TypeAt< Norms, min( P-1UL, 4UL ) >::Type;
 
-   return Norm()( ~dm );
+   return Norm()( *dm );
 }
 //*************************************************************************************************
 
@@ -573,7 +573,7 @@ decltype(auto) maxNorm( const DenseTensor<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~dm ) );
+   return max( abs( *dm ) );
 }
 //*************************************************************************************************
 

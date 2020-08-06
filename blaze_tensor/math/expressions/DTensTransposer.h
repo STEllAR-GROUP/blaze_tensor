@@ -574,7 +574,7 @@ class DTensTransposer
             , typename... RTAs >  // Runtime arguments
    inline void assign( const Tensor<MT2>& rhs, RTAs... args )
    {
-      dm_.assign( trans( ~rhs, args... ) );
+      dm_.assign( trans( *rhs, args... ) );
    }
    //**********************************************************************************************
 
@@ -593,7 +593,7 @@ class DTensTransposer
             , typename... RTAs >  // Runtime arguments
    inline void addAssign( const Tensor<MT2>& rhs, RTAs... args )
    {
-      dm_.addAssign( trans( ~rhs, args... ) );
+      dm_.addAssign( trans( *rhs, args... ) );
    }
    //**********************************************************************************************
 
@@ -612,7 +612,7 @@ class DTensTransposer
             , typename... RTAs >  // Runtime arguments
    inline void subAssign( const Tensor<MT2>& rhs, RTAs... args )
    {
-      dm_.subAssign( trans( ~rhs, args... ) );
+      dm_.subAssign( trans( *rhs, args... ) );
    }
    //**********************************************************************************************
 
@@ -631,7 +631,7 @@ class DTensTransposer
             , typename... RTAs >  // Runtime arguments
    inline void schurAssign( const Tensor<MT2>& rhs, RTAs... args )
    {
-      dm_.schurAssign( trans( ~rhs, args... ) );
+      dm_.schurAssign( trans( *rhs, args... ) );
    }
    //**********************************************************************************************
 

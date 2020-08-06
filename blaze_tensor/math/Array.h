@@ -105,7 +105,7 @@ bool isUniform( const Array<MT>& m );
 template< typename MT > // Type of the tensor
 inline bool isUniform( const Array<MT>& t )
 {
-   return isUniform<relaxed>( ~t );
+   return isUniform<relaxed>( *t );
 }
 //*************************************************************************************************
 
@@ -136,7 +136,7 @@ inline std::ostream& operator<<( std::ostream& os, const Array<MT>& m );
 template< typename MT >
 inline std::ostream& operator<<( std::ostream& os, const Array<MT>& m )
 {
-   CompositeType_t<MT> tmp( ~m );
+   CompositeType_t<MT> tmp( *m );
 
    ArrayForEachGrouped(
       tmp.dimensions(),

@@ -11142,7 +11142,7 @@ void OperationTest<MT,E>::convertException( const std::exception& ex )
 template< typename MT >  // Type of the dense Matrix
 void runTest( const Creator<MT>& creator )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
+   for( size_t rep=0UL; rep<BLAZETEST_REPETITIONS; ++rep ) {
       OperationTest<MT,3UL>{ creator };
       OperationTest<MT,6UL>{ creator };
       OperationTest<MT,7UL>{ creator };

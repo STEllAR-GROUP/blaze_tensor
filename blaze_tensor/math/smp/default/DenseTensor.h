@@ -101,11 +101,11 @@ inline EnableIf_t< IsDenseTensor_v<TT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   assign( ~lhs, ~rhs );
+   assign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -131,11 +131,11 @@ inline EnableIf_t< IsDenseTensor_v<TT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   addAssign( ~lhs, ~rhs );
+   addAssign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -161,11 +161,11 @@ inline EnableIf_t< IsDenseTensor_v<TT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   subAssign( ~lhs, ~rhs );
+   subAssign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -192,11 +192,11 @@ inline EnableIf_t< IsDenseTensor_v<TT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   schurAssign( ~lhs, ~rhs );
+   schurAssign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -230,11 +230,11 @@ inline EnableIf_t< IsDenseTensor_v<MT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages" );
 
-   multAssign( ~lhs, ~rhs );
+   multAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************

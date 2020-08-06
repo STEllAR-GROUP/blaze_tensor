@@ -402,13 +402,13 @@ class DTensDVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT( ((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       if( rhs.tens_.pages() == 0UL || rhs.tens_.rows() == 0UL ) {
          return;
       }
       else if( rhs.tens_.columns() == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
          return;
       }
 
@@ -419,10 +419,10 @@ class DTensDVecMultExpr
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.tens_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.tens_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()    , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()      , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns()   , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()      , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns()   , "Invalid matrix columns"    );
 
-      DTensDVecMultExpr::selectAssignKernel( ~lhs, A, x );
+      DTensDVecMultExpr::selectAssignKernel( *lhs, A, x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -979,10 +979,10 @@ class DTensDVecMultExpr
    //   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
    //   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   //   BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+   //   BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
    //   const ResultType tmp( serial( rhs ) );
-   //   assign( ~lhs, tmp );
+   //   assign( *lhs, tmp );
    //}
    ///*! \endcond */
    ////**********************************************************************************************
@@ -1005,7 +1005,7 @@ class DTensDVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT(((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       if( rhs.tens_.pages() == 0UL || rhs.tens_.rows() == 0UL || rhs.tens_.columns() == 0UL ) {
          return;
@@ -1018,10 +1018,10 @@ class DTensDVecMultExpr
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.tens_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.tens_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()    , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()      , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns()   , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()      , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns()   , "Invalid matrix columns"    );
 
-      DTensDVecMultExpr::selectAddAssignKernel( ~lhs, A, x );
+      DTensDVecMultExpr::selectAddAssignKernel( *lhs, A, x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -1572,7 +1572,7 @@ class DTensDVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT(((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       if( rhs.tens_.pages() == 0UL || rhs.tens_.rows() == 0UL || rhs.tens_.columns() == 0UL ) {
          return;
@@ -1585,10 +1585,10 @@ class DTensDVecMultExpr
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.tens_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.tens_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()    , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()      , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns()   , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()      , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns()   , "Invalid matrix columns"    );
 
-      DTensDVecMultExpr::selectSubAssignKernel( ~lhs, A, x );
+      DTensDVecMultExpr::selectSubAssignKernel( *lhs, A, x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2143,11 +2143,11 @@ class DTensDVecMultExpr
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2173,13 +2173,13 @@ class DTensDVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT( ((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       if( rhs.tens_.pages() == 0UL || rhs.tens_.rows() == 0UL ) {
          return;
       }
       else if( rhs.tens_.columns() == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
          return;
       }
 
@@ -2190,10 +2190,10 @@ class DTensDVecMultExpr
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.tens_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.tens_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()    , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()      , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns()   , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()      , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns()   , "Invalid matrix columns"    );
 
-      smpAssign( ~lhs, A * x );
+      smpAssign( *lhs, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2223,10 +2223,10 @@ class DTensDVecMultExpr
    //   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE( ResultType );
    //   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   //   BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+   //   BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
    //   const ResultType tmp( rhs );
-   //   smpAssign( ~lhs, tmp );
+   //   smpAssign( *lhs, tmp );
    //}
    ///*! \endcond */
    ////**********************************************************************************************
@@ -2252,7 +2252,7 @@ class DTensDVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT( ((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       if( rhs.tens_.pages() == 0UL || rhs.tens_.rows() == 0UL || rhs.tens_.columns() == 0UL ) {
          return;
@@ -2265,10 +2265,10 @@ class DTensDVecMultExpr
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.tens_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.tens_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()    , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()      , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns()   , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()      , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns()   , "Invalid matrix columns"    );
 
-      smpAddAssign( ~lhs, A * x );
+      smpAddAssign( *lhs, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2298,7 +2298,7 @@ class DTensDVecMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT( ((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       if( rhs.tens_.pages() == 0UL || rhs.tens_.rows() == 0UL || rhs.tens_.columns() == 0UL ) {
          return;
@@ -2311,10 +2311,10 @@ class DTensDVecMultExpr
       BLAZE_INTERNAL_ASSERT( A.rows()    == rhs.tens_.rows()   , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == rhs.tens_.columns(), "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == rhs.vec_.size()    , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()      , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns()   , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()      , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns()   , "Invalid matrix columns"    );
 
-      smpSubAssign( ~lhs, A * x );
+      smpSubAssign( *lhs, A * x );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2348,11 +2348,11 @@ class DTensDVecMultExpr
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -2667,7 +2667,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( ((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT( ((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
@@ -2676,7 +2676,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
          return;
       }
       else if( left.columns() == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
          return;
       }
 
@@ -2687,10 +2687,10 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns() , "Invalid matrix columns"    );
 
-      DMatScalarMultExpr::selectAssignKernel( ~lhs, A, x, rhs.scalar_ );
+      DMatScalarMultExpr::selectAssignKernel( *lhs, A, x, rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -3261,10 +3261,10 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
    //   BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
    //   BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-   //   BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+   //   BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 
    //   const ResultType tmp( serial( rhs ) );
-   //   assign( ~lhs, tmp );
+   //   assign( *lhs, tmp );
    //}
    //**********************************************************************************************
 
@@ -3285,7 +3285,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT(((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
@@ -3301,10 +3301,10 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns() , "Invalid matrix columns"    );
 
-      DMatScalarMultExpr::selectAddAssignKernel( ~lhs, A, x, rhs.scalar_ );
+      DMatScalarMultExpr::selectAddAssignKernel( *lhs, A, x, rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -3869,7 +3869,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT(((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
@@ -3885,10 +3885,10 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns() , "Invalid matrix columns"    );
 
-      DMatScalarMultExpr::selectSubAssignKernel( ~lhs, A, x, rhs.scalar_ );
+      DMatScalarMultExpr::selectSubAssignKernel( *lhs, A, x, rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -4441,11 +4441,11 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    //**********************************************************************************************
 
@@ -4469,7 +4469,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT(((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
@@ -4478,7 +4478,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
          return;
       }
       else if( left.columns() == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
          return;
       }
 
@@ -4489,10 +4489,10 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns() , "Invalid matrix columns"    );
 
-      smpAssign( ~lhs, A * x * rhs.scalar_ );
+      smpAssign( *lhs, A * x * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -4520,10 +4520,10 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
 //      BLAZE_CONSTRAINT_MUST_BE_COLUMN_VECTOR_TYPE ( ResultType );
 //      BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 //
-//      BLAZE_INTERNAL_ASSERT( (~lhs).size() == rhs.size(), "Invalid vector sizes" );
+//      BLAZE_INTERNAL_ASSERT( (*lhs).size() == rhs.size(), "Invalid vector sizes" );
 //
 //      const ResultType tmp( rhs );
-//      smpAssign( ~lhs, tmp );
+//      smpAssign( *lhs, tmp );
 //   }
    //**********************************************************************************************
 
@@ -4547,7 +4547,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT(((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
@@ -4556,7 +4556,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
          return;
       }
       else if( left.columns() == 0UL ) {
-         reset( ~lhs );
+         reset( *lhs );
          return;
       }
 
@@ -4567,10 +4567,10 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns() , "Invalid matrix columns"    );
 
-      smpAddAssign( ~lhs, A * x * rhs.scalar_ );
+      smpAddAssign( *lhs, A * x * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -4598,7 +4598,7 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT(((~lhs).rows() == rhs.rows() && (~lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
+      BLAZE_INTERNAL_ASSERT(((*lhs).rows() == rhs.rows() && (*lhs).columns() == rhs.columns()), "Invalid matrix sizes" );
 
       LeftOperand_t<MVM>  left ( rhs.matrix_.leftOperand()  );
       RightOperand_t<MVM> right( rhs.matrix_.rightOperand() );
@@ -4614,10 +4614,10 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
       BLAZE_INTERNAL_ASSERT( A.rows()    == left.rows()      , "Invalid number of rows"    );
       BLAZE_INTERNAL_ASSERT( A.columns() == left.columns()   , "Invalid number of columns" );
       BLAZE_INTERNAL_ASSERT( x.size()    == right.size()     , "Invalid vector size"       );
-      BLAZE_INTERNAL_ASSERT( A.pages()   == (~lhs).rows()    , "Invalid matrix rows"       );
-      BLAZE_INTERNAL_ASSERT( A.rows()    == (~lhs).columns() , "Invalid matrix columns"    );
+      BLAZE_INTERNAL_ASSERT( A.pages()   == (*lhs).rows()    , "Invalid matrix rows"       );
+      BLAZE_INTERNAL_ASSERT( A.rows()    == (*lhs).columns() , "Invalid matrix columns"    );
 
-      smpSubAssign( ~lhs, A * x * rhs.scalar_ );
+      smpSubAssign( *lhs, A * x * rhs.scalar_ );
    }
    //**********************************************************************************************
 
@@ -4649,11 +4649,11 @@ class DMatScalarMultExpr< DTensDVecMultExpr<TT,VT>, ST, false >
       BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    //**********************************************************************************************
 
@@ -4719,12 +4719,12 @@ inline decltype(auto)
 
    //BLAZE_CONSTRAINT_MUST_NOT_BE_MATMATMULTEXPR_TYPE( TT );
 
-   if( (~tens).columns() != (~vec).size() ) {
+   if( (*tens).columns() != (*vec).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor and vector sizes do not match" );
    }
 
    using ReturnType = const DTensDVecMultExpr<TT,VT>;
-   return ReturnType( ~tens, ~vec );
+   return ReturnType( *tens, *vec );
 }
 //*************************************************************************************************
 
@@ -4758,7 +4758,7 @@ inline decltype(auto)
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return (~tens).leftOperand() * ( (~tens).rightOperand() * vec );
+//   return (*tens).leftOperand() * ( (*tens).rightOperand() * vec );
 //}
 /*! \endcond */
 //*************************************************************************************************

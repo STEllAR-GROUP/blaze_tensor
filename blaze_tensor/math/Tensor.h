@@ -103,7 +103,7 @@ bool isUniform( const Tensor<MT>& m );
 template< typename MT > // Type of the tensor
 inline bool isUniform( const Tensor<MT>& t )
 {
-   return isUniform<relaxed>( ~t );
+   return isUniform<relaxed>( *t );
 }
 //*************************************************************************************************
 
@@ -134,7 +134,7 @@ inline std::ostream& operator<<( std::ostream& os, const Tensor<MT>& m );
 template< typename MT >
 inline std::ostream& operator<<( std::ostream& os, const Tensor<MT>& m )
 {
-   CompositeType_t<MT> tmp( ~m );
+   CompositeType_t<MT> tmp( *m );
 
    for (size_t k = 0UL; k < tmp.pages(); ++k) {
       os << "(";

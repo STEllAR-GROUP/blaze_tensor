@@ -110,12 +110,12 @@ void hpxAssign( DenseArray<TT1>& lhs, const DenseArray<TT2>& rhs, OP op )
    constexpr bool simdEnabled( TT1::simdEnabled && TT2::simdEnabled && IsSIMDCombinable_v<ET1,ET2> );
    constexpr size_t SIMDSIZE( SIMDTrait< ElementType_t<TT1> >::size );
 
-   const bool lhsAligned( (~lhs).isAligned() );
-   const bool rhsAligned( (~rhs).isAligned() );
+   const bool lhsAligned( (*lhs).isAligned() );
+   const bool rhsAligned( (*rhs).isAligned() );
 
-   const size_t pages = (~rhs).template dimension<2>();
-   const size_t rows  = (~rhs).template dimension<1>();
-   const size_t columns = (~rhs).template dimension<0>();
+   const size_t pages = (*rhs).template dimension<2>();
+   const size_t rows  = (*rhs).template dimension<1>();
+   const size_t columns = (*rhs).template dimension<0>();
 
    const size_t threads    ( getNumThreads() );
    const size_t numPages( min( static_cast<std::size_t>( BLAZE_HPX_TENSOR_BLOCK_SIZE_PAGE ), pages ) );
@@ -146,33 +146,33 @@ void hpxAssign( DenseArray<TT1>& lhs, const DenseArray<TT2>& rhs, OP op )
    //   if( page >= pages || row >= rows || column >= columns )
    //      return;
 
-   //    for (size_t k = 0; k != (~rhs).quats(); ++k)
+   //    for (size_t k = 0; k != (*rhs).quats(); ++k)
    //    {
    //       const size_t o( min( pagesPerIter, pages   - page    ) );
    //       const size_t m( min( rowsPerIter,  rows    - row    ) );
    //       const size_t n( min( colsPerIter,  columns - column ) );
 
-   //       auto lhs_slice = quatslice( ~lhs, k );
-   //       auto rhs_slice = quatslice( ~rhs, k );
+   //       auto lhs_slice = quatslice( *lhs, k );
+   //       auto rhs_slice = quatslice( *rhs, k );
 
    //       if( simdEnabled && lhsAligned && rhsAligned ) {
-   //          auto       target( subtensor  ( ~lhs_slice, page, row, column, o, m, n ) );
-   //          const auto source( subtensor  ( ~rhs_slice, page, row, column, o, m, n ) );
+   //          auto       target( subtensor  ( *lhs_slice, page, row, column, o, m, n ) );
+   //          const auto source( subtensor  ( *rhs_slice, page, row, column, o, m, n ) );
    //          op( target, source );
    //       }
    //       else if( simdEnabled && lhsAligned ) {
-   //          auto       target( subtensor  ( ~lhs_slice, page, row, column, o, m, n ) );
-   //          const auto source( subtensor  ( ~rhs_slice, page, row, column, o, m, n ) );
+   //          auto       target( subtensor  ( *lhs_slice, page, row, column, o, m, n ) );
+   //          const auto source( subtensor  ( *rhs_slice, page, row, column, o, m, n ) );
    //          op( target, source );
    //       }
    //       else if( simdEnabled && rhsAligned ) {
-   //          auto       target( subtensor  ( ~lhs_slice, page, row, column, o, m, n ) );
-   //          const auto source( subtensor  ( ~rhs_slice, page, row, column, o, m, n ) );
+   //          auto       target( subtensor  ( *lhs_slice, page, row, column, o, m, n ) );
+   //          const auto source( subtensor  ( *rhs_slice, page, row, column, o, m, n ) );
    //          op( target, source );
    //       }
    //       else {
-   //          auto       target( subtensor  ( ~lhs_slice, page, row, column, o, m, n ));
-   //          const auto source( subtensor  ( ~rhs_slice, page, row, column, o, m, n ));
+   //          auto       target( subtensor  ( *lhs_slice, page, row, column, o, m, n ));
+   //          const auto source( subtensor  ( *rhs_slice, page, row, column, o, m, n ));
    //          op(target, source);
    //       }
    //    }
@@ -215,9 +215,9 @@ inline EnableIf_t< IsDenseArray_v<TT1> && ( !IsSMPAssignable_v<TT1> || !IsSMPAss
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions()   , "Invalid array sizes"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions()   , "Invalid array sizes"    );
 
-   assign( ~lhs, ~rhs );
+   assign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -251,13 +251,13 @@ inline EnableIf_t< IsDenseArray_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssigna
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<TT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<TT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions()   , "Invalid array sizes"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions()   , "Invalid array sizes"    );
 
-   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-      assign( ~lhs, ~rhs );
+   if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+      assign( *lhs, *rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
+      hpxAssign( *lhs, *rhs, []( auto& a, const auto& b ){ assign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -297,9 +297,9 @@ inline EnableIf_t< IsDenseArray_v<TT1> && ( !IsSMPAssignable_v<TT1> || !IsSMPAss
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions()   , "Invalid array sizes"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions()   , "Invalid array sizes"    );
 
-   addAssign( ~lhs, ~rhs );
+   addAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -333,13 +333,13 @@ inline EnableIf_t< IsDenseArray_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssigna
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<TT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<TT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions()   , "Invalid array sizes"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions()   , "Invalid array sizes"    );
 
-   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-      addAssign( ~lhs, ~rhs );
+   if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+      addAssign( *lhs, *rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
+      hpxAssign( *lhs, *rhs, []( auto& a, const auto& b ){ addAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -379,9 +379,9 @@ inline EnableIf_t< IsDenseArray_v<TT1> && ( !IsSMPAssignable_v<TT1> || !IsSMPAss
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions()   , "Invalid array sizes"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions()   , "Invalid array sizes"    );
 
-   subAssign( ~lhs, ~rhs );
+   subAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -415,13 +415,13 @@ inline EnableIf_t< IsDenseArray_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssigna
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<TT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<TT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions()   , "Invalid array sizes"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions()   , "Invalid array sizes"    );
 
-   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-      subAssign( ~lhs, ~rhs );
+   if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+      subAssign( *lhs, *rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
+      hpxAssign( *lhs, *rhs, []( auto& a, const auto& b ){ subAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -461,9 +461,9 @@ inline EnableIf_t< IsDenseArray_v<TT1> && ( !IsSMPAssignable_v<TT1> || !IsSMPAss
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions()   , "Invalid array sizes"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions()   , "Invalid array sizes"    );
 
-   schurAssign( ~lhs, ~rhs );
+   schurAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -497,13 +497,13 @@ inline EnableIf_t< IsDenseArray_v<TT1> && IsSMPAssignable_v<TT1> && IsSMPAssigna
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<TT1> );
    BLAZE_CONSTRAINT_MUST_NOT_BE_SMP_ASSIGNABLE( ElementType_t<TT2> );
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions()   , "Invalid array sizes"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions()   , "Invalid array sizes"    );
 
-   if( isSerialSectionActive() || !(~rhs).canSMPAssign() ) {
-      schurAssign( ~lhs, ~rhs );
+   if( isSerialSectionActive() || !(*rhs).canSMPAssign() ) {
+      schurAssign( *lhs, *rhs );
    }
    else {
-      hpxAssign( ~lhs, ~rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
+      hpxAssign( *lhs, *rhs, []( auto& a, const auto& b ){ schurAssign( a, b ); } );
    }
 }
 /*! \endcond */
@@ -541,9 +541,9 @@ inline EnableIf_t< IsDenseArray_v<TT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions()   , "Invalid array sizes"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions()   , "Invalid array sizes"    );
 
-   multAssign( ~lhs, ~rhs );
+   multAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************

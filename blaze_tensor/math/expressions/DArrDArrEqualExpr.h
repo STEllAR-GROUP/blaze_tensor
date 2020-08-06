@@ -114,20 +114,20 @@ inline bool //EnableIf_t< !DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
    using CT2 = CompositeType_t<MT2>;
 
    // Early exit in case the array sizes don't match
-   if( ( ~lhs ).dimensions() != ( ~rhs ).dimensions() ) {
+   if( ( *lhs ).dimensions() != ( *rhs ).dimensions() ) {
       return false;
    }
 
    constexpr size_t N = MT1::num_dimensions;
 
    // Evaluation of the two dense array operands
-   CT1 A( ~lhs );
-   CT2 B( ~rhs );
+   CT1 A( *lhs );
+   CT2 B( *rhs );
 
    // In order to compare the two arrays, the data values of the lower-order data
    // type are converted to the higher-order data type within the equal function.
    return ArrayForEachGroupedAllOf(
-      ( ~lhs ).dimensions(), [&]( std::array< size_t, N > const& dims ) {
+      ( *lhs ).dimensions(), [&]( std::array< size_t, N > const& dims ) {
          return equal( A( dims ), B( dims ) );
       } );
 }
@@ -160,15 +160,15 @@ inline bool //EnableIf_t< !DArrDArrEqualExprHelper<MT1,MT2>::value, bool >
 //    using XT2 = RemoveReference_t<CT2>;
 //
 //    // Early exit in case the array sizes don't match
-//    auto const& rhsdims = ( ~rhs ).dimensions();
-//    if( ArrayDimAnyOf( ( ~lhs ).dimensions(),
+//    auto const& rhsdims = ( *rhs ).dimensions();
+//    if( ArrayDimAnyOf( ( *lhs ).dimensions(),
 //           [&]( size_t i, size_t dim ) { return dim != rhsdims[i]; } ) ) {
 //       return false;
 //    }
 //
 //    // Evaluation of the two dense array operands
-//    CT1 A( ~lhs );
-//    CT2 B( ~rhs );
+//    CT1 A( *lhs );
+//    CT2 B( *rhs );
 //
 //    constexpr size_t SIMDSIZE = SIMDTrait< ElementType_t<MT1> >::size;
 //    constexpr bool remainder( !IsPadded_v<XT1> || !IsPadded_v<XT2> );

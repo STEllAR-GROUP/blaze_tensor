@@ -631,7 +631,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense array operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense array operand
@@ -639,7 +639,7 @@ class DArrDArrMapExpr
       BLAZE_INTERNAL_ASSERT( A.dimensions() == rhs.lhs_.dimensions(), "Invalid number of elements" );
       BLAZE_INTERNAL_ASSERT( B.dimensions() == rhs.rhs_.dimensions(), "Invalid number of elements" );
 
-      assign( ~lhs, map( A, B, rhs.op_ ) );
+      assign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -664,7 +664,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense array operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense array operand
@@ -672,7 +672,7 @@ class DArrDArrMapExpr
       BLAZE_INTERNAL_ASSERT( A.dimensions() == rhs.lhs_.dimensions(), "Invalid number of elements" );
       BLAZE_INTERNAL_ASSERT( B.dimensions() == rhs.rhs_.dimensions(), "Invalid number of elements" );
 
-      addAssign( ~lhs, map( A, B, rhs.op_ ) );
+      addAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -697,7 +697,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense array operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense array operand
@@ -705,7 +705,7 @@ class DArrDArrMapExpr
       BLAZE_INTERNAL_ASSERT( A.dimensions() == rhs.lhs_.dimensions(), "Invalid number of elements" );
       BLAZE_INTERNAL_ASSERT( B.dimensions() == rhs.rhs_.dimensions(), "Invalid number of elements" );
 
-      subAssign( ~lhs, map( A, B, rhs.op_ ) );
+      subAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -730,7 +730,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( serial( rhs.lhs_ ) );  // Evaluation of the left-hand side dense array operand
       RT B( serial( rhs.rhs_ ) );  // Evaluation of the right-hand side dense array operand
@@ -738,7 +738,7 @@ class DArrDArrMapExpr
       BLAZE_INTERNAL_ASSERT( A.dimensions() == rhs.lhs_.dimensions(), "Invalid number of elements" );
       BLAZE_INTERNAL_ASSERT( B.dimensions() == rhs.rhs_.dimensions(), "Invalid number of elements" );
 
-      schurAssign( ~lhs, map( A, B, rhs.op_ ) );
+      schurAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -763,7 +763,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense array operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense array operand
@@ -771,7 +771,7 @@ class DArrDArrMapExpr
       BLAZE_INTERNAL_ASSERT( A.dimensions() == rhs.lhs_.dimensions(), "Invalid number of elements" );
       BLAZE_INTERNAL_ASSERT( B.dimensions() == rhs.rhs_.dimensions(), "Invalid number of elements" );
 
-      smpAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -797,7 +797,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense array operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense array operand
@@ -805,7 +805,7 @@ class DArrDArrMapExpr
       BLAZE_INTERNAL_ASSERT( A.dimensions() == rhs.lhs_.dimensions(), "Invalid number of elements" );
       BLAZE_INTERNAL_ASSERT( B.dimensions() == rhs.rhs_.dimensions(), "Invalid number of elements" );
 
-      smpAddAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpAddAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -831,7 +831,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense array operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense array operand
@@ -839,7 +839,7 @@ class DArrDArrMapExpr
       BLAZE_INTERNAL_ASSERT( A.dimensions() == rhs.lhs_.dimensions(), "Invalid number of elements" );
       BLAZE_INTERNAL_ASSERT( B.dimensions() == rhs.rhs_.dimensions(), "Invalid number of elements" );
 
-      smpSubAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpSubAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -865,7 +865,7 @@ class DArrDArrMapExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       LT A( rhs.lhs_ );  // Evaluation of the left-hand side dense array operand
       RT B( rhs.rhs_ );  // Evaluation of the right-hand side dense array operand
@@ -873,7 +873,7 @@ class DArrDArrMapExpr
       BLAZE_INTERNAL_ASSERT( A.dimensions() == rhs.lhs_.dimensions(), "Invalid number of elements" );
       BLAZE_INTERNAL_ASSERT( B.dimensions() == rhs.rhs_.dimensions(), "Invalid number of elements" );
 
-      smpSchurAssign( ~lhs, map( A, B, rhs.op_ ) );
+      smpSchurAssign( *lhs, map( A, B, rhs.op_ ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -925,12 +925,12 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   if( (~lhs).dimensions() != (~rhs).dimensions() ) {
+   if( (*lhs).dimensions() != (*rhs).dimensions() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Array sizes do not match" );
    }
 
    using ReturnType = const DArrDArrMapExpr<MT1,MT2,OP>;
-   return ReturnType( ~lhs, ~rhs, op );
+   return ReturnType( *lhs, *rhs, op );
 }
 //*************************************************************************************************
 
@@ -960,7 +960,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Min() );
+   return map( *lhs, *rhs, Min() );
 }
 //*************************************************************************************************
 
@@ -990,7 +990,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Max() );
+   return map( *lhs, *rhs, Max() );
 }
 //*************************************************************************************************
 
@@ -1020,7 +1020,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Hypot() );
+   return map( *lhs, *rhs, Hypot() );
 }
 //*************************************************************************************************
 
@@ -1050,7 +1050,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Pow() );
+   return map( *lhs, *rhs, Pow() );
 }
 //*************************************************************************************************
 
@@ -1080,7 +1080,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( ~lhs, ~rhs, Atan2() );
+   return map( *lhs, *rhs, Atan2() );
 }
 //*************************************************************************************************
 

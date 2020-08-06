@@ -381,13 +381,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.dm_ ) );
+      CT tmp( serial( *rhs.dm_ ) );
 
-      assign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      assign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -414,13 +414,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.dm_ ) );
+      CT tmp( serial( *rhs.dm_ ) );
 
-      addAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      addAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -447,13 +447,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.dm_ ) );
+      CT tmp( serial( *rhs.dm_ ) );
 
-      subAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      subAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -480,13 +480,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.dm_ ) );
+      CT tmp( serial( *rhs.dm_ ) );
 
-      schurAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      schurAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -513,13 +513,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( serial( ~rhs.dm_ ) );
+      CT tmp( serial( *rhs.dm_ ) );
 
-      multAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      multAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -546,13 +546,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -579,13 +579,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpAddAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpAddAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -612,13 +612,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpSubAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpSubAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -645,13 +645,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpSchurAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpSchurAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -678,13 +678,13 @@ class DMatExpandExpr
 
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      CT tmp( ~rhs.dm_ );
+      CT tmp( *rhs.dm_ );
 
-      smpMultAssign( ~lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
+      smpMultAssign( *lhs, expand<CEAs...>( tmp, rhs.expansion() ) );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -751,7 +751,7 @@ inline decltype(auto) expand( const DenseMatrix<MT, SO>& dm, size_t expansion )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DMatExpandExpr<MT>;
-   return ReturnType( ~dm, expansion );
+   return ReturnType( *dm, expansion );
 }
 //*************************************************************************************************
 
@@ -802,7 +802,7 @@ inline decltype(auto) expand( const DenseMatrix<MT, SO>& dm )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DMatExpandExpr<MT,E>;
-   return ReturnType( ~dm );
+   return ReturnType( *dm );
 }
 //*************************************************************************************************
 
@@ -829,7 +829,7 @@ inline decltype(auto) expand( const DenseMatrix<MT, SO>& dm, size_t expansion )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DMatExpandExpr<MT,E>;
-   return ReturnType( ~dm );
+   return ReturnType( *dm );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -75,8 +75,8 @@ namespace blaze {
 template< typename MT >// Type of the tensor
 ThreadMapping createThreadMapping( size_t threads, const Tensor<MT>& A )
 {
-   const size_t M( (~A).rows() );
-   const size_t N( (~A).columns() );
+   const size_t M( (*A).rows() );
+   const size_t N( (*A).columns() );
 
    if( M > N )
    {

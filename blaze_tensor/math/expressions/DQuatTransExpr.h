@@ -654,12 +654,12 @@ inline void reset(size_t i, size_t l, size_t k)
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( *lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       assign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -694,11 +694,11 @@ inline void reset(size_t i, size_t l, size_t k)
 //       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, TmpType );
 //       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 //
-//       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-//       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+//       BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+//       BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 //
 //       const TmpType tmp( serial( rhs ) );
-//       assign( ~lhs, tmp );
+//       assign( *lhs, tmp );
 //    }
    /*! \endcond */
    //**********************************************************************************************
@@ -723,12 +723,12 @@ inline void reset(size_t i, size_t l, size_t k)
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( *lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       addAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -758,12 +758,12 @@ inline void reset(size_t i, size_t l, size_t k)
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( *lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       subAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -793,12 +793,12 @@ inline void reset(size_t i, size_t l, size_t k)
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( *lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       schurAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -836,12 +836,12 @@ inline void reset(size_t i, size_t l, size_t k)
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( *lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       smpAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -876,11 +876,11 @@ inline void reset(size_t i, size_t l, size_t k)
 //       BLAZE_CONSTRAINT_MATRICES_MUST_HAVE_SAME_STORAGE_ORDER( MT2, TmpType );
 //       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( TmpType );
 //
-//       BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-//       BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+//       BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+//       BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 //
 //       const TmpType tmp( rhs );
-//       smpAssign( ~lhs, tmp );
+//       smpAssign( *lhs, tmp );
 //    }
    /*! \endcond */
    //**********************************************************************************************
@@ -905,12 +905,12 @@ inline void reset(size_t i, size_t l, size_t k)
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( *lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       smpAddAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -940,12 +940,12 @@ inline void reset(size_t i, size_t l, size_t k)
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( *lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       smpSubAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -976,12 +976,12 @@ inline void reset(size_t i, size_t l, size_t k)
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( (~lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
-      BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
-      BLAZE_INTERNAL_ASSERT( (~lhs).columns() == rhs.columns(), "Invalid number of columns" );
+      BLAZE_INTERNAL_ASSERT( (*lhs).quats()   == rhs.quats()  , "Invalid number of quats"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == rhs.pages()  , "Invalid number of pages"   );
+      BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == rhs.rows()   , "Invalid number of rows"    );
+      BLAZE_INTERNAL_ASSERT( (*lhs).columns() == rhs.columns(), "Invalid number of columns" );
 
-      DQuatTransposer<MT2> tmp( ~lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
+      DQuatTransposer<MT2> tmp( *lhs, rhs.quats(), rhs.pages(), rhs.rows(), rhs.columns() );
       smpSchurAssign( tmp, rhs.dm_ );
    }
    /*! \endcond */
@@ -1044,7 +1044,7 @@ inline decltype(auto) trans( const DenseArray<MT>& dm, RTAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DQuatTransExpr<MT, P, O, M, N>;
-   return ReturnType( ~dm, args... );
+   return ReturnType( *dm, args... );
 }
 //*************************************************************************************************
 
@@ -1076,7 +1076,7 @@ inline decltype(auto) trans( DenseArray<MT>& dm, RTAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DQuatTransExpr<MT, P, O, M, N>;
-   return ReturnType( ~dm, args... );
+   return ReturnType( *dm, args... );
 }
 //*************************************************************************************************
 
@@ -1108,7 +1108,7 @@ inline decltype(auto) trans( DenseArray<MT>&& dm, RTAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DQuatTransExpr<MT, P, O, M, N>;
-   return ReturnType( ~dm, args... );
+   return ReturnType( *dm, args... );
 }
 //*************************************************************************************************
 
@@ -1136,7 +1136,7 @@ inline decltype(auto) trans( const DenseArray<MT>& dm, RTAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DQuatTransExpr<MT>;
-   return ReturnType( ~dm, args... );
+   return ReturnType( *dm, args... );
 }
 //*************************************************************************************************
 
@@ -1164,7 +1164,7 @@ inline decltype(auto) trans( DenseArray<MT>& dm, RTAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DQuatTransExpr<MT>;
-   return ReturnType( ~dm, args... );
+   return ReturnType( *dm, args... );
 }
 //*************************************************************************************************
 
@@ -1192,7 +1192,7 @@ inline decltype(auto) trans( DenseArray<MT>&& dm, RTAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DQuatTransExpr<MT>;
-   return ReturnType( ~dm, args... );
+   return ReturnType( *dm, args... );
 }
 //*************************************************************************************************
 
@@ -1221,7 +1221,7 @@ inline decltype(auto) trans( const DenseArray<MT>& dm, const T* indices, size_t 
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DQuatTransExpr<MT>;
-   return ReturnType( ~dm, indices, n, args... );
+   return ReturnType( *dm, indices, n, args... );
 }
 //*************************************************************************************************
 
@@ -1250,7 +1250,7 @@ inline decltype(auto) trans( DenseArray<MT>& dm, const T* indices, size_t n, RTA
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DQuatTransExpr<MT>;
-   return ReturnType( ~dm, indices, n, args... );
+   return ReturnType( *dm, indices, n, args... );
 }
 //*************************************************************************************************
 
@@ -1279,7 +1279,7 @@ inline decltype(auto) trans( DenseArray<MT>&& dm, const T* indices, size_t n, RT
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = DQuatTransExpr<MT>;
-   return ReturnType( ~dm, indices, n, args... );
+   return ReturnType( *dm, indices, n, args... );
 }
 //*************************************************************************************************
 
@@ -1307,7 +1307,7 @@ inline decltype(auto) trans( const DenseArray<MT>& dm, std::index_sequence<Is...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans<Is...>( ~dm, args... );
+   return trans<Is...>( *dm, args... );
 }
 //*************************************************************************************************
 
@@ -1335,7 +1335,7 @@ inline decltype(auto) trans( DenseArray<MT>& dm, std::index_sequence<Is...> indi
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans<Is...>( ~dm, args... );
+   return trans<Is...>( *dm, args... );
 }
 //*************************************************************************************************
 
@@ -1363,7 +1363,7 @@ inline decltype(auto) trans( DenseArray<MT>&& dm, std::index_sequence<Is...> ind
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans<Is...>( ~dm, args... );
+   return trans<Is...>( *dm, args... );
 }
 //*************************************************************************************************
 
@@ -1391,7 +1391,7 @@ inline decltype(auto) trans( const DenseArray<MT>& dm, std::initializer_list<T> 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( ~dm, indices.begin(), indices.size(), args... );
+   return trans( *dm, indices.begin(), indices.size(), args... );
 }
 //*************************************************************************************************
 
@@ -1419,7 +1419,7 @@ inline decltype(auto) trans( DenseArray<MT>& dm, std::initializer_list<T> indice
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( ~dm, indices.begin(), indices.size(), args... );
+   return trans( *dm, indices.begin(), indices.size(), args... );
 }
 //*************************************************************************************************
 
@@ -1447,7 +1447,7 @@ inline decltype(auto) trans( DenseArray<MT>&& dm, std::initializer_list<T> indic
 {
    BLAZE_FUNCTION_TRACE;
 
-   return trans( ~dm, indices.begin(), indices.size(), args... );
+   return trans( *dm, indices.begin(), indices.size(), args... );
 }
 //*************************************************************************************************
 
@@ -1491,7 +1491,7 @@ inline decltype(auto) trans( const DQuatTransExpr<MT, CTAs...>& dm, RTAs... args
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DQuatTransExpr<MT, P, O, M, N>;
-   return ReturnType( ~dm, args... );
+   return ReturnType( *dm, args... );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1523,7 +1523,7 @@ inline decltype(auto) trans( const DQuatTransExpr<MT, CTAs...>& dm, RTAs... args
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const DQuatTransExpr<MT, CTAs...>;
-   return ReturnType( ~dm, args... );
+   return ReturnType( *dm, args... );
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -116,7 +116,7 @@ inline decltype(auto) quatslice( Array<AT>& quaternion, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = QuatSlice_<AT,I>;
-   return ReturnType( ~quaternion, args... );
+   return ReturnType( *quaternion, args... );
 }
 //*************************************************************************************************
 
@@ -163,7 +163,7 @@ inline decltype(auto) quatslice( const Array<AT>& quaternion, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const QuatSlice_<const AT,I>;
-   return ReturnType( ~quaternion, args... );
+   return ReturnType( *quaternion, args... );
 }
 //*************************************************************************************************
 
@@ -190,7 +190,7 @@ inline decltype(auto) quatslice( Array<AT>&& quaternion, RRAs... args )
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = QuatSlice_<AT,I>;
-   return ReturnType( ~quaternion, args... );
+   return ReturnType( *quaternion, args... );
 }
 //*************************************************************************************************
 
@@ -236,7 +236,7 @@ inline decltype(auto) quatslice( Array<AT>& quaternion, size_t index, RRAs... ar
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = QuatSlice_<AT>;
-   return ReturnType( ~quaternion, index, args... );
+   return ReturnType( *quaternion, index, args... );
 }
 //*************************************************************************************************
 
@@ -282,7 +282,7 @@ inline decltype(auto) quatslice( const Array<AT>& quaternion, size_t index, RRAs
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = const QuatSlice_<const AT>;
-   return ReturnType( ~quaternion, index, args... );
+   return ReturnType( *quaternion, index, args... );
 }
 //*************************************************************************************************
 
@@ -309,7 +309,7 @@ inline decltype(auto) quatslice( Array<AT>&& quaternion, size_t index, RRAs... a
    BLAZE_FUNCTION_TRACE;
 
    using ReturnType = QuatSlice_<AT>;
-   return ReturnType( ~quaternion, index, args... );
+   return ReturnType( *quaternion, index, args... );
 }
 //*************************************************************************************************
 
@@ -341,8 +341,8 @@ inline decltype(auto) quatslice( Array<AT>&& quaternion, size_t index, RRAs... a
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return quatslice<CRAs...>( (~quaternion).leftOperand(), args... ) +
-//          quatslice<CRAs...>( (~quaternion).rightOperand(), args... );
+//   return quatslice<CRAs...>( (*quaternion).leftOperand(), args... ) +
+//          quatslice<CRAs...>( (*quaternion).rightOperand(), args... );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -367,8 +367,8 @@ inline decltype(auto) quatslice( Array<AT>&& quaternion, size_t index, RRAs... a
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return quatslice<CRAs...>( (~quaternion).leftOperand(), args... ) -
-//          quatslice<CRAs...>( (~quaternion).rightOperand(), args... );
+//   return quatslice<CRAs...>( (*quaternion).leftOperand(), args... ) -
+//          quatslice<CRAs...>( (*quaternion).rightOperand(), args... );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -392,8 +392,8 @@ inline decltype(auto) quatslice( Array<AT>&& quaternion, size_t index, RRAs... a
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return quatslice<CRAs...>( (~quaternion).leftOperand(), args... ) *
-//          quatslice<CRAs...>( (~quaternion).rightOperand(), args... );
+//   return quatslice<CRAs...>( (*quaternion).leftOperand(), args... ) *
+//          quatslice<CRAs...>( (*quaternion).rightOperand(), args... );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -418,7 +418,7 @@ inline decltype(auto) quatslice( Array<AT>&& quaternion, size_t index, RRAs... a
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return quatslice<CRAs...>( (~quaternion).leftOperand(), args... ) * (~quaternion).rightOperand();
+//   return quatslice<CRAs...>( (*quaternion).leftOperand(), args... ) * (*quaternion).rightOperand();
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -446,12 +446,12 @@ inline decltype(auto) quatslice( Array<AT>&& quaternion, size_t index, RRAs... a
 //    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-//       if( (~quaternion).quatslices() <= I ) {
+//       if( (*quaternion).quatslices() <= I ) {
 //          BLAZE_THQUATSLICE_INVALID_ARGUMENT( "Invalid quatslice access index" );
 //       }
 //    }
 //
-//    return (~quaternion).leftOperand()[I] * (~quaternion).rightOperand();
+//    return (*quaternion).leftOperand()[I] * (*quaternion).rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -479,12 +479,12 @@ inline decltype(auto) quatslice( Array<AT>&& quaternion, size_t index, RRAs... a
 //    MAYBE_UNUSED( args... );
 //
 //    if( !Contains_v< TypeList<RRAs...>, Unchecked > ) {
-//       if( (~quaternion).quatslices() <= index ) {
+//       if( (*quaternion).quatslices() <= index ) {
 //          BLAZE_THQUATSLICE_INVALID_ARGUMENT( "Invalid quatslice access index" );
 //       }
 //    }
 //
-//    return (~quaternion).leftOperand()[index] * (~quaternion).rightOperand();
+//    return (*quaternion).leftOperand()[index] * (*quaternion).rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -509,7 +509,7 @@ inline decltype(auto) quatslice( const ArrScalarMultExpr<AT>& quaternion, RRAs..
 {
    BLAZE_FUNCTION_TRACE;
 
-   return quatslice<CRAs...>( (~quaternion).leftOperand(), args... ) * (~quaternion).rightOperand();
+   return quatslice<CRAs...>( (*quaternion).leftOperand(), args... ) * (*quaternion).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -534,7 +534,7 @@ inline decltype(auto) quatslice( const ArrScalarDivExpr<AT>& quaternion, RRAs...
 {
    BLAZE_FUNCTION_TRACE;
 
-   return quatslice<CRAs...>( (~quaternion).leftOperand(), args... ) / (~quaternion).rightOperand();
+   return quatslice<CRAs...>( (*quaternion).leftOperand(), args... ) / (*quaternion).rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -559,7 +559,7 @@ inline decltype(auto) quatslice( const ArrMapExpr<AT>& quaternion, RRAs... args 
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( quatslice<CRAs...>( (~quaternion).operand(), args... ), (~quaternion).operation() );
+   return map( quatslice<CRAs...>( (*quaternion).operand(), args... ), (*quaternion).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -584,9 +584,9 @@ inline decltype(auto) quatslice( const ArrArrMapExpr<AT>& quaternion, RRAs... ar
 {
    BLAZE_FUNCTION_TRACE;
 
-   return map( quatslice<CRAs...>( (~quaternion).leftOperand(), args... ),
-               quatslice<CRAs...>( (~quaternion).rightOperand(), args... ),
-               (~quaternion).operation() );
+   return map( quatslice<CRAs...>( (*quaternion).leftOperand(), args... ),
+               quatslice<CRAs...>( (*quaternion).rightOperand(), args... ),
+               (*quaternion).operation() );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -611,7 +611,7 @@ inline decltype(auto) quatslice( const ArrArrMapExpr<AT>& quaternion, RRAs... ar
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return eval( quatslice<CRAs...>( (~quaternion).operand(), args... ) );
+//   return eval( quatslice<CRAs...>( (*quaternion).operand(), args... ) );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -636,7 +636,7 @@ inline decltype(auto) quatslice( const ArrArrMapExpr<AT>& quaternion, RRAs... ar
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return serial( quatslice<CRAs...>( (~quaternion).operand(), args... ) );
+//   return serial( quatslice<CRAs...>( (*quaternion).operand(), args... ) );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -661,7 +661,7 @@ inline decltype(auto) quatslice( const ArrArrMapExpr<AT>& quaternion, RRAs... ar
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return quatslice<CRAs...>( (~quaternion).operand(), args... );
+//   return quatslice<CRAs...>( (*quaternion).operand(), args... );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -689,7 +689,7 @@ inline decltype(auto) quatslice( const ArrArrMapExpr<AT>& quaternion, RRAs... ar
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return quatslice<ML, MK, MI, MJ>( evaluate( ~quaternion ), index, args... );
+//   return quatslice<ML, MK, MI, MJ>( evaluate( *quaternion ), index, args... );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -713,7 +713,7 @@ inline decltype(auto) quatslice( const ArrArrMapExpr<AT>& quaternion, RRAs... ar
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return quatslice( evaluate( ~quaternion ), index, args... );
+//   return quatslice( evaluate( *quaternion ), index, args... );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -742,7 +742,7 @@ inline decltype(auto) quatslice( const ArrArrMapExpr<AT>& quaternion, RRAs... ar
 //
 //   MAYBE_UNUSED( args... );
 //
-//   return submatrix( (~quaternion).operand(), 0UL, 0UL, (~quaternion).rows(), (~quaternion).columns() );
+//   return submatrix( (*quaternion).operand(), 0UL, 0UL, (*quaternion).rows(), (*quaternion).columns() );
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -775,7 +775,7 @@ inline decltype(auto) quatslice( const ArrArrMapExpr<AT>& quaternion, RRAs... ar
 //{
 //   BLAZE_FUNCTION_TRACE;
 //
-//   return trans(quatslice<CEAs...>( (~matrix).leftOperand(), args... ) * (~matrix).rightOperand());
+//   return trans(quatslice<CEAs...>( (*matrix).leftOperand(), args... ) * (*matrix).rightOperand());
 //}
 /*! \endcond */
 //*************************************************************************************************
@@ -1118,12 +1118,12 @@ template< typename AT     // Type of the quaternion
 BLAZE_ALWAYS_INLINE bool
    tryMult( const QuatSlice<AT,CRAs...>& quatslice, size_t page, size_t row, size_t col, size_t pages, size_t rows, size_t cols, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( page <= (~quatslice).pages(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( page + pages <= (~quatslice).pages(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( row <= (~quatslice).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( row + rows <= (~quatslice).rows(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( col <= (~quatslice).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( col + cols <= (~quatslice).columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( page <= (*quatslice).pages(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( page + pages <= (*quatslice).pages(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( row <= (*quatslice).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( row + rows <= (*quatslice).rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( col <= (*quatslice).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( col + cols <= (*quatslice).columns(), "Invalid columns range size" );
 
    return true;
 }
@@ -1183,12 +1183,12 @@ template< typename AT     // Type of the quaternion
 BLAZE_ALWAYS_INLINE bool
    tryDiv( const QuatSlice<AT,CRAs...>& quatslice, size_t page, size_t row, size_t col, size_t pages, size_t rows, size_t cols, const ET& value )
 {
-   BLAZE_INTERNAL_ASSERT( page <= (~quatslice).pages(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( page + pages <= (~quatslice).pages(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( row <= (~quatslice).rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( row + rows <= (~quatslice).rows(), "Invalid rows range size" );
-   BLAZE_INTERNAL_ASSERT( col <= (~quatslice).columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( col + cols <= (~quatslice).columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( page <= (*quatslice).pages(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( page + pages <= (*quatslice).pages(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( row <= (*quatslice).rows(), "Invalid row access index" );
+   BLAZE_INTERNAL_ASSERT( row + rows <= (*quatslice).rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( col <= (*quatslice).columns(), "Invalid column access index" );
+   BLAZE_INTERNAL_ASSERT( col + cols <= (*quatslice).columns(), "Invalid columns range size" );
 
    return true;
 }
@@ -1218,11 +1218,11 @@ inline bool tryAssign( const QuatSlice<AT,CRAs...>& lhs,
                        const Tensor<TT>& rhs, size_t k, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( k <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( k + (~rhs).pages() <= lhs.pages(), "Invalid page range size" );
+   BLAZE_INTERNAL_ASSERT( k + (*rhs).pages() <= lhs.pages(), "Invalid page range size" );
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
    return true;
 }
@@ -1252,11 +1252,11 @@ inline bool tryAddAssign( const QuatSlice<AT,CRAs...>& lhs,
                           const Tensor<TT>& rhs, size_t k, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( k <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( k + (~rhs).pages() <= lhs.pages(), "Invalid page range size" );
+   BLAZE_INTERNAL_ASSERT( k + (*rhs).pages() <= lhs.pages(), "Invalid page range size" );
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
    return true;
 }
@@ -1286,11 +1286,11 @@ inline bool trySubAssign( const QuatSlice<AT,CRAs...>& lhs,
                           const Tensor<TT>& rhs, size_t k, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( k <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( k + (~rhs).pages() <= lhs.pages(), "Invalid page range size" );
+   BLAZE_INTERNAL_ASSERT( k + (*rhs).pages() <= lhs.pages(), "Invalid page range size" );
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
    return true;
 }
@@ -1320,11 +1320,11 @@ inline bool tryMultAssign( const QuatSlice<AT,CRAs...>& lhs,
                            const Vector<VT,true>& rhs, size_t k, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( k <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( k + (~rhs).pages() <= lhs.pages(), "Invalid page range size" );
+   BLAZE_INTERNAL_ASSERT( k + (*rhs).pages() <= lhs.pages(), "Invalid page range size" );
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
    return true;
 }
@@ -1354,11 +1354,11 @@ inline bool tryDivAssign( const QuatSlice<AT,CRAs...>& lhs,
                           const Tensor<TT>& rhs, size_t k, size_t i, size_t j )
 {
    BLAZE_INTERNAL_ASSERT( k <= lhs.pages(), "Invalid page access index" );
-   BLAZE_INTERNAL_ASSERT( k + (~rhs).pages() <= lhs.pages(), "Invalid page range size" );
+   BLAZE_INTERNAL_ASSERT( k + (*rhs).pages() <= lhs.pages(), "Invalid page range size" );
    BLAZE_INTERNAL_ASSERT( i <= lhs.rows(), "Invalid row access index" );
-   BLAZE_INTERNAL_ASSERT( i + (~rhs).rows() <= lhs.rows(), "Invalid rows range size" );
+   BLAZE_INTERNAL_ASSERT( i + (*rhs).rows() <= lhs.rows(), "Invalid rows range size" );
    BLAZE_INTERNAL_ASSERT( j <= lhs.columns(), "Invalid column access index" );
-   BLAZE_INTERNAL_ASSERT( j + (~rhs).columns() <= lhs.columns(), "Invalid columns range size" );
+   BLAZE_INTERNAL_ASSERT( j + (*rhs).columns() <= lhs.columns(), "Invalid columns range size" );
 
    return true;
 }

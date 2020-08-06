@@ -899,12 +899,12 @@ inline QuatSlice<AT,CRAs...>&
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<AT2> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<AT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<AT>, CompositeType_t<AT2>, const AT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    //if( !tryAssign( quaternion_, right, std::array<size_t, 4>{quat(), 0UL, 0UL, 0UL} ) ) {
    //   BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
@@ -953,12 +953,12 @@ inline QuatSlice<AT,CRAs...>&
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<AT2> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<AT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<AT>, CompositeType_t<AT2>, const AT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    //if( !tryAddAssign( quaternion_, right, quat(), 0UL, 0UL, 0UL ) ) {
    //   BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
@@ -1005,12 +1005,12 @@ inline QuatSlice<AT,CRAs...>&
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<AT2> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<AT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<AT>, CompositeType_t<AT2>, const AT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    //if( !trySubAssign( quaternion_, right, quat(), 0UL, 0UL, 0UL ) ) {
    //   BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
@@ -1061,22 +1061,22 @@ inline QuatSlice<AT,CRAs...>&
 
    using SchurType = SchurTrait_t< ResultType, ResultType_t<AT2> >;
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() || pages() != (~rhs).pages()  ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() || pages() != (*rhs).pages()  ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   //if( !trySchurAssign( quaternion_, (~rhs), quat(), 0UL, 0UL, 0UL ) ) {
+   //if( !trySchurAssign( quaternion_, (*rhs), quat(), 0UL, 0UL, 0UL ) ) {
    //   BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted quaternion" );
    //}
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<AT> && (~rhs).canAlias( &quaternion_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( IsReference_v<AT> && (*rhs).canAlias( &quaternion_ ) ) {
+      const SchurType tmp( *this % (*rhs) );
       smpSchurAssign( left, tmp );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( quaternion_ ), "Invariant violation detected" );
@@ -1678,21 +1678,21 @@ template< typename AT2 >     // Type of the right-hand side dense matrix
 inline auto QuatSlice<AT,CRAs...>::assign( const DenseTensor<AT2>& rhs )
    -> EnableIf_t< !VectorizedAssign_v<AT2> >
 {
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages(),   "Invalid number of pages" );
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows(),    "Invalid number of rows" );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows(),    "Invalid number of rows" );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   const size_t jpos((~rhs).columns() & size_t(-2));
+   const size_t jpos((*rhs).columns() & size_t(-2));
    for (size_t k = 0UL; k < pages(); ++k)
    {
-      for (size_t i = 0UL; i < (~rhs).rows(); ++i)
+      for (size_t i = 0UL; i < (*rhs).rows(); ++i)
       {
          for (size_t j = 0UL; j < jpos; j += 2UL) {
-            quaternion_(quat(), k, i, j) = (~rhs)(k, i, j);
-            quaternion_(quat(), k, i, j + 1UL) = (~rhs)(k, i, j + 1UL);
+            quaternion_(quat(), k, i, j) = (*rhs)(k, i, j);
+            quaternion_(quat(), k, i, j + 1UL) = (*rhs)(k, i, j + 1UL);
          }
-         if (jpos < (~rhs).columns())
-            quaternion_(quat(), k, i, jpos) = (~rhs)(k, i, jpos);
+         if (jpos < (*rhs).columns())
+            quaternion_(quat(), k, i, jpos) = (*rhs)(k, i, jpos);
       }
    }
 }
@@ -1720,9 +1720,9 @@ inline auto QuatSlice<AT,CRAs...>::assign( const DenseTensor<AT2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages"  );
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"   );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns");
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages"  );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"   );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns");
 
    constexpr bool remainder( !IsPadded_v<AT> || !IsPadded_v<AT2> );
 
@@ -1735,9 +1735,9 @@ inline auto QuatSlice<AT,CRAs...>::assign( const DenseTensor<AT2>& rhs )
       {
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<AT2> right((~rhs).begin(i, k));
+         ConstIterator_t<AT2> right((*rhs).begin(i, k));
 
-         if (useStreaming && cols > (cacheSize / (sizeof(ElementType) * 3UL)) && !(~rhs).isAliased(&quaternion_))
+         if (useStreaming && cols > (cacheSize / (sizeof(ElementType) * 3UL)) && !(*rhs).isAliased(&quaternion_))
          {
             for (; j < jpos; j += SIMDSIZE) {
                left.stream(right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -1786,19 +1786,19 @@ template< typename AT2 >     // Type of the right-hand side dense matrix
 inline auto QuatSlice<AT,CRAs...>::addAssign( const DenseTensor<AT2>& rhs )
    -> EnableIf_t< !VectorizedAddAssign_v<AT2> >
 {
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for (size_t k = 0UL; k < pages(); ++k) {
-      for (size_t i = 0UL; i < (~rhs).rows(); ++i) {
-         const size_t jpos((~rhs).columns() & size_t(-2));
+      for (size_t i = 0UL; i < (*rhs).rows(); ++i) {
+         const size_t jpos((*rhs).columns() & size_t(-2));
          for (size_t j = 0UL; j < jpos; j += 2UL) {
-            quaternion_(quat(), k, i, j)       += (~rhs)(k, i, j);
-            quaternion_(quat(), k, i, j + 1UL) += (~rhs)(k, i, j + 1UL);
+            quaternion_(quat(), k, i, j)       += (*rhs)(k, i, j);
+            quaternion_(quat(), k, i, j + 1UL) += (*rhs)(k, i, j + 1UL);
          }
-         if (jpos < (~rhs).columns())
-            quaternion_(quat(), k, i, jpos) += (~rhs)(k, i, jpos);
+         if (jpos < (*rhs).columns())
+            quaternion_(quat(), k, i, jpos) += (*rhs)(k, i, jpos);
       }
    }
 }
@@ -1826,9 +1826,9 @@ inline auto QuatSlice<AT,CRAs...>::addAssign( const DenseTensor<AT2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages"  );
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"   );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns");
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages"  );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"   );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns");
 
    constexpr bool remainder( !IsPadded_v<AT> || !IsPadded_v<AT2> );
 
@@ -1841,7 +1841,7 @@ inline auto QuatSlice<AT,CRAs...>::addAssign( const DenseTensor<AT2>& rhs )
       {
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<AT2> right((~rhs).begin(i, k));
+         ConstIterator_t<AT2> right((*rhs).begin(i, k));
 
          for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
             left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -1880,19 +1880,19 @@ template< typename AT2 >     // Type of the right-hand side dense matrix
 inline auto QuatSlice<AT,CRAs...>::subAssign( const DenseTensor<AT2>& rhs )
    -> EnableIf_t< !VectorizedSubAssign_v<AT2> >
 {
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for (size_t k = 0UL; k < pages(); ++k) {
-      for (size_t i = 0UL; i < (~rhs).rows(); ++i) {
-         const size_t jpos((~rhs).columns() & size_t(-2));
+      for (size_t i = 0UL; i < (*rhs).rows(); ++i) {
+         const size_t jpos((*rhs).columns() & size_t(-2));
          for (size_t j = 0UL; j < jpos; j += 2UL) {
-            quaternion_(quat(), k, i, j)       -= (~rhs)(k, i, j);
-            quaternion_(quat(), k, i, j + 1UL) -= (~rhs)(k, i, j + 1UL);
+            quaternion_(quat(), k, i, j)       -= (*rhs)(k, i, j);
+            quaternion_(quat(), k, i, j + 1UL) -= (*rhs)(k, i, j + 1UL);
          }
-         if (jpos < (~rhs).columns())
-            quaternion_(quat(), k, i, jpos) -= (~rhs)(k, i, jpos);
+         if (jpos < (*rhs).columns())
+            quaternion_(quat(), k, i, jpos) -= (*rhs)(k, i, jpos);
       }
    }
 }
@@ -1920,9 +1920,9 @@ inline auto QuatSlice<AT,CRAs...>::subAssign( const DenseTensor<AT2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages"  );
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"   );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns");
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages"  );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"   );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns");
 
    constexpr bool remainder( !IsPadded_v<AT> || !IsPadded_v<AT2> );
 
@@ -1935,7 +1935,7 @@ inline auto QuatSlice<AT,CRAs...>::subAssign( const DenseTensor<AT2>& rhs )
       {
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<AT2> right((~rhs).begin(i, k));
+         ConstIterator_t<AT2> right((*rhs).begin(i, k));
 
          for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
             left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -1974,19 +1974,19 @@ template< typename AT2 >    // Type of the right-hand side dense matrix
 inline auto QuatSlice<AT,CSAs...>::schurAssign( const DenseTensor<AT2>& rhs )
    -> EnableIf_t< !VectorizedSchurAssign_v<AT2> >
 {
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages" );
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    for (size_t k = 0UL; k < pages(); ++k) {
-      for (size_t i = 0UL; i < (~rhs).rows(); ++i) {
-         const size_t jpos((~rhs).columns() & size_t(-2));
+      for (size_t i = 0UL; i < (*rhs).rows(); ++i) {
+         const size_t jpos((*rhs).columns() & size_t(-2));
          for (size_t j = 0UL; j < jpos; j += 2UL) {
-            quaternion_(quat(), k, i, j)       *= (~rhs)(k, i, j);
-            quaternion_(quat(), k, i, j + 1UL) *= (~rhs)(k, i, j + 1UL);
+            quaternion_(quat(), k, i, j)       *= (*rhs)(k, i, j);
+            quaternion_(quat(), k, i, j + 1UL) *= (*rhs)(k, i, j + 1UL);
          }
-         if (jpos < (~rhs).columns())
-            quaternion_(quat(), k, i, jpos) *= (~rhs)(k, i, jpos);
+         if (jpos < (*rhs).columns())
+            quaternion_(quat(), k, i, jpos) *= (*rhs)(k, i, jpos);
       }
    }
 }
@@ -2014,9 +2014,9 @@ inline auto QuatSlice<AT,CSAs...>::schurAssign( const DenseTensor<AT2>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( pages()   == (~rhs).pages()  , "Invalid number of pages"  );
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"   );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns");
+   BLAZE_INTERNAL_ASSERT( pages()   == (*rhs).pages()  , "Invalid number of pages"  );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"   );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns");
 
    constexpr bool remainder( !IsPadded_v<AT> || !IsPadded_v<AT2> );
 
@@ -2029,7 +2029,7 @@ inline auto QuatSlice<AT,CSAs...>::schurAssign( const DenseTensor<AT2>& rhs )
       {
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<AT2> right((~rhs).begin(i, k));
+         ConstIterator_t<AT2> right((*rhs).begin(i, k));
 
          for (; (j + SIMDSIZE * 3UL) < jpos; j += SIMDSIZE * 4UL) {
             left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;

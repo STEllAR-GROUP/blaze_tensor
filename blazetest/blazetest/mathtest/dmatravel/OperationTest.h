@@ -3789,9 +3789,9 @@ void OperationTest<MT>::convertException( const std::exception& ex )
 template< typename MT >  // Type of the dense matrix
 void runTest( const Creator<MT>& creator )
 {
-   for( size_t rep=0UL; rep<repetitions; ++rep ) {
+   //for( size_t rep=0UL; rep<BLAZETEST_REPETITIONS; ++rep ) {
       OperationTest<MT>{ creator };
-   }
+   //}
 }
 //*************************************************************************************************
 

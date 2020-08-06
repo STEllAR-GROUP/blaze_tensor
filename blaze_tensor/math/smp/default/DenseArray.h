@@ -101,9 +101,9 @@ inline EnableIf_t< IsDenseArray_v<TT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions(), "Invalid dimensions"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions(), "Invalid dimensions"    );
 
-   assign( ~lhs, ~rhs );
+   assign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -129,9 +129,9 @@ inline EnableIf_t< IsDenseArray_v<TT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions(), "Invalid dimensions"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions(), "Invalid dimensions"    );
 
-   addAssign( ~lhs, ~rhs );
+   addAssign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -157,9 +157,9 @@ inline EnableIf_t< IsDenseArray_v<TT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions(), "Invalid dimensions"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions(), "Invalid dimensions"    );
 
-   subAssign( ~lhs, ~rhs );
+   subAssign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -186,9 +186,9 @@ inline EnableIf_t< IsDenseArray_v<TT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions(), "Invalid dimensions"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions(), "Invalid dimensions"    );
 
-   schurAssign( ~lhs, ~rhs );
+   schurAssign( *lhs, *rhs );
 }
 //*************************************************************************************************
 
@@ -222,9 +222,9 @@ inline EnableIf_t< IsDenseArray_v<AT1> >
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).dimensions() == (~rhs).dimensions(), "Invalid dimensions"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).dimensions() == (*rhs).dimensions(), "Invalid dimensions"    );
 
-   multAssign( ~lhs, ~rhs );
+   multAssign( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************

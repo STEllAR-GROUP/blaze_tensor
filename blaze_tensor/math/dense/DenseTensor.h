@@ -132,7 +132,7 @@ inline auto operator==( const DenseTensor<T1>& tens, T2 scalar )
    using CT1 = CompositeType_t<T1>;
 
    // Evaluation of the dense tensor operand
-   CT1 A( ~tens );
+   CT1 A( *tens );
 
    // In order to compare the tensor and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type within the equal function.
@@ -234,18 +234,18 @@ inline auto operator*=( DenseTensor<TT>& tens, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, TT& >
 {
    //if( IsRestricted_v<TT> ) {
-   //   if( !tryMult( ~tens, 0UL, 0UL, 0UL, (~tens).pages(), (~tens).rows(), (~tens).columns(), scalar ) ) {
+   //   if( !tryMult( *tens, 0UL, 0UL, 0UL, (*tens).pages(), (*tens).rows(), (*tens).columns(), scalar ) ) {
    //      BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted tensor" );
    //   }
    //}
 
-   decltype(auto) left( derestrict( ~tens ) );
+   decltype(auto) left( derestrict( *tens ) );
 
    smpAssign( left, left * scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~tens ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *tens ), "Invariant violation detected" );
 
-   return ~tens;
+   return *tens;
 }
 //*************************************************************************************************
 
@@ -268,7 +268,7 @@ template< typename TT    // Type of the left-hand side dense tensor
 inline auto operator*=( DenseTensor<TT>&& tens, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, TT& >
 {
-   return operator*=( ~tens, scalar );
+   return operator*=( *tens, scalar );
 }
 //*************************************************************************************************
 
@@ -298,18 +298,18 @@ inline auto operator/=( DenseTensor<TT>& tens, ST scalar )
    BLAZE_USER_ASSERT( !isZero( scalar ), "Division by zero detected" );
 
    //if( IsRestricted_v<TT> ) {
-   //   if( !tryDiv( ~tens, 0UL, 0UL, 0UL, (~tens).pages(), (~tens).rows(), (~tens).columns(), scalar ) ) {
+   //   if( !tryDiv( *tens, 0UL, 0UL, 0UL, (*tens).pages(), (*tens).rows(), (*tens).columns(), scalar ) ) {
    //      BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted tensor" );
    //   }
    //}
 
-   decltype(auto) left( derestrict( ~tens ) );
+   decltype(auto) left( derestrict( *tens ) );
 
    smpAssign( left, left / scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~tens ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *tens ), "Invariant violation detected" );
 
-   return ~tens;
+   return *tens;
 }
 //*************************************************************************************************
 
@@ -334,7 +334,7 @@ template< typename TT    // Type of the left-hand side dense tensor
 inline auto operator/=( DenseTensor<TT>&& tens, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, TT& >
 {
-   return operator/=( ~tens, scalar );
+   return operator/=( *tens, scalar );
 }
 //*************************************************************************************************
 
@@ -417,7 +417,7 @@ bool isnan( const DenseTensor<TT>& dm )
 {
    using CT = CompositeType_t<TT>;
 
-   CT A( ~dm );  // Evaluation of the dense tensor operand
+   CT A( *dm );  // Evaluation of the dense tensor operand
 
    for (size_t k=0UL; k<A.pages(); ++k) {
       for (size_t i=0UL; i<A.rows(); ++i) {
@@ -445,8 +445,8 @@ bool isnan( const DenseTensor<TT>& dm )
 template< typename MT > // Type of the dense tensor
 auto softmax( const DenseTensor<MT>& dm )
 {
-   auto tmp( evaluate( exp( ~dm ) ) );
-   const auto scalar( sum( ~tmp ) );
+   auto tmp( evaluate( exp( *dm ) ) );
+   const auto scalar( sum( *tmp ) );
    tmp /= scalar;
    return tmp;
 }
@@ -466,16 +466,16 @@ bool isUniform_backend( const DenseTensor<MT>& dm )
 {
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~dm).pages()   != 0UL, "Invalid number of pages detected"    );
-   BLAZE_INTERNAL_ASSERT( (~dm).rows()    != 0UL, "Invalid number of rows detected"    );
-   BLAZE_INTERNAL_ASSERT( (~dm).columns() != 0UL, "Invalid number of columns detected" );
+   BLAZE_INTERNAL_ASSERT( (*dm).pages()   != 0UL, "Invalid number of pages detected"    );
+   BLAZE_INTERNAL_ASSERT( (*dm).rows()    != 0UL, "Invalid number of rows detected"    );
+   BLAZE_INTERNAL_ASSERT( (*dm).columns() != 0UL, "Invalid number of columns detected" );
 
-   const auto& cmp( (~dm)(0UL,0UL,0UL) );
+   const auto& cmp( (*dm)(0UL,0UL,0UL) );
 
-   for( size_t k=0UL; k<(~dm).pages(); ++k ) {
-      for( size_t i=0UL; i<(~dm).rows(); ++i ) {
-         for( size_t j=0UL; j<(~dm).columns(); ++j ) {
-            if( !equal<RF>( (~dm)(k,i,j), cmp ) )
+   for( size_t k=0UL; k<(*dm).pages(); ++k ) {
+      for( size_t i=0UL; i<(*dm).rows(); ++i ) {
+         for( size_t j=0UL; j<(*dm).columns(); ++j ) {
+            if( !equal<RF>( (*dm)(k,i,j), cmp ) )
                return false;
          }
       }
@@ -525,14 +525,14 @@ template< RelaxationFlag RF // Relaxation flag
 bool isUniform( const DenseTensor<MT>& dm )
 {
    if( IsUniform_v<MT> ||
-       (~dm).pages() == 0UL || (~dm).rows() == 0UL || (~dm).columns() == 0UL ||
-       ( (~dm).pages() == 1UL && (~dm).rows() == 1UL && (~dm).columns() == 1UL ) )
+       (*dm).pages() == 0UL || (*dm).rows() == 0UL || (*dm).columns() == 0UL ||
+       ( (*dm).pages() == 1UL && (*dm).rows() == 1UL && (*dm).columns() == 1UL ) )
       return true;
 
    if( IsUniTriangular_v<MT> )
       return false;
 
-   CompositeType_t<MT> A( ~dm );  // Evaluation of the dense tensor operand
+   CompositeType_t<MT> A( *dm );  // Evaluation of the dense tensor operand
 
    return isUniform_backend<RF>( A );
 }

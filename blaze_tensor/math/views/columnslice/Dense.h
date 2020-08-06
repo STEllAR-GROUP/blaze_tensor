@@ -1123,12 +1123,12 @@ inline ColumnSlice<MT,CRAs...>&
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( tensor_, right, 0UL, column(), 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -1176,12 +1176,12 @@ inline ColumnSlice<MT,CRAs...>&
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAddAssign( tensor_, right, 0UL, column(), 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -1229,12 +1229,12 @@ inline ColumnSlice<MT,CRAs...>&
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<VT> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<VT> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<VT>, const VT& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !trySubAssign( tensor_, right, 0UL, column(), 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -1286,22 +1286,22 @@ inline ColumnSlice<MT,CRAs...>&
 
    using SchurType = SchurTrait_t< ResultType, ResultType_t<VT> >;
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySchurAssign( tensor_, (~rhs), 0UL, column(), 0UL ) ) {
+   if( !trySchurAssign( tensor_, (*rhs), 0UL, column(), 0UL ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<MT> && (~rhs).canAlias( &tensor_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( IsReference_v<MT> && (*rhs).canAlias( &tensor_ ) ) {
+      const SchurType tmp( *this % (*rhs) );
       smpSchurAssign( left, tmp );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( tensor_ ), "Invariant violation detected" );
@@ -1715,12 +1715,12 @@ template< typename VT       // Type of the right-hand side dense matrix
         , bool SO >         // Storage order
 inline auto ColumnSlice<MT,CRAs...>::assign( const DenseMatrix<VT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows() == (*rhs).rows(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid matrix sizes" );
 
-   for( size_t k = 0UL; k < (~rhs).rows(); ++k ) {
-      for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
-         tensor_(k,i,column()) = (~rhs)(k,i);
+   for( size_t k = 0UL; k < (*rhs).rows(); ++k ) {
+      for( size_t i=0UL; i<(*rhs).columns(); ++i ) {
+         tensor_(k,i,column()) = (*rhs)(k,i);
       }
    }
 }
@@ -1746,12 +1746,12 @@ template< typename VT       // Type of the right-hand side dense matrix
         , bool SO >         // Storage order
 inline auto ColumnSlice<MT,CRAs...>::addAssign( const DenseMatrix<VT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   for( size_t k = 0UL; k < (~rhs).rows(); ++k ) {
-      for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
-         tensor_(k,i,column()) += (~rhs)(k,i);
+   for( size_t k = 0UL; k < (*rhs).rows(); ++k ) {
+      for( size_t i=0UL; i<(*rhs).columns(); ++i ) {
+         tensor_(k,i,column()) += (*rhs)(k,i);
       }
    }
 }
@@ -1777,12 +1777,12 @@ template< typename VT       // Type of the right-hand side dense matrix
         , bool SO >         // Storage order
 inline auto ColumnSlice<MT,CRAs...>::subAssign( const DenseMatrix<VT,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   for( size_t k = 0UL; k < (~rhs).rows(); ++k ) {
-      for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
-         tensor_(k,i,column()) -= (~rhs)(k,i);
+   for( size_t k = 0UL; k < (*rhs).rows(); ++k ) {
+      for( size_t i=0UL; i<(*rhs).columns(); ++i ) {
+         tensor_(k,i,column()) -= (*rhs)(k,i);
       }
    }
 }
@@ -1808,12 +1808,12 @@ template< typename MT2      // Type of the right-hand side dense matrix
         , bool SO >         // Storage order
 inline auto ColumnSlice<MT,CRAs...>::schurAssign( const DenseMatrix<MT2,SO>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   for( size_t k = 0UL; k < (~rhs).rows(); ++k ) {
-      for( size_t i=0UL; i<(~rhs).columns(); ++i ) {
-         tensor_(k,i,column()) *= (~rhs)(k,i);
+   for( size_t k = 0UL; k < (*rhs).rows(); ++k ) {
+      for( size_t i=0UL; i<(*rhs).columns(); ++i ) {
+         tensor_(k,i,column()) *= (*rhs)(k,i);
       }
    }
 }

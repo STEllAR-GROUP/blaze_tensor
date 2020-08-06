@@ -881,7 +881,7 @@ inline StaticTensor<Type,O,M,N>::StaticTensor( const Tensor<MT>& m )
 
    BLAZE_STATIC_ASSERT( IsVectorizable_v<Type> || NN == N );
 
-   if( (~m).pages() != O || (~m).rows() != M || (~m).columns() != N ) {
+   if( (*m).pages() != O || (*m).rows() != M || (*m).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid setup of static tensor" );
    }
 
@@ -893,7 +893,7 @@ inline StaticTensor<Type,O,M,N>::StaticTensor( const Tensor<MT>& m )
       }
    }
 
-   assign( *this, ~m );
+   assign( *this, *m );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 }
@@ -1404,7 +1404,7 @@ inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::operator=( const Stat
 {
    using blaze::assign;
 
-   assign( *this, ~rhs );
+   assign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1429,7 +1429,7 @@ inline StaticTensor<Type,O,M,N>&
 {
    using blaze::assign;
 
-   assign( *this, ~rhs );
+   assign( *this, *rhs );
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
 
@@ -1462,25 +1462,25 @@ inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::operator=( const Tens
 //    using CT = decltype( ctrans( *this ) );
 //    using IT = decltype( inv( *this ) );
 
-   if( (~rhs).pages() != O || (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).pages() != O || (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to static tensor" );
    }
 
-//    if( IsSame_v<MT,TT> && (~rhs).isAliased( this ) ) {
+//    if( IsSame_v<MT,TT> && (*rhs).isAliased( this ) ) {
 //       transpose( typename IsSquare<This>::Type() );
 //    }
-//    else if( IsSame_v<MT,CT> && (~rhs).isAliased( this ) ) {
+//    else if( IsSame_v<MT,CT> && (*rhs).isAliased( this ) ) {
 //       ctranspose( typename IsSquare<This>::Type() );
 //    }
 //   else
-   if( /*!IsSame_v<MT,IT> &&*/ (~rhs).canAlias( this ) ) {
-      StaticTensor tmp( ~rhs );
+   if( /*!IsSame_v<MT,IT> &&*/ (*rhs).canAlias( this ) ) {
+      StaticTensor tmp( *rhs );
       assign( *this, tmp );
    }
    else {
 //       if( IsSparseTensor_v<MT> )
 //          reset();
-      assign( *this, ~rhs );
+      assign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1509,16 +1509,16 @@ inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::operator+=( const Ten
 {
    using blaze::addAssign;
 
-   if( (~rhs).pages() != O || (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).pages() != O || (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       addAssign( *this, tmp );
    }
    else {
-      addAssign( *this, ~rhs );
+      addAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1547,16 +1547,16 @@ inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::operator-=( const Ten
 {
    using blaze::subAssign;
 
-   if( (~rhs).pages() != O || (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).pages() != O || (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       subAssign( *this, tmp );
    }
    else {
-      subAssign( *this, ~rhs );
+      subAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -1585,16 +1585,16 @@ inline StaticTensor<Type,O,M,N>& StaticTensor<Type,O,M,N>::operator%=( const Ten
 {
    using blaze::schurAssign;
 
-   if( (~rhs).pages() != O || (~rhs).rows() != M || (~rhs).columns() != N ) {
+   if( (*rhs).pages() != O || (*rhs).rows() != M || (*rhs).columns() != N ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       schurAssign( *this, tmp );
    }
    else {
-      schurAssign( *this, ~rhs );
+      schurAssign( *this, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact(), "Invariant violation detected" );
@@ -2643,12 +2643,12 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto StaticTensor<Type,O,M,N>::assign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).pages() == O && (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 
    for( size_t k=0UL; k<O; ++k )
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
-            v_[(k*M+i)*NN+j] = (~rhs)(k,i,j);
+            v_[(k*M+i)*NN+j] = (*rhs)(k,i,j);
          }
       }
 }
@@ -2676,7 +2676,7 @@ inline auto StaticTensor<Type,O,M,N>::assign( const DenseTensor<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).pages() == O && (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 
    constexpr bool remainder = !IsPadded_v<MT>;
 
@@ -2689,10 +2689,10 @@ inline auto StaticTensor<Type,O,M,N>::assign( const DenseTensor<MT>& rhs )
          size_t j( 0UL );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            store( k, i, j, (~rhs).load(k,i,j) );
+            store( k, i, j, (*rhs).load(k,i,j) );
          }
          for( ; remainder && j<N; ++j ) {
-            v_[(k*M+i)*NN+j] = (~rhs)(k,i,j);
+            v_[(k*M+i)*NN+j] = (*rhs)(k,i,j);
          }
       }
 }
@@ -2717,11 +2717,11 @@ inline auto StaticTensor<Type,O,M,N>::assign( const DenseTensor<MT>& rhs )
 // template< typename MT >  // Type of the right-hand side sparse tensor
 // inline void StaticTensor<Type,O,M,N>::assign( const SparseTensor<MT>& rhs )
 // {
-//    BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+//    BLAZE_INTERNAL_ASSERT( (*rhs).pages() == O && (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 //
 //    for( size_t k=0UL; k<O; ++k )
 //       for( size_t i=0UL; i<M; ++i )
-//          for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+//          for( ConstIterator_t<MT> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
 //             v_[(k*M+i)*NN+element->index()] = element->value();
 // }
 //*************************************************************************************************
@@ -2747,10 +2747,10 @@ inline auto StaticTensor<Type,O,M,N>::assign( const DenseTensor<MT>& rhs )
 // {
 //    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_TENSOR_TYPE( MT );
 //
-//    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+//    BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 //
 //    for( size_t j=0UL; j<N; ++j )
-//       for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+//       for( ConstIterator_t<MT> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
 //          v_[element->index()*NN+j] = element->value();
 // }
 //*************************************************************************************************
@@ -2775,14 +2775,14 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto StaticTensor<Type,O,M,N>::addAssign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).pages() == O && (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 
    for( size_t k=0UL; k<O; ++k )
       for( size_t i=0UL; i<M; ++i )
       {
 //          if( IsDiagonal_v<MT> )
 //          {
-//             v_[(k*M+i)*NN+i] += (~rhs)(i,i,i);
+//             v_[(k*M+i)*NN+i] += (*rhs)(i,i,i);
 //          }
 //          else
          {
@@ -2791,7 +2791,7 @@ inline auto StaticTensor<Type,O,M,N>::addAssign( const DenseTensor<MT>& rhs )
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               v_[(k*M+i)*NN+j] += (~rhs)(k,i,j);
+               v_[(k*M+i)*NN+j] += (*rhs)(k,i,j);
             }
          }
       }
@@ -2821,7 +2821,7 @@ inline auto StaticTensor<Type,O,M,N>::addAssign( const DenseTensor<MT>& rhs )
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 //    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_TENSOR_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).pages() == O && (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 
    constexpr bool remainder = !IsPadded_v<MT>;
 
@@ -2838,10 +2838,10 @@ inline auto StaticTensor<Type,O,M,N>::addAssign( const DenseTensor<MT>& rhs )
          size_t j( jbegin );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            store( k, i, j, load(k,i,j) + (~rhs).load(k,i,j) );
+            store( k, i, j, load(k,i,j) + (*rhs).load(k,i,j) );
          }
          for( ; remainder && j<jend; ++j ) {
-            v_[(k*M+i)*NN+j] += (~rhs)(k,i,j);
+            v_[(k*M+i)*NN+j] += (*rhs)(k,i,j);
          }
       }
 }
@@ -2866,11 +2866,11 @@ inline auto StaticTensor<Type,O,M,N>::addAssign( const DenseTensor<MT>& rhs )
 // template< typename MT >  // Type of the right-hand side sparse tensor
 // inline void StaticTensor<Type,O,M,N>::addAssign( const SparseTensor<MT>& rhs )
 // {
-//    BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+//    BLAZE_INTERNAL_ASSERT( (*rhs).pages() == O && (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 //
 //    for( size_t k=0UL; k<O; ++k )
 //       for( size_t i=0UL; i<M; ++i )
-//          for( ConstIterator_t<MT> element=(~rhs).begin(i, k); element!=(~rhs).end(i, k); ++element )
+//          for( ConstIterator_t<MT> element=(*rhs).begin(i, k); element!=(*rhs).end(i, k); ++element )
 //             v_[(k*M+i)*NN+element->index()] += element->value();
 // }
 //*************************************************************************************************
@@ -2896,10 +2896,10 @@ inline auto StaticTensor<Type,O,M,N>::addAssign( const DenseTensor<MT>& rhs )
 // {
 //    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_TENSOR_TYPE( MT );
 //
-//    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+//    BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 //
 //    for( size_t j=0UL; j<N; ++j )
-//       for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+//       for( ConstIterator_t<MT> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
 //          v_[element->index()*NN+j] += element->value();
 // }
 //*************************************************************************************************
@@ -2924,14 +2924,14 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto StaticTensor<Type,O,M,N>::subAssign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).pages() == O && (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 
    for( size_t k=0UL; k<O; ++k )
       for( size_t i=0UL; i<M; ++i )
       {
 //          if( IsDiagonal_v<MT> )
 //          {
-//             v_[i*NN+i] -= (~rhs)(i,i);
+//             v_[i*NN+i] -= (*rhs)(i,i);
 //          }
 //          else
          {
@@ -2940,7 +2940,7 @@ inline auto StaticTensor<Type,O,M,N>::subAssign( const DenseTensor<MT>& rhs )
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               v_[(k*M+i)*NN+j] -= (~rhs)(k,i,j);
+               v_[(k*M+i)*NN+j] -= (*rhs)(k,i,j);
             }
          }
       }
@@ -2970,7 +2970,7 @@ inline auto StaticTensor<Type,O,M,N>::subAssign( const DenseTensor<MT>& rhs )
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 //    BLAZE_CONSTRAINT_MUST_NOT_BE_DIAGONAL_TENSOR_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 
    constexpr bool remainder = !IsPadded_v<MT>;
 
@@ -2987,10 +2987,10 @@ inline auto StaticTensor<Type,O,M,N>::subAssign( const DenseTensor<MT>& rhs )
          size_t j( jbegin );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            store( k, i, j, load(k,i,j) - (~rhs).load(k,i,j) );
+            store( k, i, j, load(k,i,j) - (*rhs).load(k,i,j) );
          }
          for( ; remainder && j<jend; ++j ) {
-            v_[(k*M+i)*NN+j] -= (~rhs)(k,i,j);
+            v_[(k*M+i)*NN+j] -= (*rhs)(k,i,j);
          }
       }
 }
@@ -3015,10 +3015,10 @@ inline auto StaticTensor<Type,O,M,N>::subAssign( const DenseTensor<MT>& rhs )
 // template< typename MT >  // Type of the right-hand side sparse tensor
 // inline void StaticTensor<Type,O,M,N>::subAssign( const SparseTensor<MT>& rhs )
 // {
-//    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+//    BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 //
 //    for( size_t i=0UL; i<M; ++i )
-//       for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+//       for( ConstIterator_t<MT> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
 //          v_[i*NN+element->index()] -= element->value();
 // }
 //*************************************************************************************************
@@ -3044,10 +3044,10 @@ inline auto StaticTensor<Type,O,M,N>::subAssign( const DenseTensor<MT>& rhs )
 // {
 //    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_TENSOR_TYPE( MT );
 //
-//    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+//    BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 //
 //    for( size_t j=0UL; j<N; ++j )
-//       for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+//       for( ConstIterator_t<MT> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
 //          v_[element->index()*NN+j] -= element->value();
 // }
 //*************************************************************************************************
@@ -3072,12 +3072,12 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto StaticTensor<Type,O,M,N>::schurAssign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( (~rhs).pages() == O && (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).pages() == O && (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 
    for( size_t k=0UL; k<O; ++k )
       for( size_t i=0UL; i<M; ++i ) {
          for( size_t j=0UL; j<N; ++j ) {
-            v_[(k*M+i)*NN+j] *= (~rhs)(k,i,j);
+            v_[(k*M+i)*NN+j] *= (*rhs)(k,i,j);
          }
       }
 }
@@ -3105,7 +3105,7 @@ inline auto StaticTensor<Type,O,M,N>::schurAssign( const DenseTensor<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+   BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 
    constexpr bool remainder = !IsPadded_v<MT>;
 
@@ -3118,10 +3118,10 @@ inline auto StaticTensor<Type,O,M,N>::schurAssign( const DenseTensor<MT>& rhs )
          size_t j( 0UL );
 
          for( ; j<jpos; j+=SIMDSIZE ) {
-            store( k, i, j, load(k,i,j) * (~rhs).load(k,i,j) );
+            store( k, i, j, load(k,i,j) * (*rhs).load(k,i,j) );
          }
          for( ; remainder && j<N; ++j ) {
-            v_[(k*M+i)*NN+j] *= (~rhs)(k,i,j);
+            v_[(k*M+i)*NN+j] *= (*rhs)(k,i,j);
          }
       }
 }
@@ -3146,14 +3146,14 @@ inline auto StaticTensor<Type,O,M,N>::schurAssign( const DenseTensor<MT>& rhs )
 // template< typename MT >  // Type of the right-hand side sparse tensor
 // inline void StaticTensor<Type,O,M,N>::schurAssign( const SparseTensor<MT>& rhs )
 // {
-//    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+//    BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 //
 //    const StaticTensor tmp( serial( *this ) );
 //
 //    reset();
 //
 //    for( size_t i=0UL; i<M; ++i )
-//       for( ConstIterator_t<MT> element=(~rhs).begin(i); element!=(~rhs).end(i); ++element )
+//       for( ConstIterator_t<MT> element=(*rhs).begin(i); element!=(*rhs).end(i); ++element )
 //          v_[i*NN+element->index()] = tmp.v_[i*NN+element->index()] * element->value();
 // }
 //*************************************************************************************************
@@ -3179,14 +3179,14 @@ inline auto StaticTensor<Type,O,M,N>::schurAssign( const DenseTensor<MT>& rhs )
 // {
 //    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_TENSOR_TYPE( MT );
 //
-//    BLAZE_INTERNAL_ASSERT( (~rhs).rows() == M && (~rhs).columns() == N, "Invalid tensor size" );
+//    BLAZE_INTERNAL_ASSERT( (*rhs).rows() == M && (*rhs).columns() == N, "Invalid tensor size" );
 //
 //    const StaticTensor tmp( serial( *this ) );
 //
 //    reset();
 //
 //    for( size_t j=0UL; j<N; ++j )
-//       for( ConstIterator_t<MT> element=(~rhs).begin(j); element!=(~rhs).end(j); ++element )
+//       for( ConstIterator_t<MT> element=(*rhs).begin(j); element!=(*rhs).end(j); ++element )
 //          v_[element->index()*NN+j] = tmp.v_[element->index()*NN+j] * element->value();
 // }
 //*************************************************************************************************

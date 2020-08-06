@@ -597,10 +597,10 @@ class DArrScalarMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
-      assign( ~lhs, rhs.array_ );
-      assign( ~lhs, (~lhs) * rhs.scalar_ );
+      assign( *lhs, rhs.array_ );
+      assign( *lhs, (*lhs) * rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -628,10 +628,10 @@ class DArrScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const ResultType tmp( serial( rhs ) );
-      addAssign( ~lhs, tmp );
+      addAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -659,10 +659,10 @@ class DArrScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const ResultType tmp( serial( rhs ) );
-      subAssign( ~lhs, tmp );
+      subAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -690,10 +690,10 @@ class DArrScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const ResultType tmp( serial( rhs ) );
-      schurAssign( ~lhs, tmp );
+      schurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -718,10 +718,10 @@ class DArrScalarMultExpr
    {
       BLAZE_FUNCTION_TRACE;
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
-      smpAssign( ~lhs, rhs.array_ );
-      smpAssign( ~lhs, (~lhs) * rhs.scalar_ );
+      smpAssign( *lhs, rhs.array_ );
+      smpAssign( *lhs, (*lhs) * rhs.scalar_ );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -749,10 +749,10 @@ class DArrScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const ResultType tmp( rhs );
-      smpAddAssign( ~lhs, tmp );
+      smpAddAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -780,10 +780,10 @@ class DArrScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const ResultType tmp( rhs );
-      smpSubAssign( ~lhs, tmp );
+      smpSubAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -811,10 +811,10 @@ class DArrScalarMultExpr
       BLAZE_CONSTRAINT_MUST_BE_DENSE_ARRAY_TYPE( ResultType );
       BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType );
 
-      BLAZE_INTERNAL_ASSERT( ( ~lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
+      BLAZE_INTERNAL_ASSERT( ( *lhs ).dimensions() == rhs.dimensions(), "Invalid number of elements" );
 
       const ResultType tmp( rhs );
-      smpSchurAssign( ~lhs, tmp );
+      smpSchurAssign( *lhs, tmp );
    }
    /*! \endcond */
    //**********************************************************************************************
@@ -862,7 +862,7 @@ inline decltype(auto) operator-( const DenseArray<MT>& dm )
 
    using ScalarType = UnderlyingBuiltin_t<MT>;
    using ReturnType = const DArrScalarMultExpr<MT,ScalarType>;
-   return ReturnType( ~dm, ScalarType(-1) );
+   return ReturnType( *dm, ScalarType(-1) );
 }
 //*************************************************************************************************
 
@@ -905,7 +905,7 @@ inline decltype(auto) operator*( const DenseArray<MT>& mat, ST scalar )
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, ST >;
    using ReturnType = const DArrScalarMultExpr<MT,ScalarType>;
-   return ReturnType( ~mat, scalar );
+   return ReturnType( *mat, scalar );
 }
 //*************************************************************************************************
 
@@ -940,7 +940,7 @@ inline decltype(auto) operator*( ST scalar, const DenseArray<MT>& mat )
 
    using ScalarType = MultTrait_t< ST, UnderlyingBuiltin_t<MT> >;
    using ReturnType = const DArrScalarMultExpr<MT,ScalarType>;
-   return ReturnType( ~mat, scalar );
+   return ReturnType( *mat, scalar );
 }
 //*************************************************************************************************
 
@@ -1089,7 +1089,7 @@ inline decltype(auto) operator/( const DArrScalarMultExpr<MT,ST1>& mat, ST2 scal
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    return ( mat.leftOperand() * (~vec) ) * mat.rightOperand();
+//    return ( mat.leftOperand() * (*vec) ) * mat.rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1117,7 +1117,7 @@ inline decltype(auto) operator/( const DArrScalarMultExpr<MT,ST1>& mat, ST2 scal
 // {
 //    BLAZE_FUNCTION_TRACE;
 //
-//    return ( (~vec) * mat.leftOperand() ) * mat.rightOperand();
+//    return ( (*vec) * mat.leftOperand() ) * mat.rightOperand();
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1207,7 +1207,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( lhs.leftOperand() * (~rhs) ) * lhs.rightOperand();
+   return ( lhs.leftOperand() * (*rhs) ) * lhs.rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1235,7 +1235,7 @@ inline decltype(auto)
 {
    BLAZE_FUNCTION_TRACE;
 
-   return ( (~lhs) * rhs.leftOperand() ) * rhs.rightOperand();
+   return ( (*lhs) * rhs.leftOperand() ) * rhs.rightOperand();
 }
 /*! \endcond */
 //*************************************************************************************************

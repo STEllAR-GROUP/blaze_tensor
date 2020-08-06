@@ -135,15 +135,15 @@ inline auto operator==( const DenseArray<T1>& arr, T2 scalar )
    using CT1 = CompositeType_t<T1>;
 
    constexpr size_t N =
-      RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions;
+      RemoveCV_t< RemoveReference_t< decltype( *arr ) > >::num_dimensions;
 
    // Evaluation of the dense array operand
-   CT1 A( ~arr );
+   CT1 A( *arr );
 
    // In order to compare the array and the scalar value, the data values of the lower-order
    // data type are converted to the higher-order data type within the equal function.
    return ArrayForEachGroupedAllOf(
-      ( ~arr ).dimensions(), [&]( std::array< size_t, N > const& dims ) {
+      ( *arr ).dimensions(), [&]( std::array< size_t, N > const& dims ) {
          return equal( A( dims ), scalar );
       } );
 }
@@ -236,21 +236,21 @@ inline auto operator*=( DenseArray<TT>& arr, ST scalar )
 {
    if( IsRestricted_v<TT> ) {
       constexpr size_t N =
-         RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions;
+         RemoveCV_t< RemoveReference_t< decltype( *arr ) > >::num_dimensions;
 
       std::array< size_t, N > dims{};
-      if( !tryMult( ~arr, dims, (~arr).dimensions(), scalar ) ) {
+      if( !tryMult( *arr, dims, (*arr).dimensions(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted array" );
       }
    }
 
-   decltype(auto) left( derestrict( ~arr ) );
+   decltype(auto) left( derestrict( *arr ) );
 
    smpAssign( left, left * scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~arr ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *arr ), "Invariant violation detected" );
 
-   return ~arr;
+   return *arr;
 }
 //*************************************************************************************************
 
@@ -273,7 +273,7 @@ template< typename TT    // Type of the left-hand side dense array
 inline auto operator*=( DenseArray<TT>&& arr, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, TT& >
 {
-   return operator*=( ~arr, scalar );
+   return operator*=( *arr, scalar );
 }
 //*************************************************************************************************
 
@@ -304,21 +304,21 @@ inline auto operator/=( DenseArray<TT>& arr, ST scalar )
 
    if( IsRestricted_v<TT> ) {
       constexpr size_t N =
-         RemoveCV_t< RemoveReference_t< decltype( ~arr ) > >::num_dimensions;
+         RemoveCV_t< RemoveReference_t< decltype( *arr ) > >::num_dimensions;
 
       std::array< size_t, N > dims{};
-      if( !tryDiv( ~arr, dims, (~arr).dimensions(), scalar ) ) {
+      if( !tryDiv( *arr, dims, (*arr).dimensions(), scalar ) ) {
          BLAZE_THROW_INVALID_ARGUMENT( "Invalid scaling of restricted array" );
       }
    }
 
-   decltype(auto) left( derestrict( ~arr ) );
+   decltype(auto) left( derestrict( *arr ) );
 
    smpAssign( left, left / scalar );
 
-   BLAZE_INTERNAL_ASSERT( isIntact( ~arr ), "Invariant violation detected" );
+   BLAZE_INTERNAL_ASSERT( isIntact( *arr ), "Invariant violation detected" );
 
-   return ~arr;
+   return *arr;
 }
 //*************************************************************************************************
 
@@ -343,7 +343,7 @@ template< typename TT    // Type of the left-hand side dense array
 inline auto operator/=( DenseArray<TT>&& arr, ST scalar )
    -> EnableIf_t< IsNumeric_v<ST>, TT& >
 {
-   return operator/=( ~arr, scalar );
+   return operator/=( *arr, scalar );
 }
 //*************************************************************************************************
 
@@ -427,12 +427,12 @@ bool isnan( const DenseArray<TT>& dm )
    using CT = CompositeType_t<TT>;
 
    constexpr size_t N =
-      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions;
+      RemoveCV_t< RemoveReference_t< decltype( *dm ) > >::num_dimensions;
 
-   CT A( ~dm );  // Evaluation of the dense array operand
+   CT A( *dm );  // Evaluation of the dense array operand
 
    return ArrayForEachGroupedAnyOf(
-      ( ~dm ).dimensions(), [&]( std::array< size_t, N > const& dims ) {
+      ( *dm ).dimensions(), [&]( std::array< size_t, N > const& dims ) {
          return isnan( A( dims ) );
       } );
 }
@@ -453,8 +453,8 @@ bool isnan( const DenseArray<TT>& dm )
 template< typename MT > // Type of the dense array
 auto softmax( const DenseArray<MT>& dm )
 {
-   auto tmp( evaluate( exp( ~dm ) ) );
-   const auto scalar( sum( ~tmp ) );
+   auto tmp( evaluate( exp( *dm ) ) );
+   const auto scalar( sum( *tmp ) );
    tmp /= scalar;
    return tmp;
 }
@@ -475,20 +475,20 @@ bool isUniform_backend( const DenseArray<MT>& dm )
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( MT );
 
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   ArrayDimForEach( ( ~dm ).dimensions(), [&]( size_t, size_t dim ) {
+   ArrayDimForEach( ( *dm ).dimensions(), [&]( size_t, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( dim != 0, "Invalid array dimension detected" );
    } );
 #endif
 
    constexpr size_t N =
-      RemoveCV_t< RemoveReference_t< decltype( ~dm ) > >::num_dimensions;
+      RemoveCV_t< RemoveReference_t< decltype( *dm ) > >::num_dimensions;
 
    std::array< size_t, N > dims{};
-   const auto& cmp( (~dm)( dims ) );
+   const auto& cmp( (*dm)( dims ) );
 
-   return ArrayForEachGroupedAllOf( ( ~dm ).dimensions(),
+   return ArrayForEachGroupedAllOf( ( *dm ).dimensions(),
       [&]( std::array< size_t, N > const& ds ) {
-         return equal< RF >( ( ~dm )( ds ), cmp );
+         return equal< RF >( ( *dm )( ds ), cmp );
       } );
 }
 /*! \endcond */
@@ -533,9 +533,9 @@ template< RelaxationFlag RF // Relaxation flag
 bool isUniform( const DenseArray<MT>& dm )
 {
    if( IsUniform_v< MT > ||
-      ArrayDimAnyOf( ( ~dm ).dimensions(),
+      ArrayDimAnyOf( ( *dm ).dimensions(),
          []( size_t, size_t dim ) { return dim == 0; } ) ||
-      ArrayDimAllOf( ( ~dm ).dimensions(),
+      ArrayDimAllOf( ( *dm ).dimensions(),
          []( size_t, size_t dim ) { return dim == 1; } ) ) {
       return true;
    }
@@ -543,7 +543,7 @@ bool isUniform( const DenseArray<MT>& dm )
    if( IsUniTriangular_v<MT> )
       return false;
 
-   CompositeType_t<MT> A( ~dm );  // Evaluation of the dense array operand
+   CompositeType_t<MT> A( *dm );  // Evaluation of the dense array operand
 
    return isUniform_backend<RF>( A );
 }

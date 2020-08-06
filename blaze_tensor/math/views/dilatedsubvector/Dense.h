@@ -1049,12 +1049,12 @@ inline DilatedSubvector<VT,TF,true,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( vector_, right, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1102,12 +1102,12 @@ inline DilatedSubvector<VT,TF,true,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAddAssign( vector_, right, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1153,12 +1153,12 @@ inline DilatedSubvector<VT,TF,true,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !trySubAssign( vector_, right, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1205,12 +1205,12 @@ inline DilatedSubvector<VT,TF,true,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryMultAssign( vector_, right, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1256,12 +1256,12 @@ inline DilatedSubvector<VT,TF,true,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( ResultType_t<VT2>, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( ResultType_t<VT2> );
 
-   if( size() != (~rhs).size() ) {
+   if( size() != (*rhs).size() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Vector sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<VT>, CompositeType_t<VT2>, const VT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryDivAssign( vector_, right, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1316,11 +1316,11 @@ inline DilatedSubvector<VT,TF,true,CSAs...>&
    BLAZE_CONSTRAINT_MUST_BE_VECTOR_WITH_TRANSPOSE_FLAG( CrossType, TF );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION( CrossType );
 
-   if( size() != 3UL || (~rhs).size() != 3UL ) {
+   if( size() != 3UL || (*rhs).size() != 3UL ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid vector size for cross product" );
    }
 
-   const CrossType tmp( *this % (~rhs) );
+   const CrossType tmp( *this % (*rhs) );
 
    if( !tryAssign( vector_, tmp, offset() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted vector" );
@@ -1652,15 +1652,15 @@ template< typename VT       // Type of the dense vector
 template< typename VT2 >    // Type of the right-hand side dense vector
 inline void DilatedSubvector<VT,TF,true,CSAs...>::assign( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2 ) {
-      (*this)[i  ] = (~rhs)[i    ];
-      (*this)[i+1] = (~rhs)[i+1UL];
+      (*this)[i  ] = (*rhs)[i    ];
+      (*this)[i+1] = (*rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      (*this)[ipos] = (~rhs)[ipos];
+      (*this)[ipos] = (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1686,9 +1686,9 @@ inline void DilatedSubvector<VT,TF,true,CSAs...>::assign( const DenseVector<VT2,
 // template< typename VT2 >    // Type of the right-hand side sparse vector
 // inline void DilatedSubvector<VT,TF,true,CSAs...>::assign( const SparseVector<VT2,TF>& rhs )
 // {
-//    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+//    BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 //
-//    for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+//    for( ConstIterator_t<VT2> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
 //       vector_[offset()+element->index()] = element->value();
 // }
 /*! \endcond */
@@ -1713,15 +1713,15 @@ template< typename VT       // Type of the dense vector
 template< typename VT2 >    // Type of the right-hand side dense vector
 inline void DilatedSubvector<VT,TF,true,CSAs...>::addAssign( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      (*this)[i  ] += (~rhs)[i    ];
-      (*this)[i+1] += (~rhs)[i+1UL];
+      (*this)[i  ] += (*rhs)[i    ];
+      (*this)[i+1] += (*rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      (*this)[ipos] += (~rhs)[ipos];
+      (*this)[ipos] += (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1746,9 +1746,9 @@ inline void DilatedSubvector<VT,TF,true,CSAs...>::addAssign( const DenseVector<V
 // template< typename VT2 >    // Type of the right-hand side sparse vector
 // inline void DilatedSubvector<VT,TF,true,CSAs...>::addAssign( const SparseVector<VT2,TF>& rhs )
 // {
-//    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+//    BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 //
-//    for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+//    for( ConstIterator_t<VT2> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
 //       vector_[offset()+element->index()] += element->value();
 // }
 /*! \endcond */
@@ -1773,15 +1773,15 @@ template< typename VT       // Type of the dense vector
 template< typename VT2 >    // Type of the right-hand side dense vector
 inline void DilatedSubvector<VT,TF,true,CSAs...>::subAssign( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      (*this)[i  ] -= (~rhs)[i    ];
-      (*this)[i+1] -= (~rhs)[i+1UL];
+      (*this)[i  ] -= (*rhs)[i    ];
+      (*this)[i+1] -= (*rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      (*this)[ipos] -= (~rhs)[ipos];
+      (*this)[ipos] -= (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1806,9 +1806,9 @@ inline void DilatedSubvector<VT,TF,true,CSAs...>::subAssign( const DenseVector<V
 // template< typename VT2 >    // Type of the right-hand side sparse vector
 // inline void DilatedSubvector<VT,TF,true,CSAs...>::subAssign( const SparseVector<VT2,TF>& rhs )
 // {
-//    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+//    BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 //
-//    for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element )
+//    for( ConstIterator_t<VT2> element=(*rhs).begin(); element!=(*rhs).end(); ++element )
 //       vector_[offset()+element->index()] -= element->value();
 // }
 /*! \endcond */
@@ -1833,15 +1833,15 @@ template< typename VT       // Type of the dense vector
 template< typename VT2 >    // Type of the right-hand side dense vector
 inline void DilatedSubvector<VT,TF,true,CSAs...>::multAssign( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      (*this)[i  ] *= (~rhs)[i    ];
-      (*this)[i+1] *= (~rhs)[i+1UL];
+      (*this)[i  ] *= (*rhs)[i    ];
+      (*this)[i+1] *= (*rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      (*this)[ipos] *= (~rhs)[ipos];
+      (*this)[ipos] *= (*rhs)[ipos];
    }
 }
 /*! \endcond */
@@ -1868,11 +1868,11 @@ inline void DilatedSubvector<VT,TF,true,CSAs...>::multAssign( const DenseVector<
 // {
 //    using blaze::reset;
 //
-//    BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+//    BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 //
 //    size_t i( 0UL );
 //
-//    for( ConstIterator_t<VT2> element=(~rhs).begin(); element!=(~rhs).end(); ++element ) {
+//    for( ConstIterator_t<VT2> element=(*rhs).begin(); element!=(*rhs).end(); ++element ) {
 //       const size_t index( element->index() );
 //       for( ; i<index; ++i )
 //          reset( vector_[offset()+i] );
@@ -1906,15 +1906,15 @@ template< typename VT       // Type of the dense vector
 template< typename VT2 >    // Type of the right-hand side dense vector
 inline void DilatedSubvector<VT,TF,true,CSAs...>::divAssign( const DenseVector<VT2,TF>& rhs )
 {
-   BLAZE_INTERNAL_ASSERT( size() == (~rhs).size(), "Invalid vector sizes" );
+   BLAZE_INTERNAL_ASSERT( size() == (*rhs).size(), "Invalid vector sizes" );
 
    const size_t ipos( size() & size_t(-2) );
    for( size_t i=0UL; i<ipos; i+=2UL ) {
-      (*this)[i  ] /= (~rhs)[i    ];
-      (*this)[i+1] /= (~rhs)[i+1UL];
+      (*this)[i  ] /= (*rhs)[i    ];
+      (*this)[i+1] /= (*rhs)[i+1UL];
    }
    if( ipos < size() ) {
-      (*this)[ipos] /= (~rhs)[ipos];
+      (*this)[ipos] /= (*rhs)[ipos];
    }
 }
 /*! \endcond */

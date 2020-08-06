@@ -90,21 +90,53 @@ struct Array
    //**********************************************************************************************
 
    //**Non-const conversion operator***************************************************************
-   /*!\brief Conversion operator for non-constant arrays.
+   /*!\brief CRTP-based conversion operation for non-constant arrays.
    //
-   // \return Reference of the actual type of the array.
+   // \return Mutable reference of the actual type of the array.
+   //
+   // This operator performs the CRTP-based type-safe downcast to the actual type \a VT of the
+   // array. It will return a mutable reference to the actual type \a VT.
    */
-   BLAZE_ALWAYS_INLINE constexpr ArrayType& operator~() noexcept {
+   [[deprecated]] BLAZE_ALWAYS_INLINE constexpr ArrayType& operator~() noexcept {
       return *static_cast<ArrayType*>( this );
    }
    //**********************************************************************************************
 
    //**Const conversion operator*******************************************************************
-   /*!\brief Conversion operator for constant arrays.
+   /*!\brief CRTP-based conversion operation for constant arrays.
    //
    // \return Constant reference of the actual type of the array.
+   //
+   // This operator performs the CRTP-based type-safe downcast to the actual type \a VT of the
+   // array. It will return a constant reference to the actual type \a VT.
    */
-   BLAZE_ALWAYS_INLINE constexpr const ArrayType& operator~() const noexcept {
+   [[deprecated]] BLAZE_ALWAYS_INLINE constexpr const ArrayType& operator~() const noexcept {
+      return *static_cast<const ArrayType*>( this );
+   }
+   //**********************************************************************************************
+
+   //**Non-const conversion operator***************************************************************
+   /*!\brief CRTP-based conversion operation for non-constant arrays.
+   //
+   // \return Mutable reference of the actual type of the array.
+   //
+   // This operator performs the CRTP-based type-safe downcast to the actual type \a VT of the
+   // array. It will return a mutable reference to the actual type \a VT.
+   */
+   BLAZE_ALWAYS_INLINE constexpr ArrayType& operator*() noexcept {
+      return *static_cast<ArrayType*>( this );
+   }
+   //**********************************************************************************************
+
+   //**Const conversion operator*******************************************************************
+   /*!\brief CRTP-based conversion operation for constant arrays.
+   //
+   // \return Constant reference of the actual type of the array.
+   //
+   // This operator performs the CRTP-based type-safe downcast to the actual type \a VT of the
+   // array. It will return a constant reference to the actual type \a VT.
+   */
+   BLAZE_ALWAYS_INLINE constexpr const ArrayType& operator*() const noexcept {
       return *static_cast<const ArrayType*>( this );
    }
    //**********************************************************************************************
@@ -134,9 +166,9 @@ template< typename TT1  // Type of the left-hand side array
         , typename TT2 > // Type of the right-hand side array
 inline TT1& operator*=( Array<TT1>& lhs, const Array<TT2>& rhs )
 {
-   ResultType_t<TT1> tmp( (~lhs) * (~rhs) );
-   (~lhs) = std::move( tmp );
-   return (~lhs);
+   ResultType_t<TT1> tmp( (*lhs) * (*rhs) );
+   (*lhs) = std::move( tmp );
+   return (*lhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -160,7 +192,7 @@ template< typename TT1  // Type of the left-hand side array
         , typename TT2 > // Type of the right-hand side array
 inline TT1& operator*=( Array<TT1>&& lhs, const Array<TT2>& rhs )
 {
-   return (~lhs) *= (~rhs);
+   return (*lhs) *= (*rhs);
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -190,7 +222,7 @@ template< typename MT    // Type of the array
 BLAZE_ALWAYS_INLINE bool trySet( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& arrdims = ( ~arr ).dimensions();
+   auto const& arrdims = ( *arr ).dimensions();
    ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -227,7 +259,7 @@ template< typename MT    // Type of the array
 BLAZE_ALWAYS_INLINE bool tryAdd( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& arrdims = ( ~arr ).dimensions();
+   auto const& arrdims = ( *arr ).dimensions();
    ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -264,7 +296,7 @@ template< typename MT    // Type of the array
 BLAZE_ALWAYS_INLINE bool trySub( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& arrdims = ( ~arr ).dimensions();
+   auto const& arrdims = ( *arr ).dimensions();
    ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -301,7 +333,7 @@ template< typename MT    // Type of the array
 BLAZE_ALWAYS_INLINE bool tryMult( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& arrdims = ( ~arr ).dimensions();
+   auto const& arrdims = ( *arr ).dimensions();
    ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -341,12 +373,12 @@ template< typename MT    // Type of the array
 BLAZE_ALWAYS_INLINE bool
    tryMult( const Array<MT>& arr, std::array< size_t, N > const& sizes, std::array< size_t, N > const& indices, const ET& value )
 {
-//    BLAZE_INTERNAL_ASSERT( row <= (~tens).rows(), "Invalid row access index" );
-//    BLAZE_INTERNAL_ASSERT( column <= (~tens).columns(), "Invalid column access index" );
-//    BLAZE_INTERNAL_ASSERT( page <= (~tens).pages(), "Invalid page access index" );
-//    BLAZE_INTERNAL_ASSERT( row + m <= (~tens).rows(), "Invalid number of rows" );
-//    BLAZE_INTERNAL_ASSERT( column + n <= (~tens).columns(), "Invalid number of columns" );
-//    BLAZE_INTERNAL_ASSERT( page + o <= (~tens).pages(), "Invalid number of pages" );
+//    BLAZE_INTERNAL_ASSERT( row <= (*tens).rows(), "Invalid row access index" );
+//    BLAZE_INTERNAL_ASSERT( column <= (*tens).columns(), "Invalid column access index" );
+//    BLAZE_INTERNAL_ASSERT( page <= (*tens).pages(), "Invalid page access index" );
+//    BLAZE_INTERNAL_ASSERT( row + m <= (*tens).rows(), "Invalid number of rows" );
+//    BLAZE_INTERNAL_ASSERT( column + n <= (*tens).columns(), "Invalid number of columns" );
+//    BLAZE_INTERNAL_ASSERT( page + o <= (*tens).pages(), "Invalid number of pages" );
 //
 //    MAYBE_UNUSED( tens, page, row, column, o, m, n, value );
 
@@ -379,7 +411,7 @@ template< typename MT    // Type of the array
 BLAZE_ALWAYS_INLINE bool tryDiv( const Array<MT>& arr, std::array< size_t, N > const& dims, const ET& value )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& arrdims = ( ~arr ).dimensions();
+   auto const& arrdims = ( *arr ).dimensions();
    ArrayDimForEach( arrdims, [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -460,8 +492,8 @@ BLAZE_ALWAYS_INLINE bool tryAssign( const Array<MT>& lhs, const Array<VT>& rhs,
                                     std::array< size_t, N > const& dims )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+   auto const& rhsdims = ( *rhs ).dimensions();
+   ArrayDimForEach( ( *lhs ).dimensions(), [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -498,8 +530,8 @@ BLAZE_ALWAYS_INLINE bool tryAddAssign( const Array<TT1>& lhs, const Array<TT2>& 
                                        std::array< size_t, N > const& dims )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+   auto const& rhsdims = ( *rhs ).dimensions();
+   ArrayDimForEach( ( *lhs ).dimensions(), [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -536,8 +568,8 @@ BLAZE_ALWAYS_INLINE bool trySubAssign( const Array<TT1>& lhs, const Array<TT2>& 
                                        std::array< size_t, N > const& dims )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+   auto const& rhsdims = ( *rhs ).dimensions();
+   ArrayDimForEach( ( *lhs ).dimensions(), [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -575,8 +607,8 @@ BLAZE_ALWAYS_INLINE bool tryMultAssign( const Array<TT1>& lhs, const Array<TT2>&
                                          std::array< size_t, N > const& dims )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+   auto const& rhsdims = ( *rhs ).dimensions();
+   ArrayDimForEach( ( *lhs ).dimensions(), [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -613,8 +645,8 @@ BLAZE_ALWAYS_INLINE bool trySchurAssign( const Array<TT1>& lhs, const Array<TT2>
                                          std::array< size_t, N > const& dims )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+   auto const& rhsdims = ( *rhs ).dimensions();
+   ArrayDimForEach( ( *lhs ).dimensions(), [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -651,8 +683,8 @@ BLAZE_ALWAYS_INLINE bool tryDivAssign( const Array<TT1>& lhs, const Array<TT2>& 
                                        std::array< size_t, N > const& dims )
 {
 #if defined(BLAZE_INTERNAL_ASSERTION)
-   auto const& rhsdims = ( ~rhs ).dimensions();
-   ArrayDimForEach( ( ~lhs ).dimensions(), [&]( size_t i, size_t dim ) {
+   auto const& rhsdims = ( *rhs ).dimensions();
+   ArrayDimForEach( ( *lhs ).dimensions(), [&]( size_t i, size_t dim ) {
       BLAZE_INTERNAL_ASSERT( rhsdims[i] != dim, "Invalid array access index" );
       BLAZE_INTERNAL_ASSERT( dims[i] < dim, "Invalid array access index" );
    } );
@@ -776,7 +808,7 @@ BLAZE_ALWAYS_INLINE bool isSame( const Array<TT1>& a, const Array<TT2>& b ) noex
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE typename MT::Iterator begin( Array<MT>& array, size_t i, size_t k )
 {
-   return (~array).begin(i, k);
+   return (*array).begin(i, k);
 }
 //*************************************************************************************************
 
@@ -797,7 +829,7 @@ BLAZE_ALWAYS_INLINE typename MT::Iterator begin( Array<MT>& array, size_t i, siz
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE typename MT::ConstIterator begin( const Array<MT>& array, size_t i, size_t k )
 {
-   return (~array).begin(i, k);
+   return (*array).begin(i, k);
 }
 //*************************************************************************************************
 
@@ -818,7 +850,7 @@ BLAZE_ALWAYS_INLINE typename MT::ConstIterator begin( const Array<MT>& array, si
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE typename MT::ConstIterator cbegin( const Array<MT>& array, size_t i, size_t k )
 {
-   return (~array).cbegin(i, k);
+   return (*array).cbegin(i, k);
 }
 //*************************************************************************************************
 
@@ -839,7 +871,7 @@ BLAZE_ALWAYS_INLINE typename MT::ConstIterator cbegin( const Array<MT>& array, s
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE typename MT::Iterator end( Array<MT>& array, size_t i, size_t k )
 {
-   return (~array).end(i, k);
+   return (*array).end(i, k);
 }
 //*************************************************************************************************
 
@@ -860,7 +892,7 @@ BLAZE_ALWAYS_INLINE typename MT::Iterator end( Array<MT>& array, size_t i, size_
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE typename MT::ConstIterator end( const Array<MT>& array, size_t i, size_t k )
 {
-   return (~array).end(i, k);
+   return (*array).end(i, k);
 }
 //*************************************************************************************************
 
@@ -881,7 +913,7 @@ BLAZE_ALWAYS_INLINE typename MT::ConstIterator end( const Array<MT>& array, size
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE typename MT::ConstIterator cend( const Array<MT>& array, size_t i, size_t k )
 {
-   return (~array).cend(i, k);
+   return (*array).cend(i, k);
 }
 //*************************************************************************************************
 
@@ -896,7 +928,7 @@ BLAZE_ALWAYS_INLINE typename MT::ConstIterator cend( const Array<MT>& array, siz
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE constexpr size_t rows( const Array<MT>& array ) noexcept
 {
-   return (~array).rows();
+   return (*array).rows();
 }
 //*************************************************************************************************
 
@@ -911,7 +943,7 @@ BLAZE_ALWAYS_INLINE constexpr size_t rows( const Array<MT>& array ) noexcept
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE constexpr size_t columns( const Array<MT>& array ) noexcept
 {
-   return (~array).columns();
+   return (*array).columns();
 }
 //*************************************************************************************************
 
@@ -926,7 +958,7 @@ BLAZE_ALWAYS_INLINE constexpr size_t columns( const Array<MT>& array ) noexcept
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE constexpr size_t pages( const Array<MT>& array ) noexcept
 {
-   return (~array).pages();
+   return (*array).pages();
 }
 //*************************************************************************************************
 
@@ -941,7 +973,7 @@ BLAZE_ALWAYS_INLINE constexpr size_t pages( const Array<MT>& array ) noexcept
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE constexpr size_t quats( const Array<MT>& array ) noexcept
 {
-   return (~array).quats();
+   return (*array).quats();
 }
 //*************************************************************************************************
 
@@ -956,7 +988,7 @@ BLAZE_ALWAYS_INLINE constexpr size_t quats( const Array<MT>& array ) noexcept
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE constexpr size_t size( const Array<MT>& array ) noexcept
 {
-   return (~array).rows() * (~array).columns() * (~array).pages();
+   return (*array).rows() * (*array).columns() * (*array).pages();
 }
 //*************************************************************************************************
 
@@ -971,7 +1003,7 @@ BLAZE_ALWAYS_INLINE constexpr size_t size( const Array<MT>& array ) noexcept
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE size_t capacity( const Array<MT>& array ) noexcept
 {
-   return (~array).capacity();
+   return (*array).capacity();
 }
 //*************************************************************************************************
 
@@ -992,7 +1024,7 @@ BLAZE_ALWAYS_INLINE size_t capacity( const Array<MT>& array ) noexcept
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE size_t capacity( const Array<MT>& array, size_t i, size_t k ) noexcept
 {
-   return (~array).capacity( i, k );
+   return (*array).capacity( i, k );
 }
 //*************************************************************************************************
 
@@ -1007,7 +1039,7 @@ BLAZE_ALWAYS_INLINE size_t capacity( const Array<MT>& array, size_t i, size_t k 
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE size_t nonZeros( const Array<MT>& array )
 {
-   return (~array).nonZeros();
+   return (*array).nonZeros();
 }
 //*************************************************************************************************
 
@@ -1028,7 +1060,7 @@ BLAZE_ALWAYS_INLINE size_t nonZeros( const Array<MT>& array )
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE size_t nonZeros( const Array<MT>& array, size_t i, size_t k )
 {
-   return (~array).nonZeros( i, k );
+   return (*array).nonZeros( i, k );
 }
 //*************************************************************************************************
 
@@ -1056,7 +1088,7 @@ BLAZE_ALWAYS_INLINE EnableIf_t< !IsResizable_v<MT> >
 {
    MAYBE_UNUSED( preserve );
 
-   if( (~array).rows() != m || (~array).columns() != n || (~array).pages() != o) {
+   if( (*array).rows() != m || (*array).columns() != n || (*array).pages() != o) {
       BLAZE_THROW_INVALID_ARGUMENT( "Array cannot be resized" );
    }
 }
@@ -1081,7 +1113,7 @@ template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<MT> && !IsSquare_v<MT> >
    resize_backend( Array<MT>& array, size_t o, size_t m, size_t n, bool preserve )
 {
-   (~array).resize( o, m, n, preserve );
+   (*array).resize( o, m, n, preserve );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1109,7 +1141,7 @@ BLAZE_ALWAYS_INLINE EnableIf_t< IsResizable_v<MT> && !IsSquare_v<MT> >
 //       BLAZE_THROW_INVALID_ARGUMENT( "Invalid resize arguments for square array" );
 //    }
 //
-//    (~array).resize( m, preserve );
+//    (*array).resize( m, preserve );
 // }
 /*! \endcond */
 //*************************************************************************************************
@@ -1191,7 +1223,7 @@ template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE EnableIf_t< IsShrinkable_v<MT> >
    shrinkToFit_backend( Array<MT>& array )
 {
-   (~array).shrinkToFit();
+   (*array).shrinkToFit();
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1239,7 +1271,7 @@ BLAZE_ALWAYS_INLINE void shrinkToFit( Array<MT>& array )
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE void transpose( Array<MT>& array )
 {
-   (~array).transpose( );
+   (*array).transpose( );
 }
 //*************************************************************************************************
 
@@ -1265,7 +1297,7 @@ template< typename MT   // Type of the array
         , typename T >  // Type of the index initializer
 BLAZE_ALWAYS_INLINE void transpose( Array<MT>& array, const T* indices, size_t n )
 {
-   (~array).transpose( indices, n );
+   (*array).transpose( indices, n );
 }
 //*************************************************************************************************
 
@@ -1291,7 +1323,7 @@ template< typename MT   // Type of the array
         , typename T >  // Type of the index initializer
 BLAZE_ALWAYS_INLINE void transpose( Array<MT>& array, std::initializer_list<T> indices )
 {
-   (~array).transpose( indices.begin(), indices.size() );
+   (*array).transpose( indices.begin(), indices.size() );
 }
 //*************************************************************************************************
 
@@ -1316,7 +1348,7 @@ BLAZE_ALWAYS_INLINE void transpose( Array<MT>& array, std::initializer_list<T> i
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE void ctranspose( Array<MT>& array )
 {
-   (~array).ctranspose();
+   (*array).ctranspose();
 }
 //*************************************************************************************************
 
@@ -1342,7 +1374,7 @@ template< typename MT   // Type of the array
         , typename T >  // Type of the index initializer
 BLAZE_ALWAYS_INLINE void ctranspose( Array<MT>& array, const T* indices, size_t n )
 {
-   (~array).ctranspose( indices, n );
+   (*array).ctranspose( indices, n );
 }
 //*************************************************************************************************
 
@@ -1368,7 +1400,7 @@ template< typename MT   // Type of the array
         , typename T >  // Type of the index initializer
 BLAZE_ALWAYS_INLINE void ctranspose( Array<MT>& array, std::initializer_list<T> indices )
 {
-   (~array).ctranspose( indices.begin(), indices.size() );
+   (*array).ctranspose( indices.begin(), indices.size() );
 }
 //*************************************************************************************************
 
@@ -1428,7 +1460,7 @@ BLAZE_ALWAYS_INLINE void ctranspose( Array<MT>& array, std::initializer_list<T> 
 template< typename MT > // Type of the array
 inline const typename MT::ResultType evaluate( const Array<MT>& array )
 {
-   const typename MT::ResultType tmp( ~array );
+   const typename MT::ResultType tmp( *array );
    return tmp;
 }
 //*************************************************************************************************
@@ -1447,7 +1479,7 @@ inline const typename MT::ResultType evaluate( const Array<MT>& array )
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Array<MT>& array ) noexcept
 {
-   return size( ~array ) == 0UL;
+   return size( *array ) == 0UL;
 }
 //*************************************************************************************************
 
@@ -1465,7 +1497,7 @@ BLAZE_ALWAYS_INLINE constexpr bool isEmpty( const Array<MT>& array ) noexcept
 template< typename MT > // Type of the array
 BLAZE_ALWAYS_INLINE bool isSquare( const Array<MT>& array ) noexcept
 {
-   return ( IsSquare_v<MT> || ( (~array).rows() == (~array).columns() && (~array).rows() == (~array).pages() ) );
+   return ( IsSquare_v<MT> || ( (*array).rows() == (*array).columns() && (*array).rows() == (*array).pages() ) );
 }
 //*************************************************************************************************
 
@@ -1526,7 +1558,7 @@ BLAZE_ALWAYS_INLINE void assign_backend( Array<TT1>& lhs, const Array<TT2>& rhs 
 {
    BLAZE_FUNCTION_TRACE;
 
-   (~lhs).assign( ~rhs );
+   (*lhs).assign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1553,11 +1585,11 @@ BLAZE_ALWAYS_INLINE void assign( Array<TT1>& lhs, const Array<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   assign_backend( ~lhs, ~rhs );
+   assign_backend( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1579,7 +1611,7 @@ BLAZE_ALWAYS_INLINE void addAssign_backend( Array<TT1>& lhs, const Array<TT2>& r
 {
    BLAZE_FUNCTION_TRACE;
 
-   (~lhs).addAssign( ~rhs );
+   (*lhs).addAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1606,11 +1638,11 @@ BLAZE_ALWAYS_INLINE void addAssign( Array<TT1>& lhs, const Array<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   addAssign_backend( ~lhs, ~rhs );
+   addAssign_backend( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1632,7 +1664,7 @@ BLAZE_ALWAYS_INLINE void subAssign_backend( Array<TT1>& lhs, const Array<TT2>& r
 {
    BLAZE_FUNCTION_TRACE;
 
-   (~lhs).subAssign( ~rhs );
+   (*lhs).subAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1659,11 +1691,11 @@ BLAZE_ALWAYS_INLINE void subAssign( Array<TT1>& lhs, const Array<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   subAssign_backend( ~lhs, ~rhs );
+   subAssign_backend( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1685,7 +1717,7 @@ BLAZE_ALWAYS_INLINE void schurAssign_backend( Array<TT1>& lhs, const Array<TT2>&
 {
    BLAZE_FUNCTION_TRACE;
 
-   (~lhs).schurAssign( ~rhs );
+   (*lhs).schurAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1712,11 +1744,11 @@ BLAZE_ALWAYS_INLINE void schurAssign( Array<TT1>& lhs, const Array<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( (~lhs).pages()   == (~rhs).pages(),   "Invalid number of pages"   );
+   BLAZE_INTERNAL_ASSERT( (*lhs).rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).pages()   == (*rhs).pages(),   "Invalid number of pages"   );
 
-   schurAssign_backend( ~lhs, ~rhs );
+   schurAssign_backend( *lhs, *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1743,9 +1775,9 @@ BLAZE_ALWAYS_INLINE void multAssign( Array<TT1>& lhs, const Array<TT2>& rhs )
 {
    BLAZE_FUNCTION_TRACE;
 
-   BLAZE_INTERNAL_ASSERT( (~lhs).columns() == (~rhs).rows(), "Invalid array sizes" );
+   BLAZE_INTERNAL_ASSERT( (*lhs).columns() == (*rhs).rows(), "Invalid array sizes" );
 
-   (~lhs).multAssign( ~rhs );
+   (*lhs).multAssign( *rhs );
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1770,7 +1802,7 @@ BLAZE_ALWAYS_INLINE void multAssign( Array<TT1>& lhs, const Array<TT2>& rhs )
 template< typename TT > // Type of the array
 BLAZE_ALWAYS_INLINE TT& derestrict( Array<TT>& array )
 {
-   return ~array;
+   return *array;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1793,7 +1825,7 @@ BLAZE_ALWAYS_INLINE TT& derestrict( Array<TT>& array )
 template< typename TT > // Type of the array
 inline decltype(auto) unview( Array<TT>& array )
 {
-   return ~array;
+   return *array;
 }
 /*! \endcond */
 //*************************************************************************************************
@@ -1816,7 +1848,7 @@ inline decltype(auto) unview( Array<TT>& array )
 template< typename TT > // Type of the array
 inline decltype(auto) unview( const Array<TT>& array )
 {
-   return ~array;
+   return *array;
 }
 /*! \endcond */
 //*************************************************************************************************

@@ -1354,7 +1354,7 @@ inline CustomTensor<Type,AF,PF,RT>&
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   smpAssign( *this, ~rhs );
+   smpAssign( *this, *rhs );
 
    return *this;
 }
@@ -1411,12 +1411,12 @@ template< typename MT >  // Type of the right-hand side tensor
 inline CustomTensor<Type,AF,PF,RT>&
    CustomTensor<Type,AF,PF,RT>::operator=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAssign( *this, tmp );
    }
    else {
-      smpAssign( *this, ~rhs );
+      smpAssign( *this, *rhs );
    }
 
    return *this;
@@ -1442,16 +1442,16 @@ template< typename MT >  // Type of the right-hand side tensor
 inline CustomTensor<Type,AF,PF,RT>&
    CustomTensor<Type,AF,PF,RT>::operator+=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ || (~rhs).pages() != o_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ || (*rhs).pages() != o_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpAddAssign( *this, tmp );
    }
    else {
-      smpAddAssign( *this, ~rhs );
+      smpAddAssign( *this, *rhs );
    }
 
    return *this;
@@ -1477,16 +1477,16 @@ template< typename MT >  // Type of the right-hand side tensor
 inline CustomTensor<Type,AF,PF,RT>&
    CustomTensor<Type,AF,PF,RT>::operator-=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ || (~rhs).pages() != o_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ || (*rhs).pages() != o_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSubAssign( *this, tmp );
    }
    else {
-      smpSubAssign( *this, ~rhs );
+      smpSubAssign( *this, *rhs );
    }
 
    return *this;
@@ -1512,16 +1512,16 @@ template< typename MT >  // Type of the right-hand side tensor
 inline CustomTensor<Type,AF,PF,RT>&
    CustomTensor<Type,AF,PF,RT>::operator%=( const Tensor<MT>& rhs )
 {
-   if( (~rhs).rows() != m_ || (~rhs).columns() != n_ || (~rhs).pages() != o_ ) {
+   if( (*rhs).rows() != m_ || (*rhs).columns() != n_ || (*rhs).pages() != o_ ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Tensor sizes do not match" );
    }
 
-   if( (~rhs).canAlias( this ) ) {
-      const ResultType_t<MT> tmp( ~rhs );
+   if( (*rhs).canAlias( this ) ) {
+      const ResultType_t<MT> tmp( *rhs );
       smpSchurAssign( *this, tmp );
    }
    else {
-      smpSchurAssign( *this, ~rhs );
+      smpSchurAssign( *this, *rhs );
    }
 
    return *this;
@@ -2418,9 +2418,9 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto CustomTensor<Type,AF,PF,RT>::assign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    const size_t jpos( n_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2429,11 +2429,11 @@ inline auto CustomTensor<Type,AF,PF,RT>::assign( const DenseTensor<MT>& rhs )
       for (size_t i=0UL; i<m_; ++i) {
          size_t row_elements = (k*m_+i)*nn_;
          for (size_t j=0UL; j<jpos; j+=2UL) {
-            v_[row_elements+j] = (~rhs)(k, i, j);
-            v_[row_elements+j+1UL] = (~rhs)(k, i, j+1UL);
+            v_[row_elements+j] = (*rhs)(k, i, j);
+            v_[row_elements+j+1UL] = (*rhs)(k, i, j+1UL);
          }
          if (jpos < n_) {
-            v_[row_elements+jpos] = (~rhs)(k, i, jpos);
+            v_[row_elements+jpos] = (*rhs)(k, i, jpos);
          }
       }
    }
@@ -2462,9 +2462,9 @@ inline auto CustomTensor<Type,AF,PF,RT>::assign( const DenseTensor<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
@@ -2472,13 +2472,13 @@ inline auto CustomTensor<Type,AF,PF,RT>::assign( const DenseTensor<MT>& rhs )
    BLAZE_INTERNAL_ASSERT( !remainder || ( n_ - ( n_ % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
    if( AF && PF && useStreaming &&
-       ( m_*n_*o_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(~rhs).isAliased( this ) )
+       ( m_*n_*o_ > ( cacheSize / ( sizeof(Type) * 3UL ) ) ) && !(*rhs).isAliased( this ) )
    {
       for (size_t k=0UL; k<o_; ++k) {
          for (size_t i=0UL; i<m_; ++i) {
             size_t j(0UL);
             Iterator left(begin(i, k));
-            ConstIterator_t<MT> right((~rhs).begin(i, k));
+            ConstIterator_t<MT> right((*rhs).begin(i, k));
 
             for (; j<jpos; j+=SIMDSIZE, left+=SIMDSIZE, right+=SIMDSIZE) {
                left.stream(right.load());
@@ -2496,7 +2496,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::assign( const DenseTensor<MT>& rhs )
          {
             size_t j(0UL);
             Iterator left(begin(i, k));
-            ConstIterator_t<MT> right((~rhs).begin(i, k));
+            ConstIterator_t<MT> right((*rhs).begin(i, k));
 
             for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
                left.store(right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -2536,9 +2536,9 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto CustomTensor<Type,AF,PF,RT>::addAssign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedAddAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    for (size_t k=0UL; k<o_; ++k) {
       for (size_t i=0UL; i<m_; ++i) {
@@ -2550,11 +2550,11 @@ inline auto CustomTensor<Type,AF,PF,RT>::addAssign( const DenseTensor<MT>& rhs )
          size_t j(jbegin);
 
          for (; (j+2UL) <= jend; j+=2UL) {
-            v_[row_elements+j] += (~rhs)(k, i, j);
-            v_[row_elements+j+1UL] += (~rhs)(k, i, j+1UL);
+            v_[row_elements+j] += (*rhs)(k, i, j);
+            v_[row_elements+j+1UL] += (*rhs)(k, i, j+1UL);
          }
          if (j < jend) {
-            v_[row_elements+j] += (~rhs)(k, i, j);
+            v_[row_elements+j] += (*rhs)(k, i, j);
          }
       }
    }
@@ -2583,9 +2583,9 @@ inline auto CustomTensor<Type,AF,PF,RT>::addAssign( const DenseTensor<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
@@ -2601,7 +2601,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::addAssign( const DenseTensor<MT>& rhs )
 
          size_t j(jbegin);
          Iterator left(begin(i, k) + jbegin);
-         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
+         ConstIterator_t<MT> right((*rhs).begin(i, k) + jbegin);
 
          for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
             left.store(left.load() + right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -2640,9 +2640,9 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto CustomTensor<Type,AF,PF,RT>::subAssign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedSubAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    for (size_t k=0UL; k<o_; ++k) {
       for (size_t i=0UL; i<m_; ++i) {
@@ -2654,11 +2654,11 @@ inline auto CustomTensor<Type,AF,PF,RT>::subAssign( const DenseTensor<MT>& rhs )
          size_t j(jbegin);
 
          for (; (j+2UL) <= jend; j+=2UL) {
-            v_[row_elements+j] -= (~rhs)(k, i, j);
-            v_[row_elements+j+1UL] -= (~rhs)(k, i, j+1UL);
+            v_[row_elements+j] -= (*rhs)(k, i, j);
+            v_[row_elements+j+1UL] -= (*rhs)(k, i, j+1UL);
          }
          if (j < jend) {
-            v_[row_elements+j] -= (~rhs)(k, i, j);
+            v_[row_elements+j] -= (*rhs)(k, i, j);
          }
       }
    }
@@ -2687,9 +2687,9 @@ inline auto CustomTensor<Type,AF,PF,RT>::subAssign( const DenseTensor<MT>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
@@ -2705,7 +2705,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::subAssign( const DenseTensor<MT>& rhs )
 
          size_t j(jbegin);
          Iterator left(begin(i, k) + jbegin);
-         ConstIterator_t<MT> right((~rhs).begin(i, k) + jbegin);
+         ConstIterator_t<MT> right((*rhs).begin(i, k) + jbegin);
 
          for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
             left.store(left.load() - right.load()); left += SIMDSIZE; right += SIMDSIZE;
@@ -2744,9 +2744,9 @@ template< typename MT >  // Type of the right-hand side dense tensor
 inline auto CustomTensor<Type,AF,PF,RT>::schurAssign( const DenseTensor<MT>& rhs )
    -> EnableIf_t< !VectorizedSchurAssign_v<MT> >
 {
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    const size_t jpos( n_ & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( n_ - ( n_ % 2UL ) ) == jpos, "Invalid end calculation" );
@@ -2755,11 +2755,11 @@ inline auto CustomTensor<Type,AF,PF,RT>::schurAssign( const DenseTensor<MT>& rhs
       for (size_t i=0UL; i<m_; ++i) {
          size_t row_elements = (k*m_+i)*nn_;
          for (size_t j=0UL; j<jpos; j+=2UL) {
-            v_[row_elements+j] *= (~rhs)(k, i, j);
-            v_[row_elements+j+1UL] *= (~rhs)(k, i, j+1UL);
+            v_[row_elements+j] *= (*rhs)(k, i, j);
+            v_[row_elements+j+1UL] *= (*rhs)(k, i, j+1UL);
          }
          if (jpos < n_) {
-            v_[row_elements+jpos] *= (~rhs)(k, i, jpos);
+            v_[row_elements+jpos] *= (*rhs)(k, i, jpos);
          }
       }
    }
@@ -2788,9 +2788,9 @@ inline auto CustomTensor<Type,AF,PF,RT>::schurAssign( const DenseTensor<MT>& rhs
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( Type );
 
-   BLAZE_INTERNAL_ASSERT( m_ == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( n_ == (~rhs).columns(), "Invalid number of columns" );
-   BLAZE_INTERNAL_ASSERT( o_ == (~rhs).pages(),   "Invalid number of pages" );
+   BLAZE_INTERNAL_ASSERT( m_ == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( n_ == (*rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( o_ == (*rhs).pages(),   "Invalid number of pages" );
 
    constexpr bool remainder( !PF || !IsPadded_v<MT> );
 
@@ -2802,7 +2802,7 @@ inline auto CustomTensor<Type,AF,PF,RT>::schurAssign( const DenseTensor<MT>& rhs
 
          size_t j(0UL);
          Iterator left(begin(i, k));
-         ConstIterator_t<MT> right((~rhs).begin(i, k));
+         ConstIterator_t<MT> right((*rhs).begin(i, k));
 
          for (; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL) {
             left.store(left.load() * right.load()); left += SIMDSIZE; right += SIMDSIZE;

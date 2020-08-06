@@ -888,12 +888,12 @@ inline PageSlice<MT,CRAs...>&
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAssign( tensor_, right, 0UL, 0UL, page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -943,12 +943,12 @@ inline PageSlice<MT,CRAs...>&
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !tryAddAssign( tensor_, right, 0UL, 0UL, page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -996,12 +996,12 @@ inline PageSlice<MT,CRAs...>&
    //BLAZE_CONSTRAINT_MUST_BE_ROW_MAJOR_MATRIX_TYPE( ResultType_t<MT2> );
    BLAZE_CONSTRAINT_MUST_NOT_REQUIRE_EVALUATION  ( ResultType_t<MT2> );
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
    using Right = If_t< IsRestricted_v<MT>, CompositeType_t<MT2>, const MT2& >;
-   Right right( ~rhs );
+   Right right( *rhs );
 
    if( !trySubAssign( tensor_, right, 0UL, 0UL, page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
@@ -1053,22 +1053,22 @@ inline PageSlice<MT,CRAs...>&
 
    using SchurType = SchurTrait_t< ResultType, ResultType_t<MT2> >;
 
-   if( rows() != (~rhs).rows() || columns() != (~rhs).columns() ) {
+   if( rows() != (*rhs).rows() || columns() != (*rhs).columns() ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Matrix sizes do not match" );
    }
 
-   if( !trySchurAssign( tensor_, (~rhs), 0UL, 0UL, page() ) ) {
+   if( !trySchurAssign( tensor_, (*rhs), 0UL, 0UL, page() ) ) {
       BLAZE_THROW_INVALID_ARGUMENT( "Invalid assignment to restricted tensor" );
    }
 
    decltype(auto) left( derestrict( *this ) );
 
-   if( IsReference_v<MT> && (~rhs).canAlias( &tensor_ ) ) {
-      const SchurType tmp( *this % (~rhs) );
+   if( IsReference_v<MT> && (*rhs).canAlias( &tensor_ ) ) {
+      const SchurType tmp( *this % (*rhs) );
       smpSchurAssign( left, tmp );
    }
    else {
-      smpSchurAssign( left, ~rhs );
+      smpSchurAssign( left, *rhs );
    }
 
    BLAZE_INTERNAL_ASSERT( isIntact( tensor_ ), "Invariant violation detected" );
@@ -1647,17 +1647,17 @@ template< typename MT2 >     // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<MT2,false>& rhs )
    -> EnableIf_t< !VectorizedAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows() == (*rhs).rows(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid matrix sizes" );
 
-   for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+   for (size_t i = 0UL; i < (*rhs).rows(); ++i ) {
+      const size_t jpos( (*rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(page(),i,j) = (~rhs)(i,j);
-         tensor_(page(),i,j+1UL) = (~rhs)(i,j+1UL);
+         tensor_(page(),i,j) = (*rhs)(i,j);
+         tensor_(page(),i,j+1UL) = (*rhs)(i,j+1UL);
       }
-      if( jpos < (~rhs).columns() )
-         tensor_(page(),i,jpos) = (~rhs)(i,jpos);
+      if( jpos < (*rhs).columns() )
+         tensor_(page(),i,jpos) = (*rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1684,22 +1684,22 @@ inline auto PageSlice<MT,CRAs...>::assign( const DenseMatrix<MT2,false>& rhs )
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<MT2> );
 
    const size_t cols( columns() );
 
-   for (size_t i = 0; i < (~rhs).rows(); ++i) {
+   for (size_t i = 0; i < (*rhs).rows(); ++i) {
       const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
-      if( useStreaming && cols > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(~rhs).isAliased( &tensor_ ) )
+      if( useStreaming && cols > ( cacheSize/( sizeof(ElementType) * 3UL ) ) && !(*rhs).isAliased( &tensor_ ) )
       {
          for( ; j<jpos; j+=SIMDSIZE ) {
             left.stream( right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -1747,8 +1747,8 @@ inline void PageSlice<MT,CRAs...>::assign( const DenseMatrix<MT2,columnMajor>& r
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows() == (*rhs).rows(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid matrix sizes" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -1758,7 +1758,7 @@ inline void PageSlice<MT,CRAs...>::assign( const DenseMatrix<MT2,columnMajor>& r
          const size_t jend( min( columns(), jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               tensor_(page(),i,j) = (~rhs)(i,j);
+               tensor_(page(),i,j) = (*rhs)(i,j);
             }
          }
       }
@@ -1785,17 +1785,17 @@ template< typename MT2 >     // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<MT2,false>& rhs )
    -> EnableIf_t< !VectorizedAddAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+   for (size_t i = 0UL; i < (*rhs).rows(); ++i ) {
+      const size_t jpos( (*rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(page(),i,j    ) += (~rhs)(i,j);
-         tensor_(page(),i,j+1UL) += (~rhs)(i,j+1UL);
+         tensor_(page(),i,j    ) += (*rhs)(i,j);
+         tensor_(page(),i,j+1UL) += (*rhs)(i,j+1UL);
       }
-      if( jpos < (~rhs).columns() )
-         tensor_(page(),i,jpos) += (~rhs)(i,jpos);
+      if( jpos < (*rhs).columns() )
+         tensor_(page(),i,jpos) += (*rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1822,20 +1822,20 @@ inline auto PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<MT2,false>& rhs 
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<MT2> );
 
    const size_t cols( columns() );
 
-   for (size_t i = 0; i < (~rhs).rows(); ++i) {
+   for (size_t i = 0; i < (*rhs).rows(); ++i) {
       const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() + right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -1873,8 +1873,8 @@ inline void PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<MT2,columnMajor>
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -1896,7 +1896,7 @@ inline void PageSlice<MT,CRAs...>::addAssign( const DenseMatrix<MT2,columnMajor>
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               tensor_(page(),i,j) += (~rhs)(i,j);
+               tensor_(page(),i,j) += (*rhs)(i,j);
             }
          }
       }
@@ -1923,17 +1923,17 @@ template< typename MT2 >     // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<MT2,false>& rhs )
    -> EnableIf_t< !VectorizedSubAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
-   for (size_t i = 0UL; i < (~rhs).rows(); ++i ) {
-      const size_t jpos( (~rhs).columns() & size_t(-2) );
+   for (size_t i = 0UL; i < (*rhs).rows(); ++i ) {
+      const size_t jpos( (*rhs).columns() & size_t(-2) );
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(page(),i,j    ) -= (~rhs)(i,j);
-         tensor_(page(),i,j+1UL) -= (~rhs)(i,j+1UL);
+         tensor_(page(),i,j    ) -= (*rhs)(i,j);
+         tensor_(page(),i,j+1UL) -= (*rhs)(i,j+1UL);
       }
-      if( jpos < (~rhs).columns() )
-         tensor_(page(),i,jpos) -= (~rhs)(i,jpos);
+      if( jpos < (*rhs).columns() )
+         tensor_(page(),i,jpos) -= (*rhs)(i,jpos);
    }
 }
 /*! \endcond */
@@ -1960,20 +1960,20 @@ inline auto PageSlice<MT,CRAs...>::subAssign( const DenseMatrix<MT2,false>& rhs 
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<MT2> );
 
    const size_t cols( columns() );
 
-   for (size_t i = 0; i < (~rhs).rows(); ++i) {
+   for (size_t i = 0; i < (*rhs).rows(); ++i) {
       const size_t jpos( ( remainder )?( cols & size_t(-SIMDSIZE) ):( cols ) );
       BLAZE_INTERNAL_ASSERT( !remainder || ( cols - ( cols % (SIMDSIZE) ) ) == jpos, "Invalid end calculation" );
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() - right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2011,8 +2011,8 @@ inline void PageSlice<MT,CSAs...>::subAssign( const DenseMatrix<MT2,columnMajor>
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -2034,7 +2034,7 @@ inline void PageSlice<MT,CSAs...>::subAssign( const DenseMatrix<MT2,columnMajor>
             BLAZE_INTERNAL_ASSERT( jbegin <= jend, "Invalid loop indices detected" );
 
             for( size_t j=jbegin; j<jend; ++j ) {
-               tensor_(page(),i,j) -= (~rhs)(i,j);
+               tensor_(page(),i,j) -= (*rhs)(i,j);
             }
          }
       }
@@ -2061,19 +2061,19 @@ template< typename MT2 >    // Type of the right-hand side dense matrix
 inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,false>& rhs )
    -> EnableIf_t< !VectorizedSchurAssign_v<MT2> >
 {
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    const size_t jpos( columns() & size_t(-2) );
    BLAZE_INTERNAL_ASSERT( ( columns() - ( columns() % 2UL ) ) == jpos, "Invalid end calculation" );
 
    for( size_t i=0UL; i<rows(); ++i ) {
       for( size_t j=0UL; j<jpos; j+=2UL ) {
-         tensor_(page(),i,j    ) *= (~rhs)(i,j    );
-         tensor_(page(),i,j+1UL) *= (~rhs)(i,j+1UL);
+         tensor_(page(),i,j    ) *= (*rhs)(i,j    );
+         tensor_(page(),i,j+1UL) *= (*rhs)(i,j+1UL);
       }
       if( jpos < columns() ) {
-         tensor_(page(),i,jpos) *= (~rhs)(i,jpos);
+         tensor_(page(),i,jpos) *= (*rhs)(i,jpos);
       }
    }
 }
@@ -2101,8 +2101,8 @@ inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,rowMajor>&
 {
    BLAZE_CONSTRAINT_MUST_BE_VECTORIZABLE_TYPE( ElementType );
 
-   BLAZE_INTERNAL_ASSERT( rows()    == (~rhs).rows()   , "Invalid number of rows"    );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid number of columns" );
+   BLAZE_INTERNAL_ASSERT( rows()    == (*rhs).rows()   , "Invalid number of rows"    );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid number of columns" );
 
    constexpr bool remainder( !IsPadded_v<MT> || !IsPadded_v<MT2> );
 
@@ -2115,7 +2115,7 @@ inline auto PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,rowMajor>&
 
       size_t j( 0UL );
       Iterator left( begin(i) );
-      ConstIterator_t<MT2> right( (~rhs).begin(i) );
+      ConstIterator_t<MT2> right( (*rhs).begin(i) );
 
       for( ; (j+SIMDSIZE*3UL) < jpos; j+=SIMDSIZE*4UL ) {
          left.store( left.load() * right.load() ); left += SIMDSIZE; right += SIMDSIZE;
@@ -2153,8 +2153,8 @@ inline void PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,columnMajo
 {
    BLAZE_CONSTRAINT_MUST_NOT_BE_SYMMETRIC_MATRIX_TYPE( MT2 );
 
-   BLAZE_INTERNAL_ASSERT( rows() == (~rhs).rows(), "Invalid matrix sizes" );
-   BLAZE_INTERNAL_ASSERT( columns() == (~rhs).columns(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( rows() == (*rhs).rows(), "Invalid matrix sizes" );
+   BLAZE_INTERNAL_ASSERT( columns() == (*rhs).columns(), "Invalid matrix sizes" );
 
    constexpr size_t block( BLOCK_SIZE );
 
@@ -2164,7 +2164,7 @@ inline void PageSlice<MT,CSAs...>::schurAssign( const DenseMatrix<MT2,columnMajo
          const size_t jend( min( columns(), jj+block ) );
          for( size_t i=ii; i<iend; ++i ) {
             for( size_t j=jj; j<jend; ++j ) {
-               tensor_(page(),i,j) *= (~rhs)(i,j);
+               tensor_(page(),i,j) *= (*rhs)(i,j);
             }
          }
       }

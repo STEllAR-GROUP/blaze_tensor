@@ -165,22 +165,22 @@ decltype(auto) norm_backend( const DenseArray<MT>& dm, Abs abs, Power power, Roo
    using ET = ElementType_t<MT>;
    using RT = decltype( evaluate( root( std::declval<ET>() ) ) );
 
-   if( ArrayDimAnyOf( ( ~dm ).dimensions(),
+   if( ArrayDimAnyOf( ( *dm ).dimensions(),
           []( size_t i, size_t dim ) { return dim == 0; } ) ) {
       return RT{};
    }
 
-   CT tmp( ~dm );
+   CT tmp( *dm );
 
-   BLAZE_INTERNAL_ASSERT( tmp.dimensions() == (~dm).dimensions(), "Invalid number of elements" );
+   BLAZE_INTERNAL_ASSERT( tmp.dimensions() == (*dm).dimensions(), "Invalid number of elements" );
 
-   using AT = RemoveCV_t<RemoveReference_t< decltype( ~dm ) > >;
+   using AT = RemoveCV_t<RemoveReference_t< decltype( *dm ) > >;
    constexpr size_t N = AT::num_dimensions;
 
    std::array< size_t, N > dims{};
    ET norm( power( abs( tmp( dims ) ) ) );
 
-   ArrayForEachGrouped( ( ~dm ).dimensions(),
+   ArrayForEachGrouped( ( *dm ).dimensions(),
       [&]( std::array< size_t, N > const& ds ) {
          norm += power( abs( tmp( ds ) ) );
       } );
@@ -211,7 +211,7 @@ decltype(auto) norm( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *dm, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -236,7 +236,7 @@ decltype(auto) sqrNorm( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, SqrAbs(), Noop(), Noop() );
+   return norm_backend( *dm, SqrAbs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -261,7 +261,7 @@ decltype(auto) l1Norm( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Abs(), Noop(), Noop() );
+   return norm_backend( *dm, Abs(), Noop(), Noop() );
 }
 //*************************************************************************************************
 
@@ -286,7 +286,7 @@ decltype(auto) l2Norm( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, SqrAbs(), Noop(), Sqrt() );
+   return norm_backend( *dm, SqrAbs(), Noop(), Sqrt() );
 }
 //*************************************************************************************************
 
@@ -311,7 +311,7 @@ decltype(auto) l3Norm( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, Abs(), Pow3(), Cbrt() );
+   return norm_backend( *dm, Abs(), Pow3(), Cbrt() );
 }
 //*************************************************************************************************
 
@@ -336,7 +336,7 @@ decltype(auto) l4Norm( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return norm_backend( ~dm, SqrAbs(), Pow2(), Qdrt() );
+   return norm_backend( *dm, SqrAbs(), Pow2(), Qdrt() );
 }
 //*************************************************************************************************
 
@@ -371,7 +371,7 @@ decltype(auto) lpNorm( const DenseArray<MT>& dm, ST p )
 
    using ScalarType = MultTrait_t< UnderlyingBuiltin_t<MT>, decltype( inv( p ) ) >;
    using UnaryPow = Bind2nd<Pow,ScalarType>;
-   return norm_backend( ~dm, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
+   return norm_backend( *dm, Abs(), UnaryPow( Pow(), p ), UnaryPow( Pow(), inv( p ) ) );
 }
 //*************************************************************************************************
 
@@ -404,7 +404,7 @@ inline decltype(auto) lpNorm( const DenseArray<MT>& dm )
    using Norms = TypeList< L1Norm, L2Norm, L3Norm, L4Norm, LpNorm<P> >;
    using Norm  = typename TypeAt< Norms, min( P-1UL, 4UL ) >::Type;
 
-   return Norm()( ~dm );
+   return Norm()( *dm );
 }
 //*************************************************************************************************
 
@@ -429,7 +429,7 @@ decltype(auto) maxNorm( const DenseArray<MT>& dm )
 {
    BLAZE_FUNCTION_TRACE;
 
-   return max( abs( ~dm ) );
+   return max( abs( *dm ) );
 }
 //*************************************************************************************************
 
