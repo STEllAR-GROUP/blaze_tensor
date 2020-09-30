@@ -98,8 +98,15 @@ template< typename TT1   // Type of the left-hand side dense tensor
         , typename OP >  // Type of the assignment operation
 void hpxAssign( DenseTensor<TT1>& lhs, const DenseTensor<TT2>& rhs, OP op )
 {
+#if HPX_VERSION_FULL >= 0x010500
+   using hpx::for_loop;
+   using hpx::execution::par;
+   using hpx::execution::dynamic_chunk_size;
+#else
    using hpx::parallel::for_loop;
    using hpx::parallel::execution::par;
+   using hpx::parallel::execution::dynamic_chunk_size;
+#endif
 
    BLAZE_FUNCTION_TRACE;
 
@@ -125,7 +132,7 @@ void hpxAssign( DenseTensor<TT1>& lhs, const DenseTensor<TT2>& rhs, OP op )
    const size_t addon2     ( ( ( (*rhs).columns() % colsPerIter ) != 0UL )? 1UL : 0UL );
    const size_t equalShare2( (*rhs).columns() / colsPerIter + addon2 );
 
-   hpx::parallel::execution::dynamic_chunk_size chunkSize ( BLAZE_HPX_MATRIX_CHUNK_SIZE );
+   dynamic_chunk_size chunkSize ( BLAZE_HPX_MATRIX_CHUNK_SIZE );
 
    for_loop( par.with( chunkSize ), size_t(0), equalShare1 * equalShare2, [&](size_t i)
    {
