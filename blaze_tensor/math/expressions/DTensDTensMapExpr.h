@@ -125,7 +125,7 @@ class DTensDTensMapExpr
    /*! \endcond */
    //**********************************************************************************************
 
- public:
+public:
    //**Type definitions****************************************************************************
    using This          = DTensDTensMapExpr<MT1,MT2,OP>;   //!< Type of this DTensDTensMapExpr instance.
    using ResultType    = MapTrait_t<RT1,RT2,OP>;          //!< Result type for expression template evaluations.
@@ -134,7 +134,7 @@ class DTensDTensMapExpr
    using ElementType   = ElementType_t<ResultType>;       //!< Resulting element type.
 
    //! Return type for expression template evaluations.
-   using ReturnType = decltype( std::declval<OP>()( std::declval<RN1>(), std::declval<RN2>() ) );
+   using ReturnType = decltype( std::declval< OP >()( std::declval< RN1 >(), std::declval< RN2 >() ) );
 
    //! Data type for composite expression templates.
    using CompositeType = If_t< useAssign, const ResultType, const DTensDTensMapExpr& >;
