@@ -46,6 +46,7 @@
 #include <blaze_tensor/math/expressions/DenseArray.h>
 #include <blaze_tensor/math/expressions/Forward.h>
 #include <blaze_tensor/math/expressions/ArrScalarMultExpr.h>
+#include <blaze_tensor/math/typetraits/IsTemporaryEx.h>
 
 namespace blaze {
 

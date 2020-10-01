@@ -48,6 +48,7 @@
 #include <blaze_tensor/math/expressions/DenseTensor.h>
 #include <blaze_tensor/math/expressions/Forward.h>
 #include <blaze_tensor/math/expressions/TensTensSubExpr.h>
+#include <blaze_tensor/math/typetraits/IsTemporaryEx.h>
 
 namespace blaze {
 
@@ -89,7 +90,7 @@ class DTensDTensSubExpr
        or tensor, \a returnExpr will be set to \a false and the subscript operator will
        return it's result by value. Otherwise \a returnExpr will be set to \a true and
        the subscript operator may return it's result as an expression. */
-   static constexpr bool returnExpr = ( !IsTemporary_v<RN1> && !IsTemporary_v<RN2> );
+   static constexpr bool returnExpr = ( !IsTemporaryEx_v<RN1> && !IsTemporaryEx_v<RN2> );
 
    //! Expression return type for the subscript operator.
    using ExprReturnType = decltype( std::declval<RN1>() - std::declval<RN2>() );
